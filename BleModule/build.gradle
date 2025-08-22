@@ -1,0 +1,72 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'com.google.devtools.ksp'
+}
+
+android {
+    namespace 'com.topdon.ble'
+    compileSdk rootProject.ext.android.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.ext.android.minSdk
+        targetSdk rootProject.ext.android.targetSdk
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+        dataBinding true
+    }
+
+    flavorDimensions 'app'
+    productFlavors {
+        dev {
+            dimension 'app'
+        }
+        beta {
+            dimension 'app'
+        }
+        prod {
+            dimension 'app'
+        }
+        prodTopdon {
+            dimension 'app'
+        }
+        insideChina {
+            dimension 'app'
+        }
+        prodTopdonInsideChina {
+            dimension 'app'
+        }
+    }
+}
+
+dependencies {
+    // Use local LMS SDK instead of remote dependency for bucika_gsr
+    implementation files('../libapp/libs/lms_international-3.90.009.0.aar')
+    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'org.greenrobot:eventbus:3.2.0'
+    api 'com.blankj:utilcodex:1.30.6'//工具包
+    api 'com.google.code.gson:gson:2.8.8'
+    api 'com.elvishew:xlog:1.10.1'
+    implementation files('libs/ini4j-0.5.5.jar')
+}

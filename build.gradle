@@ -1,0 +1,63 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+        // hms相关 华为推送服务为华为通道推送，直接引入
+        maven { url 'https://developer.huawei.com/repo/'}
+        // fcm相关 依赖的是 FCM 通道推送，直接引入
+        maven { url "https://maven.google.com" }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {
+            url 'https://maven.zohodl.com'
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.4'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0"
+        classpath "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.0.0-1.0.21"
+        
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+apply from: "depend.gradle"
+apply from: "shared.gradle"
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+// Apply shared configurations after evaluation
+project.afterEvaluate {
+    validateModuleConfigs()
+    applyBuildOptimizations()
+}
+
+// BucikaGSR specific tasks
+task validateBuild {
+    group 'BucikaGSR'
+    description 'Validate all modules are properly configured'
+    doLast {
+        validateModuleConfigs()
+        println "✓ BucikaGSR build validation successful"
+    }
+}
+
+task assembleAllFlavors {
+    group 'BucikaGSR'
+    description 'Assemble all product flavors'
+    dependsOn 'validateBuild'
+    dependsOn gradle.includedBuilds*.task(':assembleDebug')
+}
+
+task testAllModules {
+    group 'BucikaGSR'
+    description 'Run tests for all modules'
+    dependsOn gradle.includedBuilds*.task(':test')
+}

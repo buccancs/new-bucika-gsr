@@ -1,0 +1,66 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'com.google.devtools.ksp'
+}
+
+android {
+    namespace 'com.topdon.lib.ui'
+    compileSdk rootProject.ext.android.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.ext.android.minSdk
+        targetSdk rootProject.ext.android.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+        dataBinding true
+    }
+
+    flavorDimensions 'app'
+    productFlavors {
+        dev {
+            dimension 'app'
+        }
+        beta {
+            dimension 'app'
+        }
+        prod {
+            dimension 'app'
+        }
+        prodTopdon {
+            dimension 'app'
+        }
+        insideChina {
+            dimension 'app'
+        }
+        prodTopdonInsideChina {
+            dimension 'app'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':libapp')
+    implementation project(':libmenu') //伪彩条用着 PseudoColorConfig
+    // ARouter replaced with ModernRouter (no external dependencies needed)
+    // ksp "com.alibaba:arouter-compiler:1.5.2"
+}
