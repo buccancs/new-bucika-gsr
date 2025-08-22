@@ -5,9 +5,9 @@ import android.content.Context
 import com.elvishew.xlog.XLog
 import com.topdon.module.thermal.ir.capture.video.EnhancedVideoRecorder
 import com.topdon.module.thermal.ir.capture.raw.DNGCaptureManager
-import com.topdon.module.thermal.ir.capture.sync.SynchronizedCaptureSystem
+import com.topdon.module.thermal.ir.capture.sync.EnhancedSynchronizedCaptureSystem
+import com.topdon.module.thermal.ir.capture.sync.EnhancedSynchronizationMetrics
 import com.topdon.module.thermal.ir.capture.sync.CaptureSessionInfo
-import com.topdon.module.thermal.ir.capture.sync.SynchronizationMetrics
 import com.topdon.module.thermal.ir.device.compatibility.DeviceCompatibilityChecker
 import com.topdon.module.thermal.ir.device.compatibility.CaptureCompatibilityResult
 
@@ -26,7 +26,7 @@ class ParallelCaptureManager(
     
     // Components
     private val compatibilityChecker = DeviceCompatibilityChecker(context)
-    private val syncSystem = SynchronizedCaptureSystem(context)
+    private val syncSystem = EnhancedSynchronizedCaptureSystem(context)
     private var videoRecorder: EnhancedVideoRecorder? = null
     private var dngCaptureManager: DNGCaptureManager? = null
     
@@ -247,7 +247,7 @@ class ParallelCaptureManager(
     /**
      * Get current synchronization metrics
      */
-    fun getSynchronizationMetrics(): SynchronizationMetrics {
+    fun getSynchronizationMetrics(): EnhancedSynchronizationMetrics {
         return syncSystem.getSynchronizationMetrics()
     }
     
