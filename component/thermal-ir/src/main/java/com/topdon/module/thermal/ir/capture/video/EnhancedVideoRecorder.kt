@@ -1,4 +1,4 @@
-package com.topdon.module.thermal.ir.video
+package com.topdon.module.thermal.ir.capture.video
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,7 +20,9 @@ import android.view.TextureView
 import com.elvishew.xlog.XLog
 import com.topdon.lib.core.config.FileConfig
 import com.topdon.module.thermal.ir.overlay.TemperatureOverlayManager
-import com.topdon.module.thermal.ir.dng.DNGCaptureManager
+import com.topdon.module.thermal.ir.capture.raw.DNGCaptureManager
+import com.topdon.module.thermal.ir.device.compatibility.DeviceCompatibilityChecker
+import com.topdon.module.thermal.ir.device.compatibility.S22OptimizationParams
 import java.io.File
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -28,7 +30,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Enhanced Video Recorder for bucika_gsr
- * Supports Samsung specific 4K30FPS recording and STAGE 3/LEVEL 3 RAD DNG recording
+ * Supports Samsung S22 optimized 4K30FPS recording and concurrent RAW DNG capture
+ * Includes device compatibility checking and Samsung S22 specific optimizations
  */
 @SuppressLint("MissingPermission")
 class EnhancedVideoRecorder(
@@ -40,13 +43,18 @@ class EnhancedVideoRecorder(
     // Recording modes
     enum class RecordingMode {
         SAMSUNG_4K_30FPS,
-        RAD_DNG_LEVEL3_30FPS,  // Updated to DNG format
-        PARALLEL_DUAL_STREAM
+        RAD_DNG_LEVEL3_30FPS,  
+        PARALLEL_DUAL_STREAM,
+        CONCURRENT_4K_AND_RAW  // New mode for Samsung S22 concurrent capture
     }
 
     // Recording state
     private var isRecording = false
     private var recordingMode: RecordingMode = RecordingMode.SAMSUNG_4K_30FPS
+
+    // Device compatibility and optimization
+    private val compatibilityChecker = DeviceCompatibilityChecker(context)
+    private val optimizationParams: S22OptimizationParams = compatibilityChecker.getSamsungS22OptimizationParams()
 
     // Camera2 API components
     private var cameraManager: CameraManager? = null
@@ -64,7 +72,7 @@ class EnhancedVideoRecorder(
     // DNG Capture Manager for RAD DNG Level 3
     private var dngCaptureManager: DNGCaptureManager? = null
 
-    // Recording parameters
+    // Recording parameters (optimized for Samsung S22)
     private val samsung4KSize = Size(3840, 2160) // 4K UHD
     private val radDngSize = Size(1920, 1080)    // Full HD for RAD DNG
     private val targetFps = 30
@@ -84,20 +92,77 @@ class EnhancedVideoRecorder(
         
         // STAGE 3/LEVEL 3 RAD DNG specifications
         private const val RAD_DNG_BITRATE = 8000000 // 8 Mbps for high quality
-        private const val SAMSUNG_4K_BITRATE = 20000000 // 20 Mbps for 4K
+    }
     }
 
     init {
         cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         dngCaptureManager = DNGCaptureManager(context)
+        
+        // Log device compatibility information
+        XLog.i(TAG, "Enhanced Video Recorder initialized:")
+        XLog.i(TAG, "- Samsung S22: ${compatibilityChecker.isSamsungS22()}")
+        XLog.i(TAG, "- 4K30fps support: ${compatibilityChecker.supports4K30fps()}")
+        XLog.i(TAG, "- RAW capture support: ${compatibilityChecker.supportsRawCapture()}")
+        XLog.i(TAG, "- Concurrent 4K+RAW: ${compatibilityChecker.supportsConcurrent4KAndRaw()}")
+        XLog.i(TAG, "- Optimization params: $optimizationParams")
+    }
+    
+    /**
+     * Get device compatibility information
+     */
+    fun getCompatibilityInfo(): String {
+        return buildString {
+            appendLine("Device Compatibility Report:")
+            appendLine("- Model: ${Build.MODEL}")
+            appendLine("- Samsung S22 Series: ${compatibilityChecker.isSamsungS22()}")
+            appendLine("- 4K 30fps Support: ${compatibilityChecker.supports4K30fps()}")
+            appendLine("- RAW DNG Support: ${compatibilityChecker.supportsRawCapture()}")
+            appendLine("- Concurrent 4K+RAW: ${compatibilityChecker.supportsConcurrent4KAndRaw()}")
+            appendLine("- Max Concurrent Streams: ${compatibilityChecker.getMaxConcurrentStreams()}")
+            appendLine("- Recommended 4K Bitrate: ${optimizationParams.recommended4KBitrate / 1_000_000} Mbps")
+        }
+    }
+    
+    /**
+     * Validate recording mode compatibility
+     */
+    fun validateRecordingMode(mode: RecordingMode): Pair<Boolean, String> {
+        return when (mode) {
+            RecordingMode.SAMSUNG_4K_30FPS -> {
+                val result = compatibilityChecker.validateConcurrentConfiguration(true, false, 30)
+                Pair(result.isSupported, result.issues.joinToString("; "))
+            }
+            RecordingMode.RAD_DNG_LEVEL3_30FPS -> {
+                val result = compatibilityChecker.validateConcurrentConfiguration(false, true, 30)
+                Pair(result.isSupported, result.issues.joinToString("; "))
+            }
+            RecordingMode.CONCURRENT_4K_AND_RAW -> {
+                val result = compatibilityChecker.validateConcurrentConfiguration(true, true, 30)
+                Pair(result.isSupported, result.issues.joinToString("; "))
+            }
+            RecordingMode.PARALLEL_DUAL_STREAM -> {
+                // Parallel dual stream doesn't use 4K+RAW concurrently, just check basic support
+                val has4K = compatibilityChecker.supports4K30fps()
+                val message = if (!has4K) "4K recording not supported" else ""
+                Pair(has4K, message)
+            }
+        }
     }
 
     /**
-     * Start enhanced recording with specified mode
+     * Start enhanced recording with specified mode and compatibility validation
      */
     fun startRecording(mode: RecordingMode): Boolean {
         if (isRecording) {
             XLog.w(TAG, "Recording already in progress")
+            return false
+        }
+
+        // Validate mode compatibility first
+        val (isSupported, issues) = validateRecordingMode(mode)
+        if (!isSupported) {
+            XLog.e(TAG, "Recording mode $mode not supported: $issues")
             return false
         }
 
@@ -108,20 +173,22 @@ class EnhancedVideoRecorder(
             
             when (mode) {
                 RecordingMode.SAMSUNG_4K_30FPS -> startSamsung4KRecording()
-                RecordingMode.RAD_DNG_LEVEL3_30FPS -> startRadDngRecording()  // Updated method
+                RecordingMode.RAD_DNG_LEVEL3_30FPS -> startRadDngRecording()
                 RecordingMode.PARALLEL_DUAL_STREAM -> startParallelRecording()
+                RecordingMode.CONCURRENT_4K_AND_RAW -> startConcurrent4KAndRawRecording()
             }
         } catch (e: Exception) {
             XLog.e(TAG, "Failed to start recording: ${e.message}", e)
             false
         }
     }
+    }
 
     /**
-     * Start Samsung specific 4K 30FPS recording
+     * Start Samsung specific 4K 30FPS recording with S22 optimizations
      */
     private fun startSamsung4KRecording(): Boolean {
-        XLog.i(TAG, "Starting Samsung 4K 30FPS recording")
+        XLog.i(TAG, "Starting Samsung 4K 30FPS recording with optimizations")
         
         val videoFile = createVideoFile("samsung_4k_${Date().time}.mp4")
         currentVideoFile = videoFile
@@ -134,11 +201,11 @@ class EnhancedVideoRecorder(
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(videoFile.absolutePath)
             
-            // 4K video settings optimized for Samsung devices
+            // 4K video settings optimized for Samsung S22 devices
             setVideoEncoder(VideoEncoder.H264)
             setVideoSize(samsung4KSize.width, samsung4KSize.height)
             setVideoFrameRate(targetFps)
-            setVideoEncodingBitRate(SAMSUNG_4K_BITRATE)
+            setVideoEncodingBitRate(optimizationParams.recommended4KBitrate)
             
             // Audio settings
             setAudioEncoder(AudioEncoder.AAC)
@@ -149,7 +216,7 @@ class EnhancedVideoRecorder(
                 prepare()
                 start()
                 isRecording = true
-                XLog.i(TAG, "Samsung 4K recording started successfully")
+                XLog.i(TAG, "Samsung 4K recording started successfully with ${optimizationParams.recommended4KBitrate / 1_000_000} Mbps bitrate")
                 return true
             } catch (e: Exception) {
                 XLog.e(TAG, "Failed to start Samsung 4K recording: ${e.message}", e)
@@ -159,6 +226,38 @@ class EnhancedVideoRecorder(
         }
         
         return false
+    }
+
+    /**
+     * Start concurrent 4K video + RAW DNG recording (Samsung S22 optimized)
+     */
+    private fun startConcurrent4KAndRawRecording(): Boolean {
+        if (!compatibilityChecker.isSamsungS22()) {
+            XLog.e(TAG, "Concurrent 4K+RAW recording requires Samsung S22 series device")
+            return false
+        }
+        
+        XLog.i(TAG, "Starting concurrent 4K + RAW DNG recording on Samsung S22")
+        
+        // Start 4K video recording first
+        val videoSuccess = startSamsung4KRecording()
+        if (!videoSuccess) {
+            XLog.e(TAG, "Failed to start 4K video for concurrent recording")
+            return false
+        }
+        
+        // Start concurrent RAW DNG capture
+        val rawSuccess = dngCaptureManager?.startConcurrentDNGCapture() ?: false
+        if (!rawSuccess) {
+            XLog.e(TAG, "Failed to start concurrent RAW DNG capture")
+            // Stop the video recording since concurrent mode failed
+            stopRecording()
+            return false
+        }
+        
+        isRecording = true
+        XLog.i(TAG, "Concurrent 4K + RAW DNG recording started successfully on Samsung S22")
+        return true
     }
 
     private fun startRadDngRecording(): Boolean {

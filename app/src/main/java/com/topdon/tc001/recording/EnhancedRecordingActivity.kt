@@ -9,7 +9,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.topdon.lib.core.ktbase.BaseActivity
-import com.topdon.module.thermal.ir.video.EnhancedVideoRecorder
+import com.topdon.module.thermal.ir.capture.video.EnhancedVideoRecorder
+import com.topdon.module.thermal.ir.capture.parallel.ParallelCaptureManager
 import com.topdon.tc001.R
 import com.topdon.tc001.gsr.GSRManager
 import com.topdon.tc001.LocalFileBrowserActivity
@@ -17,11 +18,13 @@ import kotlinx.android.synthetic.main.activity_enhanced_recording.*
 
 /**
  * Enhanced Recording Activity for bucika_gsr
- * Integrates Samsung 4K30FPS recording, RAD DNG Level 3 recording, and GSR monitoring
+ * Integrates Samsung S22 optimized 4K30FPS recording, RAW DNG capture, and GSR monitoring
+ * Supports concurrent capture capabilities for research and clinical applications
  */
 class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
 
     private lateinit var videoRecorder: EnhancedVideoRecorder
+    private lateinit var parallelCaptureManager: ParallelCaptureManager
     private lateinit var gsrManager: GSRManager
     
     private var thermalView: TextureView? = null

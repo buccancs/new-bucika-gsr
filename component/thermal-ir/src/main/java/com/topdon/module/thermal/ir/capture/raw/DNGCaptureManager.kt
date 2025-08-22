@@ -1,4 +1,4 @@
-package com.topdon.module.thermal.ir.dng
+package com.topdon.module.thermal.ir.capture.raw
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,6 +11,8 @@ import android.os.*
 import android.util.Size
 import com.elvishew.xlog.XLog
 import com.topdon.lib.core.config.FileConfig
+import com.topdon.module.thermal.ir.device.compatibility.DeviceCompatibilityChecker
+import com.topdon.module.thermal.ir.device.compatibility.S22OptimizationParams
 import java.io.*
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
@@ -21,6 +23,7 @@ import java.util.concurrent.TimeUnit
 /**
  * DNG (Digital Negative) Capture Manager for RAD DNG Level 3 recording
  * Captures RAW sensor data at 30FPS and saves as DNG files
+ * Optimized for Samsung S22 series concurrent capture capabilities
  */
 @SuppressLint("MissingPermission")
 class DNGCaptureManager(
@@ -29,10 +32,13 @@ class DNGCaptureManager(
     
     companion object {
         private const val TAG = "DNGCaptureManager"
-        private const val MAX_IMAGES = 10
         private const val TARGET_FPS = 30
         private const val CAPTURE_INTERVAL_MS = 1000L / TARGET_FPS // ~33.33ms for 30 FPS
     }
+    
+    // Device compatibility and optimization
+    private val compatibilityChecker = DeviceCompatibilityChecker(context)
+    private lateinit var optimizationParams: S22OptimizationParams
     
     // Camera2 API components
     private var cameraManager: CameraManager? = null
@@ -58,15 +64,43 @@ class DNGCaptureManager(
     
     init {
         cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        optimizationParams = compatibilityChecker.getSamsungS22OptimizationParams()
         setupBackgroundThread()
+        
+        // Log device compatibility information
+        XLog.i(TAG, "Device compatibility check:")
+        XLog.i(TAG, "- Samsung S22: ${compatibilityChecker.isSamsungS22()}")
+        XLog.i(TAG, "- RAW capture support: ${compatibilityChecker.supportsRawCapture()}")
+        XLog.i(TAG, "- Max concurrent streams: ${compatibilityChecker.getMaxConcurrentStreams()}")
+        XLog.i(TAG, "- Optimization params: $optimizationParams")
     }
     
     /**
-     * Start DNG capture sequence at 30 FPS
+     * Check if device supports RAW DNG capture at 30fps
+     */
+    fun isRawCaptureSupported(): Boolean {
+        return compatibilityChecker.supportsRawCapture()
+    }
+    
+    /**
+     * Check if device supports concurrent 4K + RAW capture
+     */
+    fun isConcurrentCaptureSupported(): Boolean {
+        return compatibilityChecker.supportsConcurrent4KAndRaw()
+    }
+    
+    /**
+     * Start DNG capture sequence at 30 FPS with compatibility validation
      */
     fun startDNGCapture(): Boolean {
         if (isCapturing) {
             XLog.w(TAG, "DNG capture already in progress")
+            return false
+        }
+        
+        // Check device compatibility first
+        if (!isRawCaptureSupported()) {
+            XLog.e(TAG, "RAW capture not supported on this device")
             return false
         }
         
@@ -76,6 +110,32 @@ class DNGCaptureManager(
             true
         } catch (e: Exception) {
             XLog.e(TAG, "Failed to start DNG capture: ${e.message}", e)
+            false
+        }
+    }
+    
+    /**
+     * Start concurrent DNG capture (for use with 4K video recording)
+     */
+    fun startConcurrentDNGCapture(): Boolean {
+        if (isCapturing) {
+            XLog.w(TAG, "DNG capture already in progress")
+            return false
+        }
+        
+        // Check concurrent capture compatibility
+        if (!isConcurrentCaptureSupported()) {
+            XLog.e(TAG, "Concurrent 4K + RAW capture not supported on this device")
+            return false
+        }
+        
+        return try {
+            XLog.i(TAG, "Starting concurrent DNG capture with Samsung S22 optimizations")
+            setupCaptureDirectory()
+            openCamera()
+            true
+        } catch (e: Exception) {
+            XLog.e(TAG, "Failed to start concurrent DNG capture: ${e.message}", e)
             false
         }
     }
