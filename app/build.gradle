@@ -327,12 +327,10 @@ dependencies {
     implementation project(':libui')
     implementation project(':BleModule')
     
-    // Shimmer3 GSR integration - using local SDK when available
-    // Note: Add Shimmer Android SDK JAR files to app/libs/ directory
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    
-    // Alternative: Manual Shimmer integration via Bluetooth (when official SDK unavailable)
+    // Shimmer3 GSR integration - using official SDK structure with local implementation
+    // Note: Official Shimmer SDK not available in public repositories
     // implementation 'com.github.ShimmerEngineering:Shimmer-Android-API:1.2.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Removed ARouter dependency - replaced with ModernRouter in libapp
     // ksp 'com.alibaba:arouter-compiler:1.5.2'
