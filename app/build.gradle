@@ -1,0 +1,57 @@
+// Multi-project build configuration for Java/Android and Python components
+plugins {
+    // Apply Android and Kotlin plugins only to AndroidApp subproject
+    id 'com.android.application' version '8.11.0' apply false
+    id 'com.android.library' version '8.11.0' apply false
+    id 'org.jetbrains.kotlin.android' version '2.0.20' apply false
+    id 'com.google.devtools.ksp' version '2.0.20-1.0.24' apply false
+    id 'com.google.dagger.hilt.android' version '2.52' apply false
+    // Firebase plugins
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+    id 'com.google.firebase.crashlytics' version '3.0.2' apply false
+}
+
+// Global project information
+allprojects {
+    group = 'com.multisensor.recording'
+    version = '1.0.0'
+    description = 'Multi-Sensor Synchronized Recording System'
+}
+
+// Configuration validation and Python integration
+ext {
+    // Python configuration
+    pythonVersion = '>=3.10'
+    pythonMainModule = 'PythonApp.main:main'
+    pythonTestFramework = 'pytest'
+    pythonCoverageMin = '50'
+    
+    // Android configuration
+    androidCompileSdk = 35
+    androidMinSdk = 24
+    androidTargetSdk = 35
+    androidApplicationId = 'com.multisensor.recording'
+    
+    // Testing configuration
+    jacocoVersion = '0.8.12'
+}
+
+// Configuration validation task
+tasks.register('validateConfiguration') {
+    group = 'setup'
+    description = 'Validates consolidated project configuration'
+    
+    doLast {
+        println "🔧 Project Configuration Validation:"
+        println "   Project: ${project.group}:${project.name}:${project.version}"
+        println "   Description: ${project.description}"
+        println "   Python Version: ${pythonVersion}"
+        println "   Android SDK: ${androidMinSdk} → ${androidTargetSdk} (compile: ${androidCompileSdk})"
+        println "   Jacoco Version: ${jacocoVersion}"
+    }
+}
+
+// Root project tasks
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}

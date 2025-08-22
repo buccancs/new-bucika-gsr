@@ -1,0 +1,193 @@
+plugins {
+    id 'base'
+}
+
+description = project.findProperty('project.description') ?: 'Python Multi-Sensor Recording Application'
+
+// Configuration from consolidated properties
+ext {
+    pythonVersion = project.findProperty('python.version') ?: '>=3.10'
+    pythonTestFramework = project.findProperty('python.test.framework') ?: 'pytest'
+    pythonCoverageMin = project.findProperty('python.coverage.min') ?: '50'
+    pythonLintingTool = project.findProperty('python.linting.tool') ?: 'flake8'
+    pythonFormattingTool = project.findProperty('python.formatting.tool') ?: 'black'
+}
+
+// Helper function to get Python executable path
+def getPythonExecutable() {
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def pythonExe = isWindows ? 'python.exe' : 'python'
+    def scriptsDir = isWindows ? 'Scripts' : 'bin'
+    
+    def condaEnvPath = System.getenv('CONDA_PREFIX')
+    if (condaEnvPath && file("${condaEnvPath}/${scriptsDir}/${pythonExe}").exists()) {
+        return "${condaEnvPath}/${scriptsDir}/${pythonExe}"
+    } else if (file("venv/${scriptsDir}/${pythonExe}").exists()) {
+        return "venv/${scriptsDir}/${pythonExe}"
+    } else {
+        return pythonExe
+    }
+}
+
+// Helper function to get pip executable path
+def getPipExecutable() {
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def pipExe = isWindows ? 'pip.exe' : 'pip'
+    def scriptsDir = isWindows ? 'Scripts' : 'bin'
+    
+    def condaEnvPath = System.getenv('CONDA_PREFIX')
+    if (condaEnvPath && file("${condaEnvPath}/${scriptsDir}/${pipExe}").exists()) {
+        return "${condaEnvPath}/${scriptsDir}/${pipExe}"
+    } else if (file("venv/${scriptsDir}/${pipExe}").exists()) {
+        return "venv/${scriptsDir}/${pipExe}"
+    } else {
+        return pipExe
+    }
+}
+
+tasks.register('pythonTest', Exec) {
+    group = 'verification'
+    description = "Runs Python tests using ${pythonTestFramework}"
+    
+    workingDir = projectDir
+    commandLine = [getPythonExecutable(), '-m', pythonTestFramework, 'tests/', '-v', '--cov=PythonApp', "--cov-fail-under=${pythonCoverageMin}"]
+    ignoreExitValue = true
+    
+    doFirst {
+        println "Running Python tests with ${pythonTestFramework}..."
+    }
+    
+    doLast {
+        if (executionResult.get().exitValue == 0) {
+            println "✓ Python tests passed (coverage >= ${pythonCoverageMin}%)"
+        } else {
+            println "⚠ Python tests failed or coverage below ${pythonCoverageMin}% (exit code: ${executionResult.get().exitValue})"
+        }
+    }
+}
+
+tasks.register('pythonLint', Exec) {
+    group = 'verification'
+    description = "Runs Python linting with ${pythonLintingTool}"
+    
+    workingDir = projectDir
+    commandLine = [getPythonExecutable(), '-m', pythonLintingTool, 'src/', '--max-line-length=88']
+    ignoreExitValue = true
+    
+    doFirst {
+        println "Running Python linting with ${pythonLintingTool}..."
+    }
+    
+    doLast {
+        if (executionResult.get().exitValue == 0) {
+            println "✓ Python linting passed"
+        } else {
+            println "⚠ Python linting issues found (exit code: ${executionResult.get().exitValue})"
+        }
+    }
+}
+
+tasks.register('pythonFormat', Exec) {
+    group = 'formatting'
+    description = "Formats Python code with ${pythonFormattingTool}"
+    
+    workingDir = projectDir
+    commandLine = [getPythonExecutable(), '-m', pythonFormattingTool, 'src/', 'tests/']
+    ignoreExitValue = true
+    
+    doFirst {
+        println "Formatting Python code with ${pythonFormattingTool}..."
+    }
+    
+    doLast {
+        if (executionResult.get().exitValue == 0) {
+            println "✓ Python code formatted successfully"
+        } else {
+            println "⚠ Python formatting failed (exit code: ${executionResult.get().exitValue})"
+        }
+    }
+}
+
+tasks.register('pythonInstallDeps', Exec) {
+    group = 'setup'
+    description = 'Installs Python dependencies from requirements files'
+    
+    workingDir = projectDir
+    commandLine = [getPipExecutable(), 'install', '-r', 'requirements.txt']
+    ignoreExitValue = true
+    
+    doFirst {
+        println "Installing Python dependencies..."
+    }
+    
+    doLast {
+        if (executionResult.get().exitValue == 0) {
+            println "✓ Python dependencies installed successfully"
+        } else {
+            println "⚠ Failed to install Python dependencies (exit code: ${executionResult.get().exitValue})"
+        }
+    }
+}
+
+tasks.register('pythonPackage', Exec) {
+    group = 'build'
+    description = 'Packages Python application using PyInstaller'
+    
+    workingDir = projectDir
+    commandLine = [getPythonExecutable(), '-m', 'PyInstaller', 'src/main.py', '--onefile', '--windowed']
+    ignoreExitValue = true
+    
+    doFirst {
+        println "Packaging Python application..."
+    }
+    
+    doLast {
+        if (executionResult.get().exitValue == 0) {
+            println "✓ Python application packaged successfully"
+        } else {
+            println "⚠ Python packaging failed (exit code: ${executionResult.get().exitValue})"
+        }
+    }
+}
+
+tasks.register('pythonClean', Delete) {
+    group = 'build'
+    description = 'Cleans Python build artifacts'
+    
+    delete layout.buildDirectory
+    delete 'dist'
+    delete 'build'
+    delete '__pycache__'
+    delete fileTree('.').matching {
+        include '**/*.pyc'
+        include '**/__pycache__/**'
+        include '**/.pytest_cache/**'
+    }
+    
+    doLast {
+        println "✓ Python build artifacts cleaned"
+    }
+}
+
+tasks.register('pythonCheck') {
+    group = 'verification'
+    description = 'Runs all Python verification tasks'
+    
+    dependsOn 'pythonLint', 'pythonTest'
+}
+
+tasks.register('pythonBuild') {
+    group = 'build'
+    description = 'Builds the Python application'
+    
+    dependsOn 'pythonCheck'
+    dependsOn 'pythonPackage'
+    
+    doLast {
+        println "✓ Python build completed"
+    }
+}
+
+// Hook into standard Gradle lifecycle
+check.dependsOn pythonCheck
+clean.dependsOn pythonClean

@@ -1,0 +1,16 @@
+// Root project build configuration
+plugins {
+    id 'base'
+}
+
+allprojects {
+    group = 'com.multisensor.recording'
+    version = '1.0.0'
+}
+
+// Delegation tasks for the app subproject
+task validateConfiguration {
+    group = 'setup'
+    description = 'Validate project configuration'
+    dependsOn ':app:validateConfiguration'
+}

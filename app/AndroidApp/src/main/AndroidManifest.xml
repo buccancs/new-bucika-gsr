@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"
+                     tools:ignore="ScopedStorage"/>
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <uses-permission android:name="android.permission.USB_PERMISSION"/>
+
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
+    <uses-feature android:name="android.hardware.usb.host" android:required="false"/>
+    <uses-feature android:name="android.hardware.usb.accessory" android:required="false"/>
+
+    <application
+            android:name=".MultiSensorApplication"
+            android:label="MultiSensor Recording"
+            android:allowBackup="false"
+            android:allowClearUserData="true"
+            android:theme="@style/Theme.MultiSensorRecording"
+            tools:replace="android:label,android:allowBackup"
+            tools:targetApi="23">
+
+        <activity
+                android:name=".MainActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
+            </intent-filter>
+            <meta-data
+                    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                    android:resource="@xml/device_filter"/>
+        </activity>
+
+        <activity
+                android:name=".ui.OnboardingActivity"
+                android:exported="false"
+                android:label="Welcome"
+                android:theme="@style/Theme.MultiSensorRecording"/>
+
+        <activity
+                android:name=".ui.ComposeMainActivity"
+                android:exported="false"
+                android:label="Multi-Sensor Recording (Compose)"
+                android:theme="@style/Theme.MultiSensorRecording"/>
+                
+        <activity
+                android:name=".ui.NetworkConfigActivity"
+                android:exported="false"
+                android:label="Network Configuration"
+                android:theme="@style/Theme.AppCompat.DayNight"/>
+
+        <activity
+                android:name=".ui.FileViewActivity"
+                android:exported="false"
+                android:label="File Browser"
+                android:theme="@style/Theme.AppCompat.DayNight"/>
+
+        <activity
+                android:name=".ui.ShimmerConfigActivity"
+                android:exported="false"
+                android:label="Shimmer Configuration"
+                android:theme="@style/Theme.AppCompat.DayNight"/>
+
+        <activity
+                android:name=".ui.ShimmerSettingsActivity"
+                android:exported="false"
+                android:label="Shimmer Settings"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.ShimmerVisualizationActivity"
+                android:exported="false"
+                android:label="Shimmer Visualization"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.SettingsActivity"
+                android:exported="false"
+                android:label="Settings"
+                android:theme="@style/Theme.MultiSensorRecording"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.AboutActivity"
+                android:exported="false"
+                android:label="About"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.CalibrationActivity"
+                android:exported="false"
+                android:label="Calibration"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.DevicesActivity"
+                android:exported="false"
+                android:label="Device Management"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.DiagnosticsActivity"
+                android:exported="false"
+                android:label="Diagnostics"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity>
+
+        <service
+                android:name=".service.RecordingService"
+                android:enabled="true"
+                android:exported="false"
+                android:foregroundServiceType="camera|microphone"/>
+
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths"/>
+        </provider>
+
+    </application>
+
+</manifest>
