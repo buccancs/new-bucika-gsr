@@ -63,10 +63,17 @@ android {
 dependencies {
     // Use local LMS SDK instead of remote dependency for bucika_gsr
     implementation files('../libapp/libs/lms_international-3.90.009.0.aar')
-    api 'androidx.appcompat:appcompat:1.2.0'
-    api 'org.greenrobot:eventbus:3.2.0'
-    api 'com.blankj:utilcodex:1.30.6'//工具包
-    api 'com.google.code.gson:gson:2.8.8'
-    api 'com.elvishew:xlog:1.10.1'
+    api 'androidx.appcompat:appcompat:1.7.0'
+    api 'org.greenrobot:eventbus:3.3.1'
+    api 'com.blankj:utilcodex:1.31.1'//工具包
+    api 'com.google.code.gson:gson:2.11.0'
+    api 'com.elvishew:xlog:1.11.0'
     implementation files('libs/ini4j-0.5.5.jar')
+    
+    // Add missing dependencies
+    api 'com.alibaba:fastjson:1.2.83'  // For fastjson usage
+    
+    // UMeng Analytics commented out - stubbed in UMUtils.java
+    // compileOnly 'com.umeng.umsdk:analytics:9.6.8'
+    // compileOnly 'com.umeng.umsdk:common:9.6.8'
 }

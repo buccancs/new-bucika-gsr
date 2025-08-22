@@ -1,44 +1,57 @@
 // Shared configurations for BucikaGSR
 // This file provides dependency management and common configurations
 
-// Version management
+// Version management - Updated to latest stable versions compatible with Gradle 8.4
 project.ext.bucika_versions = [
-    kotlin: '2.0.0',
-    gradle_plugin: '8.1.4',
-    ksp: '2.0.0-1.0.21',
+    kotlin: '2.0.21',
+    gradle_plugin: '8.6.1',
+    ksp: '2.0.21-1.0.25',
     
-    // Core dependencies
-    androidx_core: '1.8.0',
-    androidx_appcompat: '1.4.1',
-    material: '1.5.0',
-    lifecycle: '2.4.1',
-    fragment: '1.4.1',
+    // Core dependencies - Updated to latest stable
+    androidx_core: '1.13.1',
+    androidx_appcompat: '1.7.0',
+    material: '1.12.0',
+    lifecycle: '2.8.7',
+    fragment: '1.8.5',
     
-    // Networking
-    retrofit: '2.9.0',
-    okhttp: '4.11.0',
-    gson: '2.10.1',
+    // Networking - Latest stable versions
+    retrofit: '2.11.0',
+    okhttp: '4.12.0',
+    gson: '2.11.0',
     
-    // Image loading
+    // Image loading - Latest stable
     glide: '4.16.0',
     
-    // Utilities
-    utilcodex: '1.30.6',
-    xxpermissions: '13.2',
-    eventbus: '3.2.0',
-    lottie: '6.1.0',
+    // Utilities - Updated versions
+    utilcodex: '1.31.1',
+    xxpermissions: '20.0',
+    eventbus: '3.3.1',
+    lottie: '6.6.0',
     
-    // GSR and BLE specific
+    // GSR and BLE specific - Latest compatible versions
     rxjava: '2.2.21',
     rxandroid: '2.1.1',
-    xlog: '1.10.1',
+    xlog: '1.11.0',
     
-    // UI Components
-    smartrefresh: '1.1.3',
-    recyclerview_helper: '3.0.7',
+    // UI Components - Updated versions
+    smartrefresh: '2.0.5',
+    recyclerview_helper: '4.3.4',
     
-    // Video processing
-    gsy_video: 'v8.1.4'
+    // Video processing - Latest stable
+    gsy_video: 'v8.6.0-release-jitpack',
+    
+    // Additional core dependencies
+    room: '2.6.1',
+    work: '2.9.1',
+    navigation: '2.8.4',
+    viewpager2: '1.1.0',
+    recyclerview: '1.3.2',
+    constraintlayout: '2.1.4',
+    
+    // Test dependencies
+    junit: '4.13.2',
+    junit_ext: '1.2.1',
+    espresso: '3.6.1'
 ]
 
 // Common configurations for all modules
@@ -100,7 +113,7 @@ project.ext.applyCommonConfig = { Project module ->
     }
 }
 
-// GSR-specific dependencies
+// GSR-specific dependencies - Updated to latest versions
 project.ext.bucika_dependencies = [
     // Core Android dependencies
     core: [
@@ -110,7 +123,17 @@ project.ext.bucika_dependencies = [
         "androidx.lifecycle:lifecycle-runtime-ktx:${bucika_versions.lifecycle}",
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${bucika_versions.lifecycle}",
         "androidx.lifecycle:lifecycle-livedata-ktx:${bucika_versions.lifecycle}",
-        "androidx.fragment:fragment-ktx:${bucika_versions.fragment}"
+        "androidx.fragment:fragment-ktx:${bucika_versions.fragment}",
+        "androidx.constraintlayout:constraintlayout:${bucika_versions.constraintlayout}",
+        "androidx.recyclerview:recyclerview:${bucika_versions.recyclerview}",
+        "androidx.viewpager2:viewpager2:${bucika_versions.viewpager2}"
+    ],
+    
+    // Database and Room
+    database: [
+        "androidx.room:room-runtime:${bucika_versions.room}",
+        "androidx.room:room-ktx:${bucika_versions.room}",
+        "androidx.work:work-runtime-ktx:${bucika_versions.work}"
     ],
     
     // BLE and GSR specific
@@ -119,24 +142,32 @@ project.ext.bucika_dependencies = [
         "com.elvishew:xlog:${bucika_versions.xlog}",
         "io.reactivex.rxjava2:rxjava:${bucika_versions.rxjava}",
         "io.reactivex.rxjava2:rxandroid:${bucika_versions.rxandroid}",
-        "com.tbruyelle.rxpermissions2:rxpermissions:0.9.5"
+        "com.tbruyelle.rxpermissions2:rxpermissions:0.9.5",
+        "com.trello.rxlifecycle2:rxlifecycle:2.2.2",
+        "com.trello.rxlifecycle2:rxlifecycle-android:2.2.2",
+        "com.trello.rxlifecycle2:rxlifecycle-components:2.2.2"
     ],
     
-    // Networking
+    // Networking - Updated versions
     networking: [
         "com.squareup.retrofit2:retrofit:${bucika_versions.retrofit}",
         "com.squareup.retrofit2:converter-gson:${bucika_versions.retrofit}",
+        "com.squareup.retrofit2:adapter-rxjava2:${bucika_versions.retrofit}",
         "com.squareup.okhttp3:okhttp:${bucika_versions.okhttp}",
+        "com.squareup.okhttp3:logging-interceptor:${bucika_versions.okhttp}",
         "com.google.code.gson:gson:${bucika_versions.gson}"
     ],
     
-    // UI
+    // UI - Updated versions
     ui: [
         "com.github.bumptech.glide:glide:${bucika_versions.glide}",
         "com.airbnb.android:lottie:${bucika_versions.lottie}",
-        "com.scwang.smartrefresh:SmartRefreshLayout:${bucika_versions.smartrefresh}",
-        "com.scwang.smartrefresh:SmartRefreshHeader:${bucika_versions.smartrefresh}",
-        "com.github.CymChad:BaseRecyclerViewAdapterHelper:${bucika_versions.recyclerview_helper}"
+        "io.github.scwang90:refresh-layout-kernel:${bucika_versions.smartrefresh}",
+        "io.github.scwang90:refresh-header-classics:${bucika_versions.smartrefresh}",
+        "io.github.cymchad:BaseRecyclerViewAdapterHelper4:${bucika_versions.recyclerview_helper}",
+        "com.github.chrisbanes:PhotoView:2.3.0",
+        "com.github.barteksc:android-pdf-viewer:3.2.0-beta.1",
+        "com.github.skydoves:colorpickerview:2.3.0"
     ],
     
     // Utilities
@@ -145,11 +176,26 @@ project.ext.bucika_dependencies = [
         "com.github.getActivity:XXPermissions:${bucika_versions.xxpermissions}"
     ],
     
-    // Thermal IR and GSY Video
+    // Thermal IR and GSY Video - Updated
     multimedia: [
         "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-java:${bucika_versions.gsy_video}",
         "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-exo_player2:${bucika_versions.gsy_video}",
-        "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-armv64:${bucika_versions.gsy_video}"
+        "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-armv64:${bucika_versions.gsy_video}",
+        "org.bytedeco:javacv:1.5.10",
+        "org.bytedeco:javacpp:1.5.10"
+    ],
+    
+    // Test dependencies
+    testing: [
+        "junit:junit:${bucika_versions.junit}",
+        "androidx.test.ext:junit:${bucika_versions.junit_ext}",
+        "androidx.test.espresso:espresso-core:${bucika_versions.espresso}"
+    ],
+    
+    // Navigation - if needed
+    navigation: [
+        "androidx.navigation:navigation-fragment-ktx:${bucika_versions.navigation}",
+        "androidx.navigation:navigation-ui-ktx:${bucika_versions.navigation}"
     ]
 ]
 
