@@ -1,1 +1,0 @@
-# Android recording unit tests consolidated from AndroidApp

@@ -1,1 +1,0 @@
-# Android integration tests consolidated from AndroidApp

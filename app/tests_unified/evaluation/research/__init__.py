@@ -1,1 +1,0 @@
-# Research validation and thesis claims evaluation tests

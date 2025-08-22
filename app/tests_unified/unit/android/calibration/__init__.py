@@ -1,1 +1,0 @@
-# Android calibration unit tests consolidated from AndroidApp

@@ -1,7 +1,0 @@
-extends: existence
-message: "Avoid using acronyms in a title or heading."
-link: https://docs.microsoft.com/en-us/style-guide/acronyms
-level: warning
-scope: heading
-tokens:
-  - '[A-Z]{2,4}'

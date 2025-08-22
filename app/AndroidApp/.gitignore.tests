@@ -1,5 +1,0 @@
-# Legacy tests that are being migrated to new architecture
-# Remove this file and uncomment below once migration is complete
-
-# AndroidApp/src/test/java/com/multisensor/recording/legacy/
-# AndroidApp/src/androidTest/java/com/multisensor/recording/legacy/
