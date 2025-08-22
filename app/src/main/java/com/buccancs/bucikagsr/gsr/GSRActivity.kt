@@ -5,18 +5,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.buccancs.bucikagsr.R
 
-/**
- * GSR (Galvanic Skin Response) monitoring activity
- * Handles connection to Shimmer GSR sensors and data visualization
- */
 class GSRActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Create a simple layout programmatically for now
         setContentView(createLayout())
-        
         setupActionBar()
         initializeGSR()
     }
@@ -37,10 +30,6 @@ class GSRActivity : AppCompatActivity() {
     }
     
     private fun initializeGSR() {
-        // TODO: Initialize GSR sensor management
-        // TODO: Set up Shimmer device discovery
-        // TODO: Configure data sampling at 128 Hz
-        // TODO: Set up real-time data visualization
     }
     
     override fun onSupportNavigateUp(): Boolean {

@@ -6,26 +6,28 @@ plugins {
 
 android {
     namespace 'com.buccancs.bucikagsr'
+    compileSdk 35
+    
     buildFeatures {
         buildConfig true
         viewBinding true
+        dataBinding = true
     }
-    compileSdk rootProject.ext.android.compileSdk
+    
     defaultConfig {
         applicationId "com.buccancs.bucikagsr"
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
-        versionCode rootProject.ext.android.versionCode
-        versionName rootProject.ext.android.versionName
-        ndkVersion rootProject.ext.android.ndkVersion
+        minSdk 24
+        targetSdk 35
+        versionCode 1100
+        versionName "1.10.000"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        
         ndk {
             abiFilters "arm64-v8a"
         }
 
         buildConfigField "String", "VERSION_DATE", "\"${getDayStr()}\""
-
         setProperty("archivesBaseName", "BucikaGSR-v${versionName}")
     }
 
@@ -51,6 +53,10 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    
     packagingOptions {
         pickFirst 'lib/x86/libc++_shared.so'
         pickFirst 'lib/x86_64/libc++_shared.so'
@@ -61,15 +67,6 @@ android {
         doNotStrip "**/*.so"
     }
     
-    kotlinOptions {
-        jvmTarget = '17'
-    }
-    
-    buildFeatures{
-        dataBinding = true
-    }
-    
-    // Simplified flavor configuration
     flavorDimensions 'app'
     productFlavors {
         dev {
@@ -87,28 +84,16 @@ static def getDayStr() {
 }
 
 dependencies {
-    // Essential Android dependencies
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.multidex:multidex:2.0.1'
     
-    // Testing dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     
-    // BucikaGSR project modules - will be uncommented as modules are created
-    // implementation project(':component:thermal-ir')
-    // implementation project(':libapp')
-    // implementation project(':libcom')
-    // implementation project(':libir')
-    // implementation project(':libmenu')
-    // implementation project(':libui')
-    // implementation project(':BleModule')
-    
-    // Core libraries
     implementation 'com.alibaba:fastjson:1.2.78'
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
 }

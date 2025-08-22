@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Basic permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -31,7 +30,6 @@
             </intent-filter>
         </activity>
         
-        <!-- GSR Activity -->
         <activity
             android:name=".gsr.GSRActivity"
             android:exported="false"
