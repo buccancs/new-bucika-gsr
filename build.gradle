@@ -27,7 +27,37 @@ buildscript {
     }
 }
 apply from: "depend.gradle"
+apply from: "consolidate_app_setup.gradle"
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Apply consolidated configurations after evaluation
+project.afterEvaluate {
+    validateModuleConfigs()
+    applyBuildOptimizations()
+}
+
+// BucikaGSR specific tasks
+task validateBuild {
+    group 'BucikaGSR'
+    description 'Validate all modules are properly configured'
+    doLast {
+        validateModuleConfigs()
+        println "✓ BucikaGSR build validation successful"
+    }
+}
+
+task assembleAllFlavors {
+    group 'BucikaGSR'
+    description 'Assemble all product flavors'
+    dependsOn 'validateBuild'
+    dependsOn gradle.includedBuilds*.task(':assembleDebug')
+}
+
+task testAllModules {
+    group 'BucikaGSR'
+    description 'Run tests for all modules'
+    dependsOn gradle.includedBuilds*.task(':test')
 }
