@@ -1,3 +1,21 @@
+Metadata-Version: 2.1
+Name: bucika-gsr
+Version: 0.1.0
+Summary: Comprehensive evaluation suite for machine learning metrics
+Author: buccancs
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+License-File: LICENSE
+
 # Bucika GSR - Comprehensive Evaluation Suite
 
 A comprehensive evaluation suite for machine learning metrics supporting classification, regression, clustering, and ranking tasks.

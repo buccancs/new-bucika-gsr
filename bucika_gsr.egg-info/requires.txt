@@ -1,0 +1,8 @@
+numpy>=1.20.0
+scikit-learn>=1.0.0
+
+[dev]
+black>=21.0
+flake8>=3.8
+pytest-cov>=2.0
+pytest>=6.0

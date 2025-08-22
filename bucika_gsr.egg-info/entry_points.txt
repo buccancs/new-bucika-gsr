@@ -1,0 +1,2 @@
+[console_scripts]
+bucika-eval = bucika_gsr.cli:main
