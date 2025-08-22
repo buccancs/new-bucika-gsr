@@ -11,6 +11,7 @@ import android.os.*
 import android.util.Size
 import com.elvishew.xlog.XLog
 import com.topdon.lib.core.config.FileConfig
+import com.topdon.module.thermal.ir.capture.sync.SynchronizedCaptureSystem
 import com.topdon.module.thermal.ir.device.compatibility.DeviceCompatibilityChecker
 import com.topdon.module.thermal.ir.device.compatibility.S22OptimizationParams
 import java.io.*
@@ -34,11 +35,15 @@ class DNGCaptureManager(
         private const val TAG = "DNGCaptureManager"
         private const val TARGET_FPS = 30
         private const val CAPTURE_INTERVAL_MS = 1000L / TARGET_FPS // ~33.33ms for 30 FPS
+        private const val MAX_IMAGES = 8 // Circular buffer for Samsung S22 optimization
     }
     
     // Device compatibility and optimization
     private val compatibilityChecker = DeviceCompatibilityChecker(context)
     private lateinit var optimizationParams: S22OptimizationParams
+    
+    // Synchronization system integration
+    private var syncSystem: SynchronizedCaptureSystem? = null
     
     // Camera2 API components
     private var cameraManager: CameraManager? = null
@@ -73,6 +78,14 @@ class DNGCaptureManager(
         XLog.i(TAG, "- RAW capture support: ${compatibilityChecker.supportsRawCapture()}")
         XLog.i(TAG, "- Max concurrent streams: ${compatibilityChecker.getMaxConcurrentStreams()}")
         XLog.i(TAG, "- Optimization params: $optimizationParams")
+    }
+    
+    /**
+     * Set synchronization system for coordinated capture timing
+     */
+    fun setSynchronizationSystem(syncSystem: SynchronizedCaptureSystem) {
+        this.syncSystem = syncSystem
+        XLog.i(TAG, "Synchronization system integrated")
     }
     
     /**
@@ -408,7 +421,11 @@ class DNGCaptureManager(
             try {
                 val image = reader.acquireLatestImage()
                 if (image != null && isCapturing) {
-                    saveDNGImage(image)
+                    // Register frame timestamp with sync system
+                    val imageTimestamp = image.timestamp
+                    val syncTimestamp = syncSystem?.registerDNGFrame(imageTimestamp, captureCount) ?: 0
+                    
+                    saveDNGImage(image, syncTimestamp)
                     image.close()
                 }
             } catch (e: Exception) {
@@ -417,9 +434,10 @@ class DNGCaptureManager(
         }
     }
     
-    private fun saveDNGImage(image: Image) {
+    private fun saveDNGImage(image: Image, syncTimestamp: Long = 0) {
         try {
             captureCount++
+            val timestamp = if (syncTimestamp > 0) syncTimestamp else System.nanoTime()
             val filename = "frame_%06d.dng".format(captureCount)
             val outputFile = File(currentCaptureDir, filename)
             
@@ -428,13 +446,15 @@ class DNGCaptureManager(
             val bytes = ByteArray(buffer.remaining())
             buffer.get(bytes)
             
-            // Create DNG file with proper headers and metadata
-            createDNGFile(outputFile, bytes, image.width, image.height)
+            // Create DNG file with proper headers, metadata, and synchronized timestamp
+            createDNGFile(outputFile, bytes, image.width, image.height, timestamp)
             
             if (captureCount % 30 == 0) { // Log every second (30 frames)
                 val elapsed = System.currentTimeMillis() - captureStartTime
                 val actualFPS = (captureCount * 1000.0) / elapsed
-                XLog.d(TAG, "Captured $captureCount frames, actual FPS: %.2f".format(actualFPS))
+                val syncInfo = syncSystem?.getSynchronizationMetrics()
+                XLog.d(TAG, "Captured $captureCount frames, actual FPS: %.2f, sync pairs: ${syncInfo?.totalFramesPaired ?: 0}"
+                    .format(actualFPS))
             }
             
         } catch (e: Exception) {
@@ -442,20 +462,20 @@ class DNGCaptureManager(
         }
     }
     
-    private fun createDNGFile(outputFile: File, rawData: ByteArray, width: Int, height: Int) {
+    private fun createDNGFile(outputFile: File, rawData: ByteArray, width: Int, height: Int, syncTimestamp: Long = 0) {
         try {
             // For now, create a simplified DNG file
             // In production, this would use Adobe DNG SDK or implement full DNG specification
             
             outputFile.outputStream().use { fos ->
-                // DNG Header (simplified)
-                writeDNGHeader(fos, width, height, rawData.size)
+                // DNG Header (simplified) with sync timestamp
+                writeDNGHeader(fos, width, height, rawData.size, syncTimestamp)
                 
                 // RAW image data
                 fos.write(rawData)
                 
-                // DNG metadata (simplified)
-                writeDNGMetadata(fos)
+                // DNG metadata (simplified) with sync info
+                writeDNGMetadata(fos, syncTimestamp)
             }
             
         } catch (e: Exception) {
@@ -463,8 +483,8 @@ class DNGCaptureManager(
         }
     }
     
-    private fun writeDNGHeader(fos: OutputStream, width: Int, height: Int, dataSize: Int) {
-        // Simplified DNG header implementation
+    private fun writeDNGHeader(fos: OutputStream, width: Int, height: Int, dataSize: Int, syncTimestamp: Long = 0) {
+        // Simplified DNG header implementation with sync timestamp
         // This is a basic implementation - production code would use proper DNG library
         
         val header = ByteBuffer.allocate(1024)
@@ -474,8 +494,8 @@ class DNGCaptureManager(
         header.putShort(42) // TIFF magic number
         header.putInt(8) // Offset to first IFD
         
-        // Basic DNG tags
-        header.putShort(8) // Number of directory entries
+        // Basic DNG tags including sync timestamp
+        header.putShort(10) // Number of directory entries (increased for sync data)
         
         // Image width tag
         header.putShort(0x0100)  // ImageWidth
@@ -489,14 +509,22 @@ class DNGCaptureManager(
         header.putInt(1)         // Count
         header.putInt(height)    // Value
         
+        // Sync timestamp tag (custom)
+        if (syncTimestamp > 0) {
+            header.putShort(0xA000.toShort())  // Custom sync timestamp tag
+            header.putShort(5)       // RATIONAL64
+            header.putInt(1)         // Count
+            header.putLong(syncTimestamp) // Value
+        }
+        
         // Add more DNG-specific tags as needed...
         
         fos.write(header.array(), 0, header.position())
     }
     
-    private fun writeDNGMetadata(fos: OutputStream) {
-        // Add DNG metadata
-        val metadata = ByteBuffer.allocate(512)
+    private fun writeDNGMetadata(fos: OutputStream, syncTimestamp: Long = 0) {
+        // Add DNG metadata including sync information
+        val metadata = ByteBuffer.allocate(1024)
         
         // Camera make/model
         val make = "TOPDON"
@@ -508,6 +536,18 @@ class DNGCaptureManager(
         // Timestamp
         val timestamp = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault()).format(Date())
         metadata.put(timestamp.toByteArray())
+        
+        // Synchronization metadata
+        if (syncTimestamp > 0) {
+            val syncInfo = "SYNC_TS:${syncTimestamp}"
+            metadata.put(syncInfo.toByteArray())
+            
+            // Add sync session info if available
+            syncSystem?.getSynchronizationMetrics()?.let { metrics ->
+                val sessionInfo = "SYNC_SESSION_FRAMES:${metrics.totalFramesPaired}"
+                metadata.put(sessionInfo.toByteArray())
+            }
+        }
         
         fos.write(metadata.array(), 0, metadata.position())
     }

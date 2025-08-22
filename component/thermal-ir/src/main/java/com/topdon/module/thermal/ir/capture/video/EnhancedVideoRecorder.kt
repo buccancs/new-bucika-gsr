@@ -71,6 +71,9 @@ class EnhancedVideoRecorder(
     
     // DNG Capture Manager for RAD DNG Level 3
     private var dngCaptureManager: DNGCaptureManager? = null
+    
+    // Synchronization system integration
+    private var syncSystem: SynchronizedCaptureSystem? = null
 
     // Recording parameters (optimized for Samsung S22)
     private val samsung4KSize = Size(3840, 2160) // 4K UHD
@@ -89,6 +92,9 @@ class EnhancedVideoRecorder(
         
         // Samsung specific camera characteristics
         private const val SAMSUNG_CAMERA_ID = "0"
+        
+        // Samsung 4K optimized bitrate (will be overridden by device-specific optimization)
+        private const val SAMSUNG_4K_BITRATE = 20000000 // 20 Mbps default
         
         // STAGE 3/LEVEL 3 RAD DNG specifications
         private const val RAD_DNG_BITRATE = 8000000 // 8 Mbps for high quality
@@ -153,11 +159,14 @@ class EnhancedVideoRecorder(
     /**
      * Start enhanced recording with specified mode and compatibility validation
      */
-    fun startRecording(mode: RecordingMode): Boolean {
+    fun startRecording(mode: RecordingMode, syncSystem: SynchronizedCaptureSystem? = null): Boolean {
         if (isRecording) {
             XLog.w(TAG, "Recording already in progress")
             return false
         }
+
+        // Set sync system if provided
+        this.syncSystem = syncSystem
 
         // Validate mode compatibility first
         val (isSupported, issues) = validateRecordingMode(mode)
@@ -215,6 +224,12 @@ class EnhancedVideoRecorder(
             try {
                 prepare()
                 start()
+                
+                // Start frame timestamp estimation if sync system is available
+                syncSystem?.let { sync ->
+                    startVideoFrameTimestampEstimation(sync)
+                }
+                
                 isRecording = true
                 XLog.i(TAG, "Samsung 4K recording started successfully with ${optimizationParams.recommended4KBitrate / 1_000_000} Mbps bitrate")
                 return true
@@ -513,5 +528,35 @@ class EnhancedVideoRecorder(
         releaseAllRecorders()
         dngCaptureManager?.cleanup()
         stopBackgroundThread()
+    }
+    
+    /**
+     * Start video frame timestamp estimation for synchronization
+     * Since MediaRecorder doesn't provide frame-level timestamps, we estimate based on target FPS
+     */
+    private fun startVideoFrameTimestampEstimation(syncSystem: SynchronizedCaptureSystem) {
+        backgroundHandler?.post {
+            val frameIntervalMs = 1000L / targetFps // ~33.33ms for 30 FPS
+            var frameCount = 0L
+            
+            val estimationRunnable = object : Runnable {
+                override fun run() {
+                    if (isRecording) {
+                        // Estimate presentation time for this frame
+                        val presentationTimeUs = frameCount * (frameIntervalMs * 1000)
+                        syncSystem.registerVideoFrame(presentationTimeUs)
+                        
+                        frameCount++
+                        
+                        // Schedule next frame estimation
+                        backgroundHandler?.postDelayed(this, frameIntervalMs)
+                    }
+                }
+            }
+            
+            // Start frame estimation
+            backgroundHandler?.post(estimationRunnable)
+            XLog.d(TAG, "Started video frame timestamp estimation at ${targetFps}fps")
+        }
     }
 }
