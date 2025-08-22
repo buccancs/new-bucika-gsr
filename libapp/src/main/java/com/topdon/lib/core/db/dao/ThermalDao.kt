@@ -27,8 +27,10 @@ interface ThermalDao {
     data class Record(
         var type: String? = "point",    // point-点 line-线 fence-面
         var startTime: Long = 0, // 开始时刻时间戳，单位毫秒
-        var duration: Int = 0,
+        var duration: Int = 0
+    ) {
+        // Non-persistent field for UI state
         @Ignore
-        var showTitle : Boolean = false
-    )
+        var showTitle: Boolean = false
+    }
 }
