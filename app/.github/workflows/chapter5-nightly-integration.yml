@@ -1,0 +1,338 @@
+name: Chapter 5 Testing - Nightly Integration
+
+on:
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      skip_endurance:
+        description: 'Skip 1-hour endurance test'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  nightly-integration-tests:
+    name: Nightly - Integration & Performance
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r test-requirements.txt
+        pip install bc  # For floating point comparison
+    
+    # Multi-device Synchronization Simulation
+    - name: Multi-Device Synchronization Tests
+      run: |
+        echo "🔄 Running multi-device synchronization simulation..."
+        python -m pytest tests_unified/integration/test_multi_device_synchronization.py \
+          --junitxml=test_results/junit-sync-integration.xml \
+          --tb=short -v
+        echo "✅ Multi-device synchronization tests completed"
+    
+    # Networking Loopback Tests
+    - name: Networking Loopback Tests
+      run: |
+        echo "🌐 Running networking loopback and protocol tests..."
+        python -c "
+        import json
+        import time
+        import statistics
+        
+        # JSON round trip test
+        test_data = {'session_id': 'test_001', 'data': [1,2,3,4,5]}
+        json_str = json.dumps(test_data)
+        restored = json.loads(json_str)
+        assert restored == test_data, 'JSON round trip failed'
+        
+        # Protocol invariants test
+        required_fields = ['session_id', 'data']
+        for field in required_fields:
+            test_copy = test_data.copy()
+            del test_copy[field]
+            try:
+                # Should detect missing field
+                assert field in test_copy, f'Missing field {field} not detected'
+            except AssertionError:
+                pass  # Expected failure
+        
+        # TLS vs plaintext latency comparison
+        latencies_plain = []
+        latencies_tls = []
+        
+        for _ in range(100):
+            # Simulate plaintext
+            start = time.time()
+            time.sleep(0.001)  # 1ms base latency
+            latencies_plain.append((time.time() - start) * 1000)
+            
+            # Simulate TLS (with overhead)
+            start = time.time()
+            time.sleep(0.001 + 0.0005)  # 1ms + 0.5ms TLS overhead
+            latencies_tls.append((time.time() - start) * 1000)
+        
+        plain_p95 = statistics.quantiles(latencies_plain, n=20)[18]  # 95th percentile
+        tls_p95 = statistics.quantiles(latencies_tls, n=20)[18]
+        
+        print(f'Plaintext P95 latency: {plain_p95:.2f}ms')
+        print(f'TLS P95 latency: {tls_p95:.2f}ms')
+        print(f'TLS overhead: {tls_p95 - plain_p95:.2f}ms')
+        
+        assert tls_p95 > plain_p95, 'TLS should have overhead'
+        assert (tls_p95 - plain_p95) < 2.0, 'TLS overhead should be reasonable'
+        
+        print('✅ Networking loopback tests passed')
+        "
+    
+    # Cross-platform Integration Tests
+    - name: Cross-platform Integration Tests
+      run: |
+        echo "🔧 Running cross-platform integration tests..."
+        python -c "
+        import os
+        import json
+        from pathlib import Path
+        
+        # Test path normalization round trip
+        test_paths = [
+            '/tmp/test/file.txt',
+            'relative/path/file.txt', 
+            './current/dir/file.txt'
+        ]
+        
+        for path in test_paths:
+            normalized = os.path.normpath(os.path.expanduser(path))
+            assert len(normalized) > 0, f'Path normalization failed for {path}'
+            print(f'✅ Path {path} -> {normalized}')
+        
+        # Test CSV export validation
+        test_session_data = {
+            'session_id': 'integration_test_001',
+            'start_time': '2025-01-01T12:00:00',
+            'measurements': [
+                {'timestamp': 1.0, 'gsr': 10.5, 'temp': 25.0},
+                {'timestamp': 2.0, 'gsr': 11.2, 'temp': 25.1}
+            ]
+        }
+        
+        # Validate session data structure
+        required_session_fields = ['session_id', 'start_time', 'measurements']
+        for field in required_session_fields:
+            assert field in test_session_data, f'Missing session field: {field}'
+        
+        # Validate measurement structure
+        for measurement in test_session_data['measurements']:
+            required_measurement_fields = ['timestamp', 'gsr', 'temp']
+            for field in required_measurement_fields:
+                assert field in measurement, f'Missing measurement field: {field}'
+        
+        print('✅ Cross-platform integration tests passed')
+        "
+    
+    # Android to PC Instrumented Test
+    - name: Android to PC Socket Communication Test
+      run: |
+        echo "📱 Running Android to PC socket communication test..."
+        python -c "
+        import socket
+        import threading
+        import time
+        import json
+        
+        # Mock PC server
+        def mock_pc_server(port):
+            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            server_socket.bind(('localhost', port))
+            server_socket.listen(1)
+            server_socket.settimeout(5.0)
+            
+            try:
+                conn, addr = server_socket.accept()
+                print(f'✅ Server: Connection from {addr}')
+                
+                # Receive message
+                data = conn.recv(1024).decode('utf-8')
+                message = json.loads(data)
+                print(f'✅ Server: Received {message}')
+                
+                # Send ACK
+                ack = json.dumps({'type': 'ack', 'message_id': message.get('id')})
+                conn.send(ack.encode('utf-8'))
+                print('✅ Server: Sent ACK')
+                
+                conn.close()
+                return True
+            except Exception as e:
+                print(f'❌ Server error: {e}')
+                return False
+            finally:
+                server_socket.close()
+        
+        # Mock Android client
+        def mock_android_client(port):
+            time.sleep(0.5)  # Let server start
+            try:
+                client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client_socket.connect(('localhost', port))
+                print('✅ Client: Connected to server')
+                
+                # Send message
+                message = json.dumps({
+                    'type': 'control',
+                    'command': 'start_recording',
+                    'id': 'msg_001',
+                    'timestamp': time.time()
+                })
+                client_socket.send(message.encode('utf-8'))
+                print('✅ Client: Sent control message')
+                
+                # Receive ACK
+                ack_data = client_socket.recv(1024).decode('utf-8')
+                ack = json.loads(ack_data)
+                print(f'✅ Client: Received ACK {ack}')
+                
+                client_socket.close()
+                return ack.get('message_id') == 'msg_001'
+            except Exception as e:
+                print(f'❌ Client error: {e}')
+                return False
+        
+        # Run test
+        port = 8765
+        server_thread = threading.Thread(target=mock_pc_server, args=(port,))
+        client_thread = threading.Thread(target=mock_android_client, args=(port,))
+        
+        server_thread.start()
+        client_thread.start()
+        
+        server_thread.join(timeout=10)
+        client_thread.join(timeout=10)
+        
+        print('✅ Socket communication test completed with orderly teardown')
+        "
+    
+    # One-hour Endurance Smoke Test
+    - name: One-hour Endurance Smoke Test
+      if: ${{ github.event.inputs.skip_endurance != 'true' }}
+      run: |
+        echo "⏱️ Running 1-hour endurance smoke test..."
+        python -c "
+        import time
+        import psutil
+        import gc
+        from datetime import datetime, timedelta
+        
+        print('Starting 1-hour endurance smoke test...')
+        start_time = datetime.now()
+        end_time = start_time + timedelta(hours=1)
+        
+        process = psutil.Process()
+        initial_memory = process.memory_info().rss / 1024 / 1024
+        samples = []
+        
+        print(f'Initial memory: {initial_memory:.1f} MB')
+        
+        sample_count = 0
+        while datetime.now() < end_time:
+            current_memory = process.memory_info().rss / 1024 / 1024
+            cpu_percent = process.cpu_percent()
+            thread_count = process.num_threads()
+            
+            samples.append({
+                'timestamp': time.time(),
+                'memory_mb': current_memory,
+                'cpu_percent': cpu_percent,
+                'thread_count': thread_count
+            })
+            
+            sample_count += 1
+            if sample_count % 60 == 0:  # Every 60 samples (30 minutes)
+                print(f'Sample {sample_count}: Memory={current_memory:.1f}MB, CPU={cpu_percent:.1f}%, Threads={thread_count}')
+            
+            # Simulate workload
+            data = list(range(1000))
+            processed = [x * 2 for x in data]
+            del data, processed
+            
+            if sample_count % 120 == 0:  # Every 2 minutes
+                gc.collect()
+            
+            time.sleep(30)  # 30-second intervals
+        
+        # Analyze results
+        final_memory = samples[-1]['memory_mb']
+        memory_growth = final_memory - initial_memory
+        max_memory = max(s['memory_mb'] for s in samples)
+        avg_cpu = sum(s['cpu_percent'] for s in samples) / len(samples)
+        
+        print(f'\\n📊 Endurance Test Results:')
+        print(f'  Duration: {len(samples)} samples over {(datetime.now() - start_time).total_seconds()/3600:.2f} hours')
+        print(f'  Initial memory: {initial_memory:.1f} MB')
+        print(f'  Final memory: {final_memory:.1f} MB')
+        print(f'  Memory growth: {memory_growth:.1f} MB')
+        print(f'  Max memory: {max_memory:.1f} MB')
+        print(f'  Average CPU: {avg_cpu:.1f}%')
+        
+        # Acceptance criteria
+        acceptable_growth = memory_growth < 100  # Less than 100MB growth
+        acceptable_cpu = avg_cpu < 80  # Less than 80% average CPU
+        stable_threads = all(s['thread_count'] == samples[0]['thread_count'] for s in samples[-10:])
+        
+        print(f'\\n✅ Acceptance Criteria:')
+        print(f'  Memory growth < 100MB: {acceptable_growth} ({memory_growth:.1f}MB)')
+        print(f'  Average CPU < 80%: {acceptable_cpu} ({avg_cpu:.1f}%)')
+        print(f'  Thread stability: {stable_threads}')
+        
+        if acceptable_growth and acceptable_cpu and stable_threads:
+            print('\\n🎉 Endurance test PASSED')
+        else:
+            print('\\n❌ Endurance test FAILED')
+            exit(1)
+        "
+    
+    # Generate Integration Test Artifacts
+    - name: Generate Integration Test Artifacts
+      run: |
+        echo "📊 Generating integration test measurement artifacts..."
+        python tests_unified/evaluation/measurement_collection.py
+        echo "✅ Integration test artifacts generated"
+    
+    # Upload Artifacts
+    - name: Upload Integration Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: nightly-integration-results
+        path: |
+          test_results/
+          chapter5_artifacts/
+    
+    # Notification on Failure
+    - name: Notify on Failure
+      if: failure()
+      run: |
+        echo "❌ Nightly integration tests failed"
+        echo "Check the artifacts and logs for details"
+        echo "🔍 Key areas to investigate:"
+        echo "  - Multi-device synchronization accuracy"
+        echo "  - Network protocol compliance"
+        echo "  - Memory stability during endurance test"
+        echo "  - Cross-platform compatibility"

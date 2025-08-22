@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current Privacy Settings"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/participant_id_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Participant ID: "
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/consent_date_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Consent given: "
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data Processing Options"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_anonymization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable data anonymization" />
+
+        <CheckBox
+            android:id="@+id/checkbox_face_blurring"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Blur faces in video recordings (disabled - hands-only video)" />
+
+        <CheckBox
+            android:id="@+id/checkbox_metadata_stripping"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Strip identifying metadata" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Note: Changes will apply to future recordings only."
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</ScrollView>

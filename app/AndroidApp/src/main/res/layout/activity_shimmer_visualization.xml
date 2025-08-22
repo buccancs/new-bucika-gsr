@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                    xmlns:tools="http://schemas.android.com/tools"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    tools:context=".ui.ShimmerVisualizationActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="Shimmer Visualization"
+                app:titleTextColor="?attr/colorOnPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+            <!-- Device Status Card - Compact for visualization -->
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:strokeWidth="0dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                        <ImageView
+                                android:id="@+id/device_status_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_bluetooth_connected"
+                                android:layout_marginEnd="8dp"
+                                android:tint="?attr/colorPrimary"/>
+
+                        <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Device Status"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold"/>
+
+                        <com.google.android.material.chip.Chip
+                                android:id="@+id/connection_status_chip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Disconnected"
+                                app:chipBackgroundColor="?attr/colorErrorContainer"
+                                app:chipStrokeWidth="0dp"/>
+
+                    </LinearLayout>
+
+                    <!-- Compact Device Information Grid -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="8dp">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Battery"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+
+                                <ProgressBar
+                                        android:id="@+id/battery_progress_bar"
+                                        style="@android:style/Widget.ProgressBar.Horizontal"
+                                        android:layout_width="0dp"
+                                        android:layout_height="6dp"
+                                        android:layout_weight="1"
+                                        android:max="100"
+                                        android:progress="0"
+                                        android:layout_marginEnd="6dp"/>
+
+                                <TextView
+                                        android:id="@+id/battery_level_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="--"
+                                        android:textAppearance="?attr/textAppearanceBodySmall"
+                                        android:textStyle="bold"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="8dp">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Signal"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+
+                                <ProgressBar
+                                        android:id="@+id/signal_progress_bar"
+                                        style="@android:style/Widget.ProgressBar.Horizontal"
+                                        android:layout_width="0dp"
+                                        android:layout_height="6dp"
+                                        android:layout_weight="1"
+                                        android:max="100"
+                                        android:progress="0"
+                                        android:layout_marginEnd="6dp"/>
+
+                                <TextView
+                                        android:id="@+id/signal_strength_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="--"
+                                        android:textAppearance="?attr/textAppearanceBodySmall"
+                                        android:textStyle="bold"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Compact Device Details -->
+                    <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="6dp">
+
+                        <TextView
+                                android:id="@+id/device_info_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="No device connected"
+                                android:textSize="10sp"
+                                android:padding="8dp"
+                                android:fontFamily="monospace"
+                                android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recording Controls Card -->
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Recording Controls"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp"/>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/start_streaming_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Start Recording"
+                                android:layout_marginEnd="8dp"
+                                app:icon="@drawable/ic_play"/>
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/stop_streaming_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Stop Recording"
+                                android:layout_marginStart="8dp"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                app:icon="@drawable/ic_stop"/>
+
+                    </LinearLayout>
+
+                    <!-- Real-time Data Status -->
+                    <TextView
+                            android:id="@+id/real_time_data_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No active session"
+                            android:layout_marginTop="12dp"
+                            android:textSize="12sp"
+                            android:fontFamily="monospace"
+                            android:background="?attr/colorSurfaceVariant"
+                            android:padding="8dp"
+                            android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Real-Time Data Visualization Card -->
+            <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/data_visualization_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="16dp"
+                    android:visibility="gone">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="16dp">
+
+                        <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_chart"
+                                android:layout_marginEnd="12dp"
+                                android:tint="?attr/colorPrimary"/>
+
+                        <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Real-Time Data"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textStyle="bold"/>
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/export_data_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Export"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                app:iconSize="16dp"
+                                android:textSize="12sp"/>
+
+                    </LinearLayout>
+
+                    <!-- Chart Tabs -->
+                    <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/chart_tab_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            app:tabMode="scrollable"
+                            app:tabGravity="start"/>
+
+                    <!-- Chart Container -->
+                    <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp"
+                            android:layout_marginBottom="16dp">
+
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/gsr_chart"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/ppg_chart"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"/>
+
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/accel_chart"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"/>
+
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/gyro_chart"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"/>
+
+                    </FrameLayout>
+
+                    <!-- Data Statistics -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Packets"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                            <TextView
+                                    android:id="@+id/packets_received_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                                    android:textStyle="bold"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Duration"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                            <TextView
+                                    android:id="@+id/recording_duration_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="00:00"
+                                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                                    android:textStyle="bold"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Data Rate (Hz)"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                            <TextView
+                                    android:id="@+id/data_rate_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.0"
+                                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                                    android:textStyle="bold"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Status"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                            <com.google.android.material.chip.Chip
+                                    android:id="@+id/recording_status_chip"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Stopped"
+                                    app:chipBackgroundColor="?attr/colorErrorContainer"
+                                    app:chipStrokeWidth="0dp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

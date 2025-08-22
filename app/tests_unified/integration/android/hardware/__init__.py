@@ -1,0 +1,1 @@
+# Android hardware integration tests consolidated from AndroidApp

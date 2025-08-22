@@ -1,0 +1,1 @@
+# Android session management unit tests consolidated from AndroidApp

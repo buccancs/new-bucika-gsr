@@ -1,0 +1,19 @@
+[submodule "external/IRCamera"]
+	path = external/IRCamera
+	url = https://github.com/CoderCaiSL/IRCamera.git
+
+[submodule "external/psychopy"]
+	path = external/psychopy
+	url = https://github.com/psychopy/psychopy.git
+
+[submodule "external/pyshimmer"]
+	path = external/pyshimmer
+	url = https://github.com/seemoo-lab/pyshimmer.git
+
+[submodule "external/Shimmer-Java-Android-API"]
+	path = external/Shimmer-Java-Android-API
+	url = https://github.com/ShimmerEngineering/Shimmer-Java-Android-API.git
+
+[submodule "external/topdon-sdk"]
+	path = external/topdon-sdk
+	url = https://github.com/buccancs/topdon-sdk.git

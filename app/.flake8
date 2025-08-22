@@ -1,0 +1,56 @@
+
+[flake8]
+max-line-length = 88
+
+extend-ignore =
+    E203,
+    W503,
+    E501,
+    F401,
+
+max-complexity = 10
+
+exclude =
+    .git,
+    __pycache__,
+    .tox,
+    .eggs,
+    *.egg,
+    build,
+    dist,
+    .venv,
+    venv,
+    env,
+    .env,
+    .pytest_cache,
+    .mypy_cache,
+    htmlcov,
+    .coverage,
+    *.so,
+    *.pyc,
+    *.pyo,
+
+include =
+    PythonApp/src/*.py,
+    PythonApp/tests/*.py,
+
+select =
+    F,
+    E,
+    W,
+    C90,
+
+per-file-ignores =
+    tests/*:F401,E402,B011
+    test_*.py:F401,E402,B011
+    *_test.py:F401,E402,B011
+    config/*.py:F401
+    settings/*.py:F401
+
+count = True
+
+show-source = True
+
+statistics = True
+
+format = %(path)s:%(row)d:%(col)d: %(code)s %(text)s

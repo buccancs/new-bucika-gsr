@@ -11,29 +11,29 @@ plugins {
     id 'com.google.firebase.crashlytics' version '3.0.2' apply false
 }
 
-// Global project information
+// Global project information - using consolidated properties
 allprojects {
-    group = 'com.multisensor.recording'
-    version = '1.0.0'
-    description = 'Multi-Sensor Synchronized Recording System'
+    group = project.findProperty('project.group') ?: 'com.multisensor.recording'
+    version = project.findProperty('project.version') ?: '1.0.0'
+    description = project.findProperty('project.description') ?: 'Multi-Sensor Synchronized Recording System'
 }
 
 // Configuration validation and Python integration
 ext {
-    // Python configuration
-    pythonVersion = '>=3.10'
-    pythonMainModule = 'PythonApp.main:main'
-    pythonTestFramework = 'pytest'
-    pythonCoverageMin = '50'
+    // Python configuration from consolidated properties
+    pythonVersion = project.findProperty('python.version') ?: '>=3.10'
+    pythonMainModule = project.findProperty('python.main.module') ?: 'PythonApp.main:main'
+    pythonTestFramework = project.findProperty('python.test.framework') ?: 'pytest'
+    pythonCoverageMin = project.findProperty('python.coverage.min') ?: '50'
     
-    // Android configuration
-    androidCompileSdk = 35
-    androidMinSdk = 24
-    androidTargetSdk = 35
-    androidApplicationId = 'com.multisensor.recording'
+    // Android configuration from consolidated properties
+    androidCompileSdk = project.findProperty('android.compileSdk')?.toInteger() ?: 35
+    androidMinSdk = project.findProperty('android.minSdk')?.toInteger() ?: 24
+    androidTargetSdk = project.findProperty('android.targetSdk')?.toInteger() ?: 35
+    androidApplicationId = project.findProperty('android.applicationId') ?: 'com.multisensor.recording'
     
     // Testing configuration
-    jacocoVersion = '0.8.12'
+    jacocoVersion = project.findProperty('test.coverage.jacoco.version') ?: '0.8.12'
 }
 
 // Configuration validation task
@@ -48,10 +48,440 @@ tasks.register('validateConfiguration') {
         println "   Python Version: ${pythonVersion}"
         println "   Android SDK: ${androidMinSdk} → ${androidTargetSdk} (compile: ${androidCompileSdk})"
         println "   Jacoco Version: ${jacocoVersion}"
+        println "✓ Configuration validation completed"
     }
 }
 
-// Root project tasks
-tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+// Python TOML integration task
+tasks.register('syncPythonConfiguration') {
+    group = 'setup'
+    description = 'Synchronizes Python pyproject.toml configuration with Gradle'
+    
+    def tomlFile = file('pyproject.toml')
+    inputs.file(tomlFile)
+    
+    doLast {
+        if (tomlFile.exists()) {
+            println "🐍 Synchronizing Python configuration from pyproject.toml..."
+            
+            // Read TOML configuration
+            def tomlContent = tomlFile.text
+            def versionMatch = tomlContent =~ /version\s*=\s*"([^"]+)"/
+            def pythonVersionMatch = tomlContent =~ /requires-python\s*=\s*"([^"]+)"/
+            def nameMatch = tomlContent =~ /name\s*=\s*"([^"]+)"/
+            def descriptionMatch = tomlContent =~ /description\s*=\s*"([^"]+)"/
+            
+            if (versionMatch) {
+                def tomlVersion = versionMatch[0][1]
+                if (tomlVersion != project.version) {
+                    println "   ⚠ Version mismatch: TOML=${tomlVersion}, Gradle=${project.version}"
+                }
+            }
+            
+            if (pythonVersionMatch) {
+                def tomlPythonVersion = pythonVersionMatch[0][1]
+                println "   Python Version: ${tomlPythonVersion}"
+            }
+            
+            if (nameMatch) {
+                println "   Project Name: ${nameMatch[0][1]}"
+            }
+            
+            if (descriptionMatch) {
+                println "   Description: ${descriptionMatch[0][1]}"
+            }
+            
+            println "✓ Python configuration synchronized"
+        } else {
+            println "⚠ pyproject.toml not found - Python configuration sync skipped"
+        }
+    }
+}
+
+// Unified version management
+tasks.register('updateVersion') {
+    group = 'versioning'
+    description = 'Updates version across all configuration files (gradle.properties, pyproject.toml, AndroidApp)'
+    
+    doLast {
+        def newVersion = project.findProperty('newVersion')
+        if (!newVersion) {
+            println "❌ Please specify newVersion: ./gradlew updateVersion -PnewVersion=1.1.0"
+            return
+        }
+        
+        println "🔄 Updating version to ${newVersion} across all configuration files..."
+        
+        // Update gradle.properties
+        def gradlePropsFile = file('gradle.properties')
+        if (gradlePropsFile.exists()) {
+            def content = gradlePropsFile.text
+            content = content.replaceAll(/project\.version=.*/, "project.version=${newVersion}")
+            gradlePropsFile.text = content
+            println "   ✓ Updated gradle.properties"
+        }
+        
+        // Update pyproject.toml
+        def tomlFile = file('pyproject.toml')
+        if (tomlFile.exists()) {
+            def content = tomlFile.text
+            content = content.replaceAll(/version\s*=\s*"[^"]+"/, "version = \"${newVersion}\"")
+            tomlFile.text = content
+            println "   ✓ Updated pyproject.toml"
+        }
+        
+        // Update AndroidApp build.gradle.kts
+        def androidBuildFile = file('AndroidApp/build.gradle.kts')
+        if (androidBuildFile.exists()) {
+            def content = androidBuildFile.text
+            content = content.replaceAll(/versionName = "[^"]+"/, "versionName = \"${newVersion}\"")
+            androidBuildFile.text = content
+            println "   ✓ Updated AndroidApp/build.gradle.kts"
+        }
+        
+        println "✅ Version update completed! Please commit these changes."
+    }
+}
+
+// Multi-project build tasks
+tasks.register('assembleAll') {
+    group = 'build'
+    description = 'Builds all components (Android APK and Python package)'
+    
+    dependsOn ':AndroidApp:assembleDebug'
+    dependsOn ':PythonApp:pythonBuild'
+    
+    doLast {
+        println "✓ All components assembled successfully"
+        println "  - Android APK: ${project(':AndroidApp').layout.buildDirectory.get()}/outputs/apk/debug/"
+        println "  - Python package: ${project(':PythonApp').layout.buildDirectory.get()}/dist/"
+    }
+}
+
+tasks.register('assembleRelease') {
+    group = 'build'
+    description = 'Builds release versions of all components'
+    
+    dependsOn ':AndroidApp:assembleRelease'
+    dependsOn ':PythonApp:pythonPackage'
+    
+    doLast {
+        println "✓ Release build completed"
+    }
+}
+
+tasks.register('checkAll') {
+    group = 'verification'
+    description = 'Runs verification tasks for all components'
+    
+    dependsOn ':AndroidApp:lintDebug'
+    dependsOn ':PythonApp:pythonCheck'
+    
+    doLast {
+        println "✓ All verification tasks completed"
+    }
+}
+
+tasks.register('cleanAll') {
+    group = 'build'
+    description = 'Cleans all build artifacts'
+    
+    dependsOn ':AndroidApp:clean'
+    dependsOn ':PythonApp:clean'
+    
+    doLast {
+        println "✓ All build artifacts cleaned"
+    }
+}
+
+// Setup task for development environment
+tasks.register('setupEnvironment', Exec) {
+    group = 'setup'
+    description = 'Sets up complete development environment (Python conda environment)'
+    
+    workingDir = projectDir
+    
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def condaCmd = isWindows ? 'conda.exe' : 'conda'
+    
+    commandLine = [condaCmd, 'env', 'create', '-f', 'environment.yml', '--force']
+    ignoreExitValue = true
+    
+    doFirst {
+        println "Setting up development environment..."
+    }
+    
+    doLast {
+        if (executionResult.get().exitValue == 0) {
+            println "✓ Development environment setup completed"
+        } else {
+            println "⚠ Failed to setup environment (exit code: ${executionResult.get().exitValue})"
+            println "  Make sure conda is installed and environment.yml exists"
+        }
+    }
+}
+
+// Integration testing tasks (run from root level)
+tasks.register('runIntegrationTests') {
+    group = 'testing'
+    description = 'Runs cross-platform integration tests'
+    
+    dependsOn ':AndroidApp:assembleDebug'
+    dependsOn ':PythonApp:pythonTest'
+    
+    doLast {
+        println "✓ Integration tests completed"
+    }
+}
+
+// Specialized testing tasks for specific test suites
+def createRootTestTask = { taskName, description, scriptName ->
+    tasks.register(taskName, Exec) {
+        group = 'testing'
+        description = description
+        workingDir = projectDir
+
+        def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+        def pythonExe = isWindows ? 'python.exe' : 'python'
+
+        commandLine = [pythonExe, scriptName]
+        ignoreExitValue = true
+
+        doFirst {
+            println "Running ${description}..."
+        }
+
+        doLast {
+            def status = executionResult.get().exitValue == 0 ? "✓ passed" : "⚠ failed (exit code: ${executionResult.get().exitValue})"
+            println "${description} ${status}"
+        }
+    }
+}
+
+// Create test tasks for the specific test suites found in the project
+if (file('test_recording_full_suite.py').exists()) {
+    createRootTestTask('runRecordingFullTest', 'Recording Functionality Full Test Suite', 'test_recording_full_suite.py')
+}
+if (file('test_device_management_full_suite.py').exists()) {
+    createRootTestTask('runDeviceManagementFullTest', 'Device Management Full Test Suite', 'test_device_management_full_suite.py')
+}
+if (file('test_calibration_full_suite.py').exists()) {
+    createRootTestTask('runCalibrationFullTest', 'Calibration Full Test Suite', 'test_calibration_full_suite.py')
+}
+if (file('test_file_management_full_suite.py').exists()) {
+    createRootTestTask('runFileManagementFullTest', 'File Management Full Test Suite', 'test_file_management_full_suite.py')
+}
+if (file('test_network_connectivity_full_suite.py').exists()) {
+    createRootTestTask('runNetworkConnectivityFullTest', 'Network Connectivity Full Test Suite', 'test_network_connectivity_full_suite.py')
+}
+if (file('test_all_full_suites.py').exists()) {
+    createRootTestTask('runAllFullTestSuites', 'All Full Test Suites using orchestrator', 'test_all_full_suites.py')
+}
+if (file('test_ide_integration_suite.py').exists()) {
+    createRootTestTask('runIDEIntegrationTest', 'IDE Integration Test Suite', 'test_ide_integration_suite.py')
+}
+
+// UI Test tasks
+tasks.register('runPythonUITest', Exec) {
+    group = 'testing'
+    description = 'Runs Python UI Integration Test standalone'
+    workingDir = file('PythonApp')
+
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def pythonExe = isWindows ? 'python.exe' : 'python'
+
+    commandLine = [pythonExe, 'test_python_ui_integration.py']
+    ignoreExitValue = true
+
+    doFirst { println "Running Python UI Integration Test..." }
+    doLast {
+        def status = executionResult.get().exitValue == 0 ? "✓ passed" : "⚠ failed (exit code: ${executionResult.get().exitValue})"
+        println "Python UI Test ${status}"
+    }
+}
+
+tasks.register('runAndroidUITest', Exec) {
+    group = 'testing'
+    description = 'Runs Android IDE Integration UI Test standalone'
+    workingDir = projectDir
+
+    commandLine = ['./gradlew', ':AndroidApp:connectedAndroidTest', '-Pandroid.testInstrumentationRunnerArguments.class=com.multisensor.recording.IDEIntegrationUITest']
+    ignoreExitValue = true
+
+    doFirst { println "Running Android IDE Integration UI Test..." }
+    doLast {
+        def status = executionResult.get().exitValue == 0 ? "✓ passed" : "⚠ failed (exit code: ${executionResult.get().exitValue})"
+        println "Android UI Test ${status}"
+    }
+}
+
+// Consolidated Android Test Suite Organization
+tasks.register('runAndroidUnitTests') {
+    group = 'testing'
+    description = 'Runs all Android unit tests'
+    dependsOn ':AndroidApp:testDevDebugUnitTest'
+    
+    doLast {
+        println "✓ Android unit tests completed"
+    }
+}
+
+tasks.register('runAndroidIntegrationTests') {
+    group = 'testing'
+    description = 'Runs Android integration tests on device/emulator'
+    dependsOn ':AndroidApp:connectedAndroidTest'
+    
+    doLast {
+        println "✓ Android integration tests completed"
+    }
+}
+
+tasks.register('runAndroidTestSuite') {
+    group = 'testing'
+    description = 'Runs complete Android test suite (unit + integration)'
+    dependsOn 'runAndroidUnitTests', 'runAndroidIntegrationTests'
+    
+    doLast {
+        println "✓ Complete Android test suite finished"
+    }
+}
+
+// Enhanced test tasks for specific Android test categories
+tasks.register('runAndroidControllerTests') {
+    group = 'testing'
+    description = 'Runs Android controller layer tests'
+    dependsOn ':AndroidApp:testDevDebugUnitTest'
+    
+    doFirst {
+        project(':AndroidApp').tasks.named('testDevDebugUnitTest').configure {
+            filter {
+                includeTestsMatching '*Controller*Test'
+            }
+        }
+    }
+    
+    doLast {
+        println "✓ Android controller tests completed"
+    }
+}
+
+tasks.register('runAndroidServiceTests') {
+    group = 'testing'
+    description = 'Runs Android service layer tests'
+    dependsOn ':AndroidApp:testDevDebugUnitTest'
+    
+    doFirst {
+        project(':AndroidApp').tasks.named('testDevDebugUnitTest').configure {
+            filter {
+                includeTestsMatching '*Service*Test'
+                includeTestsMatching '*Manager*Test'
+            }
+        }
+    }
+    
+    doLast {
+        println "✓ Android service tests completed"
+    }
+}
+
+tasks.register('runAndroidUIComponentTests') {
+    group = 'testing'
+    description = 'Runs Android UI component tests'
+    dependsOn ':AndroidApp:testDevDebugUnitTest'
+    
+    doFirst {
+        project(':AndroidApp').tasks.named('testDevDebugUnitTest').configure {
+            filter {
+                includeTestsMatching '*ui*Test'
+                includeTestsMatching '*UI*Test'
+                includeTestsMatching '*compose*Test'
+            }
+        }
+    }
+    
+    doLast {
+        println "✓ Android UI component tests completed"
+    }
+}
+
+// Unified test coverage reporting
+tasks.register('generateAllTestCoverage') {
+    group = 'reporting'
+    description = 'Generates unified test coverage report for all components'
+    
+    dependsOn ':AndroidApp:jacocoTestReport'
+    dependsOn ':PythonApp:pythonTest'
+    
+    doLast {
+        println "✓ Unified test coverage reports generated"
+        println "  - Android coverage: ${project(':AndroidApp').layout.buildDirectory.get()}/reports/jacoco/"
+        println "  - Python coverage: ${project(':PythonApp').layout.buildDirectory.get()}/coverage/"
+    }
+}
+
+tasks.register('buildHelp') {
+    group = 'help'
+    description = 'Displays help information for this multi-project build'
+    
+    doLast {
+        println """
+╔══════════════════════════════════════════════════════════════════════════════════════════╗
+║                     Multi-Sensor Recording System - Gradle Build Help                     ║
+╚══════════════════════════════════════════════════════════════════════════════════════════╝
+
+This is a multi-project Gradle build that combines Java/Android and Python components.
+
+🏗️  BUILD TASKS:
+   ./gradlew assembleAll       - Build all components (Android APK + Python package)
+   ./gradlew assembleRelease   - Build release versions of all components
+   ./gradlew cleanAll          - Clean all build artifacts
+
+🔍 VERIFICATION TASKS:
+   ./gradlew checkAll          - Run all verification tasks (lint + tests)
+   ./gradlew :AndroidApp:lint  - Run Android linting
+   ./gradlew :PythonApp:pythonLint - Run Python linting
+   ./gradlew :PythonApp:pythonTest - Run Python tests
+
+🧪 TESTING TASKS:
+   ./gradlew runIntegrationTests      - Run cross-platform integration tests
+   ./gradlew runAndroidTestSuite      - Run complete Android test suite (unit + integration)
+   ./gradlew runAndroidUnitTests      - Run Android unit tests only
+   ./gradlew runAndroidIntegrationTests - Run Android integration tests on device
+   ./gradlew runAndroidControllerTests  - Run Android controller layer tests
+   ./gradlew runAndroidServiceTests     - Run Android service layer tests
+   ./gradlew runAndroidUIComponentTests - Run Android UI component tests
+   ./gradlew runPythonUITest           - Run Python UI tests
+   ./gradlew runAndroidUITest          - Run Android UI tests
+
+📊 REPORTING TASKS:
+   ./gradlew generateAllTestCoverage  - Generate unified test coverage reports
+   ./gradlew :AndroidApp:jacocoTestReport - Generate Android coverage report
+
+⚙️  SETUP TASKS:
+   ./gradlew setupEnvironment      - Setup development environment (conda)
+   ./gradlew validateConfiguration - Validate consolidated project configuration
+   ./gradlew syncPythonConfiguration - Sync Python pyproject.toml with Gradle
+   ./gradlew :PythonApp:pythonInstallDeps - Install Python dependencies
+
+🔄 VERSIONING TASKS:
+   ./gradlew updateVersion -PnewVersion=X.Y.Z - Update version across all configs
+
+🎨 FORMATTING TASKS:
+   ./gradlew :PythonApp:pythonFormat - Format Python code with black
+   ./gradlew :AndroidApp:formatKotlin - Format Kotlin code with ktlint
+
+🗂️  PROJECT STRUCTURE:
+   AndroidApp/    - Android/Kotlin application (build.gradle.kts)
+   PythonApp/     - Python application (build.gradle)
+   
+📋 TEST ORGANIZATION:
+   Unit Tests (81 files):     AndroidApp/src/test/
+   Integration Tests (30 files): AndroidApp/src/androidTest/
+   Python Tests:              PythonApp/tests/
+   
+For more detailed task information, run:
+   ./gradlew tasks --group=<build|verification|testing|setup|reporting>
+   
+        """
+    }
 }

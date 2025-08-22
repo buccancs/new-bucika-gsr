@@ -15,10 +15,21 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BucikaGSR"
+rootProject.name = "MultiSensorRecordingSystem"
 
 include ':AndroidApp'
 include ':PythonApp'
 
-project(':AndroidApp').projectDir = new File('AndroidApp')
-project(':PythonApp').projectDir = new File('PythonApp')
+// Optionally exclude external subprojects from the main build to avoid conflicts
+// Comment out the lines below if you want to include external gradle projects
+gradle.beforeSettings {
+    // Exclude external gradle projects to prevent conflicts
+    def externalDir = file('external')
+    if (externalDir.exists()) {
+        externalDir.listFiles()?.each { dir ->
+            if (dir.isDirectory() && new File(dir, 'settings.gradle').exists()) {
+                logger.info "Excluding external gradle project: ${dir.name}"
+            }
+        }
+    }
+}

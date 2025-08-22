@@ -1,0 +1,415 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Synchronised Multimodal Recording System Message Schema",
+  "description": "Unified JSON schema for communication between Python PC application and Android device",
+  "version": "1.0.0",
+  "definitions": {
+    "message_base": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Message type identifier"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Unix timestamp in milliseconds when message was created"
+        }
+      },
+      "required": [
+        "type",
+        "timestamp"
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "title": "Start Record Command",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "start_record"
+            },
+            "session_id": {
+              "type": "string",
+              "description": "Unique identifier for the recording session"
+            }
+          },
+          "required": [
+            "session_id"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Stop Record Command",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "stop_record"
+            },
+            "session_id": {
+              "type": "string",
+              "description": "Session identifier to correlate with start command"
+            }
+          },
+          "required": [
+            "session_id"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Preview Frame Data",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "preview_frame"
+            },
+            "frame_id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sequential frame counter"
+            },
+            "image_data": {
+              "type": "string",
+              "description": "Base64 encoded JPEG image data for preview"
+            },
+            "width": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Frame width in pixels"
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Frame height in pixels"
+            }
+          },
+          "required": [
+            "frame_id",
+            "image_data",
+            "width",
+            "height"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "File Chunk Data",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "file_chunk"
+            },
+            "file_id": {
+              "type": "string",
+              "description": "Unique identifier for the file being transferred"
+            },
+            "chunk_index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sequential chunk number starting from 0"
+            },
+            "total_chunks": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Total number of chunks for this file"
+            },
+            "chunk_data": {
+              "type": "string",
+              "description": "Base64 encoded binary file data"
+            },
+            "chunk_size": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Size of this chunk in bytes before encoding"
+            },
+            "file_type": {
+              "type": "string",
+              "enum": [
+                "video",
+                "audio",
+                "sensor",
+                "metadata"
+              ],
+              "description": "Type of file being transferred"
+            }
+          },
+          "required": [
+            "file_id",
+            "chunk_index",
+            "total_chunks",
+            "chunk_data",
+            "chunk_size",
+            "file_type"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Device Status Update",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "device_status"
+            },
+            "device_id": {
+              "type": "string",
+              "description": "Unique device identifier"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "idle",
+                "recording",
+                "processing",
+                "error"
+              ],
+              "description": "Current device status"
+            },
+            "battery_level": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Battery level percentage"
+            },
+            "storage_available": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Available storage in MB"
+            }
+          },
+          "required": [
+            "device_id",
+            "status"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Acknowledgment Message",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "ack"
+            },
+            "message_id": {
+              "type": "string",
+              "description": "ID of the message being acknowledged"
+            },
+            "success": {
+              "type": "boolean",
+              "description": "Whether the operation was successful"
+            },
+            "error_message": {
+              "type": "string",
+              "description": "Error description if success is false"
+            }
+          },
+          "required": [
+            "message_id",
+            "success"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Calibration Command",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "calibration_start"
+            },
+            "pattern_type": {
+              "type": "string",
+              "enum": [
+                "chessboard",
+                "circles",
+                "asymmetric_circles"
+              ],
+              "description": "Type of calibration pattern to use"
+            },
+            "pattern_size": {
+              "type": "object",
+              "properties": {
+                "rows": {
+                  "type": "integer",
+                  "minimum": 3
+                },
+                "cols": {
+                  "type": "integer",
+                  "minimum": 3
+                }
+              },
+              "required": [
+                "rows",
+                "cols"
+              ]
+            }
+          },
+          "required": [
+            "pattern_type",
+            "pattern_size"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Calibration Result",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "calibration_result"
+            },
+            "success": {
+              "type": "boolean",
+              "description": "Whether calibration was successful"
+            },
+            "rms_error": {
+              "type": "number",
+              "minimum": 0,
+              "description": "RMS reprojection error in pixels"
+            },
+            "camera_matrix": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "description": "3x3 camera intrinsic matrix"
+            },
+            "distortion_coefficients": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "Distortion coefficients"
+            }
+          },
+          "required": [
+            "success"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Handshake Message",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "handshake"
+            },
+            "protocol_version": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Protocol version number for compatibility checking"
+            },
+            "device_name": {
+              "type": "string",
+              "description": "Name or identifier of the sending device"
+            },
+            "app_version": {
+              "type": "string",
+              "description": "Version of the application sending the handshake"
+            },
+            "device_type": {
+              "type": "string",
+              "enum": [
+                "android",
+                "pc"
+              ],
+              "description": "Type of device sending the handshake"
+            }
+          },
+          "required": [
+            "protocol_version",
+            "device_name",
+            "app_version",
+            "device_type"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Handshake Acknowledgment",
+      "allOf": [
+        {
+          "$ref": "#/definitions/message_base"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "handshake_ack"
+            },
+            "protocol_version": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Protocol version number of the responding device"
+            },
+            "server_name": {
+              "type": "string",
+              "description": "Name or identifier of the responding server"
+            },
+            "server_version": {
+              "type": "string",
+              "description": "Version of the server application"
+            },
+            "compatible": {
+              "type": "boolean",
+              "description": "Whether the protocol versions are compatible"
+            },
+            "message": {
+              "type": "string",
+              "description": "Optional message about compatibility status"
+            }
+          },
+          "required": [
+            "protocol_version",
+            "server_name",
+            "server_version",
+            "compatible"
+          ]
+        }
+      ]
+    }
+  ]
+}

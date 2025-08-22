@@ -1,0 +1,127 @@
+# EditorConfig configuration for Multi-Sensor Recording System
+# Ensures consistent coding styles across different editors and IDEs
+# https://editorconfig.org/
+
+root = true
+
+# Universal settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Python files
+[*.py]
+indent_size = 4
+max_line_length = 88
+# Python-specific formatting aligned with Black formatter
+
+# Kotlin files (Android)
+[*.{kt,kts}]
+indent_size = 4
+max_line_length = 120
+# Kotlin-specific formatting aligned with ktlint
+
+# Java files
+[*.java]
+indent_size = 4
+max_line_length = 120
+
+# JavaScript/TypeScript files
+[*.{js,ts,jsx,tsx}]
+indent_size = 2
+max_line_length = 100
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# YAML files
+[*.{yml,yaml}]
+indent_size = 2
+
+# XML files (Android layouts, manifests)
+[*.xml]
+indent_size = 4
+
+# Gradle files
+[*.gradle]
+indent_size = 4
+
+# Gradle Kotlin DSL
+[*.gradle.kts]
+indent_size = 4
+
+# Properties files
+[*.properties]
+indent_size = 4
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 120
+
+# Configuration files
+[*.{toml,ini,cfg}]
+indent_size = 4
+
+# Shell scripts
+[*.{sh,bash,zsh}]
+indent_size = 2
+max_line_length = 120
+
+# Docker files
+[Dockerfile*]
+indent_size = 4
+
+# CMake files
+[CMakeLists.txt]
+indent_size = 2
+
+[*.cmake]
+indent_size = 2
+
+# C/C++ files (if any native components)
+[*.{c,h,cpp,hpp,cc,cxx}]
+indent_size = 4
+max_line_length = 100
+
+# R files (for data analysis)
+[*.{r,R}]
+indent_size = 2
+
+# SQL files
+[*.sql]
+indent_size = 2
+
+# CSV files (preserve as-is)
+[*.csv]
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+# Generated files (don't modify)
+[{package-lock.json,yarn.lock,Pipfile.lock}]
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+# Binary files (don't modify)
+[*.{png,jpg,jpeg,gif,ico,svg,pdf,zip,tar,gz,tgz,bz2,xz,7z}]
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+# IDE-specific directories (don't modify)
+[{.idea/**,.vscode/**,.vs/**}]
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+# Build outputs (don't modify)
+[{build/**,dist/**,target/**,out/**,bin/**,obj/**}]
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset

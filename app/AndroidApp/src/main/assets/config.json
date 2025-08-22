@@ -1,0 +1,118 @@
+{
+  "version": "0.1.0-beta",
+  "description": "Shared configuration for synchronised multimodal recording system",
+  "last_updated": "2025-01-27T01:24:00Z",
+  "protocol_version": 1,
+  "network": {
+    "host": "192.168.0.100",
+    "port": 9000,
+    "protocol": "TCP",
+    "timeout_seconds": 30,
+    "buffer_size": 8192,
+    "max_connections": 10,
+    "heartbeat_interval": 5,
+    "reconnect_attempts": 3,
+    "use_newline_protocol": false
+  },
+  "devices": {
+    "camera_id": 0,
+    "frame_rate": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "preview_resolution": {
+      "width": 640,
+      "height": 480
+    },
+    "mic_sample_rate": 44100,
+    "mic_channels": 2,
+    "mic_bit_depth": 16,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "video_bitrate": 5000000,
+    "audio_bitrate": 128000,
+    "chunk_size": 1048576,
+    "max_file_size_mb": 1000,
+    "storage_warning_threshold_mb": 500
+  },
+  "UI": {
+    "preview_scale": 0.5,
+    "show_calibration_overlay": true,
+    "show_device_status": true,
+    "show_recording_indicator": true,
+    "auto_save_session": true,
+    "theme": "dark",
+    "window_size": {
+      "width": 1200,
+      "height": 800
+    },
+    "preview_update_rate": 10,
+    "status_update_interval": 1000,
+    "notification_timeout": 5000
+  },
+  "calibration": {
+    "pattern_type": "chessboard",
+    "pattern_rows": 7,
+    "pattern_cols": 6,
+    "square_size_m": 0.0245,
+    "error_threshold": 1.0,
+    "min_images": 10,
+    "max_images": 30,
+    "detection_flags": [
+      "CALIB_CB_ADAPTIVE_THRESH",
+      "CALIB_CB_NORMALIZE_IMAGE",
+      "CALIB_CB_FAST_CHECK"
+    ],
+    "calibration_flags": [
+      "CALIB_FIX_PRINCIPAL_POINT",
+      "CALIB_ZERO_TANGENT_DIST"
+    ],
+    "auto_capture": true,
+    "capture_delay": 2.0,
+    "quality_threshold": 0.3
+  },
+  "session": {
+    "default_session_name": "recording_session",
+    "session_directory": "recordings",
+    "auto_create_directories": true,
+    "include_timestamp": true,
+    "metadata_format": "json",
+    "compression_enabled": false,
+    "backup_enabled": true,
+    "max_session_duration_minutes": 120
+  },
+  "logging": {
+    "level": "INFO",
+    "file_enabled": true,
+    "console_enabled": true,
+    "max_file_size_mb": 10,
+    "backup_count": 5,
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "log_directory": "logs"
+  },
+  "testing": {
+    "fake_device_enabled": false,
+    "mock_data_directory": "test_data",
+    "simulation_delay": 0.1,
+    "test_session_duration": 30,
+    "generate_test_files": true,
+    "test_file_size_kb": 1024
+  },
+  "performance": {
+    "max_memory_usage_mb": 2048,
+    "gc_threshold": 0.8,
+    "thread_pool_size": 4,
+    "async_processing": true,
+    "cache_size": 100,
+    "preview_queue_size": 10,
+    "file_transfer_queue_size": 50
+  },
+  "security": {
+    "encryption_enabled": false,
+    "authentication_required": false,
+    "allowed_devices": [],
+    "device_whitelist_enabled": false,
+    "secure_transfer": false
+  }
+}

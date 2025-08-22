@@ -1,0 +1,626 @@
+name: Dependency Management
+
+on:
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      check_updates:
+        description: 'Check for vendor SDK updates online'
+        required: false
+        default: 'true'
+        type: boolean
+      generate_detailed_report:
+        description: 'Generate detailed security report'
+        required: false
+        default: 'true'
+        type: boolean
+      update_mode:
+        description: 'Update mode'
+        required: true
+        default: 'check-only'
+        type: choice
+        options:
+          - check-only
+          - auto-update-minor
+          - full-analysis
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  security-events: write
+
+env:
+  PYTHON_VERSION: '3.10'
+  JAVA_VERSION: '17'
+
+jobs:
+  # Python dependency health monitoring
+  python-dependency-health:
+    name: Python Dependency Health
+    runs-on: ubuntu-latest
+    outputs:
+      critical-vulns: ${{ steps.vulnerability-scan.outputs.critical-count }}
+      total-vulns: ${{ steps.vulnerability-scan.outputs.total-count }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: Install dependencies and security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install safety bandit pip-audit
+    
+    - name: Vulnerability scanning
+      id: vulnerability-scan
+      run: |
+        echo "🔍 Scanning Python dependencies for vulnerabilities..."
+        mkdir -p dependency-reports
+        
+        # Safety scan
+        echo "::group::Safety vulnerability scan"
+        safety scan --json --output dependency-reports/safety-report.json || true
+        safety scan --short-report || echo "::warning::Safety scan found vulnerabilities"
+        echo "::endgroup::"
+        
+        # pip-audit scan
+        echo "::group::pip-audit vulnerability scan"
+        pip-audit --format=json --output=dependency-reports/pip-audit-report.json || true
+        pip-audit || echo "::warning::pip-audit found vulnerabilities"
+        echo "::endgroup::"
+        
+        # Bandit security analysis
+        echo "::group::Bandit security analysis"
+        bandit -r PythonApp/ -f json -o dependency-reports/bandit-report.json || true
+        bandit -r PythonApp/ -ll || echo "::warning::Bandit found security issues"
+        echo "::endgroup::"
+        
+        # Count vulnerabilities
+        CRITICAL_COUNT=0
+        TOTAL_COUNT=0
+        
+        # Count from Safety report
+        if [ -f dependency-reports/safety-report.json ]; then
+          SAFETY_CRITICAL=$(python -c "
+        import json
+        try:
+            with open('dependency-reports/safety-report.json') as f:
+                data = json.load(f)
+            critical = sum(1 for v in data.get('vulnerabilities', []) if v.get('severity') == 'critical')
+            total = len(data.get('vulnerabilities', []))
+            print(f'{critical},{total}')
+        except:
+            print('0,0')
+        " | cut -d',' -f1-2)
+          CRITICAL_COUNT=$(echo $SAFETY_CRITICAL | cut -d',' -f1)
+          TOTAL_COUNT=$(echo $SAFETY_CRITICAL | cut -d',' -f2)
+        fi
+        
+        echo "critical-count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+        echo "total-count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
+        
+        echo "Found $CRITICAL_COUNT critical vulnerabilities out of $TOTAL_COUNT total"
+    
+    - name: Dependency update check
+      id: update-check
+      run: |
+        echo "📦 Checking for dependency updates..."
+        
+        # Create requirements file if it doesn't exist
+        if [ ! -f requirements.txt ]; then
+          pip freeze > current-requirements.txt
+        else
+          cp requirements.txt current-requirements.txt
+        fi
+        
+        # Check for outdated packages
+        pip list --outdated --format=json > dependency-reports/outdated-packages.json || true
+        
+        # Count outdated packages
+        OUTDATED_COUNT=$(cat dependency-reports/outdated-packages.json | jq length)
+        echo "outdated-count=$OUTDATED_COUNT" >> $GITHUB_OUTPUT
+        
+        echo "Found $OUTDATED_COUNT outdated packages"
+    
+    - name: Upload Python dependency reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-dependency-reports
+        path: dependency-reports/
+        retention-days: 30
+
+  # Android dependency health monitoring
+  android-dependency-health:
+    name: Android Dependency Health
+    runs-on: ubuntu-latest
+    outputs:
+      gradle-outdated: ${{ steps.gradle-check.outputs.outdated-count }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: gradle
+    
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@v4
+    
+    - name: Setup Gradle environment
+      run: |
+        chmod +x ./gradlew
+        ./gradlew --stop || true
+        rm -rf ~/.gradle/caches/*/dependencies-accessors/ || true
+        ./gradlew --version --no-daemon
+    
+    - name: Check for outdated Android dependencies
+      id: gradle-check
+      run: |
+        echo "🔍 Checking for outdated Android dependencies..."
+        mkdir -p android-dependency-reports
+        
+        # Run dependency updates check
+        ./gradlew dependencyUpdates --info --no-daemon || echo "::warning::Some dependency checks failed"
+        
+        # Copy reports
+        cp -r build/dependencyUpdates android-dependency-reports/ || true
+        
+        # Analyze dependencies
+        ./gradlew dependencies --configuration releaseRuntimeClasspath --no-daemon > android-dependency-reports/gradle-dependencies.txt || true
+        
+        # Count outdated dependencies (simplified check)
+        OUTDATED_COUNT=0
+        if [ -f "build/dependencyUpdates/report.txt" ]; then
+          OUTDATED_COUNT=$(grep -c "available" build/dependencyUpdates/report.txt || echo "0")
+        fi
+        
+        echo "outdated-count=$OUTDATED_COUNT" >> $GITHUB_OUTPUT
+        echo "Found $OUTDATED_COUNT potentially outdated Android dependencies"
+    
+    - name: Android security scan
+      run: |
+        echo "🔒 Running Android security checks..."
+        
+        # Check for hardcoded secrets
+        echo "::group::Hardcoded credentials check"
+        grep -r "password\|secret\|key\|token" AndroidApp/src/ --include="*.kt" --include="*.java" | \
+          grep -v "example\|test\|BuildConfig" > android-dependency-reports/potential-secrets.txt || true
+        echo "::endgroup::"
+        
+        # Check build.gradle for security configurations
+        echo "::group::Build security check"
+        grep -r "minifyEnabled\|obfuscation\|proguard" AndroidApp/ > android-dependency-reports/security-config.txt || true
+        echo "::endgroup::"
+    
+    - name: Upload Android dependency reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-dependency-reports
+        path: android-dependency-reports/
+        retention-days: 30
+
+  # Vendor SDK monitoring
+  vendor-sdk-monitoring:
+    name: Vendor SDK Monitoring
+    runs-on: ubuntu-latest
+    outputs:
+      high-risks: ${{ steps.vendor-check.outputs.high-risks }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install monitoring dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 packaging
+    
+    - name: Vendor SDK health check
+      id: vendor-check
+      env:
+        CHECK_UPDATES: ${{ github.event.inputs.check_updates || 'true' }}
+        GENERATE_REPORT: ${{ github.event.inputs.generate_detailed_report || 'true' }}
+      run: |
+        echo "🔧 Monitoring vendor SDKs..."
+        mkdir -p vendor-reports
+        
+        # Run vendor SDK monitoring if script exists
+        if [ -f "scripts/monitor_vendor_sdks.py" ]; then
+          echo "Running vendor SDK monitoring script..."
+          
+          if [ "$CHECK_UPDATES" = "true" ] && [ "$GENERATE_REPORT" = "true" ]; then
+            python scripts/monitor_vendor_sdks.py --check-updates --generate-report || echo "::warning::Vendor SDK monitoring failed"
+          elif [ "$CHECK_UPDATES" = "true" ]; then
+            python scripts/monitor_vendor_sdks.py --check-updates || echo "::warning::Vendor SDK monitoring failed"
+          elif [ "$GENERATE_REPORT" = "true" ]; then
+            python scripts/monitor_vendor_sdks.py --generate-report || echo "::warning::Vendor SDK monitoring failed"
+          else
+            python scripts/monitor_vendor_sdks.py || echo "::warning::Vendor SDK monitoring failed"
+          fi
+          
+          # Check for high-risk issues
+          HIGH_RISKS=0
+          if [ -f security_reports/vendor_sdk_report_*.json ]; then
+            REPORT_FILE=$(ls -t security_reports/vendor_sdk_report_*.json | head -1)
+            HIGH_RISKS=$(python -c "
+            import json
+            try:
+                with open('$REPORT_FILE') as f:
+                    data = json.load(f)
+                print(data.get('risk_analysis', {}).get('high_severity_count', 0))
+            except:
+                print(0)
+            ")
+          fi
+          
+          echo "high-risks=$HIGH_RISKS" >> $GITHUB_OUTPUT
+          echo "Found $HIGH_RISKS high-risk vendor SDK issues"
+          
+          # Copy reports to artifact directory
+          cp -r security_reports/* vendor-reports/ 2>/dev/null || true
+        else
+          echo "::warning::Vendor SDK monitoring script not found, creating placeholder report"
+          
+          # Create placeholder report
+          cat > vendor-reports/vendor-sdk-status.json << EOF
+        {
+          "timestamp": "$(date -Iseconds)",
+          "status": "script_not_found",
+          "shimmer_sdk": {
+            "current_version": "unknown",
+            "latest_version": "unknown",
+            "status": "monitoring_disabled"
+          },
+          "thermal_camera_sdk": {
+            "current_version": "unknown", 
+            "latest_version": "unknown",
+            "status": "monitoring_disabled"
+          },
+          "risk_analysis": {
+            "high_severity_count": 0,
+            "medium_severity_count": 0,
+            "total_issues": 0
+          }
+        }
+        EOF
+          
+          echo "high-risks=0" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Upload vendor SDK reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: vendor-sdk-reports
+        path: vendor-reports/
+        retention-days: 90
+
+  # Dependency update automation (if enabled)
+  dependency-updates:
+    name: Dependency Updates
+    runs-on: ubuntu-latest
+    needs: [python-dependency-health, android-dependency-health]
+    if: github.event.inputs.update_mode == 'auto-update-minor'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-tools
+    
+    - name: Update Python dependencies (minor versions only)
+      id: python-updates
+      run: |
+        echo "🔄 Updating Python dependencies (minor versions only)..."
+        
+        # Create backup
+        cp requirements.txt requirements.txt.backup || true
+        
+        # Update dependencies but only minor versions
+        pip-compile --upgrade --annotation-style=line requirements.in || echo "::warning::pip-compile failed"
+        
+        # Check if there are changes
+        if ! diff -q requirements.txt requirements.txt.backup > /dev/null 2>&1; then
+          echo "has-python-updates=true" >> $GITHUB_OUTPUT
+          echo "Python dependencies updated"
+        else
+          echo "has-python-updates=false" >> $GITHUB_OUTPUT
+          echo "No Python dependency updates"
+        fi
+    
+    - name: Create Pull Request for dependency updates
+      if: steps.python-updates.outputs.has-python-updates == 'true'
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: Update Python dependencies (automated)"
+        title: "🔄 Automated Dependency Updates"
+        body: |
+          ## 🔄 Automated Dependency Updates
+          
+          This PR contains automated dependency updates for Python packages.
+          
+          ### Changes
+          - Updated Python dependencies to latest minor versions
+          - Maintained compatibility with existing major versions
+          
+          ### Security Status
+          - Critical vulnerabilities found: ${{ needs.python-dependency-health.outputs.critical-vulns }}
+          - Total vulnerabilities found: ${{ needs.python-dependency-health.outputs.total-vulns }}
+          
+          ### Review Checklist
+          - [ ] Review updated dependencies
+          - [ ] Run tests to ensure compatibility
+          - [ ] Check for any breaking changes
+          - [ ] Verify security improvements
+          
+          **Auto-generated by:** Dependency Management workflow
+        branch: automated-dependency-updates
+        delete-branch: true
+
+  # Generate comprehensive dependency report
+  dependency-summary:
+    name: Dependency Summary Report
+    needs: [python-dependency-health, android-dependency-health, vendor-sdk-monitoring]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Download all dependency reports
+      uses: actions/download-artifact@v4
+      with:
+        path: all-dependency-reports/
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Generate comprehensive dependency summary
+      run: |
+        echo "📊 Generating comprehensive dependency summary..."
+        
+        python -c "
+        import json
+        import os
+        from datetime import datetime
+        
+        # Create comprehensive summary
+        summary = {
+            'timestamp': datetime.now().isoformat(),
+            'workflow_run': '${{ github.run_number }}',
+            'python': {
+                'critical_vulnerabilities': ${{ needs.python-dependency-health.outputs.critical-vulns }},
+                'total_vulnerabilities': ${{ needs.python-dependency-health.outputs.total-vulns }},
+                'status': 'critical' if ${{ needs.python-dependency-health.outputs.critical-vulns }} > 0 else 'healthy'
+            },
+            'android': {
+                'outdated_dependencies': ${{ needs.android-dependency-health.outputs.gradle-outdated }},
+                'status': 'needs_update' if ${{ needs.android-dependency-health.outputs.gradle-outdated }} > 5 else 'healthy'
+            },
+            'vendor_sdks': {
+                'high_risk_issues': ${{ needs.vendor-sdk-monitoring.outputs.high-risks }},
+                'status': 'critical' if ${{ needs.vendor-sdk-monitoring.outputs.high-risks }} > 0 else 'healthy'
+            },
+            'overall_health': 'healthy'
+        }
+        
+        # Determine overall health
+        if (summary['python']['critical_vulnerabilities'] > 0 or 
+            summary['vendor_sdks']['high_risk_issues'] > 0):
+            summary['overall_health'] = 'critical'
+        elif (summary['python']['total_vulnerabilities'] > 5 or 
+              summary['android']['outdated_dependencies'] > 10):
+            summary['overall_health'] = 'warning'
+        
+        # Save summary
+        with open('dependency-summary.json', 'w') as f:
+            json.dump(summary, f, indent=2)
+        
+        print(f'Overall dependency health: {summary[\"overall_health\"]}')
+        "
+    
+    - name: Generate markdown summary
+      run: |
+        cat > dependency-summary.md << 'EOF'
+        # 📦 Dependency Health Report
+        
+        **Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        **Workflow Run:** #${{ github.run_number }}
+        **Status:** $(cat dependency-summary.json | jq -r '.overall_health')
+        
+        ## 🐍 Python Dependencies
+        
+        | Metric | Value | Status |
+        |--------|-------|--------|
+        | Critical Vulnerabilities | ${{ needs.python-dependency-health.outputs.critical-vulns }} | ${{ needs.python-dependency-health.outputs.critical-vulns == '0' && '✅ Good' || '❌ Action Required' }} |
+        | Total Vulnerabilities | ${{ needs.python-dependency-health.outputs.total-vulns }} | ${{ needs.python-dependency-health.outputs.total-vulns == '0' && '✅ Clean' || '⚠️ Review Needed' }} |
+        
+        ## 🤖 Android Dependencies
+        
+        | Metric | Value | Status |
+        |--------|-------|--------|
+        | Outdated Dependencies | ${{ needs.android-dependency-health.outputs.gradle-outdated }} | ${{ needs.android-dependency-health.outputs.gradle-outdated == '0' && '✅ Up to Date' || '⚠️ Updates Available' }} |
+        
+        ## 🔧 Vendor SDKs
+        
+        | Component | Status |
+        |-----------|--------|
+        | Shimmer SDK | ${{ needs.vendor-sdk-monitoring.outputs.high-risks == '0' && '✅ Healthy' || '⚠️ Issues Found' }} |
+        | Thermal Camera SDK | ${{ needs.vendor-sdk-monitoring.outputs.high-risks == '0' && '✅ Healthy' || '⚠️ Issues Found' }} |
+        | High Risk Issues | ${{ needs.vendor-sdk-monitoring.outputs.high-risks }} |
+        
+        ## 📋 Recommended Actions
+        
+        ${{ needs.python-dependency-health.outputs.critical-vulns != '0' && '🚨 **CRITICAL:** Address Python security vulnerabilities immediately' || '' }}
+        ${{ needs.vendor-sdk-monitoring.outputs.high-risks != '0' && '⚠️ **HIGH:** Review vendor SDK issues and consider updates' || '' }}
+        ${{ needs.android-dependency-health.outputs.gradle-outdated != '0' && '📦 **MEDIUM:** Consider updating outdated Android dependencies' || '' }}
+        ${{ needs.python-dependency-health.outputs.critical-vulns == '0' && needs.vendor-sdk-monitoring.outputs.high-risks == '0' && '✅ **ALL GOOD:** No critical issues found, continue monitoring' || '' }}
+        
+        ## 🔗 Detailed Reports
+        
+        - Python dependency reports available in workflow artifacts
+        - Android dependency analysis available in workflow artifacts  
+        - Vendor SDK monitoring reports available in workflow artifacts
+        
+        ---
+        *This report is generated automatically by the Dependency Management workflow.*
+        EOF
+        
+        cat dependency-summary.md
+    
+    - name: Upload dependency summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: dependency-summary-report
+        path: |
+          dependency-summary.md
+          dependency-summary.json
+        retention-days: 90
+    
+    - name: Create or update dependency tracking issue
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('dependency-summary.md', 'utf8');
+          
+          // Look for existing dependency tracking issue
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ['dependencies', 'tracking'],
+            state: 'open'
+          });
+          
+          const title = `📦 Dependency Health Tracking - ${new Date().toISOString().split('T')[0]}`;
+          
+          if (issues.data.length > 0) {
+            // Update existing issue
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issues.data[0].number,
+              title: title,
+              body: summary
+            });
+            console.log('Updated existing dependency tracking issue');
+          } else {
+            // Create new issue
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: summary,
+              labels: ['dependencies', 'tracking', 'maintenance']
+            });
+            console.log('Created new dependency tracking issue');
+          }
+
+  # Alert on critical dependency issues
+  critical-dependency-alert:
+    name: Critical Dependency Alert
+    needs: [python-dependency-health, android-dependency-health, vendor-sdk-monitoring]
+    runs-on: ubuntu-latest
+    if: |
+      needs.python-dependency-health.outputs.critical-vulns != '0' || 
+      needs.vendor-sdk-monitoring.outputs.high-risks != '0'
+    
+    steps:
+    - name: Create critical dependency issue
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `🚨 CRITICAL: Dependency Security Issues Detected - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          # 🚨 Critical Dependency Security Issues
+          
+          **Alert Level:** CRITICAL
+          **Detected:** ${new Date().toISOString()}
+          **Workflow Run:** ${{ github.run_number }}
+          
+          ## ⚠️ Issues Found
+          
+          ### Python Dependencies
+          - **Critical Vulnerabilities:** ${{ needs.python-dependency-health.outputs.critical-vulns }}
+          - **Total Vulnerabilities:** ${{ needs.python-dependency-health.outputs.total-vulns }}
+          
+          ### Vendor SDKs
+          - **High Risk Issues:** ${{ needs.vendor-sdk-monitoring.outputs.high-risks }}
+          
+          ## 🔧 Immediate Actions Required
+          
+          1. **Stop all deployments** until critical vulnerabilities are resolved
+          2. **Review security reports** in workflow artifacts
+          3. **Update vulnerable dependencies** immediately
+          4. **Test thoroughly** before deploying fixes
+          5. **Monitor for additional vulnerabilities**
+          
+          ## 📋 Resolution Checklist
+          
+          - [ ] Review vulnerability reports
+          - [ ] Identify affected components
+          - [ ] Update vulnerable dependencies
+          - [ ] Run security tests
+          - [ ] Deploy security fixes
+          - [ ] Verify fix effectiveness
+          
+          ## 🔗 Resources
+          
+          - **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - **Security Reports:** Available in workflow artifacts
+          - **Dependency Analysis:** See dependency summary artifact
+          
+          **Auto-generated by:** Dependency Management workflow
+          **Priority:** CRITICAL - Address immediately
+          `;
+          
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['critical', 'security', 'dependencies', 'urgent']
+          });
+    
+    - name: Notify on critical issues
+      run: |
+        echo "🚨 CRITICAL DEPENDENCY ISSUES DETECTED"
+        echo "Critical Python vulnerabilities: ${{ needs.python-dependency-health.outputs.critical-vulns }}"
+        echo "High-risk vendor SDK issues: ${{ needs.vendor-sdk-monitoring.outputs.high-risks }}"
+        echo ""
+        echo "An urgent issue has been created for immediate attention."
+        echo "Please review the security reports and take immediate action."

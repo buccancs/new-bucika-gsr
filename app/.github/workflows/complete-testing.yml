@@ -1,0 +1,754 @@
+name: Complete Testing
+
+on:
+  schedule:
+    # Run complete tests nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - python-extended
+          - android-extended
+          - e2e
+          - performance
+          - hardware
+          - virtual-environment
+      skip_hardware:
+        description: 'Skip hardware-in-the-loop tests'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  PYTHON_VERSION: '3.10'
+  JAVA_VERSION: '17'
+  NODE_VERSION: '18'
+  
+  # Test environment configuration
+  GSR_TEST_CI_MODE: true
+  GSR_TEST_HEADLESS: true
+  GSR_TEST_LOG_LEVEL: INFO
+
+jobs:
+  # Determine test matrix based on trigger
+  setup-test-matrix:
+    name: Setup Test Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      test-suites: ${{ steps.matrix.outputs.suites }}
+      include-hardware: ${{ steps.matrix.outputs.include-hardware }}
+    
+    steps:
+    - name: Determine test suites
+      id: matrix
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          TEST_SUITE="${{ github.event.inputs.test_suite }}"
+          SKIP_HARDWARE="${{ github.event.inputs.skip_hardware }}"
+        else
+          TEST_SUITE="all"
+          SKIP_HARDWARE="true"
+        fi
+        
+        echo "Test suite: $TEST_SUITE"
+        echo "Skip hardware: $SKIP_HARDWARE"
+        
+        case $TEST_SUITE in
+          "python-extended")
+            SUITES='["python-extended"]'
+            ;;
+          "android-extended") 
+            SUITES='["android-extended"]'
+            ;;
+          "e2e")
+            SUITES='["e2e"]'
+            ;;
+          "performance")
+            SUITES='["performance"]'
+            ;;
+          "hardware")
+            SUITES='["hardware"]'
+            SKIP_HARDWARE="false"
+            ;;
+          "virtual-environment")
+            SUITES='["virtual-environment"]'
+            ;;
+          "all")
+            SUITES='["python-extended", "android-extended", "e2e", "performance", "virtual-environment"]'
+            ;;
+        esac
+        
+        echo "suites=$SUITES" >> $GITHUB_OUTPUT
+        echo "include-hardware=$([[ \"$SKIP_HARDWARE\" == \"false\" ]] && echo \"true\" || echo \"false\")" >> $GITHUB_OUTPUT
+
+  # Extended Python testing
+  python-extended-tests:
+    name: Python Extended Tests
+    runs-on: ubuntu-latest
+    needs: setup-test-matrix
+    if: contains(fromJSON(needs.setup-test-matrix.outputs.test-suites), 'python-extended')
+    
+    strategy:
+      matrix:
+        test-category: [unit, integration, system, evaluation]
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libffi-dev libssl-dev libjpeg-dev libpng-dev libfreetype6-dev \
+          xvfb libbluetooth-dev libusb-1.0-0-dev
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e ".[dev]"
+        pip install pytest-xvfb pytest-timeout
+    
+    - name: Run ${{ matrix.test-category }} tests
+      timeout-minutes: 45
+      run: |
+        echo "🧪 Running ${{ matrix.test-category }} tests..."
+        
+        case "${{ matrix.test-category }}" in
+          "unit")
+            python tests_unified/runners/run_unified_tests.py --level unit --mode ci --verbose
+            ;;
+          "integration")
+            python tests_unified/runners/run_unified_tests.py --level integration --mode research --extended --verbose
+            ;;
+          "system")
+            python tests_unified/runners/run_unified_tests.py --level system --mode research --extended --verbose
+            ;;
+          "evaluation")
+            python tests_unified/runners/run_unified_tests.py --category evaluation --mode research --verbose
+            ;;
+        esac
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: python-${{ matrix.test-category }}-results
+        path: |
+          tests_unified/reports/
+          htmlcov/
+          coverage.xml
+        retention-days: 30
+
+  # Extended Android testing
+  android-extended-tests:
+    name: Android Extended Tests
+    runs-on: ubuntu-latest
+    needs: setup-test-matrix
+    if: contains(fromJSON(needs.setup-test-matrix.outputs.test-suites), 'android-extended')
+    
+    strategy:
+      matrix:
+        include:
+          - api-level: 35
+            target: google_apis
+            arch: x86_64
+            test-type: unit
+          - api-level: 35
+            target: google_apis
+            arch: x86_64
+            test-type: instrumented
+          - api-level: 35
+            target: google_apis
+            arch: x86_64
+            test-type: ui
+          - api-level: 34
+            target: google_apis
+            arch: x86_64
+            test-type: compatibility
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Enable KVM
+      if: matrix.test-type != 'unit'
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-extended-${{ hashFiles('**/*.gradle*') }}
+    
+    - name: Cache AVD
+      if: matrix.test-type != 'unit'
+      uses: actions/cache@v4
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
+    
+    - name: Create AVD
+      if: matrix.test-type != 'unit' && steps.avd-cache.outputs.cache-hit != 'true'
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: ${{ matrix.api-level }}
+        target: ${{ matrix.target }}
+        arch: ${{ matrix.arch }}
+        force-avd-creation: false
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
+        script: echo "Generated AVD snapshot for caching."
+    
+    - name: Setup Gradle environment
+      run: |
+        chmod +x ./gradlew
+        ./gradlew --stop || true
+        rm -rf ~/.gradle/caches/*/dependencies-accessors/ || true
+        ./gradlew clean --no-daemon
+    
+    - name: Build Android app
+      run: |
+        ./gradlew assembleDevDebug assembleDevDebugAndroidTest \
+          --no-daemon --refresh-dependencies
+    
+    - name: Run Android ${{ matrix.test-type }} tests
+      timeout-minutes: 60
+      run: |
+        case "${{ matrix.test-type }}" in
+          "unit")
+            ./gradlew testDevDebugUnitTest jacocoTestReport --continue
+            ;;
+          "instrumented"|"ui"|"compatibility")
+            echo "Starting Android emulator for ${{ matrix.test-type }} tests..."
+            $ANDROID_HOME/emulator/emulator -avd test -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
+            adb wait-for-device
+            adb shell input keyevent 82 &
+            sleep 10
+            
+            case "${{ matrix.test-type }}" in
+              "instrumented")
+                ./gradlew connectedDevDebugAndroidTest --continue
+                ;;
+              "ui")
+                ./gradlew connectedDevDebugAndroidTest --continue \
+                  -Pandroid.testInstrumentationRunnerArguments.class=com.multisensor.recording.NavigationTest,com.multisensor.recording.IDEIntegrationUITest
+                ;;
+              "compatibility")
+                ./gradlew connectedDevDebugAndroidTest --continue \
+                  -Pandroid.testInstrumentationRunnerArguments.package=com.multisensor.recording.integration
+                ;;
+            esac
+            ;;
+        esac
+    
+    - name: Upload Android test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: android-${{ matrix.test-type }}-api${{ matrix.api-level }}-results
+        path: |
+          AndroidApp/build/reports/
+          AndroidApp/build/outputs/androidTest-results/
+        retention-days: 30
+
+  # E2E Testing
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: setup-test-matrix
+    if: contains(fromJSON(needs.setup-test-matrix.outputs.test-suites), 'e2e')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+    
+    - name: Set up Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Enable KVM for Android emulator
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libffi-dev libssl-dev libjpeg-dev libpng-dev xvfb \
+          libasound2-dev libgtk-3-dev libdrm2 libxss1 libgconf-2-4 \
+          libxtst6 libxrandr2 libasound2 libpangocairo-1.0-0 \
+          libatk1.0-0 libcairo-gobject2 libgtk-3-0 libgdk-pixbuf2.0-0
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e ".[dev]"
+        pip install pytest-xvfb pytest-timeout
+    
+    - name: Setup Appium
+      run: |
+        npm install -g appium@2.0.0
+        npm install -g @appium/doctor
+        appium driver install uiautomator2
+        appium-doctor --android || echo "Appium doctor warnings ignored for CI"
+    
+    - name: Install Playwright browsers
+      run: |
+        playwright install chromium firefox webkit
+        playwright install-deps
+    
+    - name: Cache AVD for E2E
+      uses: actions/cache@v4
+      id: avd-cache-e2e
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-e2e-35-google_apis-x86_64
+    
+    - name: Create AVD for E2E
+      if: steps.avd-cache-e2e.outputs.cache-hit != 'true'
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 35
+        target: google_apis
+        arch: x86_64
+        force-avd-creation: false
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
+        script: echo "Generated AVD snapshot for E2E testing."
+    
+    - name: Build Android app for E2E
+      run: |
+        chmod +x ./gradlew
+        ./gradlew --stop || true
+        rm -rf ~/.gradle/caches/*/dependencies-accessors/ || true
+        ./gradlew assembleDevDebug --no-daemon --refresh-dependencies
+    
+    - name: Start services for E2E tests
+      run: |
+        # Start Appium server
+        appium server --port 4723 --allow-insecure chromedriver_autodownload &
+        sleep 10
+        
+        # Start Web dashboard
+        cd PythonApp
+        python -m web_ui.web_dashboard &
+        sleep 5
+        cd ..
+        
+        # Verify services
+        curl -f http://localhost:4723/wd/hub/status || echo "::warning::Appium server check failed"
+        curl -f http://localhost:5000/ || echo "::warning::Web dashboard check failed"
+    
+    - name: Run E2E tests
+      timeout-minutes: 90
+      run: |
+        echo "🚀 Starting Android emulator for E2E tests..."
+        $ANDROID_HOME/emulator/emulator -avd test -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
+        
+        # Wait for emulator
+        adb wait-for-device
+        adb shell input keyevent 82 &
+        sleep 10
+        
+        # Install the app
+        adb install AndroidApp/build/outputs/apk/dev/debug/AndroidApp-dev-debug.apk
+        
+        # Run E2E tests
+        xvfb-run -a pytest tests_unified/e2e/ -m "e2e" \
+          --timeout=600 --tb=short -v \
+          --junitxml=junit-e2e.xml
+    
+    - name: Upload E2E test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
+          junit-e2e.xml
+          tests_unified/e2e/screenshots/
+          tests_unified/e2e/test_results/
+          tests/e2e/screenshots/
+          tests/e2e/test_results/
+        retention-days: 30
+
+  # Performance Testing
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: setup-test-matrix
+    if: contains(fromJSON(needs.setup-test-matrix.outputs.test-suites), 'performance')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e ".[dev]"
+    
+    - name: Run performance tests
+      timeout-minutes: 60
+      run: |
+        echo "⚡ Running performance tests..."
+        mkdir -p performance_reports
+        
+        # Run unified performance tests
+        python tests_unified/runners/run_unified_tests.py \
+          --level performance --mode research \
+          --performance-benchmarks --output-format json \
+          > performance_results.json || echo "::warning::Some performance tests failed"
+        
+        # Run benchmark tests
+        python tests_unified/runners/run_unified_tests.py \
+          --category evaluation --performance-benchmarks \
+          --output-format json > benchmark.json || echo "::warning::Benchmark tests failed"
+    
+    - name: Analyze performance results
+      run: |
+        echo "📊 Analyzing performance results..."
+        python -c "
+        import json
+        import sys
+        
+        try:
+            with open('performance_results.json') as f:
+                perf_data = json.load(f)
+            
+            with open('benchmark.json') as f:
+                bench_data = json.load(f)
+            
+            print('Performance test results available')
+            print(f'Performance tests: {len(perf_data.get(\"tests\", []))} executed')
+            print(f'Benchmarks: {len(bench_data.get(\"benchmarks\", []))} executed')
+            
+        except Exception as e:
+            print(f'Error analyzing performance data: {e}')
+            sys.exit(1)
+        "
+    
+    - name: Upload performance results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-test-results
+        path: |
+          performance_results.json
+          benchmark.json
+          performance_reports/
+          tests_unified/reports/performance/
+          performance_results.json
+          benchmark.json
+        retention-days: 90
+
+  # Virtual Environment Testing
+  virtual-environment-tests:
+    name: Virtual Environment Tests
+    runs-on: ubuntu-latest
+    needs: setup-test-matrix
+    if: contains(fromJSON(needs.setup-test-matrix.outputs.test-suites), 'virtual-environment')
+    
+    strategy:
+      matrix:
+        scenario: [ci, stress, sync]
+        device_count: [3, 5]
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libffi-dev libssl-dev libjpeg-dev libpng-dev xvfb
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e .
+        pip install pytest pytest-asyncio psutil numpy opencv-python-headless
+    
+    - name: Run virtual environment tests
+      timeout-minutes: 30
+      run: |
+        echo "🌐 Running virtual environment tests: ${{ matrix.scenario }} with ${{ matrix.device_count }} devices"
+        
+        if [ -d "tests_unified/integration/virtual_environment" ]; then
+          cd tests_unified/integration/virtual_environment
+          xvfb-run -a --server-args="-screen 0 1024x768x24" \
+            python test_runner.py \
+            --scenario ${{ matrix.scenario }} \
+            --devices ${{ matrix.device_count }} \
+            --duration 3.0 \
+            --verbose
+        elif [ -d "tests/integration/virtual_environment" ]; then
+          cd tests/integration/virtual_environment
+          xvfb-run -a --server-args="-screen 0 1024x768x24" \
+            python test_runner.py \
+            --scenario ${{ matrix.scenario }} \
+            --devices ${{ matrix.device_count }} \
+            --duration 3.0 \
+            --verbose
+        else
+          echo "::warning::Virtual environment tests not found"
+          exit 1
+        fi
+    
+    - name: Validate results
+      run: |
+        if [ -d "tests_unified/integration/virtual_environment" ]; then
+          cd tests_unified/integration/virtual_environment
+        elif [ -d "tests/integration/virtual_environment" ]; then
+          cd tests/integration/virtual_environment
+        else
+          echo "Virtual environment tests not found"
+          exit 1
+        fi
+        
+        if [ -f test_results/*_report.json ]; then
+          echo "Test report found:"
+          cat test_results/*_report.json | jq '.summary'
+          
+          PASSED=$(cat test_results/*_report.json | jq -r '.summary.overall_passed')
+          if [ "$PASSED" != "true" ]; then
+            echo "Virtual environment test failed"
+            exit 1
+          fi
+        else
+          echo "No test report found"
+          exit 1
+        fi
+    
+    - name: Upload virtual environment results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: virtual-env-results-${{ matrix.scenario }}-${{ matrix.device_count }}
+        path: |
+          tests_unified/integration/virtual_environment/test_results/
+          tests/integration/virtual_environment/test_results/
+        retention-days: 30
+
+  # Hardware-in-the-loop testing (requires self-hosted runner)
+  hardware-tests:
+    name: Hardware-in-the-Loop Tests
+    runs-on: self-hosted
+    needs: setup-test-matrix
+    if: needs.setup-test-matrix.outputs.include-hardware == 'true'
+    timeout-minutes: 90
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e ".[dev]"
+        pip install pybluez pyusb pyserial
+    
+    - name: Validate hardware environment
+      run: |
+        echo "🔧 Validating hardware test environment..."
+        python -c "
+        import sys
+        sys.path.append('tests_unified/hardware')
+        try:
+            from hardware_utils import validate_test_environment
+            result = validate_test_environment()
+        except ImportError:
+            sys.path.append('tests/hardware')
+            from hardware_utils import validate_test_environment
+            result = validate_test_environment()
+        
+        print(f'Hardware test environment ready: {result[\"ready\"]}')
+        
+        if not result['ready']:
+            print('Issues:', result['issues'])
+            sys.exit(1)
+        "
+    
+    - name: Run hardware-in-the-loop tests
+      timeout-minutes: 60
+      run: |
+        echo "🔗 Running hardware-in-the-loop tests..."
+        pytest tests_unified/hardware/ -m "hardware_loop" \
+          --timeout=300 --tb=short -v \
+          --junitxml=junit-hardware.xml
+    
+    - name: Upload hardware test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: hardware-test-results
+        path: |
+          junit-hardware.xml
+          tests_unified/hardware/test_results/
+          tests/hardware/test_results/
+        retention-days: 30
+
+  # Test summary and reporting
+  test-summary:
+    name: Comprehensive Test Summary
+    runs-on: ubuntu-latest
+    needs: [setup-test-matrix, python-extended-tests, android-extended-tests, e2e-tests, performance-tests, virtual-environment-tests]
+    if: always()
+    
+    steps:
+    - name: Download all test results
+      uses: actions/download-artifact@v4
+      with:
+        path: test-results
+    
+    - name: Generate comprehensive summary
+      run: |
+        echo "📊 Generating comprehensive test summary..."
+        
+        cat > comprehensive-summary.md << 'EOF'
+        # Comprehensive Testing Summary
+        
+        **Execution Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        **Workflow:** ${{ github.workflow }}
+        **Run Number:** ${{ github.run_number }}
+        **Test Suites:** ${{ needs.setup-test-matrix.outputs.test-suites }}
+        
+        ## Results Overview
+        
+        | Test Suite | Status | Duration |
+        |------------|--------|----------|
+        | Python Extended | ${{ needs.python-extended-tests.result }} | - |
+        | Android Extended | ${{ needs.android-extended-tests.result }} | - |
+        | End-to-End | ${{ needs.e2e-tests.result }} | - |
+        | Performance | ${{ needs.performance-tests.result }} | - |
+        | Virtual Environment | ${{ needs.virtual-environment-tests.result }} | - |
+        ${{ needs.setup-test-matrix.outputs.include-hardware == 'true' && '| Hardware-in-Loop | ' || '' }}${{ needs.setup-test-matrix.outputs.include-hardware == 'true' && needs.hardware-tests.result || '' }}${{ needs.setup-test-matrix.outputs.include-hardware == 'true' && ' | - |' || '' }}
+        
+        ## Detailed Results
+        
+        ### Test Artifacts
+        - **Total artifacts:** $(find test-results -name "*.xml" -o -name "*.json" -o -name "*.html" | wc -l)
+        - **Coverage reports:** Available in artifacts
+        - **Performance data:** Available in artifacts
+        - **Screenshots:** Available for visual/E2E tests
+        
+        ### Quality Metrics
+        - **Test Coverage:** See Codecov report
+        - **Performance Benchmarks:** See performance artifacts
+        - **Hardware Compatibility:** ${{ needs.setup-test-matrix.outputs.include-hardware == 'true' && 'Tested' || 'Skipped' }}
+        
+        ---
+        *Generated by Comprehensive Testing workflow*
+        EOF
+        
+        cat comprehensive-summary.md
+    
+    - name: Upload comprehensive summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: comprehensive-test-summary
+        path: comprehensive-summary.md
+        retention-days: 90
+    
+    - name: Notify on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `🔴 Comprehensive Testing Failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          # Comprehensive Testing Failure Alert
+          
+          **Workflow:** ${{ github.workflow }}
+          **Run:** ${{ github.run_number }}
+          **Trigger:** ${{ github.event_name }}
+          
+          ## Failed Components
+          
+          - **Python Extended:** ${{ needs.python-extended-tests.result }}
+          - **Android Extended:** ${{ needs.android-extended-tests.result }}
+          - **End-to-End:** ${{ needs.e2e-tests.result }}
+          - **Performance:** ${{ needs.performance-tests.result }}
+          - **Virtual Environment:** ${{ needs.virtual-environment-tests.result }}
+          
+          ## Next Steps
+          
+          1. Review the failed workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          2. Check the test artifacts for detailed error information
+          3. Address the failing tests before the next scheduled run
+          
+          **Auto-generated by:** Comprehensive Testing workflow
+          `;
+          
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['testing', 'ci-failure', 'high-priority']
+          });

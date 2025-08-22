@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/nav_recording"
+            android:icon="@drawable/ic_videocam"
+            android:title="Recording"/>
+
+    <item
+            android:id="@+id/nav_devices"
+            android:icon="@drawable/ic_devices"
+            android:title="Devices"/>
+
+    <item
+            android:id="@+id/nav_files"
+            android:icon="@drawable/ic_folder"
+            android:title="Files"/>
+
+    <item
+            android:id="@+id/nav_calibration"
+            android:icon="@drawable/ic_calibrate"
+            android:title="Calibration"/>
+
+</menu>
