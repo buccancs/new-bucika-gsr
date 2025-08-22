@@ -1,6 +1,6 @@
 # BucikaGSR Gradle Build Setup
 
-This document describes the consolidated Gradle build setup for the BucikaGSR Android application.
+This document describes the Gradle build setup for the BucikaGSR Android application.
 
 ## Overview
 
@@ -10,7 +10,7 @@ The BucikaGSR project has been configured with a comprehensive Gradle build syst
 - **Standardized build configurations** for Java 17 and modern Android development  
 - **Product flavor consistency** across all modules
 - **Build validation and optimization** scripts
-- **Consolidated app setup** for easier maintenance
+- **Shared app setup** for easier maintenance
 
 ## Project Structure
 
@@ -28,7 +28,7 @@ BucikaGSR/
 ├── build.gradle                 # Root build configuration
 ├── settings.gradle              # Module inclusion settings
 ├── depend.gradle               # Global dependency versions
-├── consolidate_app_setup.gradle # Consolidated configuration script
+├── shared.gradle                 # Shared configuration script
 └── gradle.properties           # Global Gradle properties
 ```
 
@@ -46,7 +46,7 @@ BucikaGSR/
    - App versioning (versionCode: 1100, versionName: "1.10.000")
    - Product flavor configurations (dev, beta, prod, etc.)
 
-3. **`consolidate_app_setup.gradle`** - Consolidated setup providing:
+3. **`shared.gradle`** - Shared setup providing:
    - Version management for all dependencies
    - Common module configurations
    - Build optimization settings
@@ -174,7 +174,7 @@ libapp (foundation module)
 ### Common Issues
 - **ARouter errors**: ARouter has been replaced with ModernRouter (internal)
 - **NDK issues**: Ensure NDK 21.3.6528147 is installed
-- **Dependency conflicts**: Check `consolidate_app_setup.gradle` for version management
+- **Dependency conflicts**: Check `shared.gradle` for version management
 
 ### Validation Errors
 If `./gradlew validateBuild` fails:
@@ -195,11 +195,11 @@ The build system includes several optimizations:
 ### Adding New Modules
 1. Create module directory with `build.gradle`
 2. Add to `settings.gradle` 
-3. Apply common configuration from `consolidate_app_setup.gradle`
+3. Apply common configuration from `shared.gradle`
 4. Run `./gradlew validateBuild` to confirm
 
 ### Updating Dependencies
-1. Update versions in `consolidate_app_setup.gradle`
+1. Update versions in `shared.gradle`
 2. Test with `./gradlew assembleDevDebug`
 3. Run validation to ensure consistency
 

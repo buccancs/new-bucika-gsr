@@ -1,5 +1,5 @@
-// Consolidated App Setup for BucikaGSR
-// This file provides consolidated dependency management and common configurations
+// Shared configurations for BucikaGSR
+// This file provides dependency management and common configurations
 
 // Version management
 project.ext.bucika_versions = [
@@ -178,4 +178,4 @@ project.ext.applyBuildOptimizations = {
     println "✓ Build optimizations configuration applied"
 }
 
-println "BucikaGSR consolidated setup loaded successfully"
+println "BucikaGSR shared setup loaded successfully"

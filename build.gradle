@@ -27,13 +27,13 @@ buildscript {
     }
 }
 apply from: "depend.gradle"
-apply from: "consolidate_app_setup.gradle"
+apply from: "shared.gradle"
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-// Apply consolidated configurations after evaluation
+// Apply shared configurations after evaluation
 project.afterEvaluate {
     validateModuleConfigs()
     applyBuildOptimizations()
