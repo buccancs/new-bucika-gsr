@@ -81,8 +81,8 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     private var isShowC: Boolean = false
 
     /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
+     * Device type flag - Always false for bucika_gsr as only TC001 is supported.
+     * TC001 is not TC007, so this is always false.
      */
     private var isTC007 = false
 
@@ -118,8 +118,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
     private fun initIntent() {
         lifecycleScope.launch{
-            ts_data_H = CommonUtil.getAssetData(this@IRGalleryEditActivity, "ts/TS001_H.bin")
-            ts_data_L = CommonUtil.getAssetData(this@IRGalleryEditActivity, "ts/TS001_L.bin")
+            // Removed TS001 asset loading since only TC001 is supported
 
             if (BaseApplication.instance.tau_data_H == null){
                 BaseApplication.instance.tau_data_H = CommonUtil.getAssetData(mContext, IrConst.TAU_HIGH_GAIN_ASSET_PATH)
@@ -132,15 +131,14 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             filePath = intent.getStringExtra(ExtraKeyConfig.FILE_ABSOLUTE_PATH)!!
         }
         isReportPick = intent.getBooleanExtra(ExtraKeyConfig.IS_PICK_REPORT_IMG, false)
-        isTC007 = intent.getBooleanExtra(ExtraKeyConfig.IS_TC007, false)
+        // Always false for bucika_gsr since only TC001 is supported (TC001 is not TC007)
+        isTC007 = false
 
         edit_recycler_second.fenceSelectType = FenceType.DEL
         temperature_view.isShowName = isReportPick
         temperature_view.mode = Mode.CLEAR
         temperature_view.setITsTempListener(this)
-        if (isTC007){
-            temperature_seekbar?.progressHeight = SizeUtils.dp2px(10f)
-        }
+        // Removed TC007-specific logic since only TC001 is supported
     }
 
     private fun initObserve() {
