@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BucikaGSR</string>
+    <string name="hello_world">Hello BucikaGSR!</string>
+    
+    <!-- GSR related strings -->
+    <string name="gsr_title">GSR Monitoring</string>
+    <string name="gsr_connect">Connect GSR Sensor</string>
+    <string name="gsr_disconnect">Disconnect</string>
+    <string name="gsr_recording">Recording GSR Data</string>
+    <string name="gsr_stopped">GSR Recording Stopped</string>
+    
+    <!-- Thermal IR related strings -->
+    <string name="thermal_title">Thermal Imaging</string>
+    <string name="thermal_start">Start Thermal Camera</string>
+    <string name="thermal_stop">Stop Thermal Camera</string>
+    
+    <!-- General UI strings -->
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+</resources>
