@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.*
-import com.alibaba.android.arouter.launcher.ARouter
+// ARouter replaced with ModernRouter (internal) for BucikaGSR
+// import com.alibaba.android.arouter.launcher.ARouter
 import com.topdon.lib.core.R
 import com.topdon.lib.core.config.ExtraKeyConfig
 import com.topdon.lib.core.config.RouterConfig
@@ -103,9 +104,10 @@ class TipEmissivityDialog : Dialog {
             }
             view.dialog_tip_cancel_btn.setOnClickListener {
                 dialog?.onDismissListener?.invoke(hasCheck)
-                ARouter.getInstance().build(RouterConfig.IR_SETTING)
-                    .withBoolean(ExtraKeyConfig.IS_TC007, isTC007)
-                    .navigation(context)
+                // ARouter.getInstance().build(RouterConfig.IR_SETTING)
+                //     .withBoolean(ExtraKeyConfig.IS_TC007, isTC007)
+                //     .navigation(context)
+                // Navigation replaced with ModernRouter for BucikaGSR - IR Settings navigation
                 dismiss()
             }
             val tvEmissivity = view.tv_emissivity

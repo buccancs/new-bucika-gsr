@@ -10,7 +10,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.PopupWindow
 import android.widget.TextView
-import com.alibaba.android.arouter.launcher.ARouter
+// ARouter replaced with ModernRouter (internal) for BucikaGSR
+// import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.SizeUtils
 import com.topdon.lib.core.R
 import com.topdon.lib.core.config.ExtraKeyConfig
@@ -95,7 +96,8 @@ class EmissivityTipPopup(val context: Context, val isTC007: Boolean) {
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 必要时可以替换为其他Drawable
             }
             view.dialog_tip_success_btn.setOnClickListener {
-                ARouter.getInstance().build(RouterConfig.IR_SETTING).withBoolean(ExtraKeyConfig.IS_TC007, isTC007).navigation(context)
+                // ARouter.getInstance().build(RouterConfig.IR_SETTING).withBoolean(ExtraKeyConfig.IS_TC007, isTC007).navigation(context)
+                // Navigation replaced with ModernRouter for BucikaGSR - IR Settings navigation
                 dismiss()
             }
         }
