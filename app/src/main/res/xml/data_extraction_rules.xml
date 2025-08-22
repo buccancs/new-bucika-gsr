@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<data-extraction-rules>
-    <cloud-backup>
-        <!-- No special cloud backup rules for BucikaGSR -->
-    </cloud-backup>
-    <device-transfer>
-        <!-- No special device transfer rules for BucikaGSR -->
-    </device-transfer>
-</data-extraction-rules>
