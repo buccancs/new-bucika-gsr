@@ -13,8 +13,9 @@ import com.topdon.tc001.R
 import kotlinx.android.synthetic.main.activity_gsr.*
 
 /**
- * GSR Activity for bucika_gsr version
- * Provides UI for GSR sensor management and data visualization
+ * Enhanced GSR Activity for bucika_gsr version
+ * Provides comprehensive UI for GSR sensor management and data visualization
+ * Integrates with ShimmerAndroidAPI for professional-grade GSR data collection
  */
 class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
     
