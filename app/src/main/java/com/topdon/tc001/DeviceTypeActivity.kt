@@ -34,28 +34,13 @@ class DeviceTypeActivity : BaseActivity() {
         recycler_view.adapter = MyAdapter(this).apply {
             onItemClickListener = {
                 clientType = it
-                when (it) {
-                    IRDeviceType.TS004 -> {
-                        ARouter.getInstance()
-                            .build(RouterConfig.IR_DEVICE_ADD)
-                            .withBoolean("isTS004", true)
-                            .navigation(this@DeviceTypeActivity)
-                    }
-                    IRDeviceType.TC007 -> {
-                        ARouter.getInstance()
-                            .build(RouterConfig.IR_DEVICE_ADD)
-                            .withBoolean("isTS004", false)
-                            .navigation(this@DeviceTypeActivity)
-                    }
-                    else -> {
-                        ARouter.getInstance()
-                            .build(RouterConfig.IR_MAIN)
-                            .withBoolean(ExtraKeyConfig.IS_TC007, false)
-                            .navigation(this@DeviceTypeActivity)
-                        if (DeviceTools.isConnect()) {
-                            finish()
-                        }
-                    }
+                // Only TC001 is supported for bucika_gsr
+                ARouter.getInstance()
+                    .build(RouterConfig.IR_MAIN)
+                    .withBoolean(ExtraKeyConfig.IS_TC007, false)
+                    .navigation(this@DeviceTypeActivity)
+                if (DeviceTools.isConnect()) {
+                    finish()
                 }
             }
         }
@@ -65,21 +50,15 @@ class DeviceTypeActivity : BaseActivity() {
     }
 
     override fun connected() {
+        // Only TC001 is supported - always finish on line connection
         if (clientType?.isLine() == true) {
             finish()
         }
     }
 
     override fun onSocketConnected(isTS004: Boolean) {
-        if (isTS004) {
-            if (clientType == IRDeviceType.TS004) {
-                finish()
-            }
-        } else {
-            if (clientType == IRDeviceType.TC007) {
-                finish()
-            }
-        }
+        // Only TC001 is supported - simplified connection handling
+        finish()
     }
 
     private class MyAdapter(val context: Context) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
@@ -104,28 +83,14 @@ class DeviceTypeActivity : BaseActivity() {
             holder.itemView.tv_title.text = context.getString(if (firstType.isLine()) R.string.tc_connect_line else R.string.tc_connect_wifi)
 
             holder.itemView.tv_item1.text = firstType.getDeviceName()
-            when (firstType) {
-                // TODO: 替换 TC002 Duo 图标
-                IRDeviceType.TC001 -> holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_tc001)
-                IRDeviceType.TC001_PLUS -> holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_tc001_plus)
-                IRDeviceType.TC002C_DUO -> holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_tc001_plus)
-                IRDeviceType.TC007 -> holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_tc007)
-                IRDeviceType.TS001 -> holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_ts001)
-                IRDeviceType.TS004 -> holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_ts004)
-            }
+            // Only TC001 is supported for bucika_gsr
+            holder.itemView.iv_item1.setImageResource(R.drawable.ic_device_type_tc001)
 
             holder.itemView.group_item2.isVisible = secondType != null
             if (secondType != null) {
                 holder.itemView.tv_item2.text = secondType.getDeviceName()
-                when (secondType) {
-                    // TODO: 替换 TC002 Duo 图标
-                    IRDeviceType.TC001 -> holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_tc001)
-                    IRDeviceType.TC001_PLUS -> holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_tc001_plus)
-                    IRDeviceType.TC002C_DUO -> holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_tc001_plus)
-                    IRDeviceType.TC007 -> holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_tc007)
-                    IRDeviceType.TS001 -> holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_ts001)
-                    IRDeviceType.TS004 -> holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_ts004)
-                }
+                // Only TC001 is supported for bucika_gsr
+                holder.itemView.iv_item2.setImageResource(R.drawable.ic_device_type_tc001)
             }
         }
 
@@ -151,32 +116,12 @@ class DeviceTypeActivity : BaseActivity() {
     }
 
     /**
-     * 支持的热成像设备类型.
+     * 支持的热成像设备类型 - Only TC001 supported for bucika_gsr.
      */
     enum class IRDeviceType {
         TC001 {
             override fun isLine(): Boolean = true
             override fun getDeviceName(): String = "TC001"
-        },
-        TC001_PLUS {
-            override fun isLine(): Boolean = true
-            override fun getDeviceName(): String = "TC001 Plus"
-        },
-        TC002C_DUO {
-            override fun isLine(): Boolean = true
-            override fun getDeviceName(): String = "TC002C Duo"
-        },
-        TC007 {
-            override fun isLine(): Boolean = false
-            override fun getDeviceName(): String = "TC007"
-        },
-        TS001 {
-            override fun isLine(): Boolean = true
-            override fun getDeviceName(): String = "TS001"
-        },
-        TS004 {
-            override fun isLine(): Boolean = false
-            override fun getDeviceName(): String = "TS004"
         };
 
         abstract fun isLine(): Boolean
