@@ -8,11 +8,11 @@
 - [x] Convert PolicyActivity with WebView integration and detailed KDoc
 
 ## Phase 2: Core Activities (IN PROGRESS 🚧)
-- [ ] ClauseActivity - Convert to ViewBinding
-- [ ] GSRActivity - Convert to ViewBinding (Critical for GSR functionality)
-- [ ] DeviceTypeActivity - Convert to ViewBinding
-- [ ] VersionActivity - Convert to ViewBinding
-- [ ] PdfActivity - Convert to ViewBinding
+- [x] ClauseActivity - Convert to ViewBinding ✅
+- [x] GSRActivity - Convert to ViewBinding (Critical for GSR functionality) ✅
+- [x] DeviceTypeActivity - Convert to ViewBinding ✅
+- [x] VersionActivity - Convert to ViewBinding ✅
+- [x] PdfActivity - Convert to ViewBinding ✅
 - [ ] IRGalleryEditActivity - Convert to ViewBinding
 
 ## Phase 3: Fragments and UI Components
