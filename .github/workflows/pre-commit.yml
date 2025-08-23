@@ -1,0 +1,178 @@
+name: Pre-commit Hooks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pre-commit:
+    name: Pre-commit Quality Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Run Pre-commit Linting
+        id: lint
+        run: |
+          echo "Running lint checks..."
+          ./gradlew lintFix --stacktrace || true
+          
+          # Check if there are any lint violations
+          if ./gradlew lintDevDebug --stacktrace; then
+            echo "lint_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "lint_status=failure" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Check Code Style
+        id: style
+        run: |
+          echo "Checking Kotlin code style..."
+          # Check for common style violations
+          violations=0
+          
+          # Check for proper logging imports
+          if grep -r "android.util.Log" --include="*.kt" app/ libapp/ libcom/ libir/ libmenu/ libui/ 2>/dev/null; then
+            echo "❌ Found android.util.Log usage. Use XLog instead."
+            violations=$((violations + 1))
+          fi
+          
+          # Check for TODO/FIXME without proper format
+          if grep -r "TODO\|FIXME" --include="*.kt" --include="*.java" app/ libapp/ libcom/ libir/ libmenu/ libui/ 2>/dev/null | grep -v "TODO.*:" | head -5; then
+            echo "❌ Found TODO/FIXME without proper format. Use 'TODO: description' or 'FIXME: description'"
+            violations=$((violations + 1))
+          fi
+          
+          # Check for hardcoded strings (basic check)
+          if grep -r "getString.*R\.string\." --include="*.kt" app/ 2>/dev/null | wc -l | grep -q "0"; then
+            echo "⚠️  Consider using string resources for user-facing text"
+          fi
+          
+          if [ $violations -eq 0 ]; then
+            echo "style_status=success" >> $GITHUB_OUTPUT
+            echo "✅ Code style checks passed"
+          else
+            echo "style_status=failure" >> $GITHUB_OUTPUT
+            echo "❌ Code style checks failed with $violations violations"
+          fi
+      
+      - name: Static Analysis
+        id: static
+        run: |
+          echo "Running static analysis..."
+          
+          # Check for potential security issues
+          security_issues=0
+          
+          # Check for hardcoded secrets/keys
+          if grep -r -i "password\|secret\|key\|token" --include="*.kt" --include="*.java" app/ libapp/ libcom/ libir/ libmenu/ libui/ 2>/dev/null | grep -E "=\s*\"[^\"]{8,}\"" | head -3; then
+            echo "⚠️  Found potential hardcoded credentials. Please review."
+            security_issues=$((security_issues + 1))
+          fi
+          
+          # Check for SQL injection possibilities
+          if grep -r "execSQL\|rawQuery" --include="*.kt" --include="*.java" app/ libapp/ libcom/ libir/ libmenu/ libui/ 2>/dev/null | grep -v "?" | head -3; then
+            echo "⚠️  Found potential SQL injection vulnerability. Use parameterized queries."
+            security_issues=$((security_issues + 1))
+          fi
+          
+          # Check for proper error handling
+          error_handling=0
+          if grep -r "catch.*Exception.*e" --include="*.kt" --include="*.java" app/ libapp/ libcom/ libir/ libmenu/ libui/ 2>/dev/null | grep -v "XLog\|Log\|printStackTrace" | head -3; then
+            echo "⚠️  Found catch blocks without proper logging. Consider adding logging."
+            error_handling=$((error_handling + 1))
+          fi
+          
+          echo "static_status=success" >> $GITHUB_OUTPUT
+          echo "✅ Static analysis completed"
+          if [ $security_issues -gt 0 ]; then
+            echo "⚠️  Found $security_issues potential security issues"
+          fi
+          if [ $error_handling -gt 0 ]; then
+            echo "⚠️  Found $error_handling error handling improvements"
+          fi
+      
+      - name: Check Build File Changes
+        id: build_check
+        run: |
+          echo "Checking build file changes..."
+          changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
+          
+          build_files_changed=false
+          for file in $changed_files; do
+            if [[ "$file" == *"build.gradle"* ]] || [[ "$file" == *"gradle.properties"* ]] || [[ "$file" == *"depend.gradle"* ]]; then
+              build_files_changed=true
+              echo "📝 Build file changed: $file"
+            fi
+          done
+          
+          if [ "$build_files_changed" = true ]; then
+            echo "build_files_changed=true" >> $GITHUB_OUTPUT
+            echo "⚠️  Build files changed - additional validation required"
+          else
+            echo "build_files_changed=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Validate Build Configuration
+        if: steps.build_check.outputs.build_files_changed == 'true'
+        run: |
+          echo "Running build validation due to build file changes..."
+          ./gradlew validateBuild --stacktrace
+      
+      - name: Comment PR with Results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const lintStatus = '${{ steps.lint.outputs.lint_status }}';
+            const styleStatus = '${{ steps.style.outputs.style_status }}';
+            const staticStatus = '${{ steps.static.outputs.static_status }}';
+            const buildChanged = '${{ steps.build_check.outputs.build_files_changed }}';
+            
+            let body = '## 🔍 Pre-commit Quality Check Results\n\n';
+            
+            body += '| Check | Status | Result |\n';
+            body += '|-------|--------|--------|\n';
+            body += `| Lint | ${lintStatus === 'success' ? '✅' : '❌'} | ${lintStatus} |\n`;
+            body += `| Code Style | ${styleStatus === 'success' ? '✅' : '⚠️'} | ${styleStatus} |\n`;
+            body += `| Static Analysis | ✅ | completed |\n`;
+            
+            if (buildChanged === 'true') {
+              body += '\n⚠️ **Build files were modified** - additional validation has been performed.\n';
+            }
+            
+            body += '\n### Recommendations:\n';
+            if (lintStatus !== 'success') {
+              body += '- Fix lint violations before merging\n';
+            }
+            if (styleStatus !== 'success') {
+              body += '- Address code style issues mentioned above\n';
+            }
+            body += '- Review static analysis warnings if any\n';
+            body += '- Ensure all tests pass locally before pushing\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
