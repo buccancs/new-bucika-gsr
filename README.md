@@ -191,6 +191,12 @@ The system includes extensive testing coverage:
 - **[Troubleshooting Guide](docs/GSR_TROUBLESHOOTING_GUIDE.md)**: Common issues and solutions
 - **[Test Suite Documentation](docs/GSR_TEST_SUITE_DOCUMENTATION.md)**: Testing framework details
 
+### Code Quality & Analysis
+- **[Code Quality Analysis](CODE_QUALITY_ANALYSIS.md)**: Comprehensive quality metrics analysis (83/100 score)
+- **[Quality Gates Configuration](QUALITY_GATES_CONFIG.md)**: Quality thresholds and enforcement rules
+- **[Quality Improvement Plan](QUALITY_IMPROVEMENT_PLAN.md)**: Action plan for quality excellence
+- **[Quality Metrics Collection](scripts/collect_quality_metrics.sh)**: Automated quality measurement tool
+
 ### Key Features Documentation
 - Professional-grade data collection with 128 Hz sampling
 - Complete sensor configuration with Settings API connectivity
