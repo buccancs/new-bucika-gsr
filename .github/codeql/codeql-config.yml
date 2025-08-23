@@ -1,0 +1,25 @@
+# CodeQL configuration for BucikaGSR project
+
+name: "BucikaGSR Security Analysis"
+
+queries:
+  - name: security-and-quality
+    uses: security-and-quality
+  - name: security-extended
+    uses: security-extended
+
+paths-ignore:
+  - "build/**"
+  - "**/*.generated.*"
+  - "**/R.java"
+  - "**/*Test.java"
+  - "**/*Test.kt"
+
+paths:
+  - "app/src/main/**"
+  - "commonlibrary/src/main/**"
+  - "libapp/src/main/**"
+  - "libcom/src/main/**"
+  - "libui/src/main/**"
+
+disable-default-path-filters: false

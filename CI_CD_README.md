@@ -28,6 +28,49 @@ The CI/CD system consists of three main GitHub Actions workflows:
   - Automated PR commenting with results
 
 ### 3. **Deploy & Release** (`.github/workflows/deploy.yml`)
+- **Triggers**: Version tags, manual deployment
+- **Purpose**: Multi-environment deployments and releases
+- **Features**:
+  - Environment-specific deployments (dev/beta/prod)
+  - APK signing and release management
+  - GitHub releases automation
+  - Rollback capabilities
+
+### 4. **Performance Testing** (`.github/workflows/performance.yml`) 🆕
+- **Triggers**: Push to main branches, PRs, nightly schedule
+- **Purpose**: Comprehensive performance benchmarking and regression analysis
+- **Features**:
+  - Android emulator performance tests
+  - Memory profiling and leak detection
+  - Build performance analysis
+  - Performance regression detection for PRs
+
+### 5. **Advanced Security** (`.github/workflows/security.yml`) 🆕
+- **Triggers**: Push/PR, weekly comprehensive scans
+- **Purpose**: Enterprise-grade security analysis and compliance
+- **Features**:
+  - Static Application Security Testing (SAST) with CodeQL
+  - OWASP dependency vulnerability scanning
+  - Secrets detection with TruffleHog and GitLeaks
+  - Security compliance reporting
+
+### 6. **Analytics Dashboard** (`.github/workflows/analytics.yml`) 🆕
+- **Triggers**: Daily metrics collection, push/PR events
+- **Purpose**: Project metrics visualization and GitHub Pages dashboard
+- **Features**:
+  - Interactive HTML dashboards with Chart.js
+  - Code, Git, Build, and Test metrics collection
+  - GitHub Pages deployment for team visibility
+  - CI/CD pipeline status monitoring
+
+### 7. **Mobile Device Testing** (`.github/workflows/device-testing.yml`) 🆕
+- **Triggers**: Push/PR, nightly device testing
+- **Purpose**: Multi-device compatibility and integration testing
+- **Features**:
+  - Android emulator testing across multiple API levels
+  - Firebase Test Lab integration for physical devices
+  - Device compatibility analysis
+  - Screenshot capture and logcat collection
 - **Triggers**: Push to main branches, version tags, manual dispatch
 - **Purpose**: Automated building and deployment
 - **Features**:
