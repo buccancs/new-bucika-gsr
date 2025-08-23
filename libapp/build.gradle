@@ -113,7 +113,9 @@ dependencies {
     // api "com.trello.rxlifecycle2:rxlifecycle-ktx:2.2.2"
     // api "com.trello.rxlifecycle2:rxlifecycle-android-lifecycle-ktx:2.2.2"
 
-    // ARouter replaced with ModernRouter (no external dependencies needed)
+    // ARouter for navigation - Re-added as it's needed for existing code
+    api "com.alibaba:arouter-api:1.5.2"
+    ksp "com.alibaba:arouter-compiler:1.5.2"
 
     api "com.blankj:utilcodex:1.30.6"
     api "com.github.getActivity:XXPermissions:13.2"

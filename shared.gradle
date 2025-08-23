@@ -170,6 +170,13 @@ project.ext.bucika_dependencies = [
         "com.github.skydoves:colorpickerview:2.3.0"
     ],
     
+    // Navigation and routing - Added ARouter support
+    navigation_routing: [
+        "com.alibaba:arouter-api:1.5.2",
+        "androidx.navigation:navigation-fragment-ktx:${bucika_versions.navigation}",
+        "androidx.navigation:navigation-ui-ktx:${bucika_versions.navigation}"
+    ],
+    
     // Utilities
     utilities: [
         "com.blankj:utilcodex:${bucika_versions.utilcodex}",
@@ -196,6 +203,13 @@ project.ext.bucika_dependencies = [
     navigation: [
         "androidx.navigation:navigation-fragment-ktx:${bucika_versions.navigation}",
         "androidx.navigation:navigation-ui-ktx:${bucika_versions.navigation}"
+    ],
+    
+    // Annotation processors (kapt)
+    annotation_processors: [
+        "com.alibaba:arouter-compiler:1.5.2",
+        "androidx.room:room-compiler:${bucika_versions.room}",
+        "com.github.bumptech.glide:compiler:${bucika_versions.glide}"
     ]
 ]
 
