@@ -41,7 +41,7 @@ open class GalleryBean(
 }
 
 @Parcelize
-class GalleryTitle(timeMillis: Long) : GalleryBean(
+class GalleryTitle(val timeMillis: Long) : GalleryBean(
     id = 0,
     path = "",
     thumb = "",
