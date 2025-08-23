@@ -100,7 +100,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Data Management & Export"
+                        android:text="Data Management &amp; Export"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/holo_orange_dark"

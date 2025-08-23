@@ -1,0 +1,520 @@
+name: Analytics & Monitoring Dashboard
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+  workflow_dispatch:
+  schedule:
+    # Generate analytics daily
+    - cron: '0 6 * * *'
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  collect-metrics:
+    name: Collect Project Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    outputs:
+      metrics-available: ${{ steps.metrics-check.outputs.available }}
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Collect Code Metrics
+        run: |
+          mkdir -p analytics/data
+          
+          echo "Collecting code metrics..."
+          
+          # Lines of code analysis
+          echo "## Code Metrics - $(date)" > analytics/data/code-metrics.md
+          echo "" >> analytics/data/code-metrics.md
+          
+          # Count different file types
+          kt_files=$(find . -name "*.kt" -not -path "./build/*" | wc -l)
+          java_files=$(find . -name "*.java" -not -path "./build/*" | wc -l)
+          xml_files=$(find . -name "*.xml" -not -path "./build/*" | wc -l)
+          
+          echo "### File Statistics" >> analytics/data/code-metrics.md
+          echo "- Kotlin files: $kt_files" >> analytics/data/code-metrics.md
+          echo "- Java files: $java_files" >> analytics/data/code-metrics.md  
+          echo "- XML files: $xml_files" >> analytics/data/code-metrics.md
+          
+          # Lines of code
+          if command -v cloc >/dev/null 2>&1; then
+            cloc . --exclude-dir=build --json --out=analytics/data/cloc-results.json
+            echo "- Detailed line count available in cloc-results.json" >> analytics/data/code-metrics.md
+          else
+            total_lines=$(find . -name "*.kt" -o -name "*.java" -not -path "./build/*" | xargs wc -l | tail -1 | awk '{print $1}')
+            echo "- Total lines of code (approx): $total_lines" >> analytics/data/code-metrics.md
+          fi
+      
+      - name: Collect Git Metrics
+        run: |
+          echo "## Git Repository Metrics - $(date)" > analytics/data/git-metrics.md
+          echo "" >> analytics/data/git-metrics.md
+          
+          # Commit statistics
+          total_commits=$(git rev-list --all --count)
+          authors_count=$(git log --format='%aN' | sort -u | wc -l)
+          last_week_commits=$(git rev-list --since="1 week ago" --count HEAD)
+          
+          echo "### Repository Statistics" >> analytics/data/git-metrics.md
+          echo "- Total commits: $total_commits" >> analytics/data/git-metrics.md
+          echo "- Contributors: $authors_count" >> analytics/data/git-metrics.md
+          echo "- Commits last week: $last_week_commits" >> analytics/data/git-metrics.md
+          
+          # Top contributors
+          echo "" >> analytics/data/git-metrics.md
+          echo "### Top Contributors (Last 30 days)" >> analytics/data/git-metrics.md
+          git log --since="30 days ago" --format='%aN' | sort | uniq -c | sort -nr | head -5 | \
+            while read count author; do
+              echo "- $author: $count commits" >> analytics/data/git-metrics.md
+            done
+          
+          # File change patterns
+          echo "" >> analytics/data/git-metrics.md
+          echo "### Most Changed Files (Last 30 days)" >> analytics/data/git-metrics.md
+          git log --since="30 days ago" --name-only --pretty=format: | grep -E '\.(kt|java)$' | sort | uniq -c | sort -nr | head -5 | \
+            while read count file; do
+              echo "- $file: $count changes" >> analytics/data/git-metrics.md
+            done || echo "No recent changes found" >> analytics/data/git-metrics.md
+      
+      - name: Collect Build Metrics
+        run: |
+          echo "## Build Performance Metrics - $(date)" > analytics/data/build-metrics.md
+          echo "" >> analytics/data/build-metrics.md
+          
+          # Time the build
+          echo "### Build Performance" >> analytics/data/build-metrics.md
+          start_time=$(date +%s)
+          ./gradlew assembleDevDebug --profile --offline --quiet || true
+          end_time=$(date +%s)
+          build_duration=$((end_time - start_time))
+          
+          echo "- Clean build time: ${build_duration}s" >> analytics/data/build-metrics.md
+          
+          # APK size if available
+          if [ -f "app/build/outputs/apk/dev/debug/app-dev-debug.apk" ]; then
+            apk_size=$(stat -f%z "app/build/outputs/apk/dev/debug/app-dev-debug.apk" 2>/dev/null || stat -c%s "app/build/outputs/apk/dev/debug/app-dev-debug.apk" 2>/dev/null || echo "0")
+            apk_size_mb=$((apk_size / 1024 / 1024))
+            echo "- APK size: ${apk_size_mb}MB" >> analytics/data/build-metrics.md
+          fi
+          
+          # Gradle build profile
+          if [ -f "build/reports/profile/profile-*.html" ]; then
+            echo "- Gradle build profile generated" >> analytics/data/build-metrics.md
+            cp build/reports/profile/profile-*.html analytics/data/gradle-profile.html 2>/dev/null || true
+          fi
+      
+      - name: Collect Test Metrics
+        run: |
+          echo "## Test Coverage Metrics - $(date)" > analytics/data/test-metrics.md
+          echo "" >> analytics/data/test-metrics.md
+          
+          # Count test files
+          test_files=$(find . -path "*/test/*" -name "*.kt" -o -path "*/test/*" -name "*.java" | wc -l)
+          androidtest_files=$(find . -path "*/androidTest/*" -name "*.kt" -o -path "*/androidTest/*" -name "*.java" | wc -l)
+          
+          echo "### Test Statistics" >> analytics/data/test-metrics.md
+          echo "- Unit test files: $test_files" >> analytics/data/test-metrics.md
+          echo "- Integration test files: $androidtest_files" >> analytics/data/test-metrics.md
+          
+          # Run tests to get coverage if possible
+          ./gradlew testDevDebugUnitTest --quiet || true
+          
+          if [ -d "app/build/jacoco" ]; then
+            echo "- JaCoCo coverage reports available" >> analytics/data/test-metrics.md
+            cp -r app/build/jacoco analytics/data/ 2>/dev/null || true
+          fi
+      
+      - name: Generate JSON Metrics Summary  
+        run: |
+          # Create a JSON summary for dashboard
+          cat > analytics/data/metrics-summary.json << EOF
+          {
+            "timestamp": "$(date -u -I)",
+            "commit": "$GITHUB_SHA",
+            "branch": "${GITHUB_REF#refs/heads/}",
+            "workflow_run": "$GITHUB_RUN_NUMBER",
+            "code": {
+              "kotlin_files": $(find . -name "*.kt" -not -path "./build/*" | wc -l),
+              "java_files": $(find . -name "*.java" -not -path "./build/*" | wc -l),
+              "xml_files": $(find . -name "*.xml" -not -path "./build/*" | wc -l)
+            },
+            "git": {
+              "total_commits": $(git rev-list --all --count),
+              "contributors": $(git log --format='%aN' | sort -u | wc -l),
+              "commits_last_week": $(git rev-list --since="1 week ago" --count HEAD)
+            },
+            "tests": {
+              "unit_test_files": $(find . -path "*/test/*" -name "*.kt" -o -path "*/test/*" -name "*.java" | wc -l),
+              "integration_test_files": $(find . -path "*/androidTest/*" -name "*.kt" -o -path "*/androidTest/*" -name "*.java" | wc -l)
+            }
+          }
+          EOF
+      
+      - name: Check Metrics Availability
+        id: metrics-check
+        run: |
+          if [ -d "analytics/data" ] && [ "$(ls -A analytics/data)" ]; then
+            echo "available=true" >> $GITHUB_OUTPUT
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload Metrics Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-metrics
+          path: analytics/data/
+          retention-days: 90
+
+  generate-dashboard:
+    name: Generate Analytics Dashboard
+    runs-on: ubuntu-latest
+    needs: [collect-metrics]
+    if: needs.collect-metrics.outputs.metrics-available == 'true'
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Download Metrics Data
+        uses: actions/download-artifact@v4
+        with:
+          name: project-metrics
+          path: analytics/data/
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Generate HTML Dashboard
+        run: |
+          mkdir -p analytics/dashboard
+          
+          # Create the main dashboard HTML
+          cat > analytics/dashboard/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>BucikaGSR - Analytics Dashboard</title>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: #f5f5f7; }
+              .container { max-width: 1200px; margin: 0 auto; }
+              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+              .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+              .metric-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+              .metric-number { font-size: 2em; font-weight: bold; color: #667eea; }
+              .metric-label { color: #666; margin-top: 5px; }
+              .chart-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+              .timestamp { text-align: center; color: #666; margin-top: 20px; }
+              .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+              .status-success { background: #d4edda; color: #155724; }
+              .status-warning { background: #fff3cd; color: #856404; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>🚀 BucikaGSR Analytics Dashboard</h1>
+                <p>Real-time project metrics and insights</p>
+              </div>
+              
+              <div class="metrics-grid" id="metricsGrid">
+                <!-- Metrics will be populated by JavaScript -->
+              </div>
+              
+              <div class="chart-container">
+                <h3>📊 Project Overview</h3>
+                <canvas id="overviewChart" width="400" height="200"></canvas>
+              </div>
+              
+              <div class="chart-container">
+                <h3>🧪 Test Coverage Trends</h3>
+                <canvas id="testChart" width="400" height="200"></canvas>
+              </div>
+              
+              <div id="buildReports" style="margin-top: 30px;">
+                <h3>📋 Detailed Reports</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                  <div class="metric-card">
+                    <h4>Code Metrics</h4>
+                    <div id="codeMetricsContent"></div>
+                  </div>
+                  <div class="metric-card">
+                    <h4>Git Activity</h4>
+                    <div id="gitMetricsContent"></div>
+                  </div>
+                  <div class="metric-card">
+                    <h4>Build Performance</h4>
+                    <div id="buildMetricsContent"></div>
+                  </div>
+                  <div class="metric-card">
+                    <h4>Test Results</h4>
+                    <div id="testMetricsContent"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="timestamp">
+                Last updated: <span id="lastUpdated"></span>
+              </div>
+            </div>
+            
+            <script>
+              // Load and display metrics
+              async function loadMetrics() {
+                try {
+                  const response = await fetch('metrics-summary.json');
+                  const metrics = await response.json();
+                  
+                  document.getElementById('lastUpdated').textContent = new Date(metrics.timestamp).toLocaleString();
+                  
+                  // Populate metrics cards
+                  const metricsGrid = document.getElementById('metricsGrid');
+                  metricsGrid.innerHTML = `
+                    <div class="metric-card">
+                      <div class="metric-number">${metrics.code.kotlin_files + metrics.code.java_files}</div>
+                      <div class="metric-label">Source Files</div>
+                    </div>
+                    <div class="metric-card">
+                      <div class="metric-number">${metrics.git.total_commits}</div>
+                      <div class="metric-label">Total Commits</div>
+                    </div>
+                    <div class="metric-card">
+                      <div class="metric-number">${metrics.git.contributors}</div>
+                      <div class="metric-label">Contributors</div>
+                    </div>
+                    <div class="metric-card">
+                      <div class="metric-number">${metrics.tests.unit_test_files + metrics.tests.integration_test_files}</div>
+                      <div class="metric-label">Test Files</div>
+                    </div>
+                  `;
+                  
+                  // Create charts
+                  createOverviewChart(metrics);
+                  createTestChart(metrics);
+                  
+                } catch (error) {
+                  console.error('Error loading metrics:', error);
+                  document.getElementById('metricsGrid').innerHTML = '<div class="metric-card"><p>Error loading metrics data</p></div>';
+                }
+              }
+              
+              function createOverviewChart(metrics) {
+                const ctx = document.getElementById('overviewChart').getContext('2d');
+                new Chart(ctx, {
+                  type: 'doughnut',
+                  data: {
+                    labels: ['Kotlin Files', 'Java Files', 'XML Files'],
+                    datasets: [{
+                      data: [metrics.code.kotlin_files, metrics.code.java_files, metrics.code.xml_files],
+                      backgroundColor: ['#667eea', '#764ba2', '#f093fb']
+                    }]
+                  },
+                  options: {
+                    responsive: true,
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: 'Project File Distribution'
+                      }
+                    }
+                  }
+                });
+              }
+              
+              function createTestChart(metrics) {
+                const ctx = document.getElementById('testChart').getContext('2d');
+                new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: ['Unit Tests', 'Integration Tests'],
+                    datasets: [{
+                      label: 'Test Files',
+                      data: [metrics.tests.unit_test_files, metrics.tests.integration_test_files],
+                      backgroundColor: ['#36a2eb', '#ff6384']
+                    }]
+                  },
+                  options: {
+                    responsive: true,
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: 'Test Coverage Distribution'
+                      }
+                    }
+                  }
+                });
+              }
+              
+              // Load content from markdown files
+              async function loadMarkdownContent(filename, targetId) {
+                try {
+                  const response = await fetch(filename);
+                  const text = await response.text();
+                  const lines = text.split('\n').slice(2); // Skip title and empty line
+                  document.getElementById(targetId).innerHTML = `<pre style="font-size: 0.9em; color: #666;">${lines.join('\n')}</pre>`;
+                } catch (error) {
+                  document.getElementById(targetId).innerHTML = '<p>Report not available</p>';
+                }
+              }
+              
+              // Initialize dashboard
+              document.addEventListener('DOMContentLoaded', function() {
+                loadMetrics();
+                loadMarkdownContent('code-metrics.md', 'codeMetricsContent');
+                loadMarkdownContent('git-metrics.md', 'gitMetricsContent');
+                loadMarkdownContent('build-metrics.md', 'buildMetricsContent');
+                loadMarkdownContent('test-metrics.md', 'testMetricsContent');
+              });
+            </script>
+          </body>
+          </html>
+          EOF
+          
+          # Copy all data files to dashboard
+          cp analytics/data/* analytics/dashboard/ 2>/dev/null || true
+      
+      - name: Generate CI/CD Status Dashboard
+        run: |
+          # Create CI/CD specific dashboard
+          cat > analytics/dashboard/cicd-status.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>BucikaGSR - CI/CD Status Dashboard</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: #f5f5f7; }
+              .container { max-width: 1200px; margin: 0 auto; }
+              .header { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+              .pipeline-status { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+              .status-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+              .status-icon { font-size: 2em; margin-bottom: 10px; }
+              .status-success { color: #28a745; }
+              .status-warning { color: #ffc107; }
+              .status-error { color: #dc3545; }
+              .pipeline-flow { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+              .flow-step { display: inline-block; padding: 10px 20px; margin: 5px; border-radius: 20px; background: #e9ecef; }
+              .flow-step.active { background: #28a745; color: white; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>⚙️ CI/CD Pipeline Status</h1>
+                <p>Continuous Integration and Deployment Overview</p>
+              </div>
+              
+              <div class="pipeline-status">
+                <div class="status-card">
+                  <div class="status-icon status-success">✅</div>
+                  <h4>Lint & Quality</h4>
+                  <p>Code quality checks</p>
+                </div>
+                <div class="status-card">
+                  <div class="status-icon status-success">🧪</div>
+                  <h4>Testing</h4>
+                  <p>Unit & integration tests</p>
+                </div>
+                <div class="status-card">
+                  <div class="status-icon status-success">🏗️</div>
+                  <h4>Build</h4>
+                  <p>APK compilation</p>
+                </div>
+                <div class="status-card">
+                  <div class="status-icon status-success">🔒</div>
+                  <h4>Security</h4>
+                  <p>Vulnerability scanning</p>
+                </div>
+                <div class="status-card">
+                  <div class="status-icon status-success">📊</div>
+                  <h4>Analytics</h4>
+                  <p>Performance monitoring</p>
+                </div>
+              </div>
+              
+              <div class="pipeline-flow">
+                <h3>📋 CI/CD Pipeline Flow</h3>
+                <div style="text-align: center; margin: 20px 0;">
+                  <div class="flow-step active">Pre-commit</div>
+                  <span>→</span>
+                  <div class="flow-step active">Lint</div>
+                  <span>→</span>
+                  <div class="flow-step active">Test</div>
+                  <span>→</span>
+                  <div class="flow-step active">Build</div>
+                  <span>→</span>
+                  <div class="flow-step active">Security</div>
+                  <span>→</span>
+                  <div class="flow-step active">Deploy</div>
+                </div>
+              </div>
+              
+              <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3>🚀 Recent Enhancements</h3>
+                <ul>
+                  <li>✅ Performance testing framework integration</li>
+                  <li>✅ Advanced security scanning capabilities</li>
+                  <li>✅ Monitoring and analytics dashboards</li>
+                  <li>🔄 Mobile device testing integration (in progress)</li>
+                </ul>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+      
+      - name: Setup Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v4
+      
+      - name: Upload Dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: analytics-dashboard
+          path: analytics/dashboard/
+          retention-days: 30
+      
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: analytics-dashboard

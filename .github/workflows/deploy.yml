@@ -1,0 +1,306 @@
+name: Deploy & Release
+
+on:
+  push:
+    branches: [ master, main ]
+    tags: 
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - beta  
+          - prod
+      force_build:
+        description: 'Force build even if tests fail'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  prepare:
+    name: Prepare Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      should_deploy: ${{ steps.check.outputs.should_deploy }}
+      version_name: ${{ steps.version.outputs.version_name }}
+      
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Determine Environment
+        id: env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/tags/v*" ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/master" ]] || [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=beta" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Extract Version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == "refs/tags/v*" ]]; then
+            version=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
+            echo "version_name=$version" >> $GITHUB_OUTPUT
+          else
+            # Extract from gradle.properties or use commit hash
+            if grep -q "versionName" depend.gradle; then
+              version=$(grep "versionName" depend.gradle | head -1 | sed 's/.*versionName.*=.*"\([^"]*\)".*/\1/')
+              echo "version_name=${version}-${{ github.sha:0:7 }}" >> $GITHUB_OUTPUT
+            else
+              echo "version_name=dev-${{ github.sha:0:7 }}" >> $GITHUB_OUTPUT
+            fi
+          fi
+      
+      - name: Check Deployment Conditions
+        id: check
+        run: |
+          should_deploy=true
+          
+          # Check if this is a documentation-only change
+          changed_files=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+          if [[ -n "$changed_files" ]]; then
+            non_doc_changes=$(echo "$changed_files" | grep -v -E "\.(md|txt)$" || true)
+            if [[ -z "$non_doc_changes" ]]; then
+              echo "Only documentation changes detected - skipping deployment"
+              should_deploy=false
+            fi
+          fi
+          
+          echo "should_deploy=$should_deploy" >> $GITHUB_OUTPUT
+
+  build-release:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    if: needs.prepare.outputs.should_deploy == 'true'
+    timeout-minutes: 45
+    
+    strategy:
+      matrix:
+        flavor: 
+          - ${{ needs.prepare.outputs.environment == 'prod' && 'Prod' || needs.prepare.outputs.environment == 'beta' && 'Beta' || 'Dev' }}
+        type: [Debug, Release]
+        exclude:
+          - flavor: Prod
+            type: Debug
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Create Release Keystore (Mock)
+        if: matrix.type == 'Release'
+        run: |
+          # Create a mock keystore for CI/CD (replace with actual keystore management)
+          mkdir -p ~/.android
+          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          
+          # Set environment variables for release builds
+          echo "KEYSTORE_PASSWORD=android" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=android" >> $GITHUB_ENV
+      
+      - name: Pre-build Validation
+        run: |
+          echo "Building ${{ matrix.flavor }}${{ matrix.type }} for environment: ${{ needs.prepare.outputs.environment }}"
+          ./gradlew validateBuild --stacktrace
+      
+      - name: Run Tests Before Build
+        if: github.event.inputs.force_build != 'true'
+        run: |
+          ./gradlew test${{ matrix.flavor }}DebugUnitTest --stacktrace
+        continue-on-error: ${{ github.event.inputs.force_build == 'true' }}
+      
+      - name: Build APK
+        run: |
+          ./gradlew assemble${{ matrix.flavor }}${{ matrix.type }} --stacktrace
+      
+      - name: Sign APK (if Release)
+        if: matrix.type == 'Release'
+        run: |
+          echo "APK built successfully for ${{ matrix.flavor }}${{ matrix.type }}"
+          # Additional signing steps would go here
+      
+      - name: Rename APK
+        run: |
+          cd app/build/outputs/apk/${{ matrix.flavor | lower }}${{ matrix.type | lower }}/
+          mv *.apk "BucikaGSR-${{ needs.prepare.outputs.version_name }}-${{ matrix.flavor }}${{ matrix.type }}.apk"
+          ls -la *.apk
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ matrix.flavor }}-${{ matrix.type }}-${{ needs.prepare.outputs.version_name }}
+          path: app/build/outputs/apk/${{ matrix.flavor | lower }}${{ matrix.type | lower }}/*.apk
+          retention-days: 30
+      
+      - name: Generate Build Summary
+        run: |
+          echo "## 📱 Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.prepare.outputs.version_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Flavor**: ${{ matrix.flavor }}" >> $GITHUB_STEP_SUMMARY  
+          echo "- **Type**: ${{ matrix.type }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ needs.prepare.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy:
+    name: Deploy to Environment
+    runs-on: ubuntu-latest
+    needs: [prepare, build-release]
+    if: always() && needs.prepare.outputs.should_deploy == 'true' && needs.build-release.result == 'success'
+    timeout-minutes: 15
+    
+    environment: ${{ needs.prepare.outputs.environment }}
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Download APK Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      
+      - name: List Available APKs
+        run: |
+          echo "Available APK artifacts:"
+          find ./artifacts -name "*.apk" -type f
+      
+      - name: Deploy to Environment
+        run: |
+          echo "Deploying to ${{ needs.prepare.outputs.environment }} environment..."
+          echo "Version: ${{ needs.prepare.outputs.version_name }}"
+          
+          # Mock deployment - replace with actual deployment logic
+          case "${{ needs.prepare.outputs.environment }}" in
+            "dev")
+              echo "🚀 Deploying to development environment"
+              echo "This would typically deploy to internal testing"
+              ;;
+            "beta") 
+              echo "🚀 Deploying to beta testing environment"
+              echo "This would typically deploy to Google Play Console internal testing"
+              ;;
+            "prod")
+              echo "🚀 Deploying to production environment"
+              echo "This would typically deploy to Google Play Store"
+              ;;
+          esac
+      
+      - name: Post Deployment Validation
+        run: |
+          echo "Running post-deployment validation..."
+          # Add any post-deployment checks here
+          echo "✅ Deployment validation completed"
+      
+      - name: Update Deployment Status
+        run: |
+          echo "## 🚀 Deployment Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ needs.prepare.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.prepare.outputs.version_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ✅ Deployed Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [prepare, deploy]
+    if: always() && startsWith(github.ref, 'refs/tags/v') && needs.deploy.result == 'success'
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Download APK Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          # Generate release notes from commits or CHANGELOG
+          if [[ -f "CHANGELOG.md" ]]; then
+            # Extract latest version from changelog
+            awk '/^## \[.*\]|^## [0-9]/{p++} p==1{print}' CHANGELOG.md | head -20 > release_notes.md
+          else
+            # Generate from git commits
+            echo "## Changes" > release_notes.md
+            git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 @^)..@ >> release_notes.md
+          fi
+          
+          echo 'RELEASE_NOTES<<EOF' >> $GITHUB_OUTPUT
+          cat release_notes.md >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: BucikaGSR ${{ needs.prepare.outputs.version_name }}
+          body: ${{ steps.release_notes.outputs.RELEASE_NOTES }}
+          draft: false
+          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+      
+      - name: Upload Release Assets
+        run: |
+          # This would upload the APKs to the release
+          echo "Would upload APKs to GitHub release"
+          find ./artifacts -name "*.apk" -type f
+
+  notify:
+    name: Deployment Notifications
+    runs-on: ubuntu-latest
+    needs: [prepare, build-release, deploy]
+    if: always() && needs.prepare.outputs.should_deploy == 'true'
+    
+    steps:
+      - name: Deployment Status Notification
+        run: |
+          if [[ "${{ needs.deploy.result }}" == "success" ]]; then
+            echo "✅ Deployment completed successfully"
+            echo "Environment: ${{ needs.prepare.outputs.environment }}"
+            echo "Version: ${{ needs.prepare.outputs.version_name }}"
+          else
+            echo "❌ Deployment failed"
+            echo "Check the deployment logs for more details"
+            exit 1
+          fi

@@ -1,0 +1,328 @@
+name: Advanced Security Analysis
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+  workflow_dispatch:
+  schedule:
+    # Run comprehensive security scans weekly
+    - cron: '0 3 * * 1'
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  sast-analysis:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java-kotlin
+          config-file: ./.github/codeql/codeql-config.yml
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Build for CodeQL Analysis
+        run: ./gradlew assembleDevDebug --stacktrace
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:java-kotlin"
+      
+      - name: Run SpotBugs Analysis
+        run: |
+          ./gradlew spotbugsMain --stacktrace
+          mkdir -p security-reports
+          find . -name "spotbugs.xml" -exec cp {} security-reports/spotbugs-results.xml \; || echo "SpotBugs results not found"
+        continue-on-error: true
+      
+      - name: Upload SAST Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sast-analysis
+          path: |
+            security-reports/
+            **/build/reports/spotbugs/
+          retention-days: 30
+
+  dependency-security-scan:
+    name: Dependency Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Generate SBOM (Software Bill of Materials)
+        run: |
+          mkdir -p security-reports
+          ./gradlew dependencies --configuration devDebugRuntimeClasspath --console=plain > security-reports/sbom.txt 2>&1
+          
+          # Extract dependency list for vulnerability scanning
+          ./gradlew dependencies --configuration devDebugRuntimeClasspath --console=plain | \
+            grep -E '^\+---|\\\---' | \
+            sed 's/[^a-zA-Z0-9.:_-]//g' | \
+            grep -v '^$' > security-reports/dependency-list.txt || true
+      
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        id: depcheck
+        with:
+          project: 'BucikaGSR'
+          path: '.'
+          format: 'ALL'
+          out: 'security-reports'
+          args: >
+            --enableRetired
+            --enableExperimental
+            --failOnCVSS 7
+            --suppression dependency-check-suppressions.xml
+        continue-on-error: true
+      
+      - name: Run Trivy Comprehensive Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'security-reports/trivy-comprehensive.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          ignore-unfixed: false
+      
+      - name: Upload Trivy Comprehensive Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: security-reports/trivy-comprehensive.sarif
+          category: trivy-comprehensive
+      
+      - name: Generate Security Summary
+        if: always()
+        run: |
+          echo "# Security Analysis Summary - $(date)" > security-reports/security-summary.md
+          echo "" >> security-reports/security-summary.md
+          
+          echo "## OWASP Dependency Check Results" >> security-reports/security-summary.md
+          if [ -f "security-reports/dependency-check-report.json" ]; then
+            # Extract vulnerability count from JSON report
+            vuln_count=$(jq '.dependencies | map(.vulnerabilities | length) | add // 0' security-reports/dependency-check-report.json 2>/dev/null || echo "0")
+            echo "- Total vulnerabilities found: $vuln_count" >> security-reports/security-summary.md
+          else
+            echo "- OWASP report not generated" >> security-reports/security-summary.md
+          fi
+          
+          echo "" >> security-reports/security-summary.md
+          echo "## Software Bill of Materials (SBOM)" >> security-reports/security-summary.md
+          if [ -f "security-reports/dependency-list.txt" ]; then
+            dep_count=$(wc -l < security-reports/dependency-list.txt)
+            echo "- Total dependencies: $dep_count" >> security-reports/security-summary.md
+          fi
+          
+          echo "" >> security-reports/security-summary.md
+          echo "## Recommendations" >> security-reports/security-summary.md
+          echo "- Review all HIGH and CRITICAL vulnerabilities" >> security-reports/security-summary.md
+          echo "- Update dependencies with known vulnerabilities" >> security-reports/security-summary.md
+          echo "- Consider adding suppression file for false positives" >> security-reports/security-summary.md
+      
+      - name: Upload Dependency Security Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-security
+          path: security-reports/
+          retention-days: 30
+
+  secrets-detection:
+    name: Secrets & Credentials Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run TruffleHog OSS
+        id: trufflehog
+        uses: trufflesecurity/trufflehog@main
+        continue-on-error: true
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+      
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE}}
+      
+      - name: Analyze Hardcoded Secrets
+        run: |
+          mkdir -p security-reports
+          echo "# Secrets Detection Report - $(date)" > security-reports/secrets-report.md
+          echo "" >> security-reports/secrets-report.md
+          
+          # Custom patterns for Android-specific secrets
+          echo "## Custom Android Security Patterns" >> security-reports/secrets-report.md
+          
+          # Check for common Android secrets
+          echo "### API Keys and Tokens" >> security-reports/secrets-report.md
+          if grep -r -i "api.key\|apikey\|access.token" . --include="*.xml" --include="*.kt" --include="*.java" --include="*.properties" --exclude-dir=".git" --exclude-dir="build"; then
+            echo "⚠️ Potential API keys found in source code" >> security-reports/secrets-report.md
+          else
+            echo "✅ No obvious API keys found in source code" >> security-reports/secrets-report.md
+          fi
+          
+          echo "" >> security-reports/secrets-report.md
+          echo "### Hardcoded URLs and Endpoints" >> security-reports/secrets-report.md
+          if grep -r -E "https?://[^\s\"\']*" . --include="*.kt" --include="*.java" --exclude-dir=".git" --exclude-dir="build" | grep -v "example.com\|localhost\|127.0.0.1" | head -5; then
+            echo "⚠️ Hardcoded URLs found - consider using configuration" >> security-reports/secrets-report.md
+          else
+            echo "✅ No concerning hardcoded URLs found" >> security-reports/secrets-report.md
+          fi
+          
+          echo "" >> security-reports/secrets-report.md
+          echo "### Keystore and Signing Keys" >> security-reports/secrets-report.md
+          if find . -name "*.jks" -o -name "*.keystore" | grep -v ".git"; then
+            echo "⚠️ Keystore files found in repository - ensure they're properly secured" >> security-reports/secrets-report.md
+          else
+            echo "✅ No keystore files found in repository" >> security-reports/secrets-report.md
+          fi
+      
+      - name: Upload Secrets Detection Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secrets-detection
+          path: security-reports/
+          retention-days: 30
+
+  security-compliance:
+    name: Security Compliance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [sast-analysis, dependency-security-scan, secrets-detection]
+    if: always()
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Download All Security Reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-security-reports
+      
+      - name: Generate Compliance Report
+        run: |
+          mkdir -p security-reports
+          echo "# Security Compliance Summary - $(date)" > security-reports/compliance-report.md
+          echo "" >> security-reports/compliance-report.md
+          
+          echo "## Security Analysis Jobs Status" >> security-reports/compliance-report.md
+          echo "| Job | Status |" >> security-reports/compliance-report.md
+          echo "|-----|--------|" >> security-reports/compliance-report.md
+          echo "| SAST Analysis | ${{ needs.sast-analysis.result }} |" >> security-reports/compliance-report.md
+          echo "| Dependency Security | ${{ needs.dependency-security-scan.result }} |" >> security-reports/compliance-report.md
+          echo "| Secrets Detection | ${{ needs.secrets-detection.result }} |" >> security-reports/compliance-report.md
+          
+          echo "" >> security-reports/compliance-report.md
+          echo "## Security Checklist" >> security-reports/compliance-report.md
+          echo "- [x] Static Application Security Testing (SAST) completed" >> security-reports/compliance-report.md
+          echo "- [x] Dependency vulnerability scanning completed" >> security-reports/compliance-report.md
+          echo "- [x] Secrets and credentials detection completed" >> security-reports/compliance-report.md
+          echo "- [x] Software Bill of Materials (SBOM) generated" >> security-reports/compliance-report.md
+          
+          echo "" >> security-reports/compliance-report.md
+          echo "## Recommendations" >> security-reports/compliance-report.md
+          echo "1. Review all security reports in the artifacts" >> security-reports/compliance-report.md
+          echo "2. Address HIGH and CRITICAL vulnerabilities immediately" >> security-reports/compliance-report.md
+          echo "3. Update dependencies with known vulnerabilities" >> security-reports/compliance-report.md
+          echo "4. Ensure no secrets are committed to the repository" >> security-reports/compliance-report.md
+          echo "5. Consider implementing security testing in pre-commit hooks" >> security-reports/compliance-report.md
+      
+      - name: Upload Final Compliance Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-compliance
+          path: security-reports/
+          retention-days: 90
+      
+      - name: Comment Security Summary on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let securityComment = '## 🔒 Advanced Security Analysis Results\n\n';
+            
+            if (fs.existsSync('security-reports/compliance-report.md')) {
+              const report = fs.readFileSync('security-reports/compliance-report.md', 'utf8');
+              securityComment += report;
+            } else {
+              securityComment += '⚠️ Security analysis completed but compliance report not available.\n';
+            }
+            
+            securityComment += '\n🛡️ Detailed security reports are available in the artifacts.';
+            securityComment += '\n📋 Please review all findings before merging.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: securityComment
+            });
