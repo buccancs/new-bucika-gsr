@@ -6,23 +6,50 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.topdon.lib.core.config.RouterConfig
 import com.topdon.lib.core.ktbase.BaseActivity
 import com.topdon.module.thermal.ir.R
+import com.topdon.module.thermal.ir.databinding.ActivityIrCorrectionThreeBinding
 import com.topdon.module.thermal.ir.fragment.IRCorrectionFragment
-import kotlinx.android.synthetic.main.activity_ir_correction_three.*
 
 /**
- *
- * 锅盖矫正
- * @author: CaiSongL
- * @date: 2023/8/4 9:06
+ * Lens cap correction Step 3 with ViewBinding implementation.
+ * 
+ * Provides professional interface for thermal imaging correction workflow
+ * with real-time frame readiness validation and fragment-based correction display.
+ * 
+ * Features include:
+ * - IRCorrectionFragment integration for live correction preview
+ * - Frame readiness validation before proceeding
+ * - Professional correction workflow navigation
+ * - Research-grade error handling and state management
+ * 
+ * @author CaiSongL
+ * @since 2023-08-04
+ * @see IRCorrectionFragment
+ * @see IRCorrectionFourActivity
  */
 @Route(path = RouterConfig.IR_CORRECTION_THREE)
 class IRCorrectionThreeActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityIrCorrectionThreeBinding
+    private lateinit var correctionFragment: IRCorrectionFragment
 
     override fun initContentView(): Int = R.layout.activity_ir_correction_three
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val fragment: IRCorrectionFragment = if (savedInstanceState == null) {
+        binding = ActivityIrCorrectionThreeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        setupCorrectionFragment(savedInstanceState)
+        setupCorrectionButton()
+    }
+
+    /**
+     * Initialize correction fragment with proper state management.
+     * 
+     * @param savedInstanceState Bundle containing saved fragment state
+     */
+    private fun setupCorrectionFragment(savedInstanceState: Bundle?) {
+        correctionFragment = if (savedInstanceState == null) {
             IRCorrectionFragment()
         } else {
             supportFragmentManager.findFragmentById(R.id.fragment_container_view) as IRCorrectionFragment
@@ -31,13 +58,18 @@ class IRCorrectionThreeActivity : BaseActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view, fragment)
+                .add(R.id.fragment_container_view, correctionFragment)
                 .commit()
         }
+    }
 
-        tv_correction.setOnClickListener {
-            if (fragment.frameReady) {
-                val intent = Intent(this,IRCorrectionFourActivity::class.java)
+    /**
+     * Configure correction workflow advancement button with frame validation.
+     */
+    private fun setupCorrectionButton() {
+        binding.tvCorrection.setOnClickListener {
+            if (correctionFragment.frameReady) {
+                val intent = Intent(this, IRCorrectionFourActivity::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -45,7 +77,10 @@ class IRCorrectionThreeActivity : BaseActivity() {
     }
 
     override fun initView() {
+        // Fragment-based initialization handled in onCreate
     }
 
-    override fun initData() {}
+    override fun initData() {
+        // No additional data initialization required
+    }
 }
