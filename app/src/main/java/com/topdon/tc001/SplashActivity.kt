@@ -11,17 +11,34 @@ import com.topdon.lib.core.config.RouterConfig
 import com.topdon.lib.core.utils.CommUtils
 import com.topdon.lms.sdk.Config
 import com.topdon.lms.sdk.LMS
-import kotlinx.android.synthetic.main.activity_splash.tv_app_name
+import com.topdon.tc001.databinding.ActivitySplashBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * Splash screen activity that displays the app logo and name.
+ * Handles initial app setup and navigation to the main activity or clause screen.
+ * 
+ * @author BucikaGSR Development Team
+ * @since 1.0.0
+ */
 class SplashActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySplashBinding
+
+    /**
+     * Initialize the splash screen and set up navigation logic.
+     * 
+     * @param savedInstanceState If the activity is being re-initialized after previously 
+     * being shut down then this Bundle contains the data it most recently supplied.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
         LMS.getInstance().screenOrientation = Config.SCREEN_PORTRAIT
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        setContentView(R.layout.activity_splash)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.toolbar_16131E)
 
         lifecycleScope.launch {
@@ -33,10 +50,13 @@ class SplashActivity : AppCompatActivity() {
             }
             finish()
         }
-        tv_app_name.text = CommUtils.getAppName()
+        binding.tvAppName.text = CommUtils.getAppName()
     }
 
+    /**
+     * Override back press to prevent users from accidentally exiting the splash screen.
+     */
     override fun onBackPressed() {
-
+        // Intentionally empty - splash screen should not be dismissible via back press
     }
 }
