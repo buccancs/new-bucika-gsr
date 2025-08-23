@@ -61,7 +61,9 @@ object ModernRouter {
         fun navigation(activity: Activity) {
             activityClass?.let { clazz ->
                 val intent = Intent(activity, clazz).apply {
-                    extras.forEach { (key, value) ->
+                    extras.forEach { entry ->
+                        val key = entry.key
+                        val value = entry.value
                         when (value) {
                             is String -> putExtra(key, value)
                             is Int -> putExtra(key, value)
@@ -90,7 +92,9 @@ object ModernRouter {
             activityClass?.let { clazz ->
                 val intent = Intent(context, clazz).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    extras.forEach { (key, value) ->
+                    extras.forEach { entry ->
+                        val key = entry.key
+                        val value = entry.value
                         when (value) {
                             is String -> putExtra(key, value)
                             is Int -> putExtra(key, value) 
