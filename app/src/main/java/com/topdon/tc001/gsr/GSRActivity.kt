@@ -10,15 +10,21 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.topdon.lib.core.ktbase.BaseActivity
 import com.topdon.tc001.R
+import com.topdon.tc001.gsr.data.GSRDataWriter
+import com.topdon.tc001.gsr.settings.GSRSettingsActivity
+import com.shimmerresearch.driver.ProcessedGSRData
 import kotlinx.android.synthetic.main.activity_gsr.*
 
 /**
- * GSR Activity for bucika_gsr version
- * Provides UI for GSR sensor management and data visualization
+ * Enhanced GSR Activity for bucika_gsr version
+ * Provides comprehensive UI for GSR sensor management and data visualization
+ * Integrates with ShimmerAndroidAPI for professional-grade GSR data collection
+ * Includes data writing and sensor configuration capabilities
  */
-class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
+class GSRActivity : BaseActivity(), GSRManager.GSRDataListener, GSRDataWriter.DataWriteListener {
     
     private lateinit var gsrManager: GSRManager
+    private lateinit var gsrDataWriter: GSRDataWriter
     private var bluetoothAdapter: BluetoothAdapter? = null
     private val BLUETOOTH_PERMISSION_REQUEST = 1001
     
@@ -28,10 +34,13 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
         title_view.setTitle("GSR Monitoring - Bucika")
         title_view.setLeftClickListener { finish() }
         
-        // Initialize GSR manager
+        // Initialize GSR manager and data writer
         gsrManager = GSRManager.getInstance(this)
         gsrManager.setGSRDataListener(this)
         gsrManager.initializeShimmer()
+        
+        gsrDataWriter = GSRDataWriter.getInstance(this)
+        gsrDataWriter.setDataWriteListener(this)
         
         // Initialize Bluetooth
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -62,6 +71,12 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
         
         btn_stop_recording.setOnClickListener {
             stopGSRRecording()
+        }
+        
+        // Settings button
+        btn_gsr_settings.setOnClickListener {
+            val intent = Intent(this, GSRSettingsActivity::class.java)
+            startActivity(intent)
         }
         
         // Enhanced Recording button
@@ -104,7 +119,12 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
     private fun startGSRRecording() {
         if (gsrManager.isConnected()) {
             if (gsrManager.startRecording()) {
-                Toast.makeText(this, "GSR recording started", Toast.LENGTH_SHORT).show()
+                // Also start file recording
+                if (gsrDataWriter.startRecording("gsr_session_${System.currentTimeMillis()}")) {
+                    Toast.makeText(this, "GSR recording and file writing started", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "GSR recording started (file writing failed)", Toast.LENGTH_SHORT).show()
+                }
                 updateUI()
             } else {
                 Toast.makeText(this, "Failed to start recording", Toast.LENGTH_SHORT).show()
@@ -116,7 +136,9 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
     
     private fun stopGSRRecording() {
         if (gsrManager.stopRecording()) {
-            Toast.makeText(this, "GSR recording stopped", Toast.LENGTH_SHORT).show()
+            // Also stop file recording
+            gsrDataWriter.stopRecording()
+            Toast.makeText(this, "GSR recording and file writing stopped", Toast.LENGTH_SHORT).show()
             updateUI()
         }
     }
@@ -149,6 +171,26 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
             tv_gsr_value.text = "GSR: %.3f µS".format(gsrValue)
             tv_skin_temp.text = "Skin Temp: %.2f °C".format(skinTemperature)
             tv_last_update.text = "Last update: ${java.text.SimpleDateFormat("HH:mm:ss.SSS").format(timestamp)}"
+            
+            // Add data to file writer if recording
+            if (gsrDataWriter.isRecording()) {
+                // Create a basic ProcessedGSRData object for file writing
+                val processedData = ProcessedGSRData(
+                    timestamp = timestamp,
+                    rawGSR = gsrValue,
+                    filteredGSR = gsrValue,
+                    rawTemperature = skinTemperature,
+                    filteredTemperature = skinTemperature,
+                    gsrDerivative = 0.0, // Simplified for basic recording
+                    gsrVariability = 0.0,
+                    temperatureVariability = 0.0,
+                    signalQuality = 95.0, // Default quality
+                    hasArtifact = false,
+                    isValid = true,
+                    sampleIndex = timestamp / 8 // Approximate sample index
+                )
+                gsrDataWriter.addGSRData(processedData)
+            }
         }
     }
     
@@ -161,6 +203,35 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener {
                 "Disconnected from Shimmer device"
             }
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    // GSRDataWriter.DataWriteListener implementation
+    override fun onRecordingStarted(fileName: String, filePath: String) {
+        runOnUiThread {
+            tv_recording_status.text = "Recording to file: $fileName"
+        }
+    }
+    
+    override fun onDataWritten(samplesWritten: Long, fileSize: Long) {
+        // Update can be too frequent, so we'll just update the recording status periodically
+        if (samplesWritten % 128 == 0L) { // Every second at 128 Hz
+            runOnUiThread {
+                tv_recording_status.text = "Recording: $samplesWritten samples (${fileSize / 1024} KB)"
+            }
+        }
+    }
+    
+    override fun onRecordingStopped(fileName: String, totalSamples: Long, fileSize: Long) {
+        runOnUiThread {
+            tv_recording_status.text = "Last recording: $totalSamples samples (${fileSize / 1024} KB)"
+            Toast.makeText(this@GSRActivity, "Recording saved: $fileName", Toast.LENGTH_LONG).show()
+        }
+    }
+    
+    override fun onWriteError(error: String) {
+        runOnUiThread {
+            Toast.makeText(this@GSRActivity, "File write error: $error", Toast.LENGTH_LONG).show()
         }
     }
     

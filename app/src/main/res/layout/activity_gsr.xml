@@ -226,6 +226,16 @@
                         android:textAllCaps="false"
                         android:textColor="@android:color/white" />
 
+                    <Button
+                        android:id="@+id/btn_gsr_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="@android:color/holo_blue_dark"
+                        android:text="GSR Settings & Configuration"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white" />
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
