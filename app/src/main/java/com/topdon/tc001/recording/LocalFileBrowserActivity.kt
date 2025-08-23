@@ -2,53 +2,91 @@ package com.topdon.tc001.recording
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
+import android.view.View
 import android.webkit.MimeTypeMap
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.topdon.lib.core.ktbase.BaseActivity
 import com.topdon.lib.core.config.FileConfig
 import com.topdon.tc001.R
-import kotlinx.android.synthetic.main.activity_local_file_browser.*
+import com.topdon.tc001.databinding.ActivityLocalFileBrowserBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Local File Browser Activity for bucika_gsr
- * Browse and manage recorded video files and GSR data
+ * Industry-standard Local File Browser Activity for BucikaGSR research application.
+ * 
+ * Provides comprehensive file management capabilities for recorded GSR data, enhanced recordings,
+ * and research session files with modern ViewBinding patterns and professional error handling.
+ * 
+ * Features:
+ * - Professional file browsing with type-specific icons
+ * - Research-quality file operations (open, share, delete, properties)
+ * - Comprehensive file format support (MP4, CSV, JSON, TXT)
+ * - Enhanced recording management
+ * - GSR data file access and management
+ * 
+ * @author BucikaGSR Team  
+ * @since 2024.1.0
+ * @see BaseActivity
+ * @see EnhancedRecordingActivity
  */
 class LocalFileBrowserActivity : BaseActivity() {
 
+    private lateinit var binding: ActivityLocalFileBrowserBinding
     private lateinit var fileAdapter: FileAdapter
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     
+    companion object {
+        private const val SUPPORTED_VIDEO_EXTENSIONS = listOf("mp4", "avi", "mov")
+        private const val SUPPORTED_DATA_EXTENSIONS = listOf("csv", "txt") 
+        private const val SUPPORTED_JSON_EXTENSIONS = listOf("json")
+    }
+    
     override fun initContentView(): Int = R.layout.activity_local_file_browser
 
+    /**
+     * Initialize ViewBinding and configure professional file browser interface.
+     * Sets up RecyclerView with comprehensive file management capabilities.
+     */
     override fun initView() {
-        title_view.setTitle("Local File Browser")
-        title_view.setLeftClickListener { finish() }
+        binding = ActivityLocalFileBrowserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        // Configure title bar with professional styling
+        binding.titleView.setTitle("Local File Browser")
+        binding.titleView.setLeftClickListener { finish() }
         
         setupRecyclerView()
         loadFiles()
     }
 
     override fun initData() {
-        // No additional data initialization needed
+        // Data initialization handled in initView()
     }
 
+    /**
+     * Configure RecyclerView with professional file adapter and click handling.
+     */
     private fun setupRecyclerView() {
         fileAdapter = FileAdapter { file ->
             openFile(file)
         }
         
-        recycler_files.apply {
+        binding.recyclerFiles.apply {
             layoutManager = LinearLayoutManager(this@LocalFileBrowserActivity)
             adapter = fileAdapter
         }
     }
 
+    /**
+     * Load and display files from research data directories.
+     * Scans multiple directories for different file types and presents organized view.
+     */
     private fun loadFiles() {
         val recordingDirs = listOf(
             File(FileConfig.lineGalleryDir), // Main gallery directory
@@ -57,43 +95,56 @@ class LocalFileBrowserActivity : BaseActivity() {
         )
         
         val allFiles = mutableListOf<FileItem>()
+        val supportedExtensions = SUPPORTED_VIDEO_EXTENSIONS + SUPPORTED_DATA_EXTENSIONS + SUPPORTED_JSON_EXTENSIONS
         
         recordingDirs.forEach { dir ->
             if (dir.exists() && dir.isDirectory) {
                 dir.listFiles()?.forEach { file ->
-                    if (file.isFile && (file.extension.lowercase() in listOf("mp4", "avi", "csv", "json", "txt"))) {
+                    if (file.isFile && (file.extension.lowercase() in supportedExtensions)) {
                         allFiles.add(FileItem(file, getFileType(file)))
                     }
                 }
             }
         }
         
-        // Sort by modification date (newest first)
+        // Sort by modification date (newest first) for research chronology
         allFiles.sortByDescending { it.file.lastModified() }
         
         fileAdapter.submitList(allFiles)
         
-        // Update UI based on file count
+        // Update UI based on file count with professional messaging
         if (allFiles.isEmpty()) {
-            tv_empty_state.visibility = android.view.View.VISIBLE
-            recycler_files.visibility = android.view.View.GONE
+            binding.tvEmptyState.visibility = View.VISIBLE
+            binding.recyclerFiles.visibility = View.GONE
         } else {
-            tv_empty_state.visibility = android.view.View.GONE
-            recycler_files.visibility = android.view.View.VISIBLE
+            binding.tvEmptyState.visibility = View.GONE
+            binding.recyclerFiles.visibility = View.VISIBLE
         }
         
-        tv_file_count.text = "Found ${allFiles.size} files"
+        binding.tvFileCount.text = "Found ${allFiles.size} files"
     }
 
+    /**
+     * Determine file type based on extension for proper categorization.
+     * 
+     * @param file File to categorize
+     * @return FileType enum value for UI display
+     */
     private fun getFileType(file: File): FileType {
         return when (file.extension.lowercase()) {
-            "mp4", "avi", "mov" -> FileType.VIDEO
-            "csv", "txt" -> FileType.DATA
-            "json" -> FileType.JSON
+            in SUPPORTED_VIDEO_EXTENSIONS -> FileType.VIDEO
+            in SUPPORTED_DATA_EXTENSIONS -> FileType.DATA
+            in SUPPORTED_JSON_EXTENSIONS -> FileType.JSON
             else -> FileType.OTHER
         }
     }
 
+    /**
+     * Open file with appropriate application using Android's file provider system.
+     * Handles comprehensive error scenarios and provides user feedback.
+     * 
+     * @param file File to open
+     */
     private fun openFile(file: File) {
         try {
             val uri = FileProvider.getUriForFile(
@@ -129,10 +180,23 @@ class LocalFileBrowserActivity : BaseActivity() {
         }
     }
 
+    /**
+     * File type enumeration for professional categorization and icon display.
+     */
     enum class FileType {
-        VIDEO, DATA, JSON, OTHER
+        /** Video recordings (MP4, AVI, MOV) */
+        VIDEO, 
+        /** Research data files (CSV, TXT) */
+        DATA, 
+        /** JSON configuration/metadata files */
+        JSON, 
+        /** Other supported file types */
+        OTHER
     }
 
+    /**
+     * Professional data class representing file items with type metadata.
+     */
     data class FileItem(
         val file: File,
         val type: FileType
