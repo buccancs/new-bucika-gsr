@@ -72,6 +72,36 @@ The BucikaGSR system provides professional-grade GSR (Galvanic Skin Response) da
 - **Data Streaming**: Real-time 128 Hz data transmission
 - **Battery Monitoring**: Device battery level tracking
 - **Error Recovery**: Comprehensive error handling and reconnection logic
+
+### Professional Thermal Imaging (TC001)
+- **High-Resolution Imaging**: 256×192 thermal resolution at 25 Hz
+- **Advanced Temperature Measurement**: Sub-degree precision with calibration
+- **Professional Recording**: Real-time thermal data logging with metadata
+- **Multiple Measurement Tools**: Spot meter, area analysis, line profiles
+- **OpenCV Integration**: Advanced image processing and anomaly detection
+- **Multi-Modal Synchronization**: Concurrent thermal and GSR data collection
+
+#### TC001ThermalCamera
+- **USB Device Management**: Complete TC001 connectivity and control
+- **Thermal Stream Processing**: Real-time thermal frame processing at 25 FPS
+- **Temperature Calibration**: Professional emissivity and environmental correction
+- **Measurement Tools**: Multi-point temperature monitoring and analysis
+- **Data Export**: Professional radiometric and CSV export formats
+
+#### TemperatureView
+- **Advanced Visualization**: Multiple pseudocolor modes (Iron, Rainbow, White/Black Hot)
+- **Interactive Measurement**: Touch-based spot metering and area selection
+- **Real-time Display**: Smooth thermal imaging with temperature overlay
+- **Measurement Tools**: Line profiles, area statistics, and anomaly highlighting
+- **Professional UI**: Research-grade thermal imaging interface
+
+#### ThermalDataWriter
+- **High-Frequency Recording**: Professional thermal data logging system
+- **Multiple Export Formats**: CSV, JSON, binary, and radiometric formats
+- **Statistical Analysis**: Comprehensive thermal data analysis and reporting
+- **Memory Optimization**: Efficient handling of continuous thermal streams
+- **Research Integration**: Professional data formats for scientific applications
+
 ## Quick Start Guide
 
 ### Prerequisites
@@ -218,6 +248,32 @@ The system provides comprehensive data output and analysis:
 - **Extensible Architecture**: Modular design supporting additional sensors
 - **Research Standards**: Professional data collection and export capabilities
 - **Clinical Compliance**: Data formats suitable for medical research applications
+
+## Documentation
+
+### GSR Functionality Documentation
+- **[GSR API Reference](docs/GSR_API_REFERENCE.md)**: Complete API documentation (19K+ chars) with detailed method signatures and usage examples
+- **[Shimmer Android API Integration](docs/SHIMMER_ANDROID_API_INTEGRATION.md)**: Professional integration guide (15K+ chars) with architecture overview
+- **[GSR Development Setup](docs/GSR_DEVELOPMENT_SETUP.md)**: Comprehensive developer setup guide (12K+ chars)
+- **[GSR Troubleshooting Guide](docs/GSR_TROUBLESHOOTING_GUIDE.md)**: Detailed diagnostics and solutions (16K+ chars)
+- **[GSR Test Suite Documentation](docs/GSR_TEST_SUITE_DOCUMENTATION.md)**: Testing framework documentation (8K+ chars)
+
+### TC001 Thermal Imaging Documentation
+- **[TC001 API Reference](docs/TC001_API_REFERENCE.md)**: Complete thermal imaging API documentation (21K+ chars) with comprehensive method specifications
+- **[Topdon TC001 Integration](docs/TOPDON_TC001_INTEGRATION.md)**: Professional thermal imaging integration guide (30K+ chars) with architecture overview
+- **[TC001 Development Setup](docs/TC001_DEVELOPMENT_SETUP.md)**: Comprehensive thermal imaging development setup (31K+ chars)
+- **[TC001 Troubleshooting Guide](docs/TC001_TROUBLESHOOTING_GUIDE.md)**: Detailed thermal imaging diagnostics and solutions (49K+ chars)
+- **[TC001 Test Suite Documentation](docs/TC001_TEST_SUITE_DOCUMENTATION.md)**: Comprehensive thermal imaging testing framework (39K+ chars)
+
+### Additional Documentation
+- **[Camera Module Documentation](docs/CAMERA_MODULE_DOCUMENTATION.md)**: Samsung S22 camera integration details
+- **[Synchronized Capture System](docs/SYNCHRONIZED_CAPTURE_SYSTEM.md)**: Multi-modal data synchronization
+- **[Samsung S22 Camera Capabilities](docs/SAMSUNG_S22_CAMERA_CAPABILITIES.md)**: Advanced camera features and configuration
+
+### Setup and Development
+- **[Gradle Setup Guide](GRADLE_SETUP.md)**: Build system configuration and dependencies
+- **[Run Configurations](RUN_CONFIGURATIONS.md)**: Development environment setup
+- **[Copilot Guidelines](COPILOT_GUIDELINES.md)**: AI-assisted development best practices
 
 ## Support and Development
 
