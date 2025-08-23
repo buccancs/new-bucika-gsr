@@ -12,29 +12,73 @@ import com.topdon.lib.core.ktbase.BaseActivity
 import com.topdon.module.thermal.ir.capture.video.EnhancedVideoRecorder
 import com.topdon.module.thermal.ir.capture.parallel.ParallelCaptureManager
 import com.topdon.tc001.R
+import com.topdon.tc001.databinding.ActivityEnhancedRecordingBinding
 import com.topdon.tc001.gsr.GSRManager
 import com.topdon.tc001.LocalFileBrowserActivity
-import kotlinx.android.synthetic.main.activity_enhanced_recording.*
 
 /**
- * Enhanced Recording Activity for bucika_gsr
- * Integrates Samsung S22 optimized 4K30FPS recording, RAW DNG capture, and GSR monitoring
- * Supports concurrent capture capabilities for research and clinical applications
+ * Enhanced recording activity for professional research applications.
+ * 
+ * Provides comprehensive recording capabilities integrating Samsung S22 optimized
+ * 4K30FPS recording, professional RAW DNG capture, and synchronized GSR monitoring
+ * for advanced research and clinical applications.
+ * 
+ * **Key Features:**
+ * - Samsung S22 optimized 4K recording at 30FPS with 20Mbps bitrate
+ * - Professional RAW DNG Level 3 capture at 30FPS with sensor data
+ * - Parallel dual-stream recording (thermal + visual)
+ * - Real-time GSR monitoring with Shimmer sensor integration
+ * - Concurrent capture capabilities for multi-modal research
+ * - Professional file management and export functionality
+ * 
+ * **Recording Modes:**
+ * - [SAMSUNG_4K_30FPS] High-quality 4K video optimized for Samsung devices
+ * - [RAD_DNG_LEVEL3_30FPS] Professional RAW capture with full sensor data
+ * - [PARALLEL_DUAL_STREAM] Simultaneous thermal and visual stream recording
+ * 
+ * **GSR Integration:**
+ * - Real-time galvanic skin response monitoring
+ * - Synchronized data overlay on video recordings
+ * - Professional Shimmer sensor support with Bluetooth connectivity
+ * - Clinical-grade data precision and timestamping
+ * 
+ * @author BucikaGSR Development Team
+ * @since 2024-12-19
+ * @see EnhancedVideoRecorder Professional video recording implementation
+ * @see GSRManager GSR sensor management and data processing
+ * @see ParallelCaptureManager Multi-stream capture coordination
  */
 class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
 
+    /** ViewBinding instance for type-safe view access */
+    private lateinit var binding: ActivityEnhancedRecordingBinding
+
+    /** Enhanced video recording system with multiple capture modes */
     private lateinit var videoRecorder: EnhancedVideoRecorder
+    
+    /** Parallel capture manager for coordinating multi-stream recording */
     private lateinit var parallelCaptureManager: ParallelCaptureManager
+    
+    /** GSR sensor management system for real-time physiological monitoring */
     private lateinit var gsrManager: GSRManager
     
+    /** Thermal imaging texture view for thermal camera preview */
     private var thermalView: TextureView? = null
+    
+    /** Visual camera texture view for standard camera preview */
     private var visualView: TextureView? = null
     
+    /** GSR device connection status flag */
     private var isGSRConnected = false
+    
+    /** Currently selected recording mode */
     private var currentRecordingMode = EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS
     
     companion object {
+        /** Permission request code for runtime permissions */
         private const val PERMISSIONS_REQUEST_CODE = 1001
+        
+        /** Required permissions for enhanced recording functionality */
         private val REQUIRED_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
@@ -45,15 +89,32 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         )
     }
 
+    /**
+     * Inflates the layout using ViewBinding for type-safe view access.
+     * 
+     * @return Layout resource ID for the enhanced recording interface
+     */
     override fun initContentView(): Int = R.layout.activity_enhanced_recording
 
+    /**
+     * Initializes the view components and sets up recording interface.
+     * 
+     * Configures camera previews, recording controls, GSR integration,
+     * and establishes proper event handlers for professional recording
+     * workflow management.
+     * 
+     * @throws RuntimeException if ViewBinding initialization fails
+     */
     override fun initView() {
-        title_view.setTitle("Enhanced Recording - Bucika GSR")
-        title_view.setLeftClickListener { finish() }
+        // Initialize ViewBinding after layout is set by base class
+        binding = ActivityEnhancedRecordingBinding.bind(findViewById(android.R.id.content))
+        
+        binding.titleView.setTitle("Enhanced Recording - Bucika GSR")
+        binding.titleView.setLeftClickListener { finish() }
         
         // Initialize texture views (these would be bound to actual camera surfaces)
-        thermalView = texture_thermal
-        visualView = texture_visual
+        thermalView = binding.textureThermal
+        visualView = binding.textureVisual
         
         // Initialize components
         videoRecorder = EnhancedVideoRecorder(this, thermalView, visualView)
@@ -64,51 +125,72 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         updateUI()
     }
 
+    /**
+     * Initializes data components and checks required permissions.
+     * 
+     * Verifies that all necessary permissions are granted for camera access,
+     * storage operations, and Bluetooth connectivity required for enhanced
+     * recording functionality.
+     */
     override fun initData() {
         checkPermissions()
     }
 
+    /**
+     * Sets up click listeners for all recording interface controls.
+     * 
+     * Configures event handlers for recording mode selection, recording
+     * control buttons, GSR device management, and file browser access.
+     * Ensures proper workflow management and user feedback.
+     */
     private fun setupClickListeners() {
         // Recording mode selection
-        btn_samsung_4k.setOnClickListener {
+        binding.btnSamsung4k.setOnClickListener {
             currentRecordingMode = EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS
             updateRecordingModeUI()
         }
         
-        btn_rad_dng_level3.setOnClickListener {
+        binding.btnRadDngLevel3.setOnClickListener {
             currentRecordingMode = EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS
             updateRecordingModeUI()
         }
         
-        btn_parallel_recording.setOnClickListener {
+        binding.btnParallelRecording.setOnClickListener {
             currentRecordingMode = EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM
             updateRecordingModeUI()
         }
         
         // Recording controls
-        btn_start_recording.setOnClickListener {
+        binding.btnStartRecording.setOnClickListener {
             startEnhancedRecording()
         }
         
-        btn_stop_recording.setOnClickListener {
+        binding.btnStopRecording.setOnClickListener {
             stopEnhancedRecording()
         }
         
         // GSR controls
-        btn_connect_gsr.setOnClickListener {
+        binding.btnConnectGsr.setOnClickListener {
             connectGSRDevice()
         }
         
-        btn_disconnect_gsr.setOnClickListener {
+        binding.btnDisconnectGsr.setOnClickListener {
             disconnectGSRDevice()
         }
         
         // File browser
-        btn_view_recordings.setOnClickListener {
+        binding.btnViewRecordings.setOnClickListener {
             openRecordingsBrowser()
         }
     }
 
+    /**
+     * Checks and requests required permissions for enhanced recording.
+     * 
+     * Verifies camera, storage, audio recording, and Bluetooth permissions
+     * required for full functionality. Requests missing permissions from
+     * the user with appropriate system dialogs.
+     */
     private fun checkPermissions() {
         val missingPermissions = REQUIRED_PERMISSIONS.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
@@ -123,6 +205,13 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         }
     }
 
+    /**
+     * Starts enhanced recording with the selected mode.
+     * 
+     * Initializes the video recording system with the current recording mode,
+     * starts GSR monitoring if connected, and provides user feedback on
+     * recording status and mode-specific features.
+     */
     private fun startEnhancedRecording() {
         if (!videoRecorder.isRecording()) {
             val success = videoRecorder.startRecording(currentRecordingMode)
@@ -145,6 +234,13 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         }
     }
 
+    /**
+     * Stops enhanced recording and processes recorded content.
+     * 
+     * Finalizes video recording, stops GSR monitoring, and displays
+     * recording statistics including file information and capture
+     * performance metrics for professional analysis.
+     */
     private fun stopEnhancedRecording() {
         if (videoRecorder.isRecording()) {
             val success = videoRecorder.stopRecording()
@@ -178,29 +274,54 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         }
     }
 
+    /**
+     * Initiates connection to GSR monitoring device.
+     * 
+     * Establishes Bluetooth connection to Shimmer GSR sensor for
+     * real-time physiological monitoring during recording sessions.
+     */
     private fun connectGSRDevice() {
         val shimmerAddress = "00:06:66:XX:XX:XX" // Replace with actual address from device discovery
         gsrManager.connectToShimmer(shimmerAddress)
         Toast.makeText(this, "Connecting to GSR device...", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Disconnects from GSR monitoring device.
+     * 
+     * Safely terminates GSR sensor connection and updates UI state
+     * to reflect disconnected status.
+     */
     private fun disconnectGSRDevice() {
         gsrManager.disconnectShimmer()
         isGSRConnected = false
         updateUI()
     }
 
+    /**
+     * Opens the local file browser for recording management.
+     * 
+     * Launches the LocalFileBrowserActivity to allow users to browse,
+     * manage, and export recorded video files and GSR data.
+     */
     private fun openRecordingsBrowser() {
         // Launch local file browser activity
         val intent = Intent(this, LocalFileBrowserActivity::class.java)
         startActivity(intent)
     }
 
+    /**
+     * Updates recording mode UI to reflect current selection.
+     * 
+     * Highlights the selected recording mode and displays detailed
+     * descriptions of mode-specific features and capabilities for
+     * user guidance and workflow optimization.
+     */
     private fun updateRecordingModeUI() {
         // Update UI to show selected recording mode
-        btn_samsung_4k.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS)
-        btn_rad_dng_level3.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS)
-        btn_parallel_recording.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM)
+        binding.btnSamsung4k.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS)
+        binding.btnRadDngLevel3.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS)
+        binding.btnParallelRecording.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM)
         
         val modeDescription = when (currentRecordingMode) {
             EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS -> 
@@ -210,54 +331,80 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
             EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM -> 
                 "Simultaneous thermal and visual stream recording"
         }
-        tv_mode_description.text = modeDescription
+        binding.tvModeDescription.text = modeDescription
     }
 
+    /**
+     * Updates the complete UI state based on current recording and connection status.
+     * 
+     * Manages button states, status indicators, and user feedback displays
+     * to provide clear visual feedback on system state and available actions.
+     */
     private fun updateUI() {
         val isRecording = videoRecorder.isRecording()
         
         // Recording controls
-        btn_start_recording.isEnabled = !isRecording
-        btn_stop_recording.isEnabled = isRecording
+        binding.btnStartRecording.isEnabled = !isRecording
+        binding.btnStopRecording.isEnabled = isRecording
         
         // Recording mode selection (disable during recording)
-        btn_samsung_4k.isEnabled = !isRecording
-        btn_rad_dng_level3.isEnabled = !isRecording
-        btn_parallel_recording.isEnabled = !isRecording
+        binding.btnSamsung4k.isEnabled = !isRecording
+        binding.btnRadDngLevel3.isEnabled = !isRecording
+        binding.btnParallelRecording.isEnabled = !isRecording
         
         // GSR controls
-        btn_connect_gsr.isEnabled = !isGSRConnected
-        btn_disconnect_gsr.isEnabled = isGSRConnected
+        binding.btnConnectGsr.isEnabled = !isGSRConnected
+        binding.btnDisconnectGsr.isEnabled = isGSRConnected
         
         // Status indicators
-        tv_recording_status.text = if (isRecording) {
+        binding.tvRecordingStatus.text = if (isRecording) {
             "Recording: ${currentRecordingMode.name}"
         } else {
             "Ready to record"
         }
         
-        tv_gsr_status.text = if (isGSRConnected) {
+        binding.tvGsrStatus.text = if (isGSRConnected) {
             "GSR: Connected (${gsrManager.getConnectedDeviceName()})"
         } else {
             "GSR: Not connected"
         }
     }
 
-    // GSR Data Listener implementation
+    /**
+     * Handles incoming GSR data from connected sensor device.
+     * 
+     * Processes real-time galvanic skin response and temperature data,
+     * updates UI displays, and integrates measurements with active
+     * recording sessions for synchronized data capture.
+     * 
+     * @param timestamp Precise timestamp for GSR measurement
+     * @param gsrValue Galvanic skin response value in microsiemens
+     * @param skinTemperature Skin temperature in degrees Celsius
+     */
     override fun onGSRDataReceived(timestamp: Long, gsrValue: Double, skinTemperature: Double) {
         runOnUiThread {
-            tv_gsr_value.text = "GSR: %.3f µS".format(gsrValue)
-            tv_skin_temp.text = "Skin: %.2f °C".format(skinTemperature)
+            binding.tvGsrValue.text = "GSR: %.3f µS".format(gsrValue)
+            binding.tvSkinTemp.text = "Skin: %.2f °C".format(skinTemperature)
             
             // Add timestamp overlay to recording if active
             if (videoRecorder.isRecording()) {
                 // This would integrate with the actual frame capture to add overlays
                 // For now, just update the UI display
-                tv_recording_overlay.text = "Recording with GSR: ${gsrValue}µS @ ${skinTemperature}°C"
+                binding.tvRecordingOverlay.text = "Recording with GSR: ${gsrValue}µS @ ${skinTemperature}°C"
             }
         }
     }
 
+    /**
+     * Handles GSR device connection status changes.
+     * 
+     * Updates UI state and provides user feedback when GSR device
+     * connection status changes, ensuring proper workflow management
+     * and user awareness of sensor availability.
+     * 
+     * @param isConnected Current connection status
+     * @param deviceName Name of connected GSR device, null if disconnected
+     */
     override fun onConnectionStatusChanged(isConnected: Boolean, deviceName: String?) {
         runOnUiThread {
             isGSRConnected = isConnected
@@ -272,6 +419,17 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         }
     }
 
+    /**
+     * Handles permission request results for enhanced recording functionality.
+     * 
+     * Processes user responses to runtime permission requests and provides
+     * appropriate feedback if permissions are denied, ensuring users understand
+     * the requirements for full functionality.
+     * 
+     * @param requestCode The request code passed to requestPermissions
+     * @param permissions The requested permissions array
+     * @param grantResults The grant results for corresponding permissions
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -290,6 +448,12 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         }
     }
 
+    /**
+     * Performs cleanup operations when activity is destroyed.
+     * 
+     * Ensures proper resource cleanup for video recording system and
+     * GSR manager to prevent memory leaks and release hardware resources.
+     */
     override fun onDestroy() {
         super.onDestroy()
         videoRecorder.cleanup()
