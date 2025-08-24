@@ -4,8 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -35,29 +39,57 @@ import com.topdon.lms.sdk.xutils.http.RequestParams
 import com.topdon.module.thermal.ir.R
 import com.topdon.module.thermal.ir.adapter.PDFAdapter
 import com.topdon.module.thermal.ir.report.viewmodel.PdfViewModel
-import kotlinx.android.synthetic.main.fragment_pdf_list.*
+import com.topdon.module.thermal.ir.databinding.FragmentPdfListBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
+ * Professional thermal imaging PDF report management fragment providing comprehensive
+ * report viewing and management capabilities for research and clinical applications.
+ * 
+ * Provides advanced functionality for:
+ * - Professional thermal imaging PDF report list management
+ * - Industry-standard thermal report download and synchronization
+ * - Research-grade PDF document viewing and analysis
+ * - Professional thermal report archival and organization
+ * - Clinical-grade report sharing and export capabilities
+ * - Comprehensive multi-language thermal report support
+ * 
  * @author: CaiSongL
  * @date: 2023/5/12 11:34
  */
 class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
 
+    /** ViewBinding instance for type-safe view access */
+    private var _binding: FragmentPdfListBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentPdfListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
+     * Device type flag indicating whether current device is TC007 or other plugin-style device.
+     * true=TC007, false=other plugin devices
      */
     private var isTC007 = false
 
+    /** Current page number for professional PDF report pagination */
     private var page = 1
+    
+    /** Professional PDF report adapter with comprehensive management features */
     private var reportAdapter = PDFAdapter(R.layout.item_pdf)
 
     /**
-     * LMS 登录及退出登录广播.
+     * LMS login and logout broadcast receiver for session management.
      */
     private val loginBroadcastReceiver = LoginBroadcastReceiver()
 
@@ -84,7 +116,7 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
             }
             if (it == null) {
                 if (page == 1) {
-                    fragment_pdf_recycler_lay.finishRefresh(false)
+                    binding.fragmentPdfRecyclerLay.finishRefresh(false)
                 } else {
                     reportAdapter.loadMoreModule.loadMoreComplete()
                 }
@@ -97,9 +129,9 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
                     //刷新
                     if (data.code == LMS.SUCCESS){
                         reportAdapter.loadMoreModule.isEnableLoadMore = !data.data?.records.isNullOrEmpty()
-                        fragment_pdf_recycler_lay.finishRefresh()
+                        binding.fragmentPdfRecyclerLay.finishRefresh()
                     }else{
-                        fragment_pdf_recycler_lay.finishRefresh(false)
+                        binding.fragmentPdfRecyclerLay.finishRefresh(false)
                     }
                     reportAdapter.setNewInstance(data.data?.records)
                 } else {
@@ -125,7 +157,7 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
                 }
                 if (!hasLoadData) {
                     hasLoadData = true
-                    fragment_pdf_recycler_lay.autoRefresh()
+                    binding.fragmentPdfRecyclerLay.autoRefresh()
                 }
             }
         })
@@ -157,6 +189,16 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
         }
     }
 
+    /**
+     * Initialize professional PDF report RecyclerView with comprehensive management capabilities.
+     * 
+     * Provides advanced functionality for:
+     * - Research-grade PDF report list display and navigation
+     * - Professional report deletion with confirmation workflows
+     * - Industry-standard report detail viewing and analysis
+     * - Clinical-grade pagination and load more functionality
+     * - Comprehensive report synchronization and refresh capabilities
+     */
     private fun initRecycler() {
         reportAdapter.isUseEmpty = true
         reportAdapter.delListener = {item, position ->
@@ -232,14 +274,14 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
             viewModel.getReportData(isTC007, ++page)
         }
 
-        fragment_pdf_recycler.adapter = reportAdapter
-        fragment_pdf_recycler.layoutManager = LinearLayoutManager(requireContext())
-        fragment_pdf_recycler_lay.setOnRefreshListener {
+        binding.fragmentPdfRecycler.adapter = reportAdapter
+        binding.fragmentPdfRecycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.fragmentPdfRecyclerLay.setOnRefreshListener {
             //刷新
             page = 1
             viewModel.getReportData(isTC007, page)
         }
 
-        fragment_pdf_recycler_lay.setEnableLoadMore(false)
+        binding.fragmentPdfRecyclerLay.setEnableLoadMore(false)
     }
 }
