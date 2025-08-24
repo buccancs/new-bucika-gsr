@@ -11,6 +11,14 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     
+    <!-- Network permissions for orchestrator connection -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    
     <!-- GSR/Shimmer related permissions -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
@@ -144,6 +152,19 @@
             android:name="com.topdon.tc001.recording.LocalFileBrowserActivity"
             android:screenOrientation="userPortrait"
             android:label="File Browser" />
+            
+        <!-- PC Orchestrator Configuration Activity -->
+        <activity
+            android:name="com.topdon.tc001.orchestrator.OrchestratorConfigActivity"
+            android:screenOrientation="userPortrait"
+            android:label="PC Orchestrator" />
+            
+        <!-- PC Orchestrator Service -->
+        <service
+            android:name="com.topdon.tc001.orchestrator.OrchestratorService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
             
         <!-- FileProvider for file sharing -->
         <provider

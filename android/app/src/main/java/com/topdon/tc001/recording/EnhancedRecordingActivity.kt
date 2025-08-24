@@ -15,6 +15,7 @@ import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityEnhancedRecordingBinding
 import com.topdon.tc001.gsr.GSRManager
 import com.topdon.tc001.LocalFileBrowserActivity
+import com.topdon.tc001.orchestrator.OrchestratorConfigActivity
 
 /**
  * Enhanced recording activity for professional research applications.
@@ -182,6 +183,11 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         binding.btnViewRecordings.setOnClickListener {
             openRecordingsBrowser()
         }
+        
+        // PC Orchestrator
+        binding.btnPcOrchestrator.setOnClickListener {
+            openOrchestratorConfig()
+        }
     }
 
     /**
@@ -307,6 +313,18 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
     private fun openRecordingsBrowser() {
         // Launch local file browser activity
         val intent = Intent(this, LocalFileBrowserActivity::class.java)
+        startActivity(intent)
+    }
+
+    /**
+     * Opens the PC Orchestrator configuration interface.
+     * 
+     * Launches the OrchestratorConfigActivity to allow users to discover
+     * and connect to PC orchestrators for coordinated recording sessions.
+     */
+    private fun openOrchestratorConfig() {
+        // Launch orchestrator configuration activity
+        val intent = Intent(this, OrchestratorConfigActivity::class.java)
         startActivity(intent)
     }
 
