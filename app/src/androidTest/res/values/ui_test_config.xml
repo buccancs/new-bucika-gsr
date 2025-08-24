@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UI Test Configuration for BucikaGSR Application -->
+<resources>
+    <!-- Test timeouts and delays -->
+    <integer name="ui_test_timeout_ms">5000</integer>
+    <integer name="ui_test_short_delay_ms">1000</integer>
+    <integer name="ui_test_long_delay_ms">3000</integer>
+    <integer name="ui_test_animation_delay_ms">500</integer>
+    
+    <!-- Test device configurations -->
+    <string name="test_gsr_device_name">Test_Shimmer_Device</string>
+    <string name="test_thermal_device_name">Test_Thermal_Camera</string>
+    
+    <!-- Test file names and paths -->
+    <string name="test_recording_prefix">UI_Test_Recording</string>
+    <string name="test_export_filename">UI_Test_Export</string>
+    
+    <!-- Test settings values -->
+    <integer name="test_sampling_rate_hz">256</integer>
+    <integer name="test_buffer_size">1024</integer>
+    <integer name="test_connection_timeout_sec">30</integer>
+    
+    <!-- Performance test thresholds -->
+    <integer name="max_ui_response_time_ms">2000</integer>
+    <integer name="max_loading_time_ms">5000</integer>
+    <integer name="min_fps_threshold">30</integer>
+    
+    <!-- Accessibility test settings -->
+    <bool name="enable_accessibility_tests">true</bool>
+    <bool name="enable_performance_tests">true</bool>
+    <bool name="enable_integration_tests">true</bool>
+</resources>
