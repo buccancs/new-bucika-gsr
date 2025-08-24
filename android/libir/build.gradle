@@ -68,8 +68,8 @@ dependencies {
     api(name: 'libusbdualsdk_1.3.4_2406271906_standard', ext: 'aar')
     implementation(name: 'opengl_1.3.2_standard', ext: 'aar')
     api 'com.conghuahuadan:superlayout:1.1.0'
-    implementation project(':libapp')
-    api(project(":LocalRepo:libcommon"))
+    implementation project(':android:libapp')
+    api(project(":android:LocalRepo:libcommon"))
     api(name: 'suplib-release', ext: 'aar')
     api(name: 'ai-upscale-release', ext: 'aar')
 }

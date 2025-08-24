@@ -60,8 +60,8 @@ android {
 }
 
 dependencies {
-    implementation project(':libapp')
-    implementation project(':libmenu') //伪彩条用着 PseudoColorConfig
+    implementation project(':android:libapp')
+    implementation project(':android:libmenu') //伪彩条用着 PseudoColorConfig
     // ARouter replaced with ModernRouter (no external dependencies needed)
     // ksp "com.alibaba:arouter-compiler:1.5.2"
 }

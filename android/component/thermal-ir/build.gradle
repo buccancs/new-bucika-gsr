@@ -70,14 +70,14 @@ dependencies {
     implementation(name: 'opengl_1.3.2_standard', ext: 'aar')
     implementation(name: 'library_1.0', ext: 'aar')
 
-    implementation project(':libapp')
-    implementation project(':libcom')
-    implementation project(':libir')
-    implementation project(':libmenu')
-    implementation project(':libui')
+    implementation project(':android:libapp')
+    implementation project(':android:libcom')
+    implementation project(':android:libir')
+    implementation project(':android:libmenu')
+    implementation project(':android:libui')
     // Removed house module dependency for bucika_gsr
     // implementation project(':component:house')
-    implementation project(':component:CommonComponent')
+    implementation project(':android:component:CommonComponent')
 
     // ARouter replaced with ModernRouter (no external dependencies needed)
     // ksp "com.alibaba:arouter-compiler:1.5.2"

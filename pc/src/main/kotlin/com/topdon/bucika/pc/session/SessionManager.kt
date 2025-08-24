@@ -220,8 +220,9 @@ class SessionManager {
     /**
      * Record file upload completion in session metadata
      */
-    fun recordFileUpload(sessionId: String, fileName: String, filePath: String) {
+    fun recordFileUpload(sessionId: String, fileName: String, filePath: String, deviceId: String = "", checksum: String = "") {
         val session = sessions[sessionId] ?: return
+        val fileSize = File(filePath).length()
         
         val event = SessionEvent(
             "FILE_UPLOAD",
@@ -229,15 +230,14 @@ class SessionManager {
             mapOf(
                 "fileName" to fileName,
                 "filePath" to filePath,
-                "fileSize" to File(filePath).length()
+                "fileSize" to fileSize
             )
         )
         session.metadata.events.add(event)
-        session.metadata.files.add(SessionFile(fileName, filePath, "upload"))
+        session.metadata.files.add(SessionFile(fileName, fileSize, checksum, deviceId, LocalDateTime.now()))
         
         saveSessionMetadata(session)
         logger.info { "Recorded file upload: $fileName for session ${session.name}" }
-    }
     }
     
     private fun performPreflightChecks(session: Session): PreflightResult {

@@ -62,5 +62,5 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:4.12.0"
     implementation "com.blankj:utilcodex:1.30.6"
 
-    implementation project(':libapp') //需要使用 string 资源
+    implementation project(':android:libapp') //需要使用 string 资源
 }
