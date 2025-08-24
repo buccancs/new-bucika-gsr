@@ -69,7 +69,7 @@ abstract class BasePickImgActivity : BaseActivity(), View.OnClickListener {
      * @return Initialized ViewBinding instance
      * @throws RuntimeException If ViewBinding initialization fails
      */
-    override fun getViewBinding(): ViewBinding {
+    fun getViewBinding(): ViewBinding {
         binding = ActivityImagePickIrPlushBinding.inflate(layoutInflater)
         return binding
     }

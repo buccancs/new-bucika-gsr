@@ -70,44 +70,45 @@ class TipWaterMarkDialog : Dialog {
             if (dialog == null) {
                 dialog = TipWaterMarkDialog(context!!, R.style.InfoDialog)
             }
-            val inflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.dialog_tip_watermark, null)
-            imgClose = view.img_close
-            llWatermarkContent = view.ll_watermark_content
-            mEtTitle = view.ed_title
-            mEtAddress = view.ed_address
-            imgLocation = view.img_location
-            switchDateTime = view.switch_date_time
+            val binding = DialogTipWatermarkBinding.inflate(
+                LayoutInflater.from(context!!)
+            )
+            imgClose = binding.imgClose
+            llWatermarkContent = binding.llWatermarkContent
+            mEtTitle = binding.edTitle
+            mEtAddress = binding.edAddress
+            imgLocation = binding.imgLocation
+            switchDateTime = binding.switchDateTime
             updateWaterMark(false)
 
-            view.switch_watermark.setOnCheckedChangeListener { _, isChecked ->
+            binding.switchWatermark.setOnCheckedChangeListener { _, isChecked ->
                 updateWaterMark(isChecked)
             }
-            view.switch_date_time.setOnCheckedChangeListener { _, _ ->
+            binding.switchDateTime.setOnCheckedChangeListener { _, _ ->
 
             }
-            view.tv_i_know.setOnClickListener {
+            binding.tvIKnow.setOnClickListener {
                 dismiss()
                 closeEvent?.invoke(
                     WatermarkBean(
-                        view.switch_watermark.isChecked,
-                        view.ed_title.text.toString(),
-                        view.ed_address.text.toString(),
-                        view.switch_date_time.isChecked,
+                        binding.switchWatermark.isChecked,
+                        binding.edTitle.text.toString(),
+                        binding.edAddress.text.toString(),
+                        binding.switchDateTime.isChecked,
                     )
                 )
             }
             imgLocation.setOnClickListener {
                 checkLocationPermission()
             }
-            view.switch_watermark.isChecked = watermarkBean.isOpen
-            view.switch_date_time.isChecked = watermarkBean.isAddTime
-            view.ed_title.setText(watermarkBean.title.ifEmpty { SharedManager.watermarkBean.title })
-            view.ed_address.setText(watermarkBean.address)
+            binding.switchWatermark.isChecked = watermarkBean.isOpen
+            binding.switchDateTime.isChecked = watermarkBean.isAddTime
+            binding.edTitle.setText(watermarkBean.title.ifEmpty { SharedManager.watermarkBean.title })
+            binding.edAddress.setText(watermarkBean.address)
 
 
             dialog!!.addContentView(
-                view,
+                binding.root,
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             )
             val lp = dialog!!.window!!.attributes
@@ -134,7 +135,7 @@ class TipWaterMarkDialog : Dialog {
 //                    )
 //                )
             }
-            dialog!!.setContentView(view)
+            dialog!!.setContentView(binding.root)
             return dialog as TipWaterMarkDialog
         }
 

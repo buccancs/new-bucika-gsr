@@ -117,7 +117,7 @@ class TipObserveDialog : Dialog {
             } else {
                 messageText.visibility = View.GONE
             }
-            dialog!!.setContentView(view)
+            dialog!!.setContentView(binding.root)
             return dialog as TipObserveDialog
         }
     }
