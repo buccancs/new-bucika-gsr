@@ -17,11 +17,24 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.topdon.lib.ui.R
+import com.topdon.lib.ui.databinding.DialogTipPreviewBinding
 import com.topdon.lib.ui.widget.IndicateView
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.dialog_tip_preview.view.*
 import java.util.Timer
 import kotlin.collections.ArrayList
+
+/**
+ * Professional tip preview dialog for thermal imaging systems
+ * 
+ * Provides comprehensive user guidance including:
+ * - Multi-page tip preview with FragmentPager integration
+ * - Professional indication system with page navigation
+ * - Checkbox state management for user preferences
+ * - Industry-standard dialog presentation with proper lifecycle management
+ * - Type-safe view access with ViewBinding
+ * 
+ * @property closeEvent Callback for dialog close events with checkbox state
+ */
 
 class TipPreviewDialog : DialogFragment() {
 
