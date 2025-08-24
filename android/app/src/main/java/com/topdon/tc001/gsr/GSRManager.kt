@@ -9,6 +9,7 @@ import com.shimmerresearch.driver.Configuration
 import com.shimmerresearch.driver.ObjectCluster
 import com.shimmerresearch.driver.ShimmerDataProcessor
 import com.shimmerresearch.driver.ProcessedGSRData
+import com.topdon.tc001.gsr.data.GSRDataWriter
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -39,6 +40,9 @@ class GSRManager private constructor(private val context: Context) {
     
     // Advanced data processing
     private val dataProcessor = ShimmerDataProcessor()
+    
+    // Data writer for local storage
+    private val dataWriter: GSRDataWriter = GSRDataWriter.getInstance(context)
     
     // State management
     private val isConnected = AtomicBoolean(false)
@@ -200,6 +204,11 @@ class GSRManager private constructor(private val context: Context) {
             // Process data with advanced algorithms
             val processedData = dataProcessor.processGSRData(objectCluster, DEFAULT_SAMPLING_RATE)
             
+            // Save data to local file if recording
+            if (isRecording.get()) {
+                dataWriter.addGSRData(processedData)
+            }
+            
             // Deliver processed data to advanced listener
             advancedDataListener?.let { listener ->
                 mainHandler.post {
@@ -266,12 +275,24 @@ class GSRManager private constructor(private val context: Context) {
     fun startRecording(): Boolean {
         return if (isConnected.get() && !isRecording.get()) {
             try {
+                // Start local file recording
+                val recordingStarted = dataWriter.startRecording()
+                if (!recordingStarted) {
+                    XLog.e(TAG, "Failed to start local data recording")
+                    return false
+                }
+                
+                // Start device streaming
                 shimmerDevice?.startStreaming()
                 isRecording.set(true)
-                XLog.i(TAG, "GSR recording started with advanced processing")
+                XLog.i(TAG, "GSR recording started with advanced processing and local storage")
                 true
             } catch (e: Exception) {
                 XLog.e(TAG, "Failed to start GSR recording: ${e.message}", e)
+                // Cleanup if streaming started but recording failed
+                if (dataWriter.isRecording()) {
+                    dataWriter.stopRecording()
+                }
                 false
             }
         } else {
@@ -286,12 +307,21 @@ class GSRManager private constructor(private val context: Context) {
     fun stopRecording(): Boolean {
         return if (isRecording.get()) {
             try {
+                // Stop device streaming first
                 shimmerDevice?.stopStreaming()
                 isRecording.set(false)
                 
+                // Stop local file recording
+                val recordingStopped = dataWriter.stopRecording()
+                
                 // Log final statistics
                 val stats = dataProcessor.getStatistics()
+                val recordingInfo = if (recordingStopped) dataWriter.getCurrentRecordingInfo() else null
+                
                 XLog.i(TAG, "GSR recording stopped. Stats: ${stats.totalSamples} total, ${stats.validSamples} valid, quality: ${stats.currentSignalQuality}%")
+                if (recordingInfo != null) {
+                    XLog.i(TAG, "Local file saved: ${recordingInfo.fileName} with ${recordingInfo.samplesWritten} samples")
+                }
                 
                 true
             } catch (e: Exception) {
@@ -363,6 +393,7 @@ class GSRManager private constructor(private val context: Context) {
             
             disconnectShimmer()
             dataProcessor.reset()
+            dataWriter.cleanup()
             gsrDataListener = null
             advancedDataListener = null
             
@@ -372,4 +403,23 @@ class GSRManager private constructor(private val context: Context) {
             XLog.e(TAG, "Error during cleanup: ${e.message}", e)
         }
     }
+    
+    /**
+     * Get recorded GSR files
+     */
+    fun getRecordedFiles() = dataWriter.getRecordedFiles()
+    
+    /**
+     * Get current recording information
+     */
+    fun getCurrentRecordingInfo() = dataWriter.getCurrentRecordingInfo()
+    
+    /**
+     * Export GSR data to file
+     */
+    suspend fun exportGSRDataToFile(
+        gsrData: List<ProcessedGSRData>,
+        fileName: String? = null,
+        includeAnalysis: Boolean = true
+    ) = dataWriter.exportGSRDataToFile(gsrData, fileName, includeAnalysis)
 }
