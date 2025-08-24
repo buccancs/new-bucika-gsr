@@ -13,7 +13,7 @@ import com.topdon.lib.ui.R
 import com.topdon.lib.ui.bean.ColorBean
 import com.topdon.lib.ui.config.CameraHelp
 import com.topdon.menu.constant.TargetType
-import kotlinx.android.synthetic.main.ui_item_menu_second_view.view.*
+import android.widget.ImageView
 
 @Deprecated("旧的标靶菜单，已重构过了")
 class MenuTargetAdapter (val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
