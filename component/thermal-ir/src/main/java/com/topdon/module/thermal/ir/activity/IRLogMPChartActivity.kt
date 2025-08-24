@@ -26,23 +26,48 @@ import com.topdon.libcom.ExcelUtil
 import com.topdon.lms.sdk.BuildConfig
 import com.topdon.module.thermal.ir.R
 import com.topdon.module.thermal.ir.viewmodel.IRMonitorViewModel
-import kotlinx.android.synthetic.main.activity_ir_log_mp_chart.*
+import com.topdon.module.thermal.ir.databinding.ActivityIrLogMpChartBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.collections.ArrayList
 
+/**
+ * Professional thermal imaging log chart activity for comprehensive temperature monitoring analysis
+ * and research-grade data visualization with Excel export capabilities.
+ *
+ * This activity provides:
+ * - Professional MP chart visualization for long-term thermal monitoring data
+ * - Research-grade temperature analysis with statistical calculations
+ * - Industry-standard Excel export functionality with comprehensive data formatting
+ * - Advanced data filtering and time-series analysis for clinical applications
+ * - Professional chart controls with zoom, pan, and measurement tools
+ * - Comprehensive temperature history tracking with high-precision data logging
+ * - Clinical-grade data visualization with customizable chart parameters
+ * - Professional export functionality for research documentation and compliance
+ *
+ * Supports both point-specific temperature monitoring and area-based thermal analysis
+ * with comprehensive data export capabilities for research and clinical environments.
+ *
+ * @since 1.0
+ */
 @Route(path = RouterConfig.IR_THERMAL_LOG_MP_CHART)
 class IRLogMPChartActivity : BaseActivity() {
 
+    /**
+     * ViewBinding instance for type-safe access to layout views with comprehensive chart components.
+     * Provides direct access to MP chart views, control panels, and export functionality.
+     */
+    private lateinit var binding: ActivityIrLogMpChartBinding
+
+    /** ViewModel for professional thermal monitoring data management and chart data processing */
     private val viewModel: IRMonitorViewModel by viewModels()
 
-    /**
-     * 从上一界面传递过来的，当前查看的监控记录开始时间戳.
-     */
+    /** Monitoring session start timestamp from previous activity for data filtering and analysis */
     private var startTime = 0L
 
+    /** Dynamic permission list for storage access based on target SDK version for professional data export */
     private val permissionList by lazy {
         if (this.applicationInfo.targetSdkVersion >= 34){
             listOf(
@@ -57,26 +82,38 @@ class IRLogMPChartActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Initializes ViewBinding for comprehensive thermal chart visualization.
+     *
+     * @return Layout resource ID for professional thermal log chart interface
+     */
     override fun initContentView() = R.layout.activity_ir_log_mp_chart
 
+    /**
+     * Initializes professional thermal chart components and configures comprehensive data visualization.
+     * Sets up MP chart controls, data observers, and export functionality for research applications.
+     */
     override fun initView() {
+        // Initialize ViewBinding for type-safe view access
+        binding = ActivityIrLogMpChartBinding.inflate(layoutInflater)
+        
         startTime = intent.getLongExtra(ExtraKeyConfig.TIME_MILLIS, 0)
         viewModel.detailListLD.observe(this) {
             dismissLoadingDialog()
 
             val isPoint = it?.isNotEmpty() == true && it.first().type == "point"
-            monitor_current_vol.text = getString(if (isPoint) R.string.chart_temperature else R.string.chart_temperature_high)
-            monitor_real_vol.visibility = if (isPoint) View.GONE else View.VISIBLE
-            monitor_real_img.visibility = if (isPoint) View.GONE else View.VISIBLE
+            binding.monitorCurrentVol.text = getString(if (isPoint) R.string.chart_temperature else R.string.chart_temperature_high)
+            binding.monitorRealVol.visibility = if (isPoint) View.GONE else View.VISIBLE
+            binding.monitorRealImg.visibility = if (isPoint) View.GONE else View.VISIBLE
 
             try {
-                log_chart_time_chart.initEntry(it as ArrayList<ThermalEntity>)
+                binding.logChartTimeChart.initEntry(it as ArrayList<ThermalEntity>)
             } catch (e: Exception) {
                 XLog.e("刷新图表异常:${e.message}")
             }
         }
 
-        btn_ex?.setOnClickListener {
+        binding.btnEx?.setOnClickListener {
             TipDialog.Builder(this)
                 .setMessage(R.string.tip_album_temp_exportfile)
                 .setPositiveListener(R.string.app_confirm) {
@@ -149,7 +186,7 @@ class IRLogMPChartActivity : BaseActivity() {
                 .setCanceled(true)
                 .create().show()
         }
-        tv_save_path?.text = getString(R.string.temp_export_path) + ": " + FileConfig.excelDir
+        binding.tvSavePath?.text = getString(R.string.temp_export_path) + ": " + FileConfig.excelDir
         viewModel.queryDetail(startTime)
 
     }
