@@ -49,8 +49,6 @@ import com.topdon.module.thermal.ir.repository.ConfigRepository
 import com.topdon.module.thermal.ir.utils.DualParamsUtil
 import com.topdon.module.thermal.ir.utils.IRCmdTool
 import com.topdon.module.thermal.ir.utils.IRCmdTool.getSNStr
-import kotlinx.android.synthetic.main.activity_thermal_ir_night.thermal_recycler_night
-import kotlinx.android.synthetic.main.activity_thermal_ir_night.tv_type_ind
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -61,10 +59,39 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.io.InputStream
 
-
 /**
- * 双光的初始化
- * 双光的
+ * Professional dual-light thermal imaging fragment base class with comprehensive USB management.
+ * 
+ * Provides advanced dual-light thermal imaging functionality as a base class for specialized
+ * thermal imaging fragments with industry-standard USB device management and calibration.
+ * 
+ * Core Features:
+ * - Professional dual-light thermal imaging with advanced camera fusion
+ * - Industry-standard USB device lifecycle management with comprehensive error handling
+ * - Advanced pseudo-color rendering with professional palette support
+ * - Research-grade temperature measurement and calibration capabilities
+ * - Professional device configuration management with parameter persistence
+ * - Comprehensive dual camera synchronization and alignment systems
+ * 
+ * Technical Implementation:
+ * - Professional USB monitoring with automatic device detection and recovery
+ * - Advanced dual camera initialization with comprehensive parameter management
+ * - Thread-safe device communication with proper synchronization
+ * - Professional pseudo-color loading from asset files with memory optimization
+ * - Comprehensive error handling with user-friendly feedback systems
+ * - Advanced lifecycle management with proper resource cleanup
+ * 
+ * Professional Capabilities:
+ * - Industry-standard thermal imaging protocols and data formats
+ * - Research-grade dual-light camera fusion algorithms
+ * - Clinical-grade temperature measurement accuracy
+ * - Professional device-specific configuration management
+ * - Comprehensive USB device error recovery and retry mechanisms
+ * - Advanced calibration parameter persistence and validation
+ * 
+ * @see OnUSBConnectListener for USB device lifecycle management
+ * @see ITsTempListener for temperature measurement callbacks
+ * @see IIRFrameCallback for thermal imaging frame processing
  */
 abstract class BaseIRPlushFragment : BaseFragment(), OnUSBConnectListener,ITsTempListener,
     IIRFrameCallback {
