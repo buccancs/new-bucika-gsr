@@ -409,8 +409,96 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         // Stop GSR recording
         gsrManager.stopRecording()
         
-        // TODO: Upload recorded files
-        // orchestratorClient.uploadFile(filePath, "gsr_data")
+        // Upload recorded files automatically
+        uploadSessionFiles()
+    }
+    
+    /**
+     * Upload all recorded files from the current session
+     */
+    private fun uploadSessionFiles() {
+        try {
+            // Get GSR data files
+            val gsrFiles = findGSRDataFiles()
+            Log.i(TAG, "Found ${gsrFiles.size} GSR files to upload")
+            
+            gsrFiles.forEach { file ->
+                if (file.exists() && file.length() > 0) {
+                    Log.i(TAG, "Uploading GSR file: ${file.name} (${file.length()} bytes)")
+                    orchestratorClient.uploadFile(
+                        filePath = file.absolutePath,
+                        fileType = "gsr_data",
+                        callback = object : OrchestratorClient.FileUploadCallback {
+                            override fun onProgress(bytesUploaded: Long, totalBytes: Long) {
+                                val progress = (bytesUploaded * 100 / totalBytes).toInt()
+                                Log.d(TAG, "Upload progress for ${file.name}: $progress%")
+                                updateNotification("Uploading ${file.name}: $progress%")
+                            }
+                            
+                            override fun onCompleted(uploadedFilePath: String) {
+                                Log.i(TAG, "Upload completed: ${file.name}")
+                                updateNotification("Upload completed")
+                            }
+                            
+                            override fun onError(error: String) {
+                                Log.e(TAG, "Upload failed for ${file.name}: $error")
+                                updateNotification("Upload failed")
+                            }
+                        }
+                    )
+                }
+            }
+            
+            // TODO: Upload video files if available
+            // TODO: Upload thermal data if available
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error uploading session files", e)
+        }
+    }
+    
+    /**
+     * Find GSR data files from current recording session
+     */
+    private fun findGSRDataFiles(): List<java.io.File> {
+        val files = mutableListOf<java.io.File>()
+        
+        try {
+            // Check common GSR data storage locations
+            val externalDir = android.os.Environment.getExternalStorageDirectory()
+            val gsrDataDirs = listOf(
+                java.io.File(externalDir, "BucikaGSR/gsr_data"),
+                java.io.File(externalDir, "Documents/BucikaGSR"),
+                java.io.File(applicationContext.getExternalFilesDir(null), "gsr_data")
+            )
+            
+            gsrDataDirs.forEach { dir ->
+                if (dir.exists()) {
+                    dir.listFiles()?.let { dirFiles ->
+                        dirFiles.filter { file ->
+                            file.isFile && 
+                            (file.name.endsWith(".csv") || file.name.endsWith(".json")) &&
+                            file.name.contains("gsr", ignoreCase = true) &&
+                            isRecentFile(file)
+                        }.let { gsrFiles ->
+                            files.addAll(gsrFiles)
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error finding GSR data files", e)
+        }
+        
+        return files
+    }
+    
+    /**
+     * Check if file was created recently (within last hour)
+     */
+    private fun isRecentFile(file: java.io.File): Boolean {
+        val oneHourAgo = System.currentTimeMillis() - (60 * 60 * 1000)
+        return file.lastModified() > oneHourAgo
     }
 
     /**

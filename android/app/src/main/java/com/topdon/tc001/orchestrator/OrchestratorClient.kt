@@ -287,6 +287,7 @@ class OrchestratorClient(
             "START" -> handleStart(payload)
             "STOP" -> handleStop(payload) 
             "SYNC_MARK" -> handleSyncMark(payload)
+            "UPLOAD_BEGIN_ACK" -> handleUploadBeginAck(payload)
             "FILE_UPLOAD_READY" -> handleFileUploadReady(payload)
             "FILE_UPLOAD_ACK" -> handleFileUploadAck(payload)
             "ACK" -> handleAck(payload)
@@ -370,19 +371,42 @@ class OrchestratorClient(
         fileUploadCallbacks[filePath]?.onCompleted(filePath)
     }
 
+    private fun handleUploadBeginAck(payload: Map<String, Any>) {
+        val fileName = payload["fileName"] as? String ?: return
+        val status = payload["status"] as? String ?: "UNKNOWN"
+        
+        if (status == "READY") {
+            Log.i(TAG, "Upload ready for: $fileName - starting chunks")
+            val uploadInfo = pendingUploads[fileName]
+            if (uploadInfo != null) {
+                // Start chunked upload in background thread
+                Thread {
+                    uploadFileChunks(uploadInfo)
+                }.start()
+            }
+        } else {
+            Log.e(TAG, "Upload begin failed for: $fileName - $status")
+            fileUploadCallbacks[fileName]?.onError("Upload initialization failed: $status")
+            pendingUploads.remove(fileName)
+        }
+    }
+
     private fun handleFileUploadAck(payload: Map<String, Any>) {
         val filePath = payload["filePath"] as? String ?: return
+        val fileName = payload["fileName"] as? String ?: filePath
         val status = payload["status"] as? String ?: "UNKNOWN"
         
         if (status == "COMPLETED") {
-            Log.i(TAG, "File upload completed: $filePath")
-            fileUploadCallbacks[filePath]?.onCompleted(filePath)
-            fileUploadCallbacks.remove(filePath)
+            Log.i(TAG, "File upload completed: $fileName")
+            fileUploadCallbacks[fileName]?.onCompleted(fileName)
+            fileUploadCallbacks.remove(fileName)
+            pendingUploads.remove(fileName)
         } else if (status == "ERROR") {
             val error = payload["error"] as? String ?: "Upload failed"
-            Log.e(TAG, "File upload failed: $filePath - $error")
-            fileUploadCallbacks[filePath]?.onError(error)
-            fileUploadCallbacks.remove(filePath)
+            Log.e(TAG, "File upload failed: $fileName - $error")
+            fileUploadCallbacks[fileName]?.onError(error)
+            fileUploadCallbacks.remove(fileName)
+            pendingUploads.remove(fileName)
         }
     }
 
@@ -462,7 +486,7 @@ class OrchestratorClient(
     }
 
     /**
-     * Upload a file to the orchestrator
+     * Upload a file to the orchestrator using chunked transfer
      */
     fun uploadFile(filePath: String, fileType: String, callback: FileUploadCallback? = null) {
         if (currentSessionId == null) {
@@ -470,18 +494,140 @@ class OrchestratorClient(
             return
         }
         
-        // This will be implemented with chunked transfer
-        val payload = mapOf(
-            "filePath" to filePath,
-            "fileType" to fileType,
-            "sessionId" to currentSessionId!!
-        )
-        
-        val message = createMessage("FILE_UPLOAD_REQUEST", payload)
-        sendMessage(message, expectAck = true)
-        
-        // Store callback for progress updates
-        fileUploadCallbacks[filePath] = callback
+        try {
+            val file = java.io.File(filePath)
+            if (!file.exists()) {
+                callback?.onError("File does not exist: $filePath")
+                return
+            }
+            
+            val fileSize = file.length()
+            val chunkSize = 8192 // 8KB chunks
+            val checksum = calculateFileChecksum(file)
+            
+            // Send upload begin request
+            val beginPayload = mapOf(
+                "fileName" to file.name,
+                "fileSize" to fileSize,
+                "checksum" to checksum,
+                "chunkSize" to chunkSize,
+                "fileType" to fileType
+            )
+            
+            val beginMessage = createMessage("UPLOAD_BEGIN", beginPayload)
+            sendMessage(beginMessage, expectAck = true)
+            
+            // Store callback and file info for chunked upload
+            fileUploadCallbacks[file.name] = callback
+            pendingUploads[file.name] = FileUploadInfo(file, chunkSize, callback)
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting file upload", e)
+            callback?.onError("Failed to start upload: ${e.message}")
+        }
+    }
+    
+    /**
+     * Perform chunked file upload
+     */
+    private fun uploadFileChunks(uploadInfo: FileUploadInfo) {
+        try {
+            val file = uploadInfo.file
+            val chunkSize = uploadInfo.chunkSize
+            val totalChunks = ((file.length() + chunkSize - 1) / chunkSize).toInt()
+            
+            Log.i(TAG, "Starting chunked upload of ${file.name} (${totalChunks} chunks)")
+            
+            file.inputStream().use { inputStream ->
+                val buffer = ByteArray(chunkSize)
+                var chunkIndex = 0
+                var bytesRead: Int
+                
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    val chunkData = if (bytesRead < chunkSize) {
+                        buffer.copyOfRange(0, bytesRead)
+                    } else {
+                        buffer
+                    }
+                    
+                    val chunkChecksum = calculateChunkChecksum(chunkData)
+                    val encodedData = android.util.Base64.encodeToString(chunkData, android.util.Base64.DEFAULT)
+                    
+                    val chunkPayload = mapOf(
+                        "fileName" to file.name,
+                        "chunkIndex" to chunkIndex,
+                        "data" to encodedData,
+                        "checksum" to chunkChecksum
+                    )
+                    
+                    val chunkMessage = createMessage("UPLOAD_CHUNK", chunkPayload)
+                    sendMessage(chunkMessage, expectAck = false)
+                    
+                    // Update progress
+                    val bytesUploaded = (chunkIndex + 1) * chunkSize.toLong()
+                    uploadInfo.callback?.onProgress(
+                        minOf(bytesUploaded, file.length()), 
+                        file.length()
+                    )
+                    
+                    chunkIndex++
+                    
+                    // Small delay to avoid overwhelming the connection
+                    Thread.sleep(10)
+                }
+                
+                // Send upload end message
+                val endPayload = mapOf(
+                    "fileName" to file.name,
+                    "totalChunks" to totalChunks,
+                    "finalChecksum" to uploadInfo.fileChecksum
+                )
+                
+                val endMessage = createMessage("UPLOAD_END", endPayload)
+                sendMessage(endMessage, expectAck = true)
+                
+                Log.i(TAG, "Completed upload of ${file.name}")
+            }
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error during chunked upload", e)
+            uploadInfo.callback?.onError("Upload failed: ${e.message}")
+            pendingUploads.remove(uploadInfo.file.name)
+        }
+    }
+    
+    /**
+     * Calculate MD5 checksum for file integrity verification
+     */
+    private fun calculateFileChecksum(file: java.io.File): String {
+        return try {
+            val md = java.security.MessageDigest.getInstance("MD5")
+            file.inputStream().use { inputStream ->
+                val buffer = ByteArray(8192)
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    md.update(buffer, 0, bytesRead)
+                }
+            }
+            md.digest().joinToString("") { "%02x".format(it) }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error calculating file checksum", e)
+            "unknown"
+        }
+    }
+    
+    /**
+     * Calculate MD5 checksum for chunk integrity verification
+     */
+    private fun calculateChunkChecksum(data: ByteArray): String {
+        return try {
+            val md = java.security.MessageDigest.getInstance("MD5")
+            md.update(data)
+            md.digest().joinToString("") { "%02x".format(it) }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error calculating chunk checksum", e)
+            "unknown"
+        }
     }
     
     /**
@@ -504,6 +650,38 @@ class OrchestratorClient(
     }
 
     private val fileUploadCallbacks = mutableMapOf<String, FileUploadCallback>()
+    private val pendingUploads = mutableMapOf<String, FileUploadInfo>()
+    
+    /**
+     * Data class for tracking file upload state
+     */
+    private data class FileUploadInfo(
+        val file: java.io.File,
+        val chunkSize: Int,
+        val callback: FileUploadCallback?,
+        val fileChecksum: String = ""
+    ) {
+        constructor(file: java.io.File, chunkSize: Int, callback: FileUploadCallback?) : 
+            this(file, chunkSize, callback, calculateFileChecksum(file))
+            
+        companion object {
+            private fun calculateFileChecksum(file: java.io.File): String {
+                return try {
+                    val md = java.security.MessageDigest.getInstance("MD5")
+                    file.inputStream().use { inputStream ->
+                        val buffer = ByteArray(8192)
+                        var bytesRead: Int
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            md.update(buffer, 0, bytesRead)
+                        }
+                    }
+                    md.digest().joinToString("") { "%02x".format(it) }
+                } catch (e: Exception) {
+                    "unknown"
+                }
+            }
+        }
+    }
 
     /**
      * Interface for orchestrator client events
