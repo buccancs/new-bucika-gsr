@@ -1,0 +1,32 @@
+// BucikaGSR Packaging Configuration
+// Extracted from main build.gradle to improve maintainability
+
+android {
+    packagingOptions {
+        //解决第三方so依赖冲突 merge（合并）  pickFirst（选取第一个）
+        //如果合并不能解决问题就选择其中一个
+        merge 'META-INF/LICENSE-notice.md'
+        merge 'META-INF/LICENSE.md'
+        merge 'META-INF/proguard/androidx-annotations.pro'
+        merge 'META-INF/proguard/coroutines.pro'
+//        merge 'lib/arm64-v8a/libc++_shared.so'
+//        merge 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'META-INF/LICENSE.md'
+        pickFirst 'META-INF/LICENSE-notice.md'
+        pickFirst 'lib/arm64-v8a/libnative-window.so'
+        pickFirst 'lib/armeabi-v7a/libnative-window.so'
+        pickFirst 'lib/armeabi-v7a/libyuv.so'
+        pickFirst 'lib/arm64-v8a/libyuv.so'
+        pickFirst 'lib/armeabi-v7a/libopencv_java4.so'
+        pickFirst 'lib/arm64-v8a/libopencv_java4.so'
+        pickFirst 'lib/armeabi-v7a/libomp.so'
+        pickFirst 'lib/arm64-v8a/libomp.so'
+        pickFirst 'lib/arm64-v8a/liblog.so'
+        pickFirst 'lib/armeabi-v7a/liblog.so'
+        doNotStrip "**/*.so"
+    }
+}

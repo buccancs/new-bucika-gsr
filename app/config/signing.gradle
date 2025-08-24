@@ -1,0 +1,21 @@
+// BucikaGSR Signing Configuration
+// Extracted from main build.gradle to improve maintainability
+
+android {
+    signingConfigs {
+        debug {
+            storeFile file('artibox_key/ArtiBox.jks')
+            keyAlias 'Artibox'
+            storePassword 'artibox2017'
+            keyPassword 'artibox2017'
+        }
+        release {
+            storeFile file('artibox_key/ArtiBox.jks')
+            keyAlias 'Artibox'
+            storePassword 'artibox2017'
+            keyPassword 'artibox2017'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+}

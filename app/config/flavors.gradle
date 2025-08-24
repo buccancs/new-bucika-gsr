@@ -1,0 +1,76 @@
+// BucikaGSR Product Flavors Configuration
+// Extracted from main build.gradle to improve maintainability
+
+android {
+    flavorDimensions 'app'
+
+    productFlavors {
+        dev {
+            dimension 'app'
+            buildConfigField "int", "ENV_TYPE", "0"
+            buildConfigField("String", "SOFT_CODE", "\"${rootProject.ext.softCode.topInfrared}\"")
+            buildConfigField("String", "APP_KEY", "\"${rootProject.ext.appKey.topInfrared}\"")
+            buildConfigField("String", "APP_SECRET", "\"${rootProject.ext.appSecret.topInfrared}\"")
+            manifestPlaceholders = [
+                    app_name: "TopInfrared",
+            ]
+        }
+        beta {
+            dimension 'app'
+            buildConfigField "int", "ENV_TYPE", "0"
+            buildConfigField("String", "SOFT_CODE", "\"${rootProject.ext.softCode.topInfrared}\"")
+            buildConfigField("String", "APP_KEY", "\"${rootProject.ext.appKey.topInfrared}\"")
+            buildConfigField("String", "APP_SECRET", "\"${rootProject.ext.appSecret.topInfrared}\"")
+            manifestPlaceholders = [
+                    app_name: "IRCamera",
+            ]
+        }
+        prod {
+            dimension 'app'
+            buildConfigField "int", "ENV_TYPE", "0"
+            buildConfigField("String", "SOFT_CODE", "\"${rootProject.ext.softCode.topInfrared}\"")
+            buildConfigField("String", "APP_KEY", "\"${rootProject.ext.appKey.topInfrared}\"")
+            buildConfigField("String", "APP_SECRET", "\"${rootProject.ext.appSecret.topInfrared}\"")
+            manifestPlaceholders = [
+                    app_name: "IRCamera",
+            ]
+        }
+        prodTopdon {
+            dimension 'app'
+            targetSdk 27
+            buildConfigField "int", "ENV_TYPE", "0"
+            buildConfigField("String", "SOFT_CODE", "\"${rootProject.ext.softCode.topInfrared10}\"")
+            buildConfigField("String", "APP_KEY", "\"${rootProject.ext.appKey.topInfrared10}\"")
+            buildConfigField("String", "APP_SECRET", "\"${rootProject.ext.appSecret.topInfrared10}\"")
+//            versionCode rootProject.ext.android.versionCode + Integer.parseInt(new Date().format('yy')) * 10000
+            manifestPlaceholders = [
+                    app_name: "IRCamera",
+            ]
+        }
+
+        //国内版
+        insideChina {
+            dimension 'app'
+            buildConfigField "int", "ENV_TYPE", "1"
+            buildConfigField("String", "SOFT_CODE", "\"${rootProject.ext.softCode.topInfraredCN}\"")
+            buildConfigField("String", "APP_KEY", "\"${rootProject.ext.appKey.topInfraredCN}\"")
+            buildConfigField("String", "APP_SECRET", "\"${rootProject.ext.appSecret.topInfraredCN}\"")
+            manifestPlaceholders = [
+                    app_name: "热视界",
+            ]
+        }
+        //国内版 Android 10
+        prodTopdonInsideChina {
+            dimension 'app'
+            targetSdk 27
+            buildConfigField "int", "ENV_TYPE", "1"
+            buildConfigField("String", "SOFT_CODE", "\"${rootProject.ext.softCode.topInfraredCN10}\"")
+            buildConfigField("String", "APP_KEY", "\"${rootProject.ext.appKey.topInfraredCN10}\"")
+            buildConfigField("String", "APP_SECRET", "\"${rootProject.ext.appSecret.topInfraredCN10}\"")
+            versionCode rootProject.ext.android.versionCode + Integer.parseInt(new Date().format('yy')) * 10000
+            manifestPlaceholders = [
+                    app_name: "热视界",
+            ]
+        }
+    }
+}
