@@ -297,7 +297,7 @@ class WebSocketServer(
     
     fun isDeviceConnected(deviceId: String): Boolean = deviceConnections.containsKey(deviceId)
     
-    fun stop() {
+    override fun stop() {
         try {
             pingScheduler.shutdown()
             serviceScope.cancel()

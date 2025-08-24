@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "2.0.21"
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
@@ -24,7 +24,7 @@ dependencies {
     implementation("org.java-websocket:Java-WebSocket:1.5.7")
     
     // mDNS discovery
-    implementation("javax.jmdns:jmdns:3.5.12")
+    implementation("org.jmdns:jmdns:3.5.8")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:1.5.8")
@@ -42,6 +42,19 @@ javafx {
 
 application {
     mainClass.set("com.topdon.bucika.pc.BucikaOrchestratorKt")
+}
+
+// Alternative console demo without JavaFX
+tasks.register<JavaExec>("runDemo") {
+    group = "application"
+    description = "Run console demo without JavaFX"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.topdon.bucika.pc.demo.ConsoleDemoOrchestratorKt")
+    jvmArgs = listOf(
+        "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+        "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+        "--add-opens", "java.base/java.util=ALL-UNNAMED"
+    )
 }
 
 tasks.test {
