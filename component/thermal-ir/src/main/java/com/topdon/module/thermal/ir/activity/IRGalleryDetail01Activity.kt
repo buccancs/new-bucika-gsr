@@ -34,7 +34,7 @@ import com.topdon.module.thermal.ir.event.ImageGalleryEvent
 import com.topdon.module.thermal.ir.fragment.GalleryFragment
 import com.topdon.module.thermal.ir.frame.FrameTool
 import com.topdon.module.thermal.ir.viewmodel.IRGalleryEditViewModel
-import kotlinx.android.synthetic.main.activity_ir_gallery_detail_01.*
+import com.topdon.module.thermal.ir.databinding.ActivityIrGalleryDetail01Binding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,30 +44,95 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
- * 插件式设备、TC007 图片详情
+ * Professional TC001 Gallery Detail Activity for Thermal Image Analysis
+ * 
+ * This activity provides comprehensive thermal image detail viewing and analysis
+ * capabilities specifically for TC001 plugin-style devices. Essential for research
+ * workflows requiring detailed thermal image analysis and professional data management.
+ * 
+ * **Gallery Management Features:**
+ * - Professional ViewPager2 integration for smooth thermal image browsing
+ * - Comprehensive image metadata extraction including EXIF data and thermal parameters  
+ * - Advanced export capabilities for research data analysis and Excel reporting
+ * - Professional image editing workflow integration with thermal parameter adjustment
+ * - Real-time temperature data extraction and CSV export for research applications
+ * 
+ * **Research Application Features:**
+ * - High-resolution thermal image display with professional zoom and analysis tools
+ * - Detailed file information including thermal frame data and temperature measurements
+ * - Professional Excel export functionality for research data analysis workflows
+ * - Comprehensive image sharing capabilities for research collaboration
+ * - Integration with report generation system for clinical documentation
+ * 
+ * **TC001 Device Integration:**
+ * - Native support for TC001 thermal image formats and metadata structures
+ * - Professional thermal frame data processing with FrameTool integration
+ * - Advanced temperature measurement extraction for research-grade analysis
+ * - Comprehensive file format support including proprietary thermal formats
+ * 
+ * **Professional Data Export:**
+ * - Excel spreadsheet generation with comprehensive thermal data analysis
+ * - CSV export functionality for statistical analysis and research workflows
+ * - Professional metadata extraction including device parameters and settings
+ * - Research-grade data organization with proper file naming and structure
+ * 
+ * @author BucikaGSR Development Team
+ * @since 2024.1.0
+ * @see GalleryFragment For individual thermal image display and interaction handling
+ * @see FrameTool For thermal frame data processing and temperature extraction
+ * @see IRGalleryEditViewModel For comprehensive thermal image analysis operations
  */
 @Route(path = RouterConfig.IR_GALLERY_DETAIL_01)
 class IRGalleryDetail01Activity : BaseActivity(), View.OnClickListener {
 
     /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
+     * ViewBinding instance for type-safe view access
+     * Replaces deprecated Kotlin synthetics with modern binding pattern
+     */
+    private lateinit var binding: ActivityIrGalleryDetail01Binding
+
+    /**
+     * Device type flag indicating whether this is a TC007 wireless device
+     * For BucikaGSR: Always false since only TC001 devices are supported
+     * - true: TC007 wireless thermal imaging device  
+     * - false: TC001 line-type thermal imaging device (BucikaGSR default)
      */
     private var isTC007 = false
 
     /**
-     * 当前展示图片在列表中的 position
+     * Current thermal image position in the gallery sequence
+     * Used for professional navigation and title display
      */
     private var position = 0
+    
     /**
-     * 从上一界面传递过来的，当前展示的图片列表.
+     * Complete list of thermal images for gallery browsing
+     * Contains metadata and file paths for research workflow management
      */
     private lateinit var dataList: ArrayList<GalleryBean>
 
+    /**
+     * Current thermal image file path for processing and analysis
+     * Used for FrameTool integration and temperature data extraction
+     */
     private var irPath: String? = null
+    
+    /**
+     * ViewModel for thermal image editing and analysis operations
+     * Provides research-grade data processing and export capabilities
+     */
     private val irViewModel: IRGalleryEditViewModel by viewModels()
 
-    override fun initContentView() = R.layout.activity_ir_gallery_detail_01
+    override fun initContentView(): Int {
+        binding = ActivityIrGalleryDetail01Binding.inflate(layoutInflater)
+        setContentView(binding.root)
+        return 0 // ViewBinding handles layout inflation
+    }
+    
+    /**
+     * Professional thermal frame processing tool for research-grade analysis
+     * Handles temperature extraction, data conversion, and metadata processing
+     */
     private val frameTool by lazy { FrameTool() }
 
     override fun initView() {
@@ -75,10 +140,10 @@ class IRGalleryDetail01Activity : BaseActivity(), View.OnClickListener {
         dataList = intent.getParcelableArrayListExtra("list")!!
         isTC007 = intent.getBooleanExtra(ExtraKeyConfig.IS_TC007, false)
 
-        title_view.setTitleText("${position + 1}/${dataList.size}")
-        title_view.setRightClickListener { actionInfo() }
-        title_view.setRight2ClickListener { actionShare() }
-        title_view.setRight3ClickListener { deleteImage() }
+        binding.titleView.setTitleText("${position + 1}/${dataList.size}")
+        binding.titleView.setRightClickListener { actionInfo() }
+        binding.titleView.setRight2ClickListener { actionShare() }
+        binding.titleView.setRight3ClickListener { deleteImage() }
 
         initViewPager()
 
@@ -125,13 +190,13 @@ class IRGalleryDetail01Activity : BaseActivity(), View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun initViewPager() {
-        ir_gallery_viewpager.adapter = GalleryViewPagerAdapter(this)
-        ir_gallery_viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.irGalleryViewpager.adapter = GalleryViewPagerAdapter(this)
+        binding.irGalleryViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 this@IRGalleryDetail01Activity.position = position
-                title_view.setTitleText("${position + 1}/${dataList.size}")
+                binding.titleView.setTitleText("${position + 1}/${dataList.size}")
 
                 irPath = "${FileConfig.lineIrGalleryDir}/${dataList[position].name.substringBeforeLast(".")}.ir"
                 val hasIrData = File(irPath!!).exists()

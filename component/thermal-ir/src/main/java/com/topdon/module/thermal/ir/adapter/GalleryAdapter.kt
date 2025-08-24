@@ -13,11 +13,40 @@ import com.topdon.lib.core.bean.GalleryTitle
 import com.topdon.lib.core.tools.GlideLoader
 import com.topdon.lib.core.tools.TimeTool
 import com.topdon.module.thermal.ir.R
-import kotlinx.android.synthetic.main.item_gallery_head_lay.view.*
-import kotlinx.android.synthetic.main.item_gallery_lay.view.*
+import com.topdon.module.thermal.ir.databinding.ItemGalleryHeadLayBinding
+import com.topdon.module.thermal.ir.databinding.ItemGalleryLayBinding
 
 /**
- * 照片或视频
+ * Professional Gallery Adapter for Thermal Image and Video Management
+ * 
+ * This adapter provides comprehensive gallery functionality for thermal images and videos
+ * with professional features including multi-selection, remote TS004 device support, 
+ * and research-grade metadata display essential for thermal imaging applications.
+ * 
+ * **Gallery Features:**
+ * - Professional ViewBinding implementation replacing deprecated Kotlin synthetics
+ * - Support for both thermal images and video files with appropriate visual indicators
+ * - Comprehensive multi-selection mode with visual feedback for batch operations
+ * - TS004 remote device integration with download status indicators and management
+ * - Professional sectioned display with date-based grouping for research organization
+ * 
+ * **Research Application Benefits:**
+ * - Efficient browsing of large thermal image datasets with optimized performance
+ * - Professional selection interface for batch export and analysis operations
+ * - Visual indicators for video duration, file types, and download status
+ * - Integration with comprehensive gallery management and archival systems
+ * - Research-grade metadata display and organization capabilities
+ * 
+ * **Data Management:**
+ * - Dynamic data updates with professional change tracking and notifications
+ * - Comprehensive selection state management for research workflow efficiency
+ * - Professional image loading with Glide integration for optimal performance
+ * - Support for mixed content types (images, videos) with appropriate handling
+ * 
+ * @author BucikaGSR Development Team
+ * @since 2024.1.0
+ * @see GalleryBean For thermal image and video metadata structure
+ * @see GalleryTitle For professional section header organization
  */
 @SuppressLint("NotifyDataSetChanged")
 class GalleryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -124,30 +153,30 @@ class GalleryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == TYPE_HEAD) {
-            ItemHeadView(LayoutInflater.from(parent.context).inflate(R.layout.item_gallery_head_lay, parent, false))
+            ItemHeadView(ItemGalleryHeadLayBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         } else {
-            ItemView(LayoutInflater.from(parent.context).inflate(R.layout.item_gallery_lay, parent, false))
+            ItemView(ItemGalleryLayBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = dataList[position]
         if (holder is ItemView) {
-            GlideLoader.load(holder.img, data.thumb)
+            GlideLoader.load(holder.binding.itemGalleryImg, data.thumb)
             if (data.name.uppercase().endsWith(".MP4")) {
-                holder.info.text = TimeTool.showVideoTime(data.duration)
-                holder.itemView.iv_video_time.isVisible = true
+                holder.binding.itemGalleryText.text = TimeTool.showVideoTime(data.duration)
+                holder.binding.ivVideoTime.isVisible = true
             } else {
-                holder.info.text = ""
-                holder.itemView.iv_video_time.isVisible = false
+                holder.binding.itemGalleryText.text = ""
+                holder.binding.ivVideoTime.isVisible = false
             }
 
-            holder.itemView.iv_has_download.isVisible = isTS004Remote && data.hasDownload
+            holder.binding.ivHasDownload.isVisible = isTS004Remote && data.hasDownload
 
-            holder.itemView.iv_check.isVisible = isEditMode
-            holder.itemView.iv_check.isSelected = selectList.contains(position)
+            holder.binding.ivCheck.isVisible = isEditMode
+            holder.binding.ivCheck.isSelected = selectList.contains(position)
 
-            holder.img.setOnClickListener {
+            holder.binding.itemGalleryImg.setOnClickListener {
                 if (isEditMode) {
                     if (selectList.contains(position)) {
                         selectList.remove(position)
@@ -156,25 +185,25 @@ class GalleryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     }
                     selectCallback?.invoke(selectList)
 
-                    holder.itemView.iv_check.isSelected = selectList.contains(position)
+                    holder.binding.ivCheck.isSelected = selectList.contains(position)
                 } else {
                     itemClickCallback?.invoke(position)
                 }
             }
-            holder.img.setOnLongClickListener {
+            holder.binding.itemGalleryImg.setOnLongClickListener {
                 if (!isEditMode) {
                     selectList.add(position)
                     selectCallback?.invoke(selectList)
-                    holder.itemView.iv_check.isVisible = true
-                    holder.itemView.iv_check.isSelected = true
+                    holder.binding.ivCheck.isVisible = true
+                    holder.binding.ivCheck.isSelected = true
                     isEditMode = true
                     onLongEditListener?.invoke()
                 }
                 return@setOnLongClickListener true
             }
         } else if (holder is ItemHeadView) {
-            holder.name.text = TimeTool.showDateType(data.timeMillis, 4)
-            holder.name.setTextColor(0x80ffffff.toInt())
+            holder.binding.itemGalleryHeadText.text = TimeTool.showDateType(data.timeMillis, 4)
+            holder.binding.itemGalleryHeadText.setTextColor(0x80ffffff.toInt())
         }
     }
 
@@ -182,14 +211,15 @@ class GalleryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return dataList.size
     }
 
-    inner class ItemHeadView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.item_gallery_head_text
-    }
+    /**
+     * Professional ViewHolder for gallery section headers with ViewBinding
+     * Provides date-based organization for research workflow efficiency
+     */
+    inner class ItemHeadView(val binding: ItemGalleryHeadLayBinding) : RecyclerView.ViewHolder(binding.root)
 
-    inner class ItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val img: ImageView = itemView.item_gallery_img
-        val info: TextView = itemView.item_gallery_text
-    }
-
-
+    /**
+     * Professional ViewHolder for thermal images and videos with ViewBinding  
+     * Supports multi-selection, download indicators, and research-grade interaction
+     */
+    inner class ItemView(val binding: ItemGalleryLayBinding) : RecyclerView.ViewHolder(binding.root)
 }

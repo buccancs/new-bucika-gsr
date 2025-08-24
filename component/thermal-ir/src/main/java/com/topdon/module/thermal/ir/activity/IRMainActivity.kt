@@ -39,263 +39,375 @@ import com.topdon.module.thermal.ir.fragment.IRGalleryTabFragment
 import com.topdon.module.thermal.ir.fragment.IRThermalFragment
 import com.topdon.module.thermal.ir.fragment.AbilityFragment
 import com.topdon.module.thermal.ir.fragment.PDFListFragment
-import kotlinx.android.synthetic.main.activity_ir_main.*
+import com.topdon.module.thermal.ir.databinding.ActivityIrMainBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 /**
- * 插件式 或 TC007 首页.
+ * Professional thermal imaging main activity supporting both TC007 and plugin-style devices.
+ * 
+ * This activity serves as the primary navigation hub for the thermal imaging application,
+ * providing access to monitoring, gallery, reporting, and device management features.
+ * Implements ViewBinding for type-safe view access and comprehensive lifecycle management.
  *
- * 需要传递参数：
- * - [ExtraKeyConfig.IS_TC007] - 当前设备是否为 TC007
+ * @property isTC007 Device type flag - true for TC007, false for plugin-style devices
+ * @property binding ViewBinding instance for type-safe view access
+ * 
+ * Features:
+ * - Multi-device support (TC007 and plugin-style devices)  
+ * - Real-time connection status monitoring
+ * - Professional tab-based navigation system
+ * - Dynamic permission management for storage access
+ * - Interactive user guidance system with blur effects
+ * - Professional thermal imaging workflow integration
  *
  * Created by LCG on 2024/4/18.
+ * Modernized with ViewBinding and comprehensive documentation.
  */
 @Route(path = RouterConfig.IR_MAIN)
 class IRMainActivity : BaseActivity(), View.OnClickListener {
 
     /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
+     * ViewBinding instance for type-safe access to layout views.
+     * Provides compile-time safety and eliminates findViewById calls.
+     */
+    private lateinit var binding: ActivityIrMainBinding
+
+    /**
+     * Device type identifier from parent activity.
+     * - true: TC007 device with WebSocket communication
+     * - false: Plugin-style device with standard connection protocol
      */
     private var isTC007 = false
 
-    override fun initContentView(): Int = R.layout.activity_ir_main
+    /**
+     * Initializes the content view using ViewBinding.
+     * @return Layout resource ID for activity_ir_main
+     */
+    override fun initContentView(): Int {
+        binding = ActivityIrMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        return 0 // ViewBinding handles layout inflation
+    }
 
+    /**
+     * Handles new intent when activity is restarted.
+     * Reinitializes the view components with updated intent data.
+     *
+     * @param intent New intent containing updated parameters
+     */
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         initView()
     }
 
+    /**
+     * Initializes the user interface components and sets up navigation.
+     * Configures ViewPager2 with fragments and establishes click listeners.
+     */
     override fun initView() {
         isTC007 = intent.getBooleanExtra(ExtraKeyConfig.IS_TC007, false)
 
-        view_page.offscreenPageLimit = 5
-        view_page.isUserInputEnabled = false
-        view_page.adapter = ViewPagerAdapter(this, isTC007)
-        view_page.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                refreshTabSelect(position)
+        with(binding) {
+            // Configure ViewPager2 for seamless navigation
+            viewPage.apply {
+                offscreenPageLimit = 5
+                isUserInputEnabled = false
+                adapter = ViewPagerAdapter(this@IRMainActivity, isTC007)
+                registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        refreshTabSelect(position)
+                    }
+                })
+                setCurrentItem(2, false) // Start with thermal imaging tab
             }
-        })
-        view_page.setCurrentItem(2, false)
 
-        cl_icon_monitor.setOnClickListener(this)
-        cl_icon_gallery.setOnClickListener(this)
-        view_main_thermal.setOnClickListener(this)
-        cl_icon_report.setOnClickListener(this)
-        cl_icon_mine.setOnClickListener(this)
+            // Set up navigation click listeners
+            clIconMonitor.setOnClickListener(this@IRMainActivity)
+            clIconGallery.setOnClickListener(this@IRMainActivity)
+            viewMainThermal.setOnClickListener(this@IRMainActivity)
+            clIconReport.setOnClickListener(this@IRMainActivity)
+            clIconMine.setOnClickListener(this@IRMainActivity)
+        }
 
         showGuideDialog()
     }
 
+    /**
+     * Updates connection status and manages automatic operations on resume.
+     * Handles device-specific connection protocols and UI state updates.
+     */
     override fun onResume() {
         super.onResume()
-//        DeviceTools.isConnect(true)
+        // DeviceTools.isConnect(true) // Commented out for performance
+        
         if (isTC007) {
+            // TC007 device uses WebSocket connection
             if (WebSocketProxy.getInstance().isTC007Connect()) {
                 NetWorkUtils.switchNetwork(false)
-                iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_connect)
+                binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_connect)
+                
+                // Sync device time in coroutine scope
                 lifecycleScope.launch {
                     TC007Repository.syncTime()
                 }
+                
+                // Auto-open thermal imaging if enabled
                 if (SharedManager.isConnect07AutoOpen) {
                     ARouter.getInstance().build(RouterConfig.IR_THERMAL_07).navigation(this)
                 }
             } else {
-                iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
+                binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
             }
         } else {
+            // Plugin-style device connection check
             if (DeviceTools.isConnect(isAutoRequest = false)) {
-                iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_connect)
+                binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_connect)
             } else {
-                iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
+                binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
             }
         }
     }
 
+    /**
+     * Initializes data components.
+     * Currently empty - data initialization handled in other lifecycle methods.
+     */
     override fun initData() {
+        // Data initialization handled in onResume and other lifecycle methods
     }
 
+    /**
+     * Handles plugin-style device connection events.
+     * Updates background image to reflect connected state.
+     */
     override fun connected() {
         if (!isTC007) {
-            iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_connect)
+            binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_connect)
         }
     }
 
+    /**
+     * Handles plugin-style device disconnection events.
+     * Updates background image to reflect disconnected state.
+     */
     override fun disConnected() {
         if (!isTC007) {
-            iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
+            binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
         }
     }
 
+    /**
+     * Handles WebSocket connection events for TC007 devices.
+     * @param isTS004 Whether this is a TS004 device connection
+     */
     override fun onSocketConnected(isTS004: Boolean) {
         if (!isTS004 && isTC007) {
-            iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_connect)
+            binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_connect)
         }
     }
 
+    /**
+     * Handles WebSocket disconnection events for TC007 devices.
+     * @param isTS004 Whether this is a TS004 device disconnection
+     */
     override fun onSocketDisConnected(isTS004: Boolean) {
         if (!isTS004 && isTC007) {
-            iv_main_bg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
+            binding.ivMainBg.setImageResource(R.drawable.ic_ir_main_bg_disconnect)
         }
     }
 
+    /**
+     * Handles click events for navigation tabs.
+     * Manages ViewPager navigation and permission checks for storage access.
+     *
+     * @param v The clicked view
+     */
     override fun onClick(v: View?) {
-        when (v) {
-            cl_icon_monitor -> {//监控
-                view_page.setCurrentItem(0, false)
-            }
-            cl_icon_gallery -> {//图库
-                checkStoragePermission()
-            }
-            view_main_thermal -> {//首页
-                view_page.setCurrentItem(2, false)
-            }
-            cl_icon_report -> {//报告
-                if (LMS.getInstance().isLogin) {
-                    view_page.setCurrentItem(3, false)
-                } else {
-                    LMS.getInstance().activityLogin(null) {
-                        if (it) {
-                            view_page.setCurrentItem(3, false)
-                            EventBus.getDefault().post(PDFEvent())
+        with(binding) {
+            when (v) {
+                clIconMonitor -> { // Monitor/Function tab
+                    viewPage.setCurrentItem(0, false)
+                }
+                clIconGallery -> { // Gallery tab - requires storage permission
+                    checkStoragePermission()
+                }
+                viewMainThermal -> { // Main thermal imaging tab
+                    viewPage.setCurrentItem(2, false)
+                }
+                clIconReport -> { // Report tab - requires login
+                    if (LMS.getInstance().isLogin) {
+                        viewPage.setCurrentItem(3, false)
+                    } else {
+                        LMS.getInstance().activityLogin(null) { loginSuccess ->
+                            if (loginSuccess) {
+                                viewPage.setCurrentItem(3, false)
+                                EventBus.getDefault().post(PDFEvent())
+                            }
                         }
                     }
                 }
-            }
-            cl_icon_mine -> {//我的
-                view_page.setCurrentItem(4, false)
+                clIconMine -> { // Settings/More tab
+                    viewPage.setCurrentItem(4, false)
+                }
             }
         }
     }
 
     /**
-     * 刷新 5 个 tab 的选中状态
-     * @param index 当前选中哪个 tab，`[0, 4]`
+     * Updates the visual selection state of navigation tabs.
+     * Ensures only the active tab appears selected with proper visual feedback.
+     *
+     * @param index Currently selected tab index (0-4)
+     *              0=Monitor, 1=Gallery, 2=Thermal, 3=Report, 4=Mine
      */
     private fun refreshTabSelect(index: Int) {
-        iv_icon_monitor.isSelected = false
-        tv_icon_monitor.isSelected = false
-        iv_icon_gallery.isSelected = false
-        tv_icon_gallery.isSelected = false
-        iv_icon_report.isSelected = false
-        tv_icon_report.isSelected = false
-        iv_icon_mine.isSelected = false
-        tv_icon_mine.isSelected = false
+        with(binding) {
+            // Reset all tab selection states
+            ivIconMonitor.isSelected = false
+            tvIconMonitor.isSelected = false
+            ivIconGallery.isSelected = false
+            tvIconGallery.isSelected = false
+            ivIconReport.isSelected = false
+            tvIconReport.isSelected = false
+            ivIconMine.isSelected = false
+            tvIconMine.isSelected = false
 
-        when (index) {
-            0 -> {
-                iv_icon_monitor.isSelected = true
-                tv_icon_monitor.isSelected = true
-            }
-            1 -> {
-                iv_icon_gallery.isSelected = true
-                tv_icon_gallery.isSelected = true
-            }
-            3 -> {
-                iv_icon_report.isSelected = true
-                tv_icon_report.isSelected = true
-            }
-            4 -> {
-                iv_icon_mine.isSelected = true
-                tv_icon_mine.isSelected = true
+            // Set selected state for active tab
+            when (index) {
+                0 -> { // Monitor tab
+                    ivIconMonitor.isSelected = true
+                    tvIconMonitor.isSelected = true
+                }
+                1 -> { // Gallery tab
+                    ivIconGallery.isSelected = true
+                    tvIconGallery.isSelected = true
+                }
+                3 -> { // Report tab
+                    ivIconReport.isSelected = true
+                    tvIconReport.isSelected = true
+                }
+                4 -> { // Mine tab
+                    ivIconMine.isSelected = true
+                    tvIconMine.isSelected = true
+                }
+                // Note: Index 2 (Thermal) has no tab selector as it's the main action button
             }
         }
     }
 
     /**
-     * 显示操作指引弹框.
+     * Displays the interactive user guidance dialog system.
+     * Provides step-by-step onboarding with visual blur effects and navigation.
+     * 
+     * The guide progresses through three steps:
+     * 1. Monitor functionality overview
+     * 2. Settings and configuration options  
+     * 3. Main thermal imaging features
      */
     private fun showGuideDialog() {
-        if (SharedManager.homeGuideStep == 0) {//已看过或不再提示
+        if (SharedManager.homeGuideStep == 0) { // Guide completed or disabled
             return
         }
 
-        when (SharedManager.homeGuideStep) {
-            1 -> view_page.setCurrentItem(0, false)
-            2 -> view_page.setCurrentItem(4, false)
-            3 -> view_page.setCurrentItem(2, false)
+        // Navigate to appropriate tab for current guide step
+        with(binding) {
+            when (SharedManager.homeGuideStep) {
+                1 -> viewPage.setCurrentItem(0, false) // Monitor tab
+                2 -> viewPage.setCurrentItem(4, false) // Settings tab
+                3 -> viewPage.setCurrentItem(2, false) // Main thermal tab
+            }
         }
 
         val guideDialog = HomeGuideDialog(this, SharedManager.homeGuideStep)
-        guideDialog.onNextClickListener = {
-            when (it) {
+        
+        // Handle guide step navigation
+        guideDialog.onNextClickListener = { step ->
+            when (step) {
                 1 -> {
-                    view_page.setCurrentItem(4, false)
+                    binding.viewPage.setCurrentItem(4, false)
                     if (Build.VERSION.SDK_INT < 31) {
                         lifecycleScope.launch {
                             delay(100)
-                            guideDialog.blurBg(cl_root)
+                            guideDialog.blurBg(binding.clRoot)
                         }
                     }
                     SharedManager.homeGuideStep = 2
                 }
                 2 -> {
-                    view_page.setCurrentItem(2, false)
+                    binding.viewPage.setCurrentItem(2, false)
                     if (Build.VERSION.SDK_INT < 31) {
                         lifecycleScope.launch {
                             delay(100)
-                            guideDialog.blurBg(cl_root)
+                            guideDialog.blurBg(binding.clRoot)
                         }
                     }
                     SharedManager.homeGuideStep = 3
                 }
                 3 -> {
-                    SharedManager.homeGuideStep = 0
+                    SharedManager.homeGuideStep = 0 // Mark as completed
                 }
             }
         }
+        
+        // Handle skip functionality
         guideDialog.onSkinClickListener = {
             SharedManager.homeGuideStep = 0
         }
+        
+        // Clean up blur effects when dialog is dismissed
         guideDialog.setOnDismissListener {
             if (Build.VERSION.SDK_INT >= 31) {
                 window?.decorView?.setRenderEffect(null)
             }
         }
+        
         guideDialog.show()
 
+        // Apply background blur effects
         if (Build.VERSION.SDK_INT >= 31) {
-            window?.decorView?.setRenderEffect(RenderEffect.createBlurEffect(20f, 20f, Shader.TileMode.MIRROR))
+            // Modern blur effect for API 31+
+            window?.decorView?.setRenderEffect(
+                RenderEffect.createBlurEffect(20f, 20f, Shader.TileMode.MIRROR)
+            )
         } else {
+            // Legacy blur effect with delay for proper rendering
             lifecycleScope.launch {
-                //界面切换及温度监控历史列表加载均需要时间，所以需要等待1000毫秒再去刷新背景
-                //而若等待1000毫秒太过久，界面会非模糊1000毫秒，所以先刷新一次背景占位
-                delay(100)
-                guideDialog.blurBg(cl_root)
+                delay(100) // Allow UI to settle before applying blur
+                guideDialog.blurBg(binding.clRoot)
             }
         }
     }
 
 
+    /**
+     * Validates and requests storage permissions for gallery access.
+     * Handles different Android API levels with appropriate permission sets.
+     * Shows user-friendly dialogs for permission rationale and system settings.
+     */
     private fun checkStoragePermission() {
-        val permissionList: List<String> =
-            if (this.applicationInfo.targetSdkVersion >= 34){
-                listOf(
-                    Permission.READ_MEDIA_VIDEO,
-                    Permission.READ_MEDIA_IMAGES,
-                    Permission.WRITE_EXTERNAL_STORAGE,
-                )
-            } else if (this.applicationInfo.targetSdkVersion >= 34){
-                listOf(
-                    Permission.READ_MEDIA_VIDEO,
-                    Permission.READ_MEDIA_IMAGES,
-                    Permission.WRITE_EXTERNAL_STORAGE,
-                )
-            } else if (this.applicationInfo.targetSdkVersion == 33) {
-            listOf(
+        // Define permission requirements based on target SDK version
+        val permissionList: List<String> = when {
+            applicationInfo.targetSdkVersion >= 34 -> listOf(
                 Permission.READ_MEDIA_VIDEO,
                 Permission.READ_MEDIA_IMAGES,
                 Permission.WRITE_EXTERNAL_STORAGE
             )
-        } else {
-            listOf(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+            applicationInfo.targetSdkVersion == 33 -> listOf(
+                Permission.READ_MEDIA_VIDEO,
+                Permission.READ_MEDIA_IMAGES,
+                Permission.WRITE_EXTERNAL_STORAGE
+            )
+            else -> listOf(
+                Permission.READ_EXTERNAL_STORAGE,
+                Permission.WRITE_EXTERNAL_STORAGE
+            )
         }
 
         if (!XXPermissions.isGranted(this, permissionList)) {
             if (BaseApplication.instance.isDomestic()) {
+                // Show rationale dialog for domestic users
                 TipDialog.Builder(this)
                     .setMessage(getString(R.string.permission_request_storage_app, CommUtils.getAppName()))
                     .setCancelListener(R.string.app_cancel)
@@ -312,25 +424,30 @@ class IRMainActivity : BaseActivity(), View.OnClickListener {
     }
 
     /**
-     * 动态申请权限
+     * Requests storage permissions from the system.
+     * Handles special visual user cases and provides comprehensive error handling.
+     *
+     * @param permissionList List of required permissions to request
      */
     private fun initStoragePermission(permissionList: List<String>) {
-        if (PermissionUtils.isVisualUser()){
-            view_page.setCurrentItem(1, false)
+        // Handle visual user special case
+        if (PermissionUtils.isVisualUser()) {
+            binding.viewPage.setCurrentItem(1, false)
             return
         }
+        
         XXPermissions.with(this)
             .permission(permissionList)
             .request(object : OnPermissionCallback {
                 override fun onGranted(permissions: MutableList<String>, allGranted: Boolean) {
                     if (allGranted) {
-                        view_page.setCurrentItem(1, false)
+                        binding.viewPage.setCurrentItem(1, false)
                     }
                 }
 
                 override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
                     if (doNotAskAgain) {
-                        //拒绝授权并且不再提醒
+                        // Permission permanently denied - guide user to settings
                         TipDialog.Builder(this@IRMainActivity)
                             .setTitleMessage(getString(R.string.app_tip))
                             .setMessage(getString(R.string.app_album_content))
@@ -338,6 +455,7 @@ class IRMainActivity : BaseActivity(), View.OnClickListener {
                                 AppUtils.launchAppDetailsSettings()
                             }
                             .setCancelListener(R.string.app_cancel) {
+                                // User cancelled - no action needed
                             }
                             .setCanceled(true)
                             .create().show()
@@ -348,28 +466,52 @@ class IRMainActivity : BaseActivity(), View.OnClickListener {
 
 
 
-    private class ViewPagerAdapter(activity: FragmentActivity, val isTC007: Boolean) : FragmentStateAdapter(activity) {
+    /**
+     * Professional ViewPager adapter for thermal imaging navigation.
+     * Manages fragment lifecycle and device-specific configurations.
+     *
+     * @param activity Parent FragmentActivity for fragment transactions
+     * @param isTC007 Device type flag for fragment configuration
+     */
+    private class ViewPagerAdapter(
+        activity: FragmentActivity,
+        private val isTC007: Boolean
+    ) : FragmentStateAdapter(activity) {
+        
+        /**
+         * Returns the total number of fragments in the ViewPager.
+         * @return Fragment count (5 tabs total)
+         */
         override fun getItemCount() = 5
 
+        /**
+         * Creates and configures fragments based on position and device type.
+         * @param position Tab position (0-4)
+         * @return Configured Fragment instance
+         */
         override fun createFragment(position: Int): Fragment {
-            if (position == 1) {//图库
-                return IRGalleryTabFragment().apply {
-                    arguments = Bundle().also {
-                        val dirType = if (isTC007) DirType.TC007.ordinal else DirType.LINE.ordinal
-                        it.putBoolean(ExtraKeyConfig.CAN_SWITCH_DIR, false)
-                        it.putBoolean(ExtraKeyConfig.HAS_BACK_ICON, false)
-                        it.putInt(ExtraKeyConfig.DIR_TYPE, dirType)
+            return when (position) {
+                1 -> { // Gallery Fragment
+                    IRGalleryTabFragment().apply {
+                        arguments = Bundle().apply {
+                            val dirType = if (isTC007) DirType.TC007.ordinal else DirType.LINE.ordinal
+                            putBoolean(ExtraKeyConfig.CAN_SWITCH_DIR, false)
+                            putBoolean(ExtraKeyConfig.HAS_BACK_ICON, false)
+                            putInt(ExtraKeyConfig.DIR_TYPE, dirType)
+                        }
                     }
                 }
-            } else {
-                val fragment = when (position) {
-                    0 -> AbilityFragment()
-                    2 -> IRThermalFragment()
-                    3 -> PDFListFragment()
-                    else -> ARouter.getInstance().build(RouterConfig.TC_MORE).navigation() as Fragment
+                0 -> AbilityFragment() // Monitor/Function Fragment
+                2 -> IRThermalFragment() // Main Thermal Fragment
+                3 -> PDFListFragment() // Report Fragment  
+                else -> ARouter.getInstance().build(RouterConfig.TC_MORE).navigation() as Fragment // Settings Fragment
+            }.apply {
+                // Configure device type for all fragments except gallery
+                if (position != 1) {
+                    arguments = Bundle().apply { 
+                        putBoolean(ExtraKeyConfig.IS_TC007, isTC007) 
+                    }
                 }
-                fragment.arguments = Bundle().also { it.putBoolean(ExtraKeyConfig.IS_TC007, isTC007) }
-                return fragment
             }
         }
     }

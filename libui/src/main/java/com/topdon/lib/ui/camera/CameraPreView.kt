@@ -22,15 +22,32 @@ import com.blankj.utilcode.util.ToastUtils
 import com.elvishew.xlog.XLog
 import com.topdon.lib.core.listener.BitmapViewListener
 import com.topdon.lib.ui.R
-import kotlinx.android.synthetic.main.camera_lay.view.*
+import com.topdon.lib.ui.databinding.CameraLayBinding
 import java.util.*
 
 
 /**
- * 相机预览
+ * Professional camera preview component for thermal imaging systems
+ * 
+ * Provides advanced camera functionality including:
+ * - Real-time camera preview with texture-based rendering
+ * - Scale gesture support for zoom operations  
+ * - Touch-based positioning and movement controls
+ * - Camera2 API integration with full lifecycle management
+ * - Professional image capture capabilities
+ * - Comprehensive error handling for production environments
+ * 
+ * @property isPreviewing Current preview state for external monitoring
+ * @property cameraPreViewCloseListener Callback for view close events
  */
 class CameraPreView : LinearLayout, ScaleGestureDetector.OnScaleGestureListener,
     BitmapViewListener {
+    
+    /**
+     * ViewBinding instance for type-safe view access
+     */
+    private lateinit var binding: CameraLayBinding
+    
     private var cameraCharacteristics: CameraCharacteristics ?= null
     private var isReverse : Boolean = false
     private lateinit var mTextureView: TextureView
@@ -52,9 +69,12 @@ class CameraPreView : LinearLayout, ScaleGestureDetector.OnScaleGestureListener,
         defStyleAttr
     )
 
+    /**
+     * Initialize the camera preview layout and binding
+     */
     private fun initView() {
-        inflate(context, R.layout.camera_lay, this)
-        mTextureView = findViewById(R.id.camera_texture)
+        binding = CameraLayBinding.inflate(LayoutInflater.from(context), this, true)
+        mTextureView = binding.cameraTexture
         mTextureView.post { cameraWidth = mTextureView.width }
         lis = ScaleGestureDetector(context, this)
         onResumeView()
@@ -369,9 +389,9 @@ class CameraPreView : LinearLayout, ScaleGestureDetector.OnScaleGestureListener,
 
                 mPreviewSize = getOptimalSize(mapList, width, height)
                 val constraintSet = ConstraintSet()
-                constraintSet.clone(camera_lay_root)
+                constraintSet.clone(binding.cameraLayRoot)
                 constraintSet.constrainHeight(mTextureView.id,width * mPreviewSize!!.width / mPreviewSize!!.height)
-                constraintSet.applyTo(camera_lay_root);
+                constraintSet.applyTo(binding.cameraLayRoot)
                 XLog.w("mPreviewSize:${mPreviewSize}")
                 // 获取相机支持的最大拍照尺寸
                 val sizes = map.getOutputSizes(ImageFormat.JPEG)

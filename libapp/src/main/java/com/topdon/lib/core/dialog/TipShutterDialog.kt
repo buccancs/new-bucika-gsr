@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import com.topdon.lib.core.R
 import com.topdon.lib.core.utils.ScreenUtil
-import kotlinx.android.synthetic.main.dialog_tip_shutter.view.*
+import com.topdon.lib.core.databinding.DialogTipShutterBinding
 
 
 /**
@@ -66,33 +66,34 @@ class TipShutterDialog : Dialog {
             if (dialog == null) {
                 dialog = TipShutterDialog(context, R.style.InfoDialog)
             }
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.dialog_tip_shutter, null)
-            dialog!!.addContentView(view, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            val binding = DialogTipShutterBinding.inflate(
+                LayoutInflater.from(context)
+            )
+            dialog!!.addContentView(binding.root, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
             dialog!!.setCanceledOnTouchOutside(canceled)
 
             val lp = dialog!!.window!!.attributes
             lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt() //设置宽度
             dialog!!.window!!.attributes = lp
 
-            view.tv_i_know.setOnClickListener {
+            binding.tvIKnow.setOnClickListener {
                 dismiss()
-                closeEvent?.invoke(view.dialog_tip_check.isChecked)
+                closeEvent?.invoke(binding.dialogTipCheck.isChecked)
             }
-            view.img_close.setOnClickListener {
+            binding.imgClose.setOnClickListener {
                 dismiss()
-                closeEvent?.invoke(view.dialog_tip_check.isChecked)
+                closeEvent?.invoke(binding.dialogTipCheck.isChecked)
             }
             if (titleRes != null) {
-                view.tv_title.setText(titleRes!!)
+                binding.tvTitle.setText(titleRes!!)
             }
             if (message != null) {
-                view.dialog_tip_msg_text.visibility = View.VISIBLE
-                view.dialog_tip_msg_text.setText(message, TextView.BufferType.NORMAL)
+                binding.dialogTipMsgText.visibility = View.VISIBLE
+                binding.dialogTipMsgText.setText(message, TextView.BufferType.NORMAL)
             } else {
-                view.dialog_tip_msg_text.visibility = View.GONE
+                binding.dialogTipMsgText.visibility = View.GONE
             }
-            dialog!!.setContentView(view)
+            dialog!!.setContentView(binding.root)
             return dialog as TipShutterDialog
         }
     }

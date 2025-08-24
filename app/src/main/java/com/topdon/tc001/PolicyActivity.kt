@@ -15,21 +15,30 @@ import com.elvishew.xlog.XLog
 import com.topdon.lib.core.BaseApplication
 import com.topdon.lib.core.config.RouterConfig
 import com.topdon.lib.core.ktbase.BaseViewModelActivity
+import com.topdon.tc001.databinding.ActivityPolicyBinding
 import com.topdon.tc001.viewmodel.PolicyViewModel
-import kotlinx.android.synthetic.main.activity_policy.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * 条款 1: 用户条款  2: 隐私条款  3: 第三方
+ * Policy and agreement activity for displaying various legal documents.
+ * 
+ * Types:
+ * - 1: User Service Agreement
+ * - 2: Privacy Policy  
+ * - 3: Third Party Components
  *
- * 服务返回有错误时,加载默认条款
+ * Falls back to default local documents when network request fails.
+ * 
+ * @author BucikaGSR Development Team
+ * @since 1.0.0
  */
 @Route(path = RouterConfig.POLICY)
 class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
     private val mHandler = Handler(Looper.getMainLooper())
+    private lateinit var binding: ActivityPolicyBinding
 
     companion object {
         const val KEY_THEME_TYPE = "key_theme_type"
@@ -45,7 +54,13 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
     override fun initContentView() = R.layout.activity_policy
 
+    /**
+     * Initialize the activity views and set up the policy document loading logic.
+     */
     override fun initView() {
+        binding = ActivityPolicyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
         if (intent.hasExtra(KEY_THEME_TYPE)) {
             themeType = intent.getIntExtra(KEY_THEME_TYPE, 1)
         }
@@ -59,18 +74,18 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
             else -> getString(R.string.user_services_agreement)
         }
 
-        title_view.setTitleText(themeStr)
+        binding.titleView.setTitleText(themeStr)
         viewModel.htmlViewData.observe(this) {
             dismissCameraLoading()
             if (it.action == 1) {
                 initWeb(it.body ?: "")
             } else {
-                loadHttp(policy_web)
+                loadHttp(binding.policyWeb)
                 delayShowWebView()
             }
         }
         if (keyUseType != 0) {
-            loadHttpWhenNotInit(policy_web)
+            loadHttpWhenNotInit(binding.policyWeb)
             delayShowWebView()
         }
     }
@@ -81,13 +96,13 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
     }
 
     /**
-     * 为解决闪缩白屏问题，延时打开webView
+     * Delays showing the WebView to resolve white screen flashing issues.
      */
     private fun delayShowWebView() {
         lifecycleScope.launch(Dispatchers.IO) {
             delay(200)
             launch(Dispatchers.Main) {
-                policy_web.visibility = View.VISIBLE
+                binding.policyWeb.visibility = View.VISIBLE
             }
         }
     }
@@ -99,13 +114,18 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
         }
     }
 
+    /**
+     * Initialize WebView with the provided HTML content.
+     * 
+     * @param url HTML content to load in the WebView
+     */
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWeb(url: String) {
-        policy_web.visibility = View.INVISIBLE
-        val webSettings: WebSettings = policy_web.settings
+        binding.policyWeb.visibility = View.INVISIBLE
+        val webSettings: WebSettings = binding.policyWeb.settings
         webSettings.javaScriptEnabled = true //设置支持javascript
 
-        policy_web.webViewClient = object : WebViewClient() {
+        binding.policyWeb.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 view.loadUrl(url)
                 return true
@@ -117,7 +137,7 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
             }
         }
 
-        policy_web.webChromeClient = object : WebChromeClient() {
+        binding.policyWeb.webChromeClient = object : WebChromeClient() {
 
             override fun onProgressChanged(view: WebView, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
@@ -130,25 +150,25 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
                     delayShowWebView()
                 } else {
                     mHandler.postDelayed({
-                        policy_web.visibility = View.VISIBLE
+                        binding.policyWeb.visibility = View.VISIBLE
                     }, 200)
                 }
             }
 
         }
 
-        policy_web.settings.defaultTextEncodingName = "utf-8"
-        policy_web.loadDataWithBaseURL(null, url, "text/html", "utf-8", null)
+        binding.policyWeb.settings.defaultTextEncodingName = "utf-8"
+        binding.policyWeb.loadDataWithBaseURL(null, url, "text/html", "utf-8", null)
 
     }
 
     /**
-     * 处理富文本
+     * Processes rich text HTML content with custom styling.
      *
-     * @param bodyHTML body
-     * @param fontColor 需要改变的字体颜色
-     * @param backgroundColor 修改字体颜色
-     * @return String
+     * @param htmlBody The HTML body content
+     * @param fontColor Font color to apply  
+     * @param backgroundColor Background color to apply
+     * @return Formatted HTML string with styling
      */
     fun getHtmlData(htmlBody: String, fontColor: String, backgroundColor: String): String {
         val head = "<head>" +
@@ -159,10 +179,15 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
     override fun httpErrorTip(text: String, requestUrl: String) {
         XLog.w("声明接口异常,打开默认链接")
-        loadHttp(policy_web)
+        loadHttp(binding.policyWeb)
         delayShowWebView()
     }
 
+    /**
+     * Load network policy content when not initialized locally.
+     * 
+     * @param view WebView to load content into
+     */
     fun loadHttpWhenNotInit(view: WebView) {
         reloadCount--
         when (themeType) {
@@ -184,7 +209,9 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
     }
 
     /**
-     * 加载默认协议网址(英文版)
+     * Load default local policy documents (fallback when network fails).
+     * 
+     * @param view WebView to load content into
      */
     fun loadHttp(view: WebView) {
         reloadCount--

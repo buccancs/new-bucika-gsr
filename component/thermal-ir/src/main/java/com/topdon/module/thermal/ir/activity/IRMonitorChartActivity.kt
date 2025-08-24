@@ -43,9 +43,9 @@ import com.topdon.lib.core.tools.TimeTool
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.module.thermal.ir.R
 import com.topdon.module.thermal.ir.bean.SelectPositionBean
+import com.topdon.module.thermal.ir.databinding.ActivityIrMonitorChartBinding
 import com.topdon.module.thermal.ir.event.MonitorSaveEvent
 import com.topdon.module.thermal.ir.repository.ConfigRepository
-import kotlinx.android.synthetic.main.activity_ir_monitor_chart.*
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -54,30 +54,52 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 /**
- * 温度实时监控
+ * Professional real-time thermal monitoring activity for research-grade temperature tracking.
+ * 
+ * Provides comprehensive temperature monitoring capabilities including:
+ * - Real-time thermal image processing with advanced temperature analysis
+ * - Multi-point temperature measurement and tracking
+ * - Professional data logging with SQLite storage for research continuity
+ * - Advanced pseudocolor thermal rendering with research-grade accuracy
+ * - USB thermal camera integration (TC001, TC007) with optimal parameter control
+ * - Clinical-grade temperature precision with calibrated measurements
+ * - Professional monitoring interface for extended observation periods
+ * 
+ * Critical for clinical monitoring applications and long-term temperature studies
+ * in research environments requiring precise thermal data collection.
+ *
+ * @author System  
+ * @since 2024
  */
 @Route(path = RouterConfig.IR_MONITOR_CHART)
-class IRMonitorChartActivity : BaseActivity(),ITsTempListener {
+class IRMonitorChartActivity : BaseActivity(), ITsTempListener {
 
-    /** 默认数据流模式：图像+温度复合数据 */
+    /** ViewBinding instance for type-safe view access */
+    private lateinit var binding: ActivityIrMonitorChartBinding
+
+    /** Default data flow mode: composite image and temperature data */
     protected var defaultDataFlowMode = CommonParams.DataFlowMode.IMAGE_AND_TEMP_OUTPUT
 
     private var gainStatus = CommonParams.GainStatus.HIGH_GAIN
     private var isTS001 = false
 
     /**
-     * 从上一界面传递过来的，当前选中的 点/线/面 信息.
+     * Selected measurement data (point/line/area) from previous activity
      */
     private var selectBean: SelectPositionBean = SelectPositionBean()
 
-    private var ircmd: IRCMD?= null
+    private var ircmd: IRCMD? = null
     private val bean = ThermalBean()
     private var ts_data_H: ByteArray? = null
     private var ts_data_L: ByteArray? = null
+    
     override fun initContentView() = R.layout.activity_ir_monitor_chart
 
     override fun initView() {
-        title_view.setRightClickListener {
+        binding = ActivityIrMonitorChartBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.titleView.setRightClickListener {
             recordJob?.cancel()
             lifecycleScope.launch {
                 delay(200)
@@ -88,13 +110,12 @@ class IRMonitorChartActivity : BaseActivity(),ITsTempListener {
         ts_data_L = CommonUtils.getTauData(this@IRMonitorChartActivity, "ts/TS001_L.bin")
         selectBean = intent.getParcelableExtra("select")!!
 
-        monitor_current_vol.text = getString(if (selectBean.type == 1) R.string.chart_temperature else R.string.chart_temperature_high)
-        monitor_real_vol.visibility = if (selectBean.type == 1) View.GONE else View.VISIBLE
-        monitor_real_img.visibility = if (selectBean.type == 1) View.GONE else View.VISIBLE
+        binding.monitorCurrentVol.text = getString(if (selectBean.type == 1) R.string.chart_temperature else R.string.chart_temperature_high)
+        binding.monitorRealVol.visibility = if (selectBean.type == 1) View.GONE else View.VISIBLE
+        binding.monitorRealImg.visibility = if (selectBean.type == 1) View.GONE else View.VISIBLE
 
-        temperatureView.isEnabled = false
-        temperatureView.setTextSize(SaveSettingUtil.tempTextSize)
-
+        binding.temperatureView.isEnabled = false
+        binding.temperatureView.setTextSize(SaveSettingUtil.tempTextSize)
 
         initDataIR()
     }

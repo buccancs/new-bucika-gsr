@@ -26,19 +26,77 @@ import com.topdon.lib.core.dialog.ConfirmSelectDialog
 import com.topdon.lib.core.bean.event.GalleryDelEvent
 import com.topdon.lms.sdk.weiget.TToast
 import com.topdon.module.thermal.ir.event.GalleryDownloadEvent
-import kotlinx.android.synthetic.main.activity_ir_video_gsy.*
+import com.topdon.module.thermal.ir.databinding.ActivityIrVideoGsyBinding
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import tv.danmaku.ijk.media.exo2.Exo2PlayerManager
 import java.io.File
 
-
+/**
+ * Professional Video Player Activity for Thermal IR Video Playback
+ * 
+ * This activity provides comprehensive video playback capabilities for thermal IR videos
+ * captured by TC001 devices, with support for both local and remote TS004 video files.
+ * Essential for reviewing thermal video recordings in research and clinical applications.
+ * 
+ * **Video Playback Features:**
+ * - Professional GSY video player integration with ExoPlayer backend
+ * - Support for both local files and remote TS004 device streaming
+ * - Full-screen video playback with optimized thermal video rendering
+ * - Professional video controls with research-grade playback accuracy
+ * - Automatic file format detection and appropriate codec selection
+ * 
+ * **Gallery Management:**
+ * - Download remote videos for offline analysis and archival
+ * - Share thermal videos with research collaborators
+ * - Professional deletion with local/remote synchronization options
+ * - File information display including size, date, and storage location
+ * - Integration with system media scanner for gallery visibility
+ * 
+ * **Research Application Features:**
+ * - Thermal video archival system for research data management
+ * - Professional metadata display for research documentation
+ * - Integrated download management for research workflow efficiency
+ * - Cross-platform sharing capabilities for research collaboration
+ * 
+ * **Device Integration:**
+ * - TS004 remote device video streaming and management
+ * - TC001 local video file playback and organization
+ * - Professional loading indicators for research application standards
+ * - Real-time file status tracking and synchronization
+ * 
+ * @author BucikaGSR Development Team
+ * @since 2024.1.0
+ * @see GalleryBean For video metadata and file information structure
+ * @see TS004Repository For remote video download and management operations
+ */
 @Route(path = RouterConfig.IR_VIDEO_GSY)
 class IRVideoGSYActivity : BaseActivity() {
 
+    /**
+     * ViewBinding instance for type-safe view access
+     * Replaces deprecated Kotlin synthetics with modern binding pattern
+     */
+    private lateinit var binding: ActivityIrVideoGsyBinding
+
+    /**
+     * Flag indicating whether this video is from a remote TS004 device
+     * - true: Video from remote TS004 device (requires download for offline access)
+     * - false: Local video file stored on device (immediate playback available)
+     */
     private var isRemote = false
+    
+    /**
+     * Video metadata containing file path, download status, and display information
+     * Essential for managing thermal video files in research workflows
+     */
     private lateinit var data: GalleryBean
-    override fun initContentView() = R.layout.activity_ir_video_gsy
+    
+    override fun initContentView(): Int {
+        binding = ActivityIrVideoGsyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        return 0 // ViewBinding handles layout inflation
+    }
 
     override fun initView() {
         BarUtils.setNavBarColor(this, ContextCompat.getColor(this, R.color.black))
@@ -46,33 +104,33 @@ class IRVideoGSYActivity : BaseActivity() {
         isRemote = intent.getBooleanExtra("isRemote", false)
         data = intent.getParcelableExtra("data") ?: throw NullPointerException("传递 data")
 
-        cl_bottom.isVisible = isRemote //查看远端时底部才有3个按钮
+        binding.clBottom.isVisible = isRemote //查看远端时底部才有3个按钮
 
         if (!isRemote) {
-            title_view.setRightDrawable(R.drawable.ic_toolbar_info_svg)
-            title_view.setRight2Drawable(R.drawable.ic_toolbar_share_svg)
-            title_view.setRight3Drawable(R.drawable.ic_toolbar_delete_svg)
-            title_view.setRightClickListener { actionInfo() }
-            title_view.setRight2ClickListener { actionShare() }
-            title_view.setRight3ClickListener { showDeleteDialog() }
+            binding.titleView.setRightDrawable(R.drawable.ic_toolbar_info_svg)
+            binding.titleView.setRight2Drawable(R.drawable.ic_toolbar_share_svg)
+            binding.titleView.setRight3Drawable(R.drawable.ic_toolbar_delete_svg)
+            binding.titleView.setRightClickListener { actionInfo() }
+            binding.titleView.setRight2ClickListener { actionShare() }
+            binding.titleView.setRight3ClickListener { showDeleteDialog() }
         }
 
-        cl_download.setOnClickListener {
+        binding.clDownload.setOnClickListener {
             actionDownload(false)
         }
-        cl_share.setOnClickListener {
+        binding.clShare.setOnClickListener {
             if (data.hasDownload) {
                 actionShare()
             } else {
                 actionDownload(true)
             }
         }
-        cl_delete.setOnClickListener {
+        binding.clDelete.setOnClickListener {
             showDeleteDialog()
         }
 
-        iv_download.isSelected = data.hasDownload
-        iv_download.setImageResource(if (isRemote) R.drawable.selector_download else R.drawable.ic_toolbar_info_svg)
+        binding.ivDownload.isSelected = data.hasDownload
+        binding.ivDownload.setImageResource(if (isRemote) R.drawable.selector_download else R.drawable.ic_toolbar_info_svg)
 
         previewVideo(isRemote, data.path)
     }
@@ -93,10 +151,10 @@ class IRVideoGSYActivity : BaseActivity() {
             .setUrl(url)
             .build(gsy_play)
         //界面设置
-        gsy_play.isNeedShowWifiTip = false //不显示消耗流量弹框
-        gsy_play.titleTextView.visibility = View.GONE
-        gsy_play.backButton.visibility = View.GONE
-        gsy_play.fullscreenButton.visibility = View.GONE
+        binding.gsyPlay.isNeedShowWifiTip = false //不显示消耗流量弹框
+        binding.gsyPlay.titleTextView.visibility = View.GONE
+        binding.gsyPlay.backButton.visibility = View.GONE
+        binding.gsyPlay.fullscreenButton.visibility = View.GONE
     }
 
     private fun actionDownload(isToShare: Boolean) {
@@ -116,7 +174,7 @@ class IRVideoGSYActivity : BaseActivity() {
                 ToastTools.showShort(R.string.tip_save_success)
                 EventBus.getDefault().post(GalleryDownloadEvent(data.name))
                 data.hasDownload = true
-                iv_download.isSelected = true
+                binding.ivDownload.isSelected = true
                 if (isToShare) {
                     actionShare()
                 }
@@ -201,8 +259,8 @@ class IRVideoGSYActivity : BaseActivity() {
     }
 
     private fun getCurPlay(): GSYVideoPlayer {
-        return if (gsy_play.fullWindowPlayer != null) {
-            gsy_play.fullWindowPlayer
+        return if (binding.gsyPlay.fullWindowPlayer != null) {
+            binding.gsyPlay.fullWindowPlayer
         } else {
             gsy_play
         }

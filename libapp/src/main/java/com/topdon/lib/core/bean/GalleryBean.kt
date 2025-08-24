@@ -16,7 +16,7 @@ open class GalleryBean(
     val thumb: String,
     val name: String,
     val duration: Long,//仅当为视频时，持续毫秒数
-    val timeMillis: Long,
+    open val timeMillis: Long,
     var hasDownload: Boolean,
 ) : Parcelable {
     constructor(file: File): this(
@@ -41,7 +41,7 @@ open class GalleryBean(
 }
 
 @Parcelize
-class GalleryTitle(timeMillis: Long) : GalleryBean(
+class GalleryTitle(override val timeMillis: Long) : GalleryBean(
     id = 0,
     path = "",
     thumb = "",

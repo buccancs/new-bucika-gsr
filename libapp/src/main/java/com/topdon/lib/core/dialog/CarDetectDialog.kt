@@ -19,38 +19,39 @@ import com.topdon.lib.core.R
 import com.topdon.lib.core.bean.CarDetectBean
 import com.topdon.lib.core.bean.CarDetectChildBean
 import com.topdon.lib.core.common.SharedManager
-import kotlinx.android.synthetic.main.dialog_car_detect.view.*
-import kotlinx.android.synthetic.main.item_car_detect_child_layout.view.*
-import kotlinx.android.synthetic.main.item_car_detect_layout.view.*
-import kotlinx.android.synthetic.main.toolbar_lay.view.*
+import com.topdon.lib.core.databinding.DialogCarDetectBinding
+import com.topdon.lib.core.databinding.ItemCarDetectChildLayoutBinding
+import com.topdon.lib.core.databinding.ItemCarDetectLayoutBinding
 
 /**
- * 汽车检测类型拾取弹框.
+ * Car detection type selection dialog with ViewBinding implementation.
+ * 
+ * Provides a modern interface for selecting automotive diagnostic parameters with
+ * comprehensive temperature range specifications for research-grade thermal imaging.
+ * 
+ * @param context Activity context for dialog presentation
+ * @param listener Callback function invoked when user selects detection parameters
+ * @author Topdon Thermal Imaging Team
+ * @since 2024-01-01
  */
 class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean) -> Unit)) :
     Dialog(context, R.style.DefaultDialog) {
+    
+    private lateinit var binding: DialogCarDetectBinding
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setCancelable(true)
         setCanceledOnTouchOutside(false)
 
+        binding = DialogCarDetectBinding.inflate(LayoutInflater.from(context))
+        setContentView(binding.root)
 
-        val rootView: View = LayoutInflater.from(context).inflate(R.layout.dialog_car_detect, null)
-        setContentView(rootView)
+        binding.titleView.setLeftClickListener { dismiss() }
 
-        rootView.title_view.setLeftClickListener { dismiss() }
-
-        rootView.rcy_detect.layoutManager =
+        binding.rcyDetect.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        rootView.rcy_detect?.adapter = CarDetectAdapter(context, getDetectList())
-
-
-        /*window?.let {
-            val layoutParams = it.attributes
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            it.attributes = layoutParams
-        }*/
+        binding.rcyDetect.adapter = CarDetectAdapter(context, getDetectList())
     }
 
     companion object {
@@ -217,19 +218,27 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
         }
     }
 
+    /**
+     * RecyclerView adapter for car detection categories with ViewBinding patterns.
+     * 
+     * Implements professional list management for automotive diagnostic categories
+     * with comprehensive temperature range specifications and visual feedback.
+     */
     inner class CarDetectAdapter(val act: Context, private var carDetects: List<CarDetectBean>) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_car_detect_layout, parent, false)
-            return ItemView(view)
+            val binding = ItemCarDetectLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+            return ItemView(binding)
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is ItemView) {
                 val bean = carDetects[position]
-                holder.tvTitle.text = bean.title
-                holder.rcyDetectChild.layoutManager =
+                holder.binding.tvTitle.text = bean.title
+                holder.binding.rcyDetectChild.layoutManager =
                     LinearLayoutManager(act, RecyclerView.VERTICAL, false)
                 val carDetectChildAdapter = CarDetectChildAdapter(act, bean.detectChildBeans)
                 carDetectChildAdapter.listener = listener@{ _, item ->
@@ -257,7 +266,7 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
                     }
                 }
 
-                holder.rcyDetectChild?.adapter = carDetectChildAdapter
+                holder.binding.rcyDetectChild.adapter = carDetectChildAdapter
             }
         }
 
@@ -265,13 +274,19 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
             return carDetects.size
         }
 
-        inner class ItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val tvTitle: TextView = itemView.tv_title
-            val rcyDetectChild: RecyclerView = itemView.rcy_detect_child
-        }
+        /**
+         * ViewHolder with ViewBinding for car detection category items.
+         */
+        inner class ItemView(val binding: ItemCarDetectLayoutBinding) : RecyclerView.ViewHolder(binding.root)
     }
 
 
+    /**
+     * Child adapter for individual car detection items with ViewBinding implementation.
+     * 
+     * Manages selection state and visual feedback for specific diagnostic parameters
+     * with temperature range display for professional thermal imaging applications.
+     */
     class CarDetectChildAdapter(
         val context: Context,
         private var carChildDetects: List<CarDetectChildBean>
@@ -280,19 +295,23 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
         var listener: ((index: Int, bean: CarDetectChildBean) -> Unit)? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_car_detect_child_layout, parent, false)
-            return ItemView(view)
+            val binding = ItemCarDetectChildLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+            return ItemView(binding)
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is ItemView) {
                 val bean = carChildDetects[position]
-                holder.tvTitle.text = bean.item
-                holder.viewLine.visibility =
+                holder.binding.tvName.text = bean.item
+                holder.binding.viewLine.visibility =
                     if (position == carChildDetects.size - 1) View.GONE else View.VISIBLE
-                holder.ivSelectState.setImageResource(if (bean.isSelected) R.drawable.ic_car_detect_selected else R.drawable.ic_car_detect_unselected)
-                holder.rlyParent.setOnClickListener {
+                holder.binding.ivSelectState.setImageResource(
+                    if (bean.isSelected) R.drawable.ic_car_detect_selected 
+                    else R.drawable.ic_car_detect_unselected
+                )
+                holder.binding.rlyParent.setOnClickListener {
                     listener?.invoke(position, carChildDetects[position])
                 }
             }
@@ -302,11 +321,9 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
             return carChildDetects.size
         }
 
-        inner class ItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val rlyParent: RelativeLayout = itemView.rly_parent
-            val tvTitle: TextView = itemView.tv_name
-            val ivSelectState: ImageView = itemView.iv_select_state
-            val viewLine: View = itemView.view_line
-        }
+        /**
+         * ViewHolder with ViewBinding for car detection child items.
+         */
+        inner class ItemView(val binding: ItemCarDetectChildLayoutBinding) : RecyclerView.ViewHolder(binding.root)
     }
 }

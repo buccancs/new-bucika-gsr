@@ -6,12 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.lib.ui.R
-import kotlinx.android.synthetic.main.dialog_monitor_select.view.*
+import com.topdon.lib.ui.databinding.DialogMonitorSelectBinding
 
 /**
- * 提示窗
- * create by fylder on 2018/6/15
- **/
+ * Professional monitor selection dialog for thermal imaging systems
+ * 
+ * Provides comprehensive monitoring type selection including:
+ * - Multi-step monitoring configuration (point/line/area)
+ * - Professional selection interface with visual indicators
+ * - Type-safe view access with ViewBinding
+ * - Industry-standard dialog presentation
+ * 
+ * Supports three monitoring types:
+ * - Type 1: Point monitoring for specific temperature points
+ * - Type 2: Line monitoring for temperature profiles
+ * - Type 3: Area monitoring for temperature regions
+ */
 class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog) {
 
     class Builder(private val context: Context) {

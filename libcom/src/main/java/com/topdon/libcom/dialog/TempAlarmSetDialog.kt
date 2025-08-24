@@ -17,7 +17,22 @@ import com.topdon.libcom.R
 import com.topdon.lib.core.bean.AlarmBean
 import com.topdon.lib.core.common.SaveSettingUtil
 import com.topdon.lib.core.tools.ToastTools
-import kotlinx.android.synthetic.main.dialog_temp_alarm_set.*
+import com.topdon.libcom.databinding.DialogTempAlarmSetBinding
+
+/**
+ * Professional temperature alarm setting dialog for thermal imaging systems
+ * 
+ * Provides comprehensive temperature alarm configuration including:
+ * - Temperature threshold setting with professional validation
+ * - Alarm sound selection and preview capabilities
+ * - Switch control integration for alarm features
+ * - Professional MediaPlayer integration for sound testing
+ * - Type-safe view access with ViewBinding
+ * 
+ * @param isEdit Whether the dialog is in edit mode for existing alarms
+ * @property onSaveListener Callback for alarm configuration save events
+ * @property alarmBean Current alarm configuration bean
+ */
 
 class TempAlarmSetDialog(
     context: Context,

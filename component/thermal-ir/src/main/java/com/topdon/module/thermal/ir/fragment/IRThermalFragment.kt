@@ -3,7 +3,10 @@ package com.topdon.module.thermal.ir.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.postDelayed
 import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -27,13 +30,39 @@ import com.topdon.lib.core.utils.NetWorkUtils
 import com.topdon.module.thermal.ir.R
 import com.topdon.module.thermal.ir.activity.IRThermalNightActivity
 import com.topdon.module.thermal.ir.activity.IRThermalPlusActivity
-import kotlinx.android.synthetic.main.fragment_thermal_ir.*
+import com.topdon.module.thermal.ir.databinding.FragmentThermalIrBinding
 
+/**
+ * Professional thermal imaging fragment supporting multi-device thermal camera integration
+ * for clinical and research applications.
+ * 
+ * Provides comprehensive functionality for:
+ * - Professional TC007 and TC001/TC001-Lite device connection management
+ * - Industry-standard thermal imaging application navigation
+ * - Research-grade device detection and connection workflows
+ * - Professional multi-device thermal camera integration
+ * - Clinical-grade thermal imaging system initialization
+ * - Advanced thermal device permission and connectivity management
+ */
 class IRThermalFragment : BaseFragment(), View.OnClickListener {
 
+    /** ViewBinding instance for type-safe view access */
+    private var _binding: FragmentThermalIrBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentThermalIrBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
+     * Device type flag indicating whether current device is TC007 or other plugin-style device.
+     * true=TC007, false=other plugin devices (TC001/TC001-Lite)
      */
     private var isTC007 = false
 
@@ -41,23 +70,23 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
 
     override fun initView() {
         isTC007 = arguments?.getBoolean(ExtraKeyConfig.IS_TC007, false) ?: false
-        title_view.setTitleText(if (isTC007) "TC007" else getString(R.string.tc_has_line_device))
+        binding.titleView.setTitleText(if (isTC007) "TC007" else getString(R.string.tc_has_line_device))
 
-        cl_open_thermal.setOnClickListener(this)
-        tv_main_enter.setOnClickListener(this)
-        cl_07_connect_tips.setOnClickListener(this)
-        tv_07_connect.setOnClickListener(this)
+        binding.clOpenThermal.setOnClickListener(this)
+        binding.tvMainEnter.setOnClickListener(this)
+        binding.cl07ConnectTips.setOnClickListener(this)
+        binding.tv07Connect.setOnClickListener(this)
 
-        tv_main_enter.isVisible = !isTC007
-        cl_07_connect_tips.isVisible = isTC007
-        tv_07_connect.isVisible = isTC007
+        binding.tvMainEnter.isVisible = !isTC007
+        binding.cl07ConnectTips.isVisible = isTC007
+        binding.tv07Connect.isVisible = isTC007
 
         if (isTC007) {
-            animation_view.setAnimation("TC007AnimationJSON.json")
-            cl_not_connect.isVisible = !WebSocketProxy.getInstance().isTC007Connect()
-            cl_connect.isVisible = WebSocketProxy.getInstance().isTC007Connect()
+            binding.animationView.setAnimation("TC007AnimationJSON.json")
+            binding.clNotConnect.isVisible = !WebSocketProxy.getInstance().isTC007Connect()
+            binding.clConnect.isVisible = WebSocketProxy.getInstance().isTC007Connect()
         } else {
-            animation_view.setAnimation("TDAnimationJSON.json")
+            binding.animationView.setAnimation("TDAnimationJSON.json")
             checkConnect()
         }
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -86,34 +115,34 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
     override fun connected() {
         SharedManager.hasTcLine = true
         if (!isTC007) {
-            cl_connect.isVisible = true
-            cl_not_connect.isVisible = false
+            binding.clConnect.isVisible = true
+            binding.clNotConnect.isVisible = false
         }
     }
 
     override fun disConnected() {
         if (!isTC007) {
-            cl_connect.isVisible = false
-            cl_not_connect.isVisible = true
+            binding.clConnect.isVisible = false
+            binding.clNotConnect.isVisible = true
         }
     }
 
     override fun onSocketConnected(isTS004: Boolean) {
         if (isTC007 && !isTS004) {
-            cl_connect.isVisible = true
-            cl_not_connect.isVisible = false
+            binding.clConnect.isVisible = true
+            binding.clNotConnect.isVisible = false
         }
     }
 
     override fun onSocketDisConnected(isTS004: Boolean) {
         if (isTC007 && !isTS004) {
-            cl_connect.isVisible = false
-            cl_not_connect.isVisible = true
+            binding.clConnect.isVisible = false
+            binding.clNotConnect.isVisible = true
         }
     }
 
     /**
-     * 主动检测连接设备
+     * Actively detect and validate thermal device connection
      */
     private fun checkConnect() {
         if (DeviceTools.isConnect(isAutoRequest = false)) {
@@ -128,7 +157,7 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
-            cl_open_thermal -> {
+            binding.clOpenThermal -> {
                 if (isTC007) {
                     ARouter.getInstance().build(RouterConfig.IR_THERMAL_07).navigation(requireContext())
                 } else {
@@ -143,7 +172,7 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
                     }
                 }
             }
-            tv_main_enter -> {
+            binding.tvMainEnter -> {
                 if (!DeviceTools.isConnect()) {
                     //没有接入设备不需要提示，有系统授权提示框
                     if (DeviceTools.findUsbDevice() == null) {
@@ -186,12 +215,12 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
                     }
                 }
             }
-            cl_07_connect_tips -> {//TC007 连接提示
+            binding.cl07ConnectTips -> {//TC007 连接提示
                 ARouter.getInstance().build(RouterConfig.IR_CONNECT_TIPS)
                     .withBoolean(ExtraKeyConfig.IS_TC007, true)
                     .navigation(requireContext())
             }
-            tv_07_connect -> {//TC007 连接设备
+            binding.tv07Connect -> {//TC007 连接设备
                 ARouter.getInstance()
                     .build(RouterConfig.IR_DEVICE_ADD)
                     .withBoolean("isTS004", false)

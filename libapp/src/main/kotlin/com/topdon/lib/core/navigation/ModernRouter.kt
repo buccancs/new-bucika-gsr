@@ -56,18 +56,18 @@ object ModernRouter {
         }
         
         /**
-         * Navigate from activity
+         * Navigate from an activity with proper lifecycle management
          */
         fun navigation(activity: Activity) {
             activityClass?.let { clazz ->
-                val intent = Intent(activity, clazz).apply {
-                    extras.forEach { (key, value) ->
-                        when (value) {
-                            is String -> putExtra(key, value)
-                            is Int -> putExtra(key, value)
-                            is Boolean -> putExtra(key, value)
-                            is java.io.Serializable -> putExtra(key, value)
-                        }
+                val intent = Intent(activity, clazz)
+                for (key in extras.keys) {
+                    val value = extras[key]
+                    when (value) {
+                        is String -> intent.putExtra(key, value)
+                        is Int -> intent.putExtra(key, value)
+                        is Boolean -> intent.putExtra(key, value)
+                        is java.io.Serializable -> intent.putExtra(key, value)
                     }
                 }
                 activity.startActivity(intent)
@@ -75,28 +75,28 @@ object ModernRouter {
         }
         
         /**
-         * Navigate from fragment
+         * Navigate from a fragment with proper lifecycle management
          */
         fun navigation(fragment: Fragment) {
-            fragment.activity?.let { activity ->
-                navigation(activity)
+            fragment.context?.let { context ->
+                navigation(context)
             }
         }
         
         /**
-         * Navigate from context
+         * Navigate from a context with new task flag
          */
         fun navigation(context: Context) {
             activityClass?.let { clazz ->
-                val intent = Intent(context, clazz).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    extras.forEach { (key, value) ->
-                        when (value) {
-                            is String -> putExtra(key, value)
-                            is Int -> putExtra(key, value) 
-                            is Boolean -> putExtra(key, value)
-                            is java.io.Serializable -> putExtra(key, value)
-                        }
+                val intent = Intent(context, clazz)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                for (key in extras.keys) {
+                    val value = extras[key]
+                    when (value) {
+                        is String -> intent.putExtra(key, value)
+                        is Int -> intent.putExtra(key, value) 
+                        is Boolean -> intent.putExtra(key, value)
+                        is java.io.Serializable -> intent.putExtra(key, value)
                     }
                 }
                 context.startActivity(intent)

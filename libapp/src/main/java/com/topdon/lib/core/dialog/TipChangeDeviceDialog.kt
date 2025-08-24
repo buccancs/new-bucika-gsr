@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.annotation.StringRes
 import com.topdon.lib.core.R
 import com.topdon.lib.core.utils.ScreenUtil
-import kotlinx.android.synthetic.main.dialog_tip_change_device.view.*
+import com.topdon.lib.core.databinding.DialogTipChangeDeviceBinding
 
 @Deprecated("3.80使用新首页设备列表逻辑，不需要设备切换提示弹框了")
 class TipChangeDeviceDialog :Dialog {
@@ -60,19 +60,19 @@ class TipChangeDeviceDialog :Dialog {
             if (dialog == null) {
                 dialog = TipChangeDeviceDialog(context!!, R.style.InfoDialog)
             }
-            val inflater =
-                context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.dialog_tip_change_device, null)
+            val binding = DialogTipChangeDeviceBinding.inflate(
+                LayoutInflater.from(context!!)
+            )
 
-            view.tv_i_know.setOnClickListener {
+            binding.tvIKnow.setOnClickListener {
                 dismiss()
                 closeEvent?.invoke(hasCheck)
             }
 
-            checkBox = view.dialog_tip_check
-            imgClose = view.img_close
+            checkBox = binding.dialogTipCheck
+            imgClose = binding.imgClose
             dialog!!.addContentView(
-                view,
+                binding.root,
                 ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
@@ -100,7 +100,7 @@ class TipChangeDeviceDialog :Dialog {
                 dismiss()
                 closeEvent?.invoke(hasCheck)
             }
-            dialog!!.setContentView(view)
+            dialog!!.setContentView(binding.root)
             return dialog as TipChangeDeviceDialog
         }
     }

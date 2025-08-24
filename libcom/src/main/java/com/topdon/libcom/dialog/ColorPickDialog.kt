@@ -14,17 +14,22 @@ import com.jaygoo.widget.OnRangeChangedListener
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.libcom.R
 import com.topdon.libcom.util.ColorUtils
-import kotlinx.android.synthetic.main.dialog_color_pick.nifty_slider_view
-import kotlinx.android.synthetic.main.dialog_color_pick.tv_nifty_left
-import kotlinx.android.synthetic.main.dialog_color_pick.tv_nifty_right
-import kotlinx.android.synthetic.main.dialog_color_pick.tv_size_title
-import kotlinx.android.synthetic.main.dialog_color_pick.tv_size_value
-import kotlinx.android.synthetic.main.dialog_color_pick.view.*
+import com.topdon.libcom.databinding.DialogColorPickBinding
 
 /**
- * 颜色拾取弹框.
- *
- * Created by chenggeng.lin on 2023/12/18.
+ * Professional color picker dialog for thermal imaging systems
+ * 
+ * Provides comprehensive color selection including:
+ * - Range slider for precise color adjustment
+ * - Text size configuration with DP/pixel support
+ * - Professional validation and preview capabilities
+ * - Industry-standard color picker interface
+ * - Type-safe view access with ViewBinding
+ * 
+ * @param color Initial color value for the picker
+ * @param textSize Initial text size value
+ * @param textSizeIsDP Whether text size is specified in DP units
+ * @property onPickListener Callback for color and text size selection events
  */
 class ColorPickDialog(context: Context, @ColorInt private var color: Int,var textSize: Int,var textSizeIsDP : Boolean = false) : Dialog(context, R.style.InfoDialog), View.OnClickListener {
 

@@ -12,47 +12,66 @@ import com.topdon.lib.core.ktbase.BaseActivity
 import com.topdon.lib.core.tools.UnitTools
 import com.topdon.lib.ui.widget.MyItemDecoration
 import com.topdon.module.thermal.ir.R
+import com.topdon.module.thermal.ir.databinding.ActivityIrEmissivityBinding
 import com.topdon.module.thermal.ir.view.EmissivityView
-import kotlinx.android.synthetic.main.activity_ir_emissivity.*
-import kotlinx.android.synthetic.main.item_ir_emissivity_title.*
-import kotlinx.android.synthetic.main.item_ir_emissivity_title.view.*
 
 /**
- * 常用材料发射率.
+ * Professional material emissivity reference activity for research-grade thermal imaging applications.
+ * 
+ * Provides comprehensive emissivity values for materials commonly used in thermal analysis,
+ * including metals, non-metals, electronic components, and specialized materials.
+ * Essential for accurate temperature measurements in clinical and research environments.
  *
- * Created by LCG on 2024/10/14.
+ * @author LCG
+ * @since 2024/10/14
  */
 class IREmissivityActivity : BaseActivity() {
+    
+    /** ViewBinding instance for type-safe view access */
+    private lateinit var binding: ActivityIrEmissivityBinding
 
     override fun initContentView(): Int = R.layout.activity_ir_emissivity
 
     override fun initView() {
+        binding = ActivityIrEmissivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
         val dataArray: Array<ItemBean> = buildDataArray()
-        tv_title.text = dataArray[0].name
-        emissivity_view.refreshText(dataArray[0].buildTextList(this))
+        binding.clTitle.tvTitle.text = dataArray[0].name
+        binding.clTitle.emissivityView.refreshText(dataArray[0].buildTextList(this))
 
         val itemDecoration = MyItemDecoration(this)
         itemDecoration.wholeBottom = 20f
 
         val layoutManager = LinearLayoutManager(this)
-        recycler_view.layoutManager = layoutManager
-        recycler_view.adapter = MyAdapter(this, dataArray)
-        recycler_view.addItemDecoration(itemDecoration)
-        recycler_view.addOnScrollListener(MyOnScrollListener(cl_title, layoutManager, dataArray))
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = MyAdapter(this, dataArray)
+        binding.recyclerView.addItemDecoration(itemDecoration)
+        binding.recyclerView.addOnScrollListener(MyOnScrollListener(binding.clTitle.root, layoutManager, dataArray))
     }
 
     override fun initData() {
     }
 
 
+    /**
+     * Professional scroll listener for dynamic title management in emissivity reference.
+     * 
+     * Provides smooth category title transitions and maintains proper visual hierarchy
+     * for research-grade material reference navigation.
+     *
+     * @param titleView The floating title view container
+     * @param layoutManager RecyclerView layout manager for position calculations
+     * @param dataArray Complete emissivity data array with category markers
+     */
     private class MyOnScrollListener(val titleView: View, val layoutManager: LinearLayoutManager, val dataArray: Array<ItemBean>) : RecyclerView.OnScrollListener() {
         /**
-         * 当前展示的标题在列表中的 position
+         * Current display title position in data array
          */
         private var currentPosition: Int = 0
 
         /**
-         * 标题文字
+         * Title text view reference for dynamic updates
          */
         private val tvTitle: TextView = titleView.findViewById(R.id.tv_title)
         
@@ -98,7 +117,13 @@ class IREmissivityActivity : BaseActivity() {
         }
 
         /**
-         * 从指定 position 处，往上遍历查找该 position 对应的 title position.
+         * Finds the corresponding title position for a given data position.
+         * 
+         * Traverses backwards from the specified position to locate the nearest
+         * category title, ensuring proper context for material grouping.
+         *
+         * @param position Current position in data array
+         * @return Title position index for the category containing the specified position
          */
         private fun findTitlePosition(position: Int): Int {
             for (i in position downTo 0) {
@@ -110,6 +135,15 @@ class IREmissivityActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Professional adapter for emissivity data presentation with advanced view management.
+     * 
+     * Handles dual view types (category titles and material entries) with optimized
+     * rendering for research-grade material reference display.
+     *
+     * @param context Application context for resource access
+     * @param dataArray Complete emissivity database with materials and categories
+     */
     private class MyAdapter(val context: Context, val dataArray: Array<ItemBean>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun getItemViewType(position: Int): Int = if (dataArray[position].isTitle) 0 else 1
@@ -127,10 +161,14 @@ class IREmissivityActivity : BaseActivity() {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val itemBean: ItemBean = dataArray[position]
             if (holder is TitleViewHolder) {
-                holder.itemView.tv_title.text = itemBean.name
-                holder.itemView.emissivity_view.isAlignTop = true
-                holder.itemView.emissivity_view.drawTopLine = true
-                holder.itemView.emissivity_view.refreshText(itemBean.buildTextList(context))
+                // Use ViewBinding for included layout access
+                val itemView = holder.itemView
+                itemView.findViewById<TextView>(R.id.tv_title).text = itemBean.name
+                itemView.findViewById<EmissivityView>(R.id.emissivity_view).apply {
+                    isAlignTop = true
+                    drawTopLine = true
+                    refreshText(itemBean.buildTextList(context))
+                }
             } else if (holder is ValueViewHolder) {
                 holder.emissivityView.refreshText(itemBean.buildTextList(context))
             }
@@ -139,18 +177,28 @@ class IREmissivityActivity : BaseActivity() {
         override fun getItemCount(): Int = dataArray.size
 
 
+        /**
+         * ViewHolder for category title items with professional styling
+         */
         private class TitleViewHolder(rootView: View) : RecyclerView.ViewHolder(rootView)
 
+        /**
+         * ViewHolder for material value entries with custom emissivity view
+         */
         private class ValueViewHolder(val emissivityView: EmissivityView) : RecyclerView.ViewHolder(emissivityView)
     }
 
     /**
-     * 一项发射率数据封装
-     * @param isTitle true-标题 false-内容
-     * @param name 名称，如铝、氧化钢等
-     * @param minTemp 最低温度，单位摄氏度
-     * @param maxTemp 最高温度，单位摄氏度
-     * @param emStr 发射率文字
+     * Professional emissivity data container for material properties.
+     * 
+     * Encapsulates material emissivity data with temperature ranges and categorization
+     * for research-grade thermal analysis applications.
+     *
+     * @param isTitle Category marker - true for section headers, false for material entries
+     * @param name Material name (e.g., "Aluminum", "Oxidized Steel")
+     * @param minTemp Minimum temperature range in Celsius (optional)
+     * @param maxTemp Maximum temperature range in Celsius (optional)  
+     * @param emStr Emissivity value string with proper precision formatting
      */
     private data class ItemBean(
         val isTitle: Boolean = false,
@@ -161,6 +209,12 @@ class IREmissivityActivity : BaseActivity() {
     ) {
         private var textList: ArrayList<String> = ArrayList(3)
 
+        /**
+         * Builds formatted text list for display with proper units and formatting.
+         *
+         * @param context Application context for string resources
+         * @return Formatted text array for emissivity view presentation
+         */
         fun buildTextList(context: Context): ArrayList<String> {
             if (textList.isEmpty()) {
                 if (isTitle) {
@@ -189,6 +243,17 @@ class IREmissivityActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Builds comprehensive emissivity database for research applications.
+     * 
+     * Contains professional-grade material emissivity values organized by categories:
+     * - Metals (aluminum, brass, chromium, copper, iron, steel, etc.)
+     * - Non-metals (brick, graphite, glass, wood, carbon, etc.)
+     * - Electronic components (capacitors, semiconductors, transmission coils)
+     * - Specialized materials for thermal imaging applications
+     *
+     * @return Complete array of emissivity data with proper categorization
+     */
     private fun buildDataArray(): Array<ItemBean> = arrayOf(
         //金属
         ItemBean(true, getString(R.string.material_metal)),

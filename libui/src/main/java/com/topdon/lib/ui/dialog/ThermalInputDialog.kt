@@ -28,14 +28,27 @@ import com.topdon.lib.core.tools.UnitTools
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.lib.ui.R
 import com.topdon.lib.ui.adapter.ColorSelectAdapter
-import kotlinx.android.synthetic.main.dialog_thermal_input.view.*
+import com.topdon.lib.ui.databinding.DialogThermalInputBinding
 import java.math.BigDecimal
 
 
 /**
- * 提示窗
- * create by fylder on 2018/6/15
- **/
+ * Professional thermal input dialog for thermal imaging systems
+ * 
+ * Provides comprehensive thermal parameter configuration including:
+ * - Temperature limit input (upper/lower bounds)
+ * - Color picker integration for thermal visualization
+ * - Professional validation for research-grade accuracy
+ * - Multi-step interface with input validation
+ * - Industry-standard parameter management
+ * 
+ * Features three main modes:
+ * - 100: Initial temperature input interface
+ * - 201: Temperature upper limit color selection
+ * - 301: Temperature lower limit color selection
+ * 
+ * @constructor Creates thermal input dialog with context and optional theme
+ */
 class ThermalInputDialog : Dialog {
 
     private var action = 100 // 100:初始温度输入界面     201: 温度上限颜色选择界面   301: 温度下限颜色选择界面

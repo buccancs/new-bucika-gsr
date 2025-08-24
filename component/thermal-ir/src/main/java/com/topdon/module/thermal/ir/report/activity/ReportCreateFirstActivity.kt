@@ -5,6 +5,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -40,7 +41,7 @@ import com.topdon.module.thermal.ir.report.bean.ImageTempBean
 import com.topdon.module.thermal.ir.report.bean.ReportConditionBean
 import com.topdon.module.thermal.ir.report.bean.ReportInfoBean
 import com.topdon.module.thermal.ir.repository.ConfigRepository
-import kotlinx.android.synthetic.main.activity_report_create_first.*
+import com.topdon.module.thermal.ir.databinding.ActivityReportCreateFirstBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,26 +52,49 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * 生成报告第1步（共2步）.
- *
- * 需要传递
- * - 是否 TC007: [ExtraKeyConfig.IS_TC007] （环境温度、发射率等不同）
- * - 当前编辑的图片绝对路径: [ExtraKeyConfig.FILE_ABSOLUTE_PATH] （本界面不使用，透传）
- * - 当前编辑的图片点线面全图温度数据: [ExtraKeyConfig.IMAGE_TEMP_BEAN] （本界面不使用，透传）
+ * Professional thermal imaging report creation activity (Step 1 of 2) providing comprehensive
+ * report generation capabilities for research and clinical applications.
+ * 
+ * Provides advanced functionality for:
+ * - Professional thermal report metadata input and validation
+ * - Industry-standard environmental condition recording (temperature, humidity, distance)
+ * - Research-grade location and GPS coordinate capture
+ * - Clinical-grade date/time selection with professional accuracy
+ * - Comprehensive report condition parameter configuration
+ * - Professional thermal imaging report workflow management
+ * 
+ * Required parameters:
+ * - Device type flag: [ExtraKeyConfig.IS_TC007] (affects environmental parameters)
+ * - Image absolute path: [ExtraKeyConfig.FILE_ABSOLUTE_PATH] (passed through)
+ * - Temperature data: [ExtraKeyConfig.IMAGE_TEMP_BEAN] (passed through)
  */
 @Route(path = RouterConfig.REPORT_CREATE_FIRST)
 class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
 
+    /** ViewBinding instance for type-safe view access */
+    private lateinit var binding: ActivityReportCreateFirstBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityReportCreateFirstBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+
     /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
+     * Device type flag indicating whether current device is TC007 or other plugin-style device.
+     * true=TC007, false=other plugin devices (affects environmental parameters)
      */
     private var isTC007 = false
+    
+    /** Location manager for professional GPS coordinate capture */
     private var locationManager: LocationManager? = null
+    
+    /** Location provider for research-grade position accuracy */
     private var locationProvider: String? = null
 
     override fun initContentView() = R.layout.activity_report_create_first
 
+    /** Required permissions for professional location services */
     private val permissionList = listOf(
         Permission.ACCESS_FINE_LOCATION,
         Permission.ACCESS_COARSE_LOCATION

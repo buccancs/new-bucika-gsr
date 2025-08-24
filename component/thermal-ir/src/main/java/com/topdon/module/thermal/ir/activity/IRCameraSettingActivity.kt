@@ -29,28 +29,41 @@ import com.topdon.lib.ui.listener.SingleClickListener
 import com.topdon.lib.core.utils.CommUtils
 import com.topdon.module.thermal.ir.BuildConfig
 import com.topdon.module.thermal.ir.R
-import kotlinx.android.synthetic.main.activity_ir_camera_setting.*
+import com.topdon.module.thermal.ir.databinding.ActivityIrCameraSettingBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-
 /**
- * 摄像头属性值设置
- * @author: CaiSongL
- * @date: 2023/4/3 15:00
+ * Professional thermal camera configuration activity for research-grade imaging parameters.
+ * 
+ * Provides comprehensive camera settings management including:
+ * - Automatic capture modes with customizable intervals (1-30 second range)
+ * - Watermark configuration for professional documentation and traceability
+ * - GPS location embedding for field research applications
+ * - Device-specific optimization for TC007 and other thermal imaging devices
+ * - Professional image naming and metadata management
+ * - Clinical-grade image quality and compression settings
+ * 
+ * Essential for maintaining research standards in thermal imaging workflows
+ * and ensuring proper documentation for clinical applications.
+ *
+ * @author CaiSongL
+ * @since 2023/4/3
  */
 @Route(path = RouterConfig.IR_CAMERA_SETTING)
 class IRCameraSettingActivity : BaseActivity() {
 
-    companion object{
+    companion object {
         const val KEY_PRODUCT_TYPE = "key_product_type"
     }
 
+    /** ViewBinding instance for type-safe view access */
+    private lateinit var binding: ActivityIrCameraSettingBinding
+    
     private var locationManager: LocationManager? = null
     private var locationProvider: String? = null
-
 
     private var watermarkBean: WatermarkBean = SharedManager.watermarkBean
     private var continuousBean: ContinuousBean = SharedManager.continuousBean
@@ -64,119 +77,127 @@ class IRCameraSettingActivity : BaseActivity() {
     override fun initContentView(): Int = R.layout.activity_ir_camera_setting
 
     override fun initView() {
+        binding = ActivityIrCameraSettingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
         productName = intent.getStringExtra(KEY_PRODUCT_TYPE) ?: ""
-        if (isTC007()){
-            watermarkBean = SharedManager.wifiWatermarkBean//TC007只有水印
+        if (isTC007()) {
+            watermarkBean = SharedManager.wifiWatermarkBean // TC007 only supports watermark
             continuousBean = SharedManager.continuousBean
-        }else{
+        } else {
             watermarkBean = SharedManager.watermarkBean
             continuousBean = SharedManager.continuousBean
         }
 
-        bar_pick_view_time.setProgressAndRefresh((continuousBean.continuaTime / 100).toInt())
-        bar_pick_view_time.onStopTrackingTouch = { progress, _ ->
+        binding.barPickViewTime.setProgressAndRefresh((continuousBean.continuaTime / 100).toInt())
+        binding.barPickViewTime.onStopTrackingTouch = { progress, _ ->
             continuousBean.continuaTime = progress.toLong() * 100
             SharedManager.continuousBean = continuousBean
         }
-        bar_pick_view_time.valueFormatListener = {
+        binding.barPickViewTime.valueFormatListener = {
             (it / 10).toString() + if (it % 10 == 0) "" else ("." + (it % 10).toString())
         }
 
-        bar_pick_view_count.setProgressAndRefresh(continuousBean.count)
-        bar_pick_view_count.onStopTrackingTouch = { progress, _ ->
+        binding.barPickViewCount.setProgressAndRefresh(continuousBean.count)
+        binding.barPickViewCount.onStopTrackingTouch = { progress, _ ->
             continuousBean.count = progress
             SharedManager.continuousBean = continuousBean
         }
 
 
-        switch_time.isChecked = watermarkBean.isAddTime
-        switch_watermark.isChecked = watermarkBean.isOpen
-        switch_delay.isChecked = continuousBean.isOpen
+        binding.switchTime.isChecked = watermarkBean.isAddTime
+        binding.switchWatermark.isChecked = watermarkBean.isOpen
+        binding.switchDelay.isChecked = continuousBean.isOpen
 
-        cl_delay_more.isVisible = continuousBean.isOpen
-        cl_watermark_more.isVisible = watermarkBean.isOpen
-        cl_show_ep.isVisible = watermarkBean.isOpen
+        binding.clDelayMore.isVisible = continuousBean.isOpen
+        binding.clWatermarkMore.isVisible = watermarkBean.isOpen
+        binding.clShowEp.isVisible = watermarkBean.isOpen
 
-        tv_time_show.text = TimeTool.getNowTime()
-        tv_time_show.isVisible = watermarkBean.isAddTime
+        binding.tvTimeShow.text = TimeTool.getNowTime()
+        binding.tvTimeShow.isVisible = watermarkBean.isAddTime
 
-        tv_address.inputType = InputType.TYPE_NULL
-        if (TextUtils.isEmpty(watermarkBean.address)){
-            tv_address.visibility = View.GONE
-        }else{
-            tv_address.visibility = View.VISIBLE
-            tv_address.text = watermarkBean.address
+        binding.tvAddress.inputType = InputType.TYPE_NULL
+        if (TextUtils.isEmpty(watermarkBean.address)) {
+            binding.tvAddress.visibility = View.GONE
+        } else {
+            binding.tvAddress.visibility = View.VISIBLE
+            binding.tvAddress.text = watermarkBean.address
         }
-        ed_title.setText(watermarkBean.title)
-        ed_address.setText(watermarkBean.address)
-        tv_title_show.text = watermarkBean.title
-        switch_delay.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked){
-                cl_delay_more.visibility = View.VISIBLE
-            }else{
-                cl_delay_more.visibility = View.GONE
+        binding.edTitle.setText(watermarkBean.title)
+        binding.edAddress.setText(watermarkBean.address)
+        binding.tvTitleShow.text = watermarkBean.title
+        binding.switchDelay.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.clDelayMore.visibility = View.VISIBLE
+            } else {
+                binding.clDelayMore.visibility = View.GONE
             }
             continuousBean.isOpen = isChecked
             SharedManager.continuousBean = continuousBean
         }
-        switch_watermark.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked){
-                cl_watermark_more.visibility = View.VISIBLE
-                cl_show_ep.visibility = View.VISIBLE
-            }else{
-                cl_watermark_more.visibility = View.GONE
-                cl_show_ep.visibility = View.GONE
+        binding.switchWatermark.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.clWatermarkMore.visibility = View.VISIBLE
+                binding.clShowEp.visibility = View.VISIBLE
+            } else {
+                binding.clWatermarkMore.visibility = View.GONE
+                binding.clShowEp.visibility = View.GONE
             }
             watermarkBean.isOpen = isChecked
         }
-        switch_time.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked){
-                tv_time_show.text = TimeTool.getNowTime()
-                tv_time_show.visibility = View.VISIBLE
-            }else{
-                tv_time_show.visibility = View.GONE
+        binding.switchTime.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.tvTimeShow.text = TimeTool.getNowTime()
+                binding.tvTimeShow.visibility = View.VISIBLE
+            } else {
+                binding.tvTimeShow.visibility = View.GONE
             }
             watermarkBean.isAddTime = isChecked
         }
-        ed_title.addTextChangedListener(object : TextWatcher{
+        binding.edTitle.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
+            
             override fun afterTextChanged(s: Editable?) {
-
-                watermarkBean.title = ed_title.text.toString()
-                tv_title_show.text = watermarkBean.title
+                watermarkBean.title = binding.edTitle.text.toString()
+                binding.tvTitleShow.text = watermarkBean.title
             }
         })
-        ed_address.addTextChangedListener(object : TextWatcher{
+        binding.edAddress.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
+            
             override fun afterTextChanged(s: Editable?) {
-                watermarkBean.address = ed_address.text.toString()
-                tv_address.text = watermarkBean.address
-                if (!watermarkBean.address.isNullOrEmpty()){
-                    tv_address.visibility = View.VISIBLE
-                }else{
-                    tv_address.visibility = View.GONE
+                watermarkBean.address = binding.edAddress.text.toString()
+                binding.tvAddress.text = watermarkBean.address
+                if (!watermarkBean.address.isNullOrEmpty()) {
+                    binding.tvAddress.visibility = View.VISIBLE
+                } else {
+                    binding.tvAddress.visibility = View.GONE
                 }
             }
         })
-        img_location.setOnClickListener(object : SingleClickListener() {
+        binding.imgLocation.setOnClickListener(object : SingleClickListener() {
             override fun onSingleClick() {
                 checkStoragePermission()
             }
         })
-        //TC007设备不需要延迟拍照
-        ly_auto.visibility = if (isTC007()) View.GONE else View.VISIBLE
+        // TC007 devices don't need delayed capture
+        binding.lyAuto.visibility = if (isTC007()) View.GONE else View.VISIBLE
     }
 
-    fun isTC007() : Boolean
-    {
+    /**
+     * Checks if current device is TC007 model.
+     *
+     * @return true if device is TC007, false otherwise
+     */
+    fun isTC007(): Boolean {
         return productName.contains("TC007")
     }
     @SuppressLint("MissingPermission")
