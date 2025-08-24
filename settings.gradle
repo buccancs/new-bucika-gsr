@@ -13,21 +13,22 @@ dependencyResolutionManagement {
         }
         maven { url 'https://repo1.maven.org/maven2/' }
         flatDir {
-            dirs 'libir/libs'
+            dirs 'android/libir/libs'
         }
     }
 }
 rootProject.name = "BucikaGSR"
-include ':app'
-include ':commonlibrary'
-include ':component:CommonComponent'
-include ':component:thermal-ir'
-include ':libapp'
-include ':libcom'
-include ':libir'
-include ':libmenu'
-include ':libui'
-include ':BleModule'
-include ':LocalRepo:libcommon'
-include ':LocalRepo:libirutils'
-include ':RangeSeekBar'
+include ':pc'
+include ':android:app'
+include ':android:commonlibrary'
+include ':android:component:CommonComponent'
+include ':android:component:thermal-ir'
+include ':android:libapp'
+include ':android:libcom'
+include ':android:libir'
+include ':android:libmenu'
+include ':android:libui'
+include ':android:BleModule'
+include ':android:LocalRepo:libcommon'
+include ':android:LocalRepo:libirutils'
+include ':android:RangeSeekBar'

@@ -3,13 +3,13 @@
 
 dependencies {
     // Core BucikaGSR modules - essential for GSR functionality
-    implementation project(':component:thermal-ir')
-    implementation project(':libapp')
-    implementation project(':libcom')
-    implementation project(':libir')
-    implementation project(':libmenu')
-    implementation project(':libui')
-    implementation project(':BleModule')
+    implementation project(':android:component:thermal-ir')
+    implementation project(':android:libapp')
+    implementation project(':android:libcom')
+    implementation project(':android:libir')
+    implementation project(':android:libmenu')
+    implementation project(':android:libui')
+    implementation project(':android:BleModule')
     
     // Shimmer3 GSR integration - using local implementation
     // Note: Official Shimmer SDK not available in public repositories
