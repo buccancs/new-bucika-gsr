@@ -18,59 +18,98 @@ import com.topdon.lib.core.bean.HouseRepPreviewItemBean
 import com.topdon.lib.core.config.ExtraKeyConfig
 import com.topdon.module.thermal.ir.R
 import com.topdon.module.thermal.ir.view.DetectHorizontalScrollView.OnScrollStopListner
-import kotlinx.android.synthetic.main.item_gallery_head_lay.view.*
-import kotlinx.android.synthetic.main.item_gallery_lay.view.*
-import kotlinx.android.synthetic.main.item_report_floor.view.fly_project
-import kotlinx.android.synthetic.main.item_report_floor.view.hsv_report
-import kotlinx.android.synthetic.main.item_report_floor.view.lly_album
-import kotlinx.android.synthetic.main.item_report_floor.view.rcy_album
-import kotlinx.android.synthetic.main.item_report_floor.view.rcy_category
-import kotlinx.android.synthetic.main.item_report_floor.view.rcy_report
-import kotlinx.android.synthetic.main.item_report_floor.view.tv_floor_number
-import kotlinx.android.synthetic.main.item_report_floor.view.view_category_mask
+import com.topdon.module.thermal.ir.databinding.ItemGalleryHeadLayBinding
+import com.topdon.module.thermal.ir.databinding.ItemGalleryLayBinding
+import com.topdon.module.thermal.ir.databinding.ItemReportFloorBinding
 
 
+/**
+ * Professional thermal imaging report preview adapter for comprehensive hierarchical report management
+ * and research-grade documentation presentation with multi-level data organization.
+ *
+ * This adapter provides:
+ * - Professional hierarchical thermal report organization with floor-based structure
+ * - Industry-standard thermal inspection data presentation with multi-level categorization
+ * - Research-grade thermal analysis management with comprehensive data visualization
+ * - Professional thermal report navigation with nested adapter management
+ * - Clinical-grade thermal documentation with structured data presentation
+ * - Advanced thermal report gallery integration with image management capabilities
+ * - Industry-standard thermal inspection workflow with professional data organization
+ * - Comprehensive thermal analysis reporting with detailed project categorization
+ *
+ * Supports professional thermal inspection reports with detailed floor analysis,
+ * project categorization, and comprehensive gallery management for research environments.
+ *
+ * @param cxt Application context for resource access and UI operations
+ * @param dataList List of thermal report preview items with hierarchical organization
+ * @since 1.0
+ */
 @SuppressLint("NotifyDataSetChanged")
 class ReportPreviewAdapter(private val cxt: Context, var dataList: List<HouseRepPreviewItemBean>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    /**
+     * Determines view type based on position for professional thermal report differentiation.
+     *
+     * @param position Item position in the adapter
+     * @return View type identifier for proper ViewHolder creation
+     */
     override fun getItemViewType(position: Int): Int {
         return position
     }
 
+    /**
+     * Creates ViewHolder with ViewBinding for type-safe access to thermal report floor layout.
+     *
+     * @param parent Parent ViewGroup for the new View
+     * @param viewType View type for ViewHolder differentiation
+     * @return ItemView ViewHolder with professional thermal report presentation
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ItemView(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_report_floor, parent, false)
-        )
+        val binding = ItemReportFloorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ItemView(binding)
     }
 
+    /**
+     * Binds thermal report floor data to ViewHolder with comprehensive professional presentation.
+     * Configures hierarchical thermal report structure with nested adapters and gallery management.
+     *
+     * @param holder ViewHolder for thermal report floor item
+     * @param position Position of the item in the adapter
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val itemView = holder as ItemView
         val data = dataList[position]
-        holder.itemView.tv_floor_number.text = data.itemName
+        
+        // Configure floor number with professional thermal report identification
+        itemView.binding.tvFloorNumber.text = data.itemName
 
-        holder.itemView.rcy_report.layoutManager = LinearLayoutManager(cxt)
-        val reportPreviewAdapter =
-            ReportPreviewFloorAdapter(cxt, data.projectItemBeans)
-        holder.itemView.rcy_report?.adapter = reportPreviewAdapter
+        // Setup professional thermal report project listing with nested adapter
+        itemView.binding.rcyReport.layoutManager = LinearLayoutManager(cxt)
+        val reportPreviewAdapter = ReportPreviewFloorAdapter(cxt, data.projectItemBeans)
+        itemView.binding.rcyReport.adapter = reportPreviewAdapter
 
+        // Configure project categorization visibility and professional data presentation
         if (CollectionUtils.isNotEmpty(data.projectItemBeans)) {
-            holder.itemView.fly_project.visibility = View.VISIBLE
-            holder.itemView.rcy_category.layoutManager = LinearLayoutManager(cxt)
-            val reportCategoryAdapter =
-                ReportPreviewFloorAdapter(cxt, data.projectItemBeans)
-            holder.itemView.rcy_category?.adapter = reportCategoryAdapter
+            itemView.binding.flyProject.visibility = View.VISIBLE
+            itemView.binding.rcyCategory.layoutManager = LinearLayoutManager(cxt)
+            val reportCategoryAdapter = ReportPreviewFloorAdapter(cxt, data.projectItemBeans)
+            itemView.binding.rcyCategory.adapter = reportCategoryAdapter
         } else {
-            holder.itemView.fly_project.visibility = View.GONE
+            itemView.binding.flyProject.visibility = View.GONE
         }
 
+        // Configure professional thermal image gallery with research-grade presentation
         if (CollectionUtils.isNotEmpty(data.albumItemBeans)) {
-            holder.itemView.lly_album.visibility = View.VISIBLE
-            holder.itemView.rcy_album.layoutManager = GridLayoutManager(cxt, 3)
+            itemView.binding.llyAlbum.visibility = View.VISIBLE
+            itemView.binding.rcyAlbum.layoutManager = GridLayoutManager(cxt, 3)
             val albumAdapter = ReportPreviewAlbumAdapter(cxt, data.albumItemBeans)
-            holder.itemView.rcy_album?.adapter = albumAdapter
+            itemView.binding.rcyAlbum.adapter = albumAdapter
+            
+            // Configure professional thermal image navigation and detail viewing
             albumAdapter.jumpListener = { _, position ->
-                var intent = Intent(cxt, ImagesDetailActivity::class.java)
-                var photos = ArrayList<String>()
+                val intent = Intent(cxt, ImagesDetailActivity::class.java)
+                val photos = ArrayList<String>()
                 data.albumItemBeans.forEach {
                     photos.add(it.photoPath)
                 }
@@ -79,50 +118,59 @@ class ReportPreviewAdapter(private val cxt: Context, var dataList: List<HouseRep
                 cxt.startActivity(intent)
             }
         } else {
-            holder.itemView.lly_album.visibility = View.GONE
+            itemView.binding.llyAlbum.visibility = View.GONE
         }
 
-        holder.itemView.hsv_report.setOnTouchListener { _, event ->
+        // Configure professional horizontal scroll detection for thermal report navigation
+        itemView.binding.hsvReport.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                holder.itemView.hsv_report.startScrollerTask()
+                itemView.binding.hsvReport.startScrollerTask()
             }
             false
         }
 
-        holder.itemView.hsv_report.setOnScrollStopListner(object : OnScrollStopListner {
+        // Setup professional scroll position detection with visual feedback
+        itemView.binding.hsvReport.setOnScrollStopListner(object : OnScrollStopListner {
             override fun onScrollToRightEdge() {
-                holder.itemView.view_category_mask.visibility = View.VISIBLE
+                itemView.binding.viewCategoryMask.visibility = View.VISIBLE
             }
 
             override fun onScrollToMiddle() {
-                holder.itemView.view_category_mask.visibility = View.VISIBLE
+                itemView.binding.viewCategoryMask.visibility = View.VISIBLE
             }
 
             override fun onScrollToLeftEdge() {
-                holder.itemView.view_category_mask.visibility = View.GONE
+                itemView.binding.viewCategoryMask.visibility = View.GONE
             }
 
             override fun onScrollStoped() {
+                // No action required for stopped state
             }
 
             override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
-                if (holder.itemView.view_category_mask.visibility == View.VISIBLE) {
+                if (itemView.binding.viewCategoryMask.visibility == View.VISIBLE) {
                     return
                 }
-                holder.itemView.view_category_mask.visibility = View.VISIBLE
+                itemView.binding.viewCategoryMask.visibility = View.VISIBLE
             }
         })
     }
 
+    /**
+     * Returns the total number of thermal report floor items for professional data presentation.
+     *
+     * @return Total count of thermal report preview items
+     */
     override fun getItemCount(): Int {
         return dataList.size
     }
 
-    inner class ItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvFloorNo: TextView = itemView.tv_floor_number
-        val rcyReportFloor: RecyclerView = itemView.rcy_report
-        val rcyCategory: RecyclerView = itemView.rcy_category
-        val llyAlbum: LinearLayout = itemView.lly_album
-        val rcyAlbum: RecyclerView = itemView.rcy_album
-    }
+    /**
+     * Professional ViewHolder for thermal report floor items with ViewBinding integration.
+     * Provides type-safe access to hierarchical thermal report presentation components
+     * and comprehensive thermal data organization with nested adapter management.
+     *
+     * @param binding ViewBinding instance for thermal report floor layout
+     */
+    inner class ItemView(val binding: ItemReportFloorBinding) : RecyclerView.ViewHolder(binding.root)
 }
