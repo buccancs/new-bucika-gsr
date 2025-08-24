@@ -12,21 +12,40 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.topdon.lib.core.R
+import com.topdon.lib.core.databinding.DialogMsgBinding
 import com.topdon.lib.core.utils.ScreenUtil
-import kotlinx.android.synthetic.main.dialog_msg.view.*
-
 
 /**
- * 消息提示窗
- * create by fylder on 2018/6/15
- **/
+ * Professional message dialog with modern ViewBinding implementation
+ * 
+ * Provides comprehensive message display functionality for thermal IR applications
+ * with customizable icons, messages, and professional user interaction patterns.
+ * 
+ * Features:
+ * - Modern ViewBinding architecture for type-safe view access
+ * - Professional message display with customizable icons
+ * - Responsive sizing for portrait/landscape orientations
+ * - Builder pattern for fluent configuration
+ * - Professional close interaction handling
+ * - Research-grade user experience patterns
+ * 
+ * @author fylder
+ * @since 2018/6/15 (modernized with ViewBinding)
+ * 
+ * @see DialogMsgBinding For ViewBinding implementation
+ */
 class MsgDialog : Dialog {
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, themeResId: Int) : super(context, themeResId)
 
-
+    /**
+     * Professional builder for fluent MsgDialog configuration
+     * 
+     * Provides comprehensive configuration options with type-safe ViewBinding access
+     * and responsive layout handling for different screen orientations.
+     */
     class Builder {
         var dialog: MsgDialog? = null
 
@@ -36,94 +55,151 @@ class MsgDialog : Dialog {
         private var message: String? = null
         private var positiveClickListener: OnClickListener? = null
 
-        private var tipImg: ImageView? = null
-        private var messageText: TextView? = null
-        private var closeImg: ImageView? = null
+        /** Professional ViewBinding for type-safe view access */
+        private lateinit var binding: DialogMsgBinding
 
         constructor(context: Context) {
             this.context = context
         }
 
+        /**
+         * Set dialog icon from drawable resource
+         * 
+         * @param res Drawable resource ID for dialog icon
+         * @return Builder instance for method chaining
+         */
         fun setImg(@DrawableRes res: Int): Builder {
             this.imgRes = res
             return this
         }
 
+        /**
+         * Set dialog message from string
+         * 
+         * @param message Message text to display
+         * @return Builder instance for method chaining
+         */
         fun setMessage(message: String): Builder {
             this.message = message
             return this
         }
 
+        /**
+         * Set dialog message from string resource
+         * 
+         * @param message String resource ID for message text
+         * @return Builder instance for method chaining
+         */
         fun setMessage(@StringRes message: Int): Builder {
             this.message = context!!.getString(message)
             return this
         }
 
+        /**
+         * Set close button click listener
+         * 
+         * @param listener Click listener for close button
+         * @return Builder instance for method chaining
+         */
         fun setCloseListener(listener: OnClickListener): Builder {
             this.positiveClickListener = listener
             return this
         }
 
+        /**
+         * Dismiss the dialog professionally
+         */
         fun dismiss() {
             this.dialog!!.dismiss()
         }
 
-
+        /**
+         * Create professional MsgDialog with ViewBinding and comprehensive configuration
+         * 
+         * Initializes:
+         * - ViewBinding for type-safe view access
+         * - Professional dialog properties
+         * - Responsive window sizing based on orientation
+         * - Icon and message configuration
+         * - Close button interaction handling
+         * 
+         * @return Configured MsgDialog instance
+         */
         fun create(): MsgDialog {
             if (dialog == null) {
                 dialog = MsgDialog(context!!, R.style.InfoDialog)
             }
-            val inflater =
-                context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.dialog_msg, null)
-            tipImg = view.dialog_msg_img
-            messageText = view.dialog_msg_text
-            closeImg = view.dialog_msg_close
+            
+            // Initialize ViewBinding
+            binding = DialogMsgBinding.inflate(LayoutInflater.from(context!!))
+            
             dialog!!.addContentView(
-                view, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                binding.root, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             )
+            
+            // Configure responsive window sizing
             val lp = dialog!!.window!!.attributes
-            val wRatio =
-                if (context!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    //竖屏
-                    0.9
-                } else {
-                    //横屏
-                    0.3
-                }
-            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt() //设置宽度
+            val wRatio = if (context!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                0.9 // Portrait mode - 90% width
+            } else {
+                0.3 // Landscape mode - 30% width
+            }
+            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt()
             dialog!!.window!!.attributes = lp
 
+            // Setup dialog properties
             dialog!!.setCanceledOnTouchOutside(false)
-            closeImg!!.setOnClickListener {
-                dismiss()
-                if (positiveClickListener != null) {
-                    positiveClickListener!!.onClick(dialog!!)
-                }
-            }
-            //img
-            if (imgRes != 0) {
-                tipImg?.visibility = View.VISIBLE
-                tipImg?.setImageResource(imgRes)
-            } else {
-                tipImg?.visibility = View.GONE
-            }
-            //msg
-            if (message != null) {
-                messageText?.visibility = View.VISIBLE
-                messageText?.setText(message, TextView.BufferType.NORMAL)
-            } else {
-                messageText?.visibility = View.GONE
-            }
+            
+            // Setup close button interaction
+            setupCloseButton()
+            
+            // Configure icon display
+            configureIcon()
+            
+            // Configure message display
+            configureMessage()
 
-            dialog!!.setContentView(view)
+            dialog!!.setContentView(binding.root)
             return dialog as MsgDialog
+        }
+
+        /**
+         * Setup professional close button interaction
+         */
+        private fun setupCloseButton() {
+            binding.dialogMsgClose.setOnClickListener {
+                dismiss()
+                positiveClickListener?.onClick(dialog!!)
+            }
+        }
+
+        /**
+         * Configure professional icon display
+         */
+        private fun configureIcon() {
+            if (imgRes != 0) {
+                binding.dialogMsgImg.visibility = View.VISIBLE
+                binding.dialogMsgImg.setImageResource(imgRes)
+            } else {
+                binding.dialogMsgImg.visibility = View.GONE
+            }
+        }
+
+        /**
+         * Configure professional message display
+         */
+        private fun configureMessage() {
+            if (message != null) {
+                binding.dialogMsgText.visibility = View.VISIBLE
+                binding.dialogMsgText.setText(message, TextView.BufferType.NORMAL)
+            } else {
+                binding.dialogMsgText.visibility = View.GONE
+            }
         }
     }
 
-
     /**
-     * 提交回调
+     * Professional click listener interface for dialog interactions
      */
     interface OnClickListener {
         fun onClick(dialog: DialogInterface)
