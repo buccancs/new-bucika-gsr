@@ -192,10 +192,12 @@ The system includes extensive testing coverage:
 - **[Test Suite Documentation](docs/GSR_TEST_SUITE_DOCUMENTATION.md)**: Testing framework details
 
 ### Code Quality & Analysis
+- **[Quality Metrics Analysis](QUALITY_METRICS_ANALYSIS.md)**: Focused analysis of 10 key code quality metrics (B+ grade, 83/100)
 - **[Code Quality Analysis](CODE_QUALITY_ANALYSIS.md)**: Comprehensive quality metrics analysis (83/100 score)
 - **[Quality Gates Configuration](QUALITY_GATES_CONFIG.md)**: Quality thresholds and enforcement rules
 - **[Quality Improvement Plan](QUALITY_IMPROVEMENT_PLAN.md)**: Action plan for quality excellence
 - **[Quality Metrics Collection](scripts/collect_quality_metrics.sh)**: Automated quality measurement tool
+- **[Quality Analysis Validation](scripts/validate_quality_analysis.sh)**: Validation script for metrics accuracy
 
 ### Key Features Documentation
 - Professional-grade data collection with 128 Hz sampling
