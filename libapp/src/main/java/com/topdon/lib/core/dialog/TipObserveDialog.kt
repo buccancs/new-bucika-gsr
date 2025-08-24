@@ -9,7 +9,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.*
 import com.topdon.lib.core.R
 import com.topdon.lib.core.utils.ScreenUtil
-import kotlinx.android.synthetic.main.dialog_tip_observe.view.*
+import com.topdon.lib.core.databinding.DialogTipObserveBinding
 
 /**
  * 观测-弹框封装
@@ -67,21 +67,21 @@ class TipObserveDialog : Dialog {
             if (dialog == null) {
                 dialog = TipObserveDialog(context!!, R.style.InfoDialog)
             }
-            val inflater =
-                context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.dialog_tip_observe, null)
+            val binding = DialogTipObserveBinding.inflate(
+                LayoutInflater.from(context!!)
+            )
 
-            view.tv_i_know.setOnClickListener {
+            binding.tvIKnow.setOnClickListener {
                 dismiss()
                 closeEvent?.invoke(hasCheck)
             }
 
-            titleText = view.tv_title
-            messageText = view.dialog_tip_msg_text
-            checkBox = view.dialog_tip_check
-            imgClose = view.img_close
+            titleText = binding.tvTitle
+            messageText = binding.dialogTipMsgText
+            checkBox = binding.dialogTipCheck
+            imgClose = binding.imgClose
             dialog!!.addContentView(
-                view,
+                binding.root,
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             )
             val lp = dialog!!.window!!.attributes

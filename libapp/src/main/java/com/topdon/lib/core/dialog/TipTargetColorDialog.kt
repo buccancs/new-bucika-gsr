@@ -12,10 +12,7 @@ import com.topdon.lib.core.R
 import com.topdon.lib.core.adapter.TargetColorAdapter
 import com.topdon.lib.core.bean.ObserveBean
 import com.topdon.lib.core.utils.ScreenUtil
-import kotlinx.android.synthetic.main.dialog_tip_observe.view.img_close
-import kotlinx.android.synthetic.main.dialog_tip_observe.view.tv_i_know
-import kotlinx.android.synthetic.main.dialog_tip_observe.view.tv_title
-import kotlinx.android.synthetic.main.dialog_tip_target_color.view.*
+import com.topdon.lib.core.databinding.DialogTipTargetColorBinding
 
 /**
  * 观测-标靶颜色

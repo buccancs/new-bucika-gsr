@@ -27,7 +27,7 @@ import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.utils.CommUtils
 import com.topdon.lib.core.utils.ScreenUtil
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
-import kotlinx.android.synthetic.main.dialog_tip_watermark.view.*
+import com.topdon.lib.core.databinding.DialogTipWatermarkBinding
 import java.util.*
 
 /**
