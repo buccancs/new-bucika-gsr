@@ -61,10 +61,12 @@ else
     echo -e "${YELLOW}⚠️  Test file count differs: Expected 22, Got $TEST_FILES${NC}"
 fi
 
-if [ $BUILD_GRADLE_LINES -eq 367 ]; then
-    echo -e "${GREEN}✅ Build config complexity matches expected: 367 lines${NC}"
+if [ $BUILD_GRADLE_LINES -eq 117 ]; then
+    echo -e "${GREEN}✅ Build config complexity IMPROVED: 117 lines (was 367)${NC}"
+elif [ $BUILD_GRADLE_LINES -le 200 ]; then
+    echo -e "${GREEN}✅ Build config complexity under target: $BUILD_GRADLE_LINES lines (<200)${NC}"
 else
-    echo -e "${YELLOW}⚠️  Build config lines differ: Expected 367, Got $BUILD_GRADLE_LINES${NC}"
+    echo -e "${YELLOW}⚠️  Build config lines: Expected <200, Got $BUILD_GRADLE_LINES${NC}"
 fi
 
 if [ $COMPLEXITY_PERCENTAGE -ge 45 ] && [ $COMPLEXITY_PERCENTAGE -le 47 ]; then

@@ -1,0 +1,119 @@
+// BucikaGSR Build Helper Functions
+// Extracted from main build.gradle to improve maintainability
+
+def versionApk(variant, defaultConfig) {
+    variant.outputs.all {
+        def appName = "BucikaGSR.apk"
+        def nameStr = "BucikaGSR_" + defaultConfig.versionName + "." + getDayStr()
+        if (variant.name == "devDebug") {
+            appName = "BucikaGSR-v" + defaultConfig.versionName + "-debug.apk"
+        } else if (variant.name == "devRelease") {
+            appName = nameStr + "-release.apk"
+        } else if (variant.name == "betaDebug") {
+            appName = nameStr + "_beta_debug.apk"
+        } else if (variant.name == "betaRelease") {
+            appName = nameStr + "_beta.apk"
+        } else if (variant.name == "prodDebug") {
+            appName = nameStr + "_debug.apk"
+        } else if (variant.name == "prodRelease") {
+            appName = nameStr + ".apk"
+        } else if (variant.name == "prodTopdonDebug") {
+            appName = "BucikaGSR_Android10_" + defaultConfig.versionName + "." + getDayStr() + "_debug.apk"
+        } else if (variant.name == "prodTopdonRelease") {
+            appName = "BucikaGSR_Android10_" + defaultConfig.versionName + "." + getDayStr() + ".apk"
+        } else if (variant.name == "insideChinaDebug") {
+            appName = nameStr + "_debug.apk"
+        } else if (variant.name == "insideChinaRelease") {
+            appName = nameStr + ".apk"
+        }else if (variant.name == "prodTopdonInsideChinaDebug") {
+            appName = nameStr + "_debug.apk"
+        } else if (variant.name == "prodTopdonInsideChinaRelease") {
+            appName = nameStr + ".apk"
+        }
+        outputFileName = appName
+    }
+}
+
+//复制apk
+def copyApk(type, flavor) {
+    copy {
+        from "build/outputs/apk/${flavor}/${type}"
+        into "../outputs/${type}/"
+        include '**/*.apk'
+        rename { String fileName ->
+            if (flavor.contains("Topdon")) {
+                fileName.substring(0, fileName.lastIndexOf(".apk")) + '_build' + getTimeStr() + '(Topdon).apk'
+            } else {
+                fileName.substring(0, fileName.lastIndexOf(".apk")) + '_build' + getTimeStr() + '.apk'
+            }
+        }
+    }
+}
+
+//复制aab
+def copyAab(type) {
+    copy {
+        from "build/outputs/bundle/${type}"
+        into "../outputs/bundle/${type}/"
+        include '**/*.aab'
+        rename { String fileName ->
+            fileName.substring(0, fileName.lastIndexOf(".google")) + "." + getDayStr() + "_" + type + '_build' + getTimeStr() + '.aab'
+        }
+    }
+}
+
+// APK copying functionality - currently disabled to prevent build issues
+// Enable when output directory structure is confirmed
+def enableApkCopyTasks() {
+    project.afterEvaluate {
+        assembleProdDebug.doLast {
+            println "===================== build prod Debug.apk copy ========================="
+            copyApk("debug", "prod")
+        }
+        assembleProdRelease.doLast {
+            println "===================== build prod Release.apk copy ======================="
+            copyApk("release", "prod")
+        }
+        assembleProdTopdonDebug.doLast {
+            println "===================== build prod Debug.apk copy ========================="
+            copyApk("debug", "prodTopdon")
+        }
+        assembleProdTopdonRelease.doLast {
+            println "===================== build prod Release.apk copy ======================="
+            copyApk("release", "prodTopdon")
+        }
+        assembleBetaDebug.doLast {
+            println "===================== build beta Debug.apk copy ========================="
+            copyApk("debug", "beta")
+        }
+        assembleBetaRelease.doLast {
+            println "===================== build beta Release.apk copy ======================="
+            copyApk("release", "beta")
+        }
+
+        assembleInsideChinaDebug.doLast {
+            println "===================== build beta Debug.apk copy ========================="
+            copyApk("debug", "insideChina")
+        }
+        assembleInsideChinaRelease.doLast {
+            println "===================== build beta Release.apk copy ======================="
+            copyApk("release", "insideChina")
+        }
+        assembleProdTopdonInsideChinaDebug.doLast {
+            println "===================== build beta Debug.apk copy ========================="
+            copyApk("debug", "prodTopdonInsideChina")
+        }
+        assembleProdTopdonInsideChinaRelease.doLast {
+            println "===================== build beta Release.apk copy ======================="
+            copyApk("release", "prodTopdonInsideChina")
+        }
+        bundleProdDebug.doLast {
+            println "===================== build prod Debug.aab copy ======================="
+            copyAab("prodDebug")
+        }
+        bundleProdRelease.doLast {
+            println "===================== build prod Release.aab copy ======================="
+            copyAab("prodRelease")
+        }
+    }
+}
