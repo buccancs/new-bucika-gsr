@@ -157,7 +157,7 @@ abstract class HouseDetectDao {
      * 将指定 position 位置的目录复制一份
      */
     @Transaction
-    open fun copyDir(dirList: ArrayList<DirDetect>, position: Int): DirDetect {
+    open fun copyDir(dirList: List<DirDetect>, position: Int): DirDetect {
         //复制位置后面所有目录 position 需偏移一位
         for (i in position + 1 until dirList.size) {
             val dir: DirDetect = dirList[i]
@@ -183,7 +183,7 @@ abstract class HouseDetectDao {
      * 将指定 position 位置的项目复制一份
      */
     @Transaction
-    open fun copyItem(itemList: ArrayList<ItemDetect>, position: Int): ItemDetect {
+    open fun copyItem(itemList: List<ItemDetect>, position: Int): ItemDetect {
         //复制位置后面所有项目 position 需偏移一位
         for (i in position + 1 until itemList.size) {
             val item: ItemDetect = itemList[i]
