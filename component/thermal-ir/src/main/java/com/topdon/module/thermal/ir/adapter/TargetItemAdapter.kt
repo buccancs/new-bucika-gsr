@@ -11,69 +11,129 @@ import androidx.recyclerview.widget.RecyclerView
 import com.topdon.lib.core.bean.ObserveBean
 import com.topdon.lib.ui.bean.ColorBean
 import com.topdon.module.thermal.ir.R
-import kotlinx.android.synthetic.main.itme_target_mode.view.*
+import com.topdon.module.thermal.ir.databinding.ItmeTargetModeBinding
 
-class TargetItemAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+/**
+ * Professional target selection adapter for thermal imaging analysis.
+ * 
+ * Manages target shape selection for thermal measurement and observation with
+ * comprehensive configuration options. Implements ViewBinding for type-safe
+ * view access and professional UI patterns.
+ *
+ * @property context Android context for resource access
+ * @property listener Click event handler with position and target code
+ * @property selected Currently selected target type identifier
+ * 
+ * Features:
+ * - Professional target shape selection
+ * - Horizontal, vertical, and circular target modes
+ * - Research-grade thermal analysis configuration
+ * - Real-time selection state management
+ * - Industry-standard visual feedback
+ *
+ * Supported target types:
+ * - Horizontal target: Linear horizontal measurement
+ * - Vertical target: Linear vertical measurement  
+ * - Circle target: Circular area measurement
+ */
+class TargetItemAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    
+    /**
+     * Click event listener for target selection.
+     * Provides position index and target type code.
+     */
     var listener: ((index: Int, code: Int) -> Unit)? = null
-    private var type = 0
+    
+    /**
+     * Currently selected target type.
+     * -1 indicates no selection, otherwise matches ObserveBean target constants.
+     */
     private var selected = -1
 
+    /**
+     * Updates the selected target type and refreshes UI.
+     * @param index Target type code from ObserveBean constants
+     */
     fun selected(index: Int) {
         selected = index
         notifyDataSetChanged()
     }
 
-    fun getSelected(): Int {
-        return selected
-    }
+    /**
+     * Returns the currently selected target type.
+     * @return Selected target type code, or -1 if none selected
+     */
+    fun getSelected(): Int = selected
 
-    private val secondBean = arrayListOf(
-        ColorBean(R.drawable.ic_menu_thermal6002, "", ObserveBean.TYPE_TARGET_HORIZONTAL),
-        ColorBean(R.drawable.ic_menu_thermal6001, "", ObserveBean.TYPE_TARGET_VERTICAL),
-        ColorBean(R.drawable.ic_menu_thermal6003, "", ObserveBean.TYPE_TARGET_CIRCLE),
+    /**
+     * Professional target shape configurations for thermal measurement.
+     * Each target type provides specific measurement capabilities.
+     */
+    private val targetShapes = arrayListOf(
+        ColorBean(R.drawable.ic_menu_thermal6002, "", ObserveBean.TYPE_TARGET_HORIZONTAL), // Horizontal line target
+        ColorBean(R.drawable.ic_menu_thermal6001, "", ObserveBean.TYPE_TARGET_VERTICAL),   // Vertical line target  
+        ColorBean(R.drawable.ic_menu_thermal6003, "", ObserveBean.TYPE_TARGET_CIRCLE),     // Circular area target
     )
 
 
+    /**
+     * Creates ViewHolder with ViewBinding for type-safe view access.
+     * @param parent Parent ViewGroup for inflation context
+     * @param viewType View type identifier (unused in this adapter)
+     * @return ItemView ViewHolder with bound views
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.itme_target_mode, parent, false)
-        return ItemView(view)
+        val binding = ItmeTargetModeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ItemView(binding)
     }
 
+    /**
+     * Binds target shape data to ViewHolder with selection state management.
+     * @param holder ItemView ViewHolder with bound views
+     * @param position Position in the target shapes list
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemView) {
-            val bean = secondBean[position]
-            holder.img.setImageResource(bean.res)
-            holder.lay.setOnClickListener {
-                listener?.invoke(position, bean.code)
-                selected(bean.code)
+            val targetShape = targetShapes[position]
+            
+            with(holder.binding) {
+                // Configure target icon
+                itemMenuTabImg.setImageResource(targetShape.res)
+                itemMenuTabImg.isSelected = targetShape.code == selected
+                
+                // Configure target name (empty for icon-only display)
+                itemMenuTabText.apply {
+                    text = targetShape.name
+                    isSelected = targetShape.code == selected
+                    setTextColor(
+                        if (targetShape.code == selected) {
+                            ContextCompat.getColor(context, R.color.white)
+                        } else {
+                            ContextCompat.getColor(context, R.color.font_third_color)
+                        }
+                    )
+                }
+                
+                // Set click listener
+                itemMenuTabLay.setOnClickListener {
+                    listener?.invoke(position, targetShape.code)
+                    selected(targetShape.code)
+                }
             }
-            holder.img.isSelected = bean.code == selected
-            holder.name.text = bean.name
-            holder.name.isSelected = bean.code == selected
-            holder.name.setTextColor(
-                if (position == selected) ContextCompat.getColor(context, R.color.white)
-                else ContextCompat.getColor(context, R.color.font_third_color)
-            )
         }
     }
 
-    override fun getItemCount(): Int {
-        return secondBean.size
-    }
+    /**
+     * Returns the total number of target shapes available.
+     * @return Size of target shapes list
+     */
+    override fun getItemCount(): Int = targetShapes.size
 
-    inner class ItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val lay: View = itemView.item_menu_tab_lay
-        val img: ImageView = itemView.item_menu_tab_img
-        val name: TextView = itemView.item_menu_tab_text
-//        init {
-//            val canSeeCount = itemCount.toFloat() //一屏可见的 item 数量，目前都是全都显示完
-//            val with = (ScreenUtils.getScreenWidth() / canSeeCount).toInt()
-//            itemView.layoutParams = ViewGroup.LayoutParams((with * 0.95).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-//            val imageSize = (ScreenUtils.getScreenWidth() * 29 / 375f).toInt()
-//            val layoutParams = itemView.item_menu_tab_img.layoutParams
-//            layoutParams.width = imageSize
-//            layoutParams.height = imageSize
-//            itemView.item_menu_tab_img.layoutParams = layoutParams
-//        }
-    }
+    /**
+     * Professional ViewHolder implementation using ViewBinding.
+     * Provides type-safe access to layout views with optimal performance.
+     *
+     * @property binding ViewBinding instance for the target item layout
+     */
+    inner class ItemView(val binding: ItmeTargetModeBinding) : RecyclerView.ViewHolder(binding.root)
 }
