@@ -15,6 +15,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.topdon.tc001.R
+import com.topdon.tc001.gsr.GSRManager
 import com.topdon.tc001.recording.EnhancedRecordingActivity
 import kotlinx.coroutines.*
 
@@ -41,6 +42,7 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     }
 
     private lateinit var orchestratorClient: OrchestratorClient
+    private lateinit var gsrManager: GSRManager
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val binder = OrchestratorBinder()
     
@@ -53,6 +55,8 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     private var isConnectedToOrchestrator = false
     private var currentServerUrl: String? = null
     private var serviceListener: ServiceListener? = null
+    private var isSessionActive = false
+    private var dataPointsCollected = 0
     
     override fun onCreate() {
         super.onCreate()
@@ -60,7 +64,11 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         
         createNotificationChannel()
         orchestratorClient = OrchestratorClient(this, this)
+        gsrManager = GSRManager.getInstance(this)
         nsdManager = getSystemService(Context.NSD_SERVICE) as NsdManager
+        
+        // Set up GSR data listener to stream data to orchestrator
+        setupGSRDataStreaming()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -353,6 +361,59 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     }
 
     /**
+     * Set up GSR data streaming to orchestrator during active sessions
+     */
+    private fun setupGSRDataStreaming() {
+        gsrManager.setGSRDataListener(object : GSRManager.GSRDataListener {
+            override fun onGSRDataReceived(timestamp: Long, gsrValue: Double, skinTemperature: Double) {
+                // Only stream data during active orchestrator sessions
+                if (isSessionActive && isConnectedToOrchestrator) {
+                    orchestratorClient.sendGSRData(gsrValue, skinTemperature, timestamp)
+                    dataPointsCollected++
+                    
+                    // Send periodic status updates
+                    if (dataPointsCollected % 128 == 0) { // Every second at 128Hz
+                        orchestratorClient.sendSessionStatus(true, 0, dataPointsCollected)
+                    }
+                }
+            }
+
+            override fun onConnectionStatusChanged(isConnected: Boolean, deviceName: String?) {
+                Log.i(TAG, "GSR device connection: $isConnected ($deviceName)")
+                serviceListener?.onGSRConnectionChanged(isConnected, deviceName)
+            }
+        })
+    }
+
+    override fun onStartSession(sessionId: String, config: Map<String, Any>) {
+        Log.i(TAG, "Starting session: $sessionId")
+        isSessionActive = true
+        dataPointsCollected = 0
+        
+        updateNotification("Recording session active")
+        serviceListener?.onSessionStarted(sessionId, config)
+        
+        // Start GSR recording if device is connected
+        if (gsrManager.isConnected()) {
+            gsrManager.startRecording()
+        }
+    }
+
+    override fun onStopSession() {
+        Log.i(TAG, "Stopping session")
+        isSessionActive = false
+        
+        updateNotification("Session ended")
+        serviceListener?.onSessionStopped()
+        
+        // Stop GSR recording
+        gsrManager.stopRecording()
+        
+        // TODO: Upload recorded files
+        // orchestratorClient.uploadFile(filePath, "gsr_data")
+    }
+
+    /**
      * Service binder for activity communication
      */
     inner class OrchestratorBinder : Binder() {
@@ -372,6 +433,11 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         fun onStopSession()
         fun onSyncMark(markerId: String, referenceTime: Long)
         fun onError(errorCode: String, message: String, details: Map<String, Any>)
+        
+        // GSR integration events
+        fun onGSRConnectionChanged(isConnected: Boolean, deviceName: String?)
+        fun onSessionStarted(sessionId: String, config: Map<String, Any>)
+        fun onSessionStopped()
     }
 
     /**

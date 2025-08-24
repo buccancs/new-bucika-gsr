@@ -177,12 +177,25 @@ class WebSocketServer(
     }
     
     private suspend fun handleGSRSample(envelope: MessageEnvelope) {
-        // Handle live GSR data in bridged mode
         val payload = envelope.payload as GSRSamplePayload
         logger.debug { 
             "Received ${payload.samples.size} GSR samples from ${envelope.deviceId}" 
         }
-        // TODO: Process and store live GSR samples
+        
+        // Store GSR samples if we have an active session
+        val currentSession = sessionManager.currentSession.value
+        if (currentSession != null) {
+            sessionManager.storeGSRSamples(currentSession.id, envelope.deviceId, payload.samples)
+            
+            // Update UI with latest GSR data if needed
+            payload.samples.lastOrNull()?.let { lastSample ->
+                logger.trace { 
+                    "Latest GSR from ${envelope.deviceId}: ${lastSample.gsr_filt_uS}µS at ${lastSample.temp_C}°C" 
+                }
+            }
+        } else {
+            logger.warn { "Received GSR samples but no active session - discarding data" }
+        }
     }
     
     private suspend fun handleUploadBegin(conn: WebSocket, envelope: MessageEnvelope) {

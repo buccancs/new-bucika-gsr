@@ -41,6 +41,7 @@ class OrchestratorClient(
     
     private val deviceId = "${Build.MANUFACTURER}-${Build.MODEL}-${Build.ID}".replace(" ", "-")
     private val deviceName = "${Build.MANUFACTURER} ${Build.MODEL}"
+    private var gsrSequenceNumber = 0L
     
     private val handler = Handler(Looper.getMainLooper())
     private val pingRunnable = object : Runnable {
@@ -286,6 +287,8 @@ class OrchestratorClient(
             "START" -> handleStart(payload)
             "STOP" -> handleStop(payload) 
             "SYNC_MARK" -> handleSyncMark(payload)
+            "FILE_UPLOAD_READY" -> handleFileUploadReady(payload)
+            "FILE_UPLOAD_ACK" -> handleFileUploadAck(payload)
             "ACK" -> handleAck(payload)
             "ERROR" -> handleError(payload)
             else -> {
@@ -357,6 +360,32 @@ class OrchestratorClient(
         listener?.onError(errorCode, message, details)
     }
 
+    private fun handleFileUploadReady(payload: Map<String, Any>) {
+        val filePath = payload["filePath"] as? String ?: return
+        val uploadUrl = payload["uploadUrl"] as? String ?: return
+        val chunkSize = payload["chunkSize"] as? Int ?: 8192
+        
+        Log.i(TAG, "File upload ready for: $filePath")
+        // TODO: Implement chunked file upload
+        fileUploadCallbacks[filePath]?.onCompleted(filePath)
+    }
+
+    private fun handleFileUploadAck(payload: Map<String, Any>) {
+        val filePath = payload["filePath"] as? String ?: return
+        val status = payload["status"] as? String ?: "UNKNOWN"
+        
+        if (status == "COMPLETED") {
+            Log.i(TAG, "File upload completed: $filePath")
+            fileUploadCallbacks[filePath]?.onCompleted(filePath)
+            fileUploadCallbacks.remove(filePath)
+        } else if (status == "ERROR") {
+            val error = payload["error"] as? String ?: "Upload failed"
+            Log.e(TAG, "File upload failed: $filePath - $error")
+            fileUploadCallbacks[filePath]?.onError(error)
+            fileUploadCallbacks.remove(filePath)
+        }
+    }
+
     private fun scheduleReconnect() {
         if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) return
         
@@ -402,6 +431,81 @@ class OrchestratorClient(
     )
 
     /**
+     * Send GSR data to orchestrator in real-time during active session
+     */
+    fun sendGSRData(gsrValue: Double, skinTemperature: Double, timestamp: Long = System.nanoTime()) {
+        if (currentSessionId == null) {
+            Log.w(TAG, "Cannot send GSR data - no active session")
+            return
+        }
+        
+        // Create GSR sample matching PC protocol format
+        val gsrSample = mapOf(
+            "t_mono_ns" to timestamp,
+            "t_utc_ns" to System.currentTimeMillis() * 1000000L, // Convert to nanoseconds
+            "offset_ms" to 0.0, // Clock offset, would be calculated from time sync
+            "seq" to gsrSequenceNumber++,
+            "gsr_raw_uS" to gsrValue,
+            "gsr_filt_uS" to gsrValue, // For now, same as raw - filtering could be added
+            "temp_C" to skinTemperature,
+            "flag_spike" to false, // Quality flags - could be enhanced
+            "flag_sat" to false,
+            "flag_dropout" to false
+        )
+        
+        val payload = mapOf(
+            "samples" to listOf(gsrSample)
+        )
+        
+        val message = createMessage("GSR_SAMPLE", payload)
+        sendMessage(message, expectAck = false) // High-frequency data, no ACK needed
+    }
+
+    /**
+     * Upload a file to the orchestrator
+     */
+    fun uploadFile(filePath: String, fileType: String, callback: FileUploadCallback? = null) {
+        if (currentSessionId == null) {
+            callback?.onError("No active session")
+            return
+        }
+        
+        // This will be implemented with chunked transfer
+        val payload = mapOf(
+            "filePath" to filePath,
+            "fileType" to fileType,
+            "sessionId" to currentSessionId!!
+        )
+        
+        val message = createMessage("FILE_UPLOAD_REQUEST", payload)
+        sendMessage(message, expectAck = true)
+        
+        // Store callback for progress updates
+        fileUploadCallbacks[filePath] = callback
+    }
+    
+    /**
+     * Send session status update to orchestrator
+     */
+    fun sendSessionStatus(recordingActive: Boolean, filesRecorded: Int, dataPointsCollected: Int) {
+        if (currentSessionId == null) return
+        
+        val payload = mapOf(
+            "sessionId" to currentSessionId!!,
+            "recordingActive" to recordingActive,
+            "filesRecorded" to filesRecorded,
+            "dataPointsCollected" to dataPointsCollected,
+            "batteryLevel" to getBatteryLevel(),
+            "timestamp" to System.currentTimeMillis()
+        )
+        
+        val message = createMessage("SESSION_STATUS", payload)
+        sendMessage(message, expectAck = false)
+    }
+
+    private val fileUploadCallbacks = mutableMapOf<String, FileUploadCallback>()
+
+    /**
      * Interface for orchestrator client events
      */
     interface OrchestratorListener {
@@ -413,5 +517,14 @@ class OrchestratorClient(
         fun onStopSession()
         fun onSyncMark(markerId: String, referenceTime: Long)
         fun onError(errorCode: String, message: String, details: Map<String, Any>)
+    }
+    
+    /**
+     * Interface for file upload progress tracking
+     */
+    interface FileUploadCallback {
+        fun onProgress(bytesUploaded: Long, totalBytes: Long)
+        fun onCompleted(uploadedFilePath: String)
+        fun onError(error: String)
     }
 }

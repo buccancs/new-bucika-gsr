@@ -3,6 +3,7 @@ package com.topdon.bucika.pc.session
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.topdon.bucika.pc.protocol.GSRSample
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.File
 import java.time.LocalDateTime
@@ -162,6 +163,58 @@ class SessionManager {
         saveSessionMetadata(session)
         
         logger.info { "Recorded sync mark $markerId for session ${session.name}" }
+    }
+    
+    /**
+     * Store incoming GSR samples from a device
+     */
+    fun storeGSRSamples(sessionId: String, deviceId: String, samples: List<GSRSample>) {
+        val session = sessions[sessionId] ?: return
+        
+        if (session.state != SessionState.RECORDING) {
+            logger.warn { "Ignoring GSR samples - session ${session.name} is not recording" }
+            return
+        }
+        
+        try {
+            // Create GSR data file if it doesn't exist
+            val gsrFile = File(session.directory, "${deviceId}_gsr_data.csv")
+            val isNewFile = !gsrFile.exists()
+            
+            gsrFile.appendText(
+                if (isNewFile) {
+                    "timestamp_mono_ns,timestamp_utc_ns,offset_ms,sequence,gsr_raw_uS,gsr_filtered_uS,temperature_C,flag_spike,flag_saturated,flag_dropout\n"
+                } else {
+                    ""
+                }
+            )
+            
+            // Append sample data
+            samples.forEach { sample ->
+                gsrFile.appendText(
+                    "${sample.t_mono_ns},${sample.t_utc_ns},${sample.offset_ms},${sample.seq}," +
+                    "${sample.gsr_raw_uS},${sample.gsr_filt_uS},${sample.temp_C}," +
+                    "${sample.flag_spike},${sample.flag_sat},${sample.flag_dropout}\n"
+                )
+            }
+            
+            // Update session metadata
+            val event = SessionEvent(
+                "GSR_DATA",
+                LocalDateTime.now(),
+                mapOf(
+                    "deviceId" to deviceId,
+                    "sampleCount" to samples.size,
+                    "file" to gsrFile.name
+                )
+            )
+            session.metadata.events.add(event)
+            
+            logger.debug { "Stored ${samples.size} GSR samples from $deviceId to ${gsrFile.name}" }
+            
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to store GSR samples from $deviceId" }
+        }
     }
     
     private fun performPreflightChecks(session: Session): PreflightResult {
