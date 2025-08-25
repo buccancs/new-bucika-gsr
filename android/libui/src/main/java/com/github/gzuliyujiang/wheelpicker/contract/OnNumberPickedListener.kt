@@ -11,14 +11,13 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.github.gzuliyujiang.wheelpicker.contract;
+package com.github.gzuliyujiang.wheelpicker.contract
 
 /**
  * @author 贵州山野羡民（1032694760@qq.com）
- * @since 2021/6/9 11:53
+ * @since 2021/6/5 15:17
  */
-public interface OnCarPlatePickedListener {
+fun interface OnNumberPickedListener {
 
-    void onCarNumberPicked(String province, String letter);
-
+    fun onNumberPicked(position: Int, item: Number)
 }
