@@ -11,10 +11,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.github.gzuliyujiang.wheelview.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package com.github.gzuliyujiang.wheelview.annotation
 
 /**
  * 滚轮条目文本对齐方式
@@ -22,9 +19,11 @@ import java.lang.annotation.RetentionPolicy;
  * @author 贵州山野羡民（1032694760@qq.com）
  * @since 2019/6/19 12:04
  */
-@Retention(RetentionPolicy.SOURCE)
-public @interface ItemTextAlign {
-    int CENTER = 0;
-    int LEFT = 1;
-    int RIGHT = 2;
+@Retention(AnnotationRetention.SOURCE)
+annotation class ItemTextAlign {
+    companion object {
+        const val CENTER = 0
+        const val LEFT = 1
+        const val RIGHT = 2
+    }
 }

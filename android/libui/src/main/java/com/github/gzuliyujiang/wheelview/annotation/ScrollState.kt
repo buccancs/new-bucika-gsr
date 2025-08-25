@@ -11,18 +11,17 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.github.gzuliyujiang.wheelview.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package com.github.gzuliyujiang.wheelview.annotation
 
 /**
  * @author 贵州山野羡民（1032694760@qq.com）
  * @since 2021/10/28 11:28
  */
-@Retention(RetentionPolicy.SOURCE)
-public @interface ScrollState {
-    int IDLE = 0;
-    int DRAGGING = 1;
-    int SCROLLING = 2;
+@Retention(AnnotationRetention.SOURCE)
+annotation class ScrollState {
+    companion object {
+        const val IDLE = 0
+        const val DRAGGING = 1
+        const val SCROLLING = 2
+    }
 }
