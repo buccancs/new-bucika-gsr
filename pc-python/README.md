@@ -34,6 +34,16 @@ A **complete research-grade Python implementation** of the PC orchestrator for c
 - **Batch Validation**: Large-scale data processing for research workflows
 - **Custom Thresholds**: Adaptable quality requirements for different studies
 
+### 📱 Advanced GUI Interface
+- **Device Management**: Real-time monitoring of connected Android devices with battery, version, and connection status
+- **Session Control**: Complete session lifecycle management with state tracking and sample counts
+- **Application Logs**: Live log streaming with filtering and export capabilities
+- **Video Playback**: Integrated video player for reviewing uploaded session recordings
+  - Support for MP4, AVI, MOV, MKV, WebM, FLV, WMV formats
+  - Frame-by-frame navigation and playback controls
+  - Automatic discovery of videos in session uploads
+  - Synchronized playback with GSR data for research analysis
+
 ### 📊 Real-Time Performance Monitoring
 - **System Metrics**: CPU, memory, network, and disk usage tracking
 - **Application Metrics**: Session counts, message throughput, data rates
@@ -48,8 +58,11 @@ A **complete research-grade Python implementation** of the PC orchestrator for c
 # 1. Clone and navigate to Python implementation
 cd pc-python
 
-# 2. Install all dependencies
+# 2. Install all dependencies (including video support)
 pip install -r requirements.txt
+
+# Note: Video playback requires opencv-python which is included in requirements.txt
+# If you encounter issues, install manually: pip install opencv-python
 
 # 3. Run in GUI mode (recommended for first use)
 python main.py
