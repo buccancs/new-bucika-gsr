@@ -9,4 +9,3 @@ class NullCompass : NullSensor(), ICompass {
     override var declination: Float = 0f
 
     override val rawBearing: Float = 0f
-}

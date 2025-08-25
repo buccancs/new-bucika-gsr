@@ -110,4 +110,3 @@ class RoundImageView : AppCompatImageView {
         return (dpValue * density + 0.5f).toInt()
     }
 
-}

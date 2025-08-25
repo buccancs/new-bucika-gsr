@@ -87,4 +87,3 @@ class SeekBarPopup(context: Context, hasTitle: Boolean = false) : PopupWindow() 
             showAsDropDown(anchor, 0, -height, Gravity.NO_GRAVITY)
         }
     }
-}

@@ -117,4 +117,3 @@ class SpanBuilder : SpannableStringBuilder {
             canvas.restore()
         }
     }
-}

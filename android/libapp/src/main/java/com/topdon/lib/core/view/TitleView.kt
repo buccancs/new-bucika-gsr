@@ -388,4 +388,3 @@ open class TitleView : ViewGroup {
     fun setRight3ClickListener(right3ClickListener: OnClickListener?) {
         tvRight3?.setOnClickListener(right3ClickListener)
     }
-}

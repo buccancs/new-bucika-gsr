@@ -119,4 +119,3 @@ class ColorSelectAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVi
      * @param binding Professional ViewBinding instance for type-safe view access
      */
     inner class ItemView(val binding: UiItemColorSelectBinding) : RecyclerView.ViewHolder(binding.root)
-}

@@ -337,4 +337,3 @@ data class GainModeChangeEvent(val gainMode: ThermalCameraManager.GainMode)
 /**
  * Camera connection event
  */
-data class CameraConnectionEvent(val connected: Boolean)

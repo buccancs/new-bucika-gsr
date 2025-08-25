@@ -302,4 +302,3 @@ class ShimmerBluetoothTest {
         val skinTemperature: Double,
         val signalQuality: Double
     )
-}

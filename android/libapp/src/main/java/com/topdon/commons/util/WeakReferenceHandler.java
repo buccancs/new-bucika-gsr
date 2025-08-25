@@ -29,4 +29,3 @@ public class WeakReferenceHandler<T> extends Handler {
         return mReference.get();
     }
 
-}

@@ -129,4 +129,3 @@ class NotTipsSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             window.attributes = layoutParams
         }
     }
-}

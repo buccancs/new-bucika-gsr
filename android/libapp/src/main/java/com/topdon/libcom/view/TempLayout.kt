@@ -117,4 +117,3 @@ class TempLayout : LinearLayout {
         alphaAnimator?.start()
     }
 
-}

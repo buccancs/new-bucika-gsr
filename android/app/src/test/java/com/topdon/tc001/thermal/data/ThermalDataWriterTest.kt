@@ -386,4 +386,3 @@ class ThermalDataWriterTest {
     private fun generateUniformTemperatureData(temperature: Float): ByteArray {
         return generateTestTemperatureData(temperature)
     }
-}

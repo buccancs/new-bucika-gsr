@@ -167,4 +167,3 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         ex.printStackTrace(pw);
         return logFile;
     }
-}

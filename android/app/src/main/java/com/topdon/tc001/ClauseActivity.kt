@@ -214,4 +214,3 @@ class ClauseActivity : AppCompatActivity() {
     private fun dismissLoading() {
         dialog.dismiss()
     }
-}

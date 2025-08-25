@@ -363,4 +363,3 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         return resultList
     }
 
-}

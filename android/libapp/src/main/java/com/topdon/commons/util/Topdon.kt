@@ -12,4 +12,3 @@ object Topdon {
     fun getApp(): Context? {
         return app
     }
-}

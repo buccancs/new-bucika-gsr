@@ -329,4 +329,3 @@ class TemperatureOverlayManagerTest {
     )
     
     enum class TemperatureUnit { CELSIUS, FAHRENHEIT }
-}

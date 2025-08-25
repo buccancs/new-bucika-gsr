@@ -28,4 +28,3 @@ object PermissionUtils {
             android.Manifest.permission.CAMERA) == PERMISSION_GRANTED
     }
 
-}

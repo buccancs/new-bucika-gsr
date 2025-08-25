@@ -128,4 +128,3 @@ class ColorView : View {
         val top: Float = ((barHeight - normalBarHeight) / 2).toFloat()
         shaderSelectNot = LinearGradient(0f, top, 0f, top + normalBarHeight, colors, positions, Shader.TileMode.CLAMP)
     }
-}

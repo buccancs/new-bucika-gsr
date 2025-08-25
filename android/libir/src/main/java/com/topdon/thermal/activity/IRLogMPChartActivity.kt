@@ -204,4 +204,3 @@ class IRLogMPChartActivity : BaseActivity() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
-}

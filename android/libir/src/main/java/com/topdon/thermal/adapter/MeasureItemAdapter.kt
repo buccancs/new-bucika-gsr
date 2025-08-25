@@ -127,4 +127,3 @@ class MeasureItemAdapter(private val context: Context) : RecyclerView.Adapter<Re
      * @property binding ViewBinding instance for the measurement target item layout
      */
     inner class ItemView(val binding: ItmeTargetModeBinding) : RecyclerView.ViewHolder(binding.root)
-}

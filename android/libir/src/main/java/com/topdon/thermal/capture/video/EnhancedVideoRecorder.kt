@@ -559,4 +559,3 @@ class EnhancedVideoRecorder(
             XLog.d(TAG, "Started video frame timestamp estimation at ${targetFps}fps")
         }
     }
-}

@@ -11,4 +11,3 @@ object HttpConfig {
 
     @Volatile
     var hasNewVersion = false
-}

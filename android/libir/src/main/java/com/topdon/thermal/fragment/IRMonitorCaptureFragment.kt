@@ -199,4 +199,3 @@ class IRMonitorCaptureFragment : BaseFragment() {
             refreshUI(false)
         }
     }
-}

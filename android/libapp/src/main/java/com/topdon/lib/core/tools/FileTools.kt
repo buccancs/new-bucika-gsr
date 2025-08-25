@@ -63,4 +63,3 @@ object FileTools {
             Uri.parse("content://media/external/images/media/$index")
         } else null
     }
-}

@@ -219,4 +219,3 @@ class CameraMenuView : FrameLayout, View.OnClickListener {
 
         class ViewHolder(rootView: View): RecyclerView.ViewHolder(rootView)
     }
-}

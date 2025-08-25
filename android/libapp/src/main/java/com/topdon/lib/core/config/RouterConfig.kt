@@ -97,4 +97,3 @@ object RouterConfig {
     const val IR_CORRECTION_THREE_LITE = "/lite/correction3"
     const val IR_CORRECTION_FOUR_LITE = "/lite/correction4"
 
-}

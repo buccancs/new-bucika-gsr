@@ -371,4 +371,3 @@ class GSRIntegrationTest {
         val participantId: String,
         val notes: String
     )
-}

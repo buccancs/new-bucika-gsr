@@ -156,4 +156,3 @@ object TimeTool {
         }
         return currentTime
     }
-}

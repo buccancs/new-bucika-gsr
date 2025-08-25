@@ -14,4 +14,3 @@ class EasyBLEException : RuntimeException {
     companion object {
         private const val serialVersionUID = -7775315841108791634L
     }
-}

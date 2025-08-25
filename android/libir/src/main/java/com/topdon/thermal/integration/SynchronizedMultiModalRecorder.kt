@@ -415,4 +415,3 @@ data class RecordingSessionMetrics(
             overallPerformanceScore >= 60.0 -> "POOR"
             else -> "CRITICAL"
         }
-}

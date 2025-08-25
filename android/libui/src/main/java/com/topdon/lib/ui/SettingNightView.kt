@@ -105,4 +105,3 @@ class SettingNightView : LinearLayout {
         }
         item_setting_line.visibility = if (lineShow) View.VISIBLE else View.GONE
     }
-}

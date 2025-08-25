@@ -18,4 +18,3 @@ data class ReportConditionBean(
     val is_emissivity: Int,          //是否显示发射率，0、不显示 1、显示
     val test_distance: String?,      //测试距离
     val is_test_distance: Int,       //是否显示测试距离，0、不显示 1、显示
-) : Parcelable

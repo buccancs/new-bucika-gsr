@@ -270,4 +270,3 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
 
         binding.fragmentPdfRecycler.adapter = reportAdapter
     }
-}

@@ -170,4 +170,3 @@ public abstract class Encoder {
     protected EncodingOptions getEncodingOptions() {
         return encodingOptions;
     }
-}

@@ -68,4 +68,3 @@ object DownloadTool {
             fileOutputString?.close()
         }
     }
-}

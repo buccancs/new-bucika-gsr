@@ -23,4 +23,3 @@ class MarqueeText : AppCompatTextView {
         return true
     }
 
-}

@@ -347,4 +347,3 @@ class GSRDataWriterTest {
         val startTime: Long,
         val sensorConfiguration: Map<String, Any>
     )
-}

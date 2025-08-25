@@ -373,4 +373,3 @@ class TargetBarPickView : View {
         val radius = SizeUtils.dp2px(THUMB_CORNERS).toFloat()
         canvas.drawRoundRect(thumbRect, radius, radius, paint)
     }
-}

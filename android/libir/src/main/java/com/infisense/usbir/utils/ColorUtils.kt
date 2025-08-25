@@ -25,4 +25,3 @@ object ColorUtils {
         return String.format(Locale.ENGLISH, "%.1f", float)
     }
 
-}

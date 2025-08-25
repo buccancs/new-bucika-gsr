@@ -16,4 +16,3 @@ class MainTitleView @JvmOverloads constructor(
         tvTitle = addTextView(context)
     }
 
-}

@@ -527,4 +527,3 @@ class IRMonitorThermalFragment : BaseFragment(),ITsTempListener {
 
 
     }
-}

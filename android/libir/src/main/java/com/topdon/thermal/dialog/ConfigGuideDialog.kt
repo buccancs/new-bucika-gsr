@@ -145,4 +145,3 @@ class ConfigGuideDialog(context: Context, val isTC007: Boolean, val dataBean: Da
             }
         }
     }
-}

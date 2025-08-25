@@ -37,4 +37,3 @@ class StringConverterFactory : Converter.Factory() {
             return StringConverterFactory()
         }
     }
-}

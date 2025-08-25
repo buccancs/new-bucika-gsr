@@ -477,4 +477,3 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         videoRecorder.cleanup()
         gsrManager.cleanup()
     }
-}

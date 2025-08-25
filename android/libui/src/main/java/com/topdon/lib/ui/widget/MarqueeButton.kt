@@ -23,4 +23,3 @@ class MarqueeButton : AppCompatButton {
         return true
     }
 
-}

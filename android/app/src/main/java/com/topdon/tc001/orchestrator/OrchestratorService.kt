@@ -549,4 +549,3 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
      * Get discovered services
      */
     fun getDiscoveredServices(): Set<NsdServiceInfo> = discoveredServices.toSet()
-}

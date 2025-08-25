@@ -17,4 +17,3 @@ data class SeekBarState(
     override fun toString(): String {
         return "indicatorText: $indicatorText ,isMin: $isMin ,isMax: $isMax"
     }
-}

@@ -160,4 +160,3 @@ class ColorPickDialog(context: Context, @ColorInt private var color: Int,var tex
         rootView.view_color5.isSelected = false
         rootView.view_color6.isSelected = false
     }
-}

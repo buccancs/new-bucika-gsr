@@ -17,4 +17,3 @@ data class StatementJson(
     val statusList: Any,
     val type: Any,
     val versionNum: Any
-)

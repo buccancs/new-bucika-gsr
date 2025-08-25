@@ -182,4 +182,3 @@
 //        super.onPropertyOperatorResult(context, jPushMessage)
 //        Log.e(TAG, "[onPropertyOperatorResult]")
 //    }
-//}

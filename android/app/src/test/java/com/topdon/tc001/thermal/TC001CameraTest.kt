@@ -354,4 +354,3 @@ class TC001CameraTest {
     private fun isValidDistance(distance: Float): Boolean {
         return distance > 0f && distance <= 100f
     }
-}

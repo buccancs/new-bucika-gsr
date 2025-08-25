@@ -91,4 +91,3 @@ public class DetectHorizontalScrollView extends HorizontalScrollView {
             onScrollstopListner.onScrollChanged(l, t, oldl, oldt);
         }
     }
-}

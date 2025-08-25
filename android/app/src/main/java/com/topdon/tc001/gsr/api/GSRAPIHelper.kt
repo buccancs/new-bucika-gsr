@@ -503,4 +503,3 @@ class GSRAPIHelper private constructor(private val context: Context) {
         deviceDiscoveryListener = null
         gsrDataBuffer.clear()
     }
-}

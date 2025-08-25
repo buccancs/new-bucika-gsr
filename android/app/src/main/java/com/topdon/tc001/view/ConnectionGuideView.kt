@@ -83,4 +83,3 @@ class ConnectionGuideView: LinearLayout {
         contentText.text = spannableString
     }
 
-}

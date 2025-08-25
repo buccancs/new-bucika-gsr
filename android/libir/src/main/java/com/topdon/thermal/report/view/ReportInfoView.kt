@@ -122,4 +122,3 @@ class ReportInfoView: LinearLayout {
         }
         return result
     }
-}

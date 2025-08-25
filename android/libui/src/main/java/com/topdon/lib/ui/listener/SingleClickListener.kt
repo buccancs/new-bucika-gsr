@@ -25,4 +25,3 @@ public abstract class SingleClickListener : View.OnClickListener {
     }
 
     protected abstract fun onSingleClick()
-}

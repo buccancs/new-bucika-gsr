@@ -66,4 +66,3 @@ internal class ColorAdapter : RecyclerView.Adapter<ColorAdapter.ViewHolder>() {
 
     class ViewHolder(val colorView: ColorView) : RecyclerView.ViewHolder(colorView)
 
-}

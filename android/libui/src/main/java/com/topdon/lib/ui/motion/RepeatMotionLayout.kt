@@ -82,4 +82,3 @@ class RepeatMotionLayout : MotionLayout, MotionLayout.TransitionListener {
     }
 
 
-}

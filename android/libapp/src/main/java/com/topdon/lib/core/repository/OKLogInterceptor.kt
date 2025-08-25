@@ -54,4 +54,3 @@ class OKLogInterceptor(val isTC007: Boolean) : Interceptor {
 
         return response
     }
-}

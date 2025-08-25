@@ -347,4 +347,3 @@ class ImageEditView : View {
         bgBitmap = null
         editBitmap = null
     }
-}

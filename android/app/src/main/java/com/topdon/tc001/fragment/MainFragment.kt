@@ -447,4 +447,3 @@ class MainFragment : BaseFragment(), View.OnClickListener {
         /** TC007 wireless device */
         TC007,
     }
-}

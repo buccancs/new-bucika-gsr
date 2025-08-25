@@ -291,4 +291,3 @@ data class ParallelCaptureMetrics(
     val actualBitrate: Int,
     val hardwareAccelerated: Boolean,
     val sessionId: String
-)

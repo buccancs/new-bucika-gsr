@@ -152,4 +152,3 @@ class ShimmerSensorPanelTest {
             setSamplingRateShimmer(0.0) // Invalid sampling rate
         }
     }
-}

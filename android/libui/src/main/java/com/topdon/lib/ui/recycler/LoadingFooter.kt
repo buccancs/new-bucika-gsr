@@ -74,4 +74,3 @@ class LoadingFooter : LinearLayout, RefreshFooter {
     override fun onHorizontalDrag(percentX: Float, offsetX: Int, offsetMax: Int) {
 
     }
-}

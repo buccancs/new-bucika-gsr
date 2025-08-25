@@ -177,4 +177,3 @@ object HttpUtils {
         params.isAsJsonContent = true
         x.http().post(params,iResponseCallback!!)
     }
-}

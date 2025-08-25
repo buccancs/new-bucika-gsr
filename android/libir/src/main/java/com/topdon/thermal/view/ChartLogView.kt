@@ -49,4 +49,3 @@ class ChartLogView : View {
         // 空实现 - 图表功能已移除
         invalidate()
     }
-}

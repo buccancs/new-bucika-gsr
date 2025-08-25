@@ -765,4 +765,3 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             return newTemp
         }
     }
-}

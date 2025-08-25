@@ -62,4 +62,3 @@ abstract class BaseWifiActivity : BaseActivity() {
         super.onStop()
     }
 
-}

@@ -158,4 +158,3 @@ class FenceView : View {
          */
         fun callback(startPoint: IntArray, endPoint: IntArray, srcRect: IntArray)
     }
-}

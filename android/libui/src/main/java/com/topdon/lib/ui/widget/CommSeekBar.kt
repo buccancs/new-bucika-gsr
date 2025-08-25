@@ -210,4 +210,3 @@ class CommSeekBar: AppCompatSeekBar {
         }
         onSeekBarChangeListener?.onProgressChanged(this, progress, true)
     }
-}

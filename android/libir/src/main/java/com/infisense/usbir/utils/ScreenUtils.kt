@@ -183,4 +183,3 @@ object ScreenUtils {
             50
         }
     }
-}

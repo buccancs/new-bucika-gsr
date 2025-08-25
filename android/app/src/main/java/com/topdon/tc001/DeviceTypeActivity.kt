@@ -263,4 +263,3 @@ class DeviceTypeActivity : BaseActivity() {
          */
         abstract fun getDeviceName(): String
     }
-}

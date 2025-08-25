@@ -14,4 +14,3 @@ interface MtuChangeCallback : RequestFailedCallback {
      * @param mtu     最大传输单元新的值
      */
     fun onMtuChanged(request: Request, mtu: Int)
-}

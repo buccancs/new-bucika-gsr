@@ -123,4 +123,3 @@ internal class SettingAdapter(menuType: MenuType = MenuType.SINGLE_LIGHT, isObse
         val settingType: SettingType,
         var isSelected: Boolean = false,
     )
-}

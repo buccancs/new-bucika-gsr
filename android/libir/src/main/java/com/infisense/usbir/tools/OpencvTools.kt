@@ -30,4 +30,3 @@ object OpencvTools {
 //        return dstBitmap
 //    }
 
-}

@@ -183,4 +183,3 @@ class ConfirmSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             }
         }
     }
-}

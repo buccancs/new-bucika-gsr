@@ -265,4 +265,3 @@ class IRVideoGSYActivity : BaseActivity() {
             gsy_play
         }
     }
-}

@@ -195,4 +195,3 @@ class MoreHelpActivity : BaseActivity() {
                 .create().show()
         }
     }
-}

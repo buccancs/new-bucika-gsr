@@ -45,4 +45,3 @@ object PseudoColorConfig {
 
     @JvmStatic
     fun getSeekBarAlpha(): FloatArray = floatArrayOf(0f, 1f)
-}

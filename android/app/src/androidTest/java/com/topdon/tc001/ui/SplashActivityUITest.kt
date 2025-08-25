@@ -127,4 +127,3 @@ class SplashActivityUITest {
         // Splash should not be clickable during loading
         // This is implicit in the design but important for UX
     }
-}

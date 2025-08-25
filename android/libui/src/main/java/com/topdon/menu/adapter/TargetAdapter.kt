@@ -97,4 +97,3 @@ internal class TargetAdapter : BaseMenuAdapter() {
         val targetType: TargetType,
         var isSelected: Boolean = false,
     )
-}

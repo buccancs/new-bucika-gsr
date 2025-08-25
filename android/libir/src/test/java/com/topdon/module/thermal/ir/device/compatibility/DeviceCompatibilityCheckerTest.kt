@@ -112,4 +112,3 @@ class DeviceCompatibilityCheckerTest {
         assertEquals("Bitrate should be 20 Mbps", 20_000_000, metrics.actualBitrate)
         assertTrue("Should be hardware accelerated", metrics.hardwareAccelerated)
     }
-}

@@ -355,4 +355,3 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         
         return sensorBitmap
     }
-}

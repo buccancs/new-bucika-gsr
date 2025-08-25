@@ -122,4 +122,3 @@ abstract class BaseFragment : RxFragment() {
     protected open fun onSocketDisConnected(isTS004: Boolean) {
 
     }
-}

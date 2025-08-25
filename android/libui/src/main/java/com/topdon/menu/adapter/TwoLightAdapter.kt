@@ -147,4 +147,3 @@ internal class TwoLightAdapter(private val menuType: MenuType) : BaseMenuAdapter
         val isSingle: Boolean,
         var isSelected: Boolean = false,
     )
-}

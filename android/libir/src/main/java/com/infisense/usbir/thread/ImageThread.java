@@ -131,4 +131,3 @@
 //        imageRes.width = (char) imageHeight;
 //        Libirprocess.mirror(src, imageRes, Libirprocess.IRPROC_SRC_FMT_Y14, dst);
 //    }
-//}

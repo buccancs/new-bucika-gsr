@@ -627,4 +627,3 @@ class IRCorrectionFragment : BaseFragment(), ITsTempListener {
             XLog.w("Professional thermal correction: Automated calibration sequence completed successfully")
         }
     }
-}

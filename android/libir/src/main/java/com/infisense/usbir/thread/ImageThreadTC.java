@@ -323,4 +323,3 @@ public class ImageThreadTC extends Thread {
                              float customMaxTemp, float customMinTemp) {
         irImageHelp.setColorList(colorList, places, isUseGray,customMaxTemp,customMinTemp);
     }
-}

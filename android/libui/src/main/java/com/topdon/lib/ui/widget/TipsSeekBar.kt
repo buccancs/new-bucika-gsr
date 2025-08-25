@@ -183,4 +183,3 @@ class TipsSeekBar: ViewGroup, SeekBar.OnSeekBarChangeListener {
     }
 
 
-}

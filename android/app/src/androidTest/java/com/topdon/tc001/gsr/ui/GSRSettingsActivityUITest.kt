@@ -267,4 +267,3 @@ class GSRSettingsActivityUITest {
         onView(withText("GSR Settings"))
             .check(matches(isDisplayed()))
     }
-}

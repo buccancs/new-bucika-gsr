@@ -91,4 +91,3 @@ class RecyclerViewProxy(val layoutManager: RecyclerView.LayoutManager) {
     fun removeAllViews() {
         layoutManager.removeAllViews()
     }
-}

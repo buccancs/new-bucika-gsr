@@ -32,4 +32,3 @@ enum class SettingType {
 
     /** 水印（仅2D编辑） */
     WATERMARK,
-}

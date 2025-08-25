@@ -13,4 +13,3 @@ interface ShimmerDevice {
     fun setEnabledSensors(sensorMask: Int)
     fun isConnected(): Boolean
     fun isStreaming(): Boolean
-}

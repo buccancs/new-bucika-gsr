@@ -87,4 +87,3 @@ class MenuFirstTabView : FrameLayout, View.OnClickListener {
         }
         onTabClickListener?.invoke(this)
     }
-}

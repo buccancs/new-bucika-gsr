@@ -783,4 +783,3 @@ abstract class TemperatureBaseView : View {
         }
         return null
     }
-}

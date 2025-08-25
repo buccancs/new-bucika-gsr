@@ -337,4 +337,3 @@ object IRCmdTool {
         irCmd?.zoomCenterDown(CommonParams.PreviewPathChannel.PREVIEW_PATH0, CommonParams.ZoomScaleStep.ZOOM_STEP2)
     }
 
-}

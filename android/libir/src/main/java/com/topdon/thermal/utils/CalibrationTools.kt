@@ -226,4 +226,3 @@ object CalibrationTools {
             0
         }
     }
-}

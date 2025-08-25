@@ -114,4 +114,3 @@ public class SPKeyUtils {
      *CheckQC
      */
     public static final String CHEAKQC = "checkqc";
-}

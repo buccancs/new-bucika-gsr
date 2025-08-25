@@ -211,4 +211,3 @@ object GlideLoader {
             }
         }
     }
-}

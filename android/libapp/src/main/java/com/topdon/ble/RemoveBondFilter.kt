@@ -10,4 +10,3 @@ import android.bluetooth.BluetoothDevice
  */
 fun interface RemoveBondFilter {
     fun accept(device: BluetoothDevice): Boolean
-}

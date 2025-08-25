@@ -269,4 +269,3 @@ class TemperatureOverlayManager {
         
         return overlayBitmap
     }
-}

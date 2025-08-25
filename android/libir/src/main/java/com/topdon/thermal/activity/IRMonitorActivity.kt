@@ -133,4 +133,3 @@ class IRMonitorActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-}

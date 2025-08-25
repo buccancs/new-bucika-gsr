@@ -13,4 +13,3 @@ data class ResponseUserInfo(
     val lastVisitTime: String,
     val phone:String?,
     val avatar:String?,
-)

@@ -136,4 +136,3 @@ class TargetItemAdapter(private val context: Context) : RecyclerView.Adapter<Rec
      * @property binding ViewBinding instance for the target item layout
      */
     inner class ItemView(val binding: ItmeTargetModeBinding) : RecyclerView.ViewHolder(binding.root)
-}

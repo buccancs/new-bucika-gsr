@@ -16,4 +16,3 @@ data class SoftConfigOtherTypeVO(
     val descTypeName: String,
     val fileUrl: Any,
     val textDescription: String
-)

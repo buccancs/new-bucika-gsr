@@ -169,4 +169,3 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         /** Material emissivity configuration for research-grade thermal measurement */
         EM,
     }
-}

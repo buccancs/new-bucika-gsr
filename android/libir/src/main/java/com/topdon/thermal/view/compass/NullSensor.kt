@@ -21,4 +21,3 @@ abstract class NullSensor(private val interval: Long = 0): AbstractSensor() {
     override fun stopImpl() {
         timer.stop()
     }
-}

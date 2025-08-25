@@ -79,4 +79,3 @@ class PDFAdapter : BaseQuickAdapter<ReportData.Records?, BaseViewHolder>,LoadMor
             }
         }
     }
-}

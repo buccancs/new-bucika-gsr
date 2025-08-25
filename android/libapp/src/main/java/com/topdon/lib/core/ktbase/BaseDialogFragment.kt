@@ -105,4 +105,3 @@ abstract class BaseDialogFragment<B : ViewDataBinding> : AppCompatDialogFragment
             context.supportFragmentManager.executePendingTransactions()
         }
     }
-}

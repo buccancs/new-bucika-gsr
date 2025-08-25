@@ -31,4 +31,3 @@ class MyGSYVideoPlayer : StandardGSYVideoPlayer {
             }
         }
     }
-}

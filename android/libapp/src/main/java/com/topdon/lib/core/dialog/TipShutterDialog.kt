@@ -98,4 +98,3 @@ class TipShutterDialog : Dialog {
         }
     }
 
-}

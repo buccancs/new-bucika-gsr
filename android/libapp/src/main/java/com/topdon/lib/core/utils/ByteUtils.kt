@@ -138,4 +138,3 @@ object ByteUtils {
         }
         return result
     }
-}

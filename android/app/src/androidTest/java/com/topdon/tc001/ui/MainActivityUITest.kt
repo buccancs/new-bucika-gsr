@@ -179,4 +179,3 @@ class MainActivityUITest {
         // Verify response time is under 2 seconds
         assert(responseTime < 2000) { "UI response time too slow: ${responseTime}ms" }
     }
-}

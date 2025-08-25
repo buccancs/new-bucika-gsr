@@ -29,4 +29,3 @@ open class SingletonHolder<out T, in A>(creator: (A) -> T) {
         }
     }
 
-}

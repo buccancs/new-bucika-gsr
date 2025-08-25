@@ -338,4 +338,3 @@ data class SynchronizationMetrics(
     val maxTemporalDriftNs: Long,
     val syncAccuracyPercent: Double,
     val isWithinTolerance: Boolean
-)

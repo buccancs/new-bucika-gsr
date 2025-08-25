@@ -35,4 +35,3 @@ object RouteRegistry {
     fun registerModuleRoute(path: String, activityClass: Class<out android.app.Activity>) {
         ModernRouter.register(path, activityClass)
     }
-}

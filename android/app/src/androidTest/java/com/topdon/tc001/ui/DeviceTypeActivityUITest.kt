@@ -129,4 +129,3 @@ class DeviceTypeActivityUITest {
             .check(matches(isDisplayed()))
             .perform(click())
     }
-}

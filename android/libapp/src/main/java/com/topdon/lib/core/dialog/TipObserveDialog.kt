@@ -121,4 +121,3 @@ class TipObserveDialog : Dialog {
             return dialog as TipObserveDialog
         }
     }
-}

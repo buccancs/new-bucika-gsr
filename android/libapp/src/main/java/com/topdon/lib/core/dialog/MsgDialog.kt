@@ -204,4 +204,3 @@ class MsgDialog : Dialog {
     interface OnClickListener {
         fun onClick(dialog: DialogInterface)
     }
-}

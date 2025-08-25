@@ -19,4 +19,3 @@ object ScreenUtil {
     fun isLandscape(context: Context): Boolean {
         return context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
-}

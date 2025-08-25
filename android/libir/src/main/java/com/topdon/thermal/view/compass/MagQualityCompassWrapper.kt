@@ -40,4 +40,3 @@ class MagQualityCompassWrapper(private val compass: ICompass, private val magnet
         notifyListeners()
         return true
     }
-}

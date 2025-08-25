@@ -18,4 +18,3 @@ object ProductType {
     const val PRODUCT_NAME_TC001LITE = "TCLite"
     const val PRODUCT_NAME_TC002C_DUO = "TC002C_DUO"
 
-}

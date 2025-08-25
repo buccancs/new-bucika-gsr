@@ -203,4 +203,3 @@ class CountDownView : View {
     interface OnCountDownListener {
         fun countDownFinished()
     }
-}

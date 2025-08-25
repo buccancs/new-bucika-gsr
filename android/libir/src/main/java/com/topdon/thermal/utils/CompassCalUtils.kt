@@ -97,4 +97,3 @@ fun wrap(value: Double, min: Double, max: Double): Double {
     }
 
     return value
-}

@@ -1560,4 +1560,3 @@ public class TemperatureView extends SurfaceView implements SurfaceHolder.Callba
             }
         }
     }
-}

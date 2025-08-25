@@ -92,4 +92,3 @@ class ConfigEmAdapter(val context: Context) : RecyclerView.Adapter<ConfigEmAdapt
 
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
     }
-}

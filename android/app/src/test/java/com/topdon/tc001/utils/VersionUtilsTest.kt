@@ -202,4 +202,3 @@ class VersionUtilsTest {
             Assert.assertEquals("All thread results should be identical", firstResult, result)
         }
     }
-}

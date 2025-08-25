@@ -53,4 +53,3 @@ object WriteTools {
         }
         return result
     }
-}

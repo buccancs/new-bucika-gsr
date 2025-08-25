@@ -767,4 +767,3 @@ object FileUtil {
             Log.i(TAG, "numbyte[=$i]=${numbyte[i]}")
         }
     }
-}

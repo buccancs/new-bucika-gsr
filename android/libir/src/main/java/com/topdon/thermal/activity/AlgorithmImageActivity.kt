@@ -150,4 +150,3 @@ class AlgorithmImageActivity : AppCompatActivity() {
             imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bitmap, 90))
         }
     }
-}

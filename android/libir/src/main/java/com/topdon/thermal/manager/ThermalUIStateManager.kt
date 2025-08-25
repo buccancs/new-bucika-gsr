@@ -375,4 +375,3 @@ class ThermalUIStateManager(
     companion object {
         private const val TAG = "ThermalUIStateManager"
     }
-}

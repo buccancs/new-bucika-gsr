@@ -132,4 +132,3 @@ object BluetoothUtil {
             XLog.e("蓝牙扫描失败！$errorCode")
         }
     }
-}

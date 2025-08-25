@@ -299,4 +299,3 @@ class EnhancedGSRManagerTest {
             setFirmwareVersionMinor(15)
         }
     }
-}

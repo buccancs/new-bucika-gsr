@@ -92,4 +92,3 @@ internal class TempPointAdapter : BaseMenuAdapter() {
         val tempPointType: TempPointType,
         var isSelected: Boolean = false,
     )
-}

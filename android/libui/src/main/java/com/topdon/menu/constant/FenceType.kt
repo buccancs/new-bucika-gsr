@@ -23,4 +23,3 @@ enum class FenceType {
 
     /** 删除 */
     DEL,
-}

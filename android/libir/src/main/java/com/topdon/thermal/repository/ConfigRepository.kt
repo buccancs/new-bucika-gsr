@@ -39,4 +39,3 @@ object ConfigRepository {
         return config.defaultModel
     }
 
-}

@@ -335,4 +335,3 @@ class EnhancedRecordingActivityUITest {
         onView(withText(containsString("Complex_Test")))
             .check(matches(isDisplayed()))
     }
-}

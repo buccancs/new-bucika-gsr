@@ -181,4 +181,3 @@ object TargetUtils {
         return targetMeasureMode == ObserveBean.TYPE_MEASURE_DOG ||
                 targetMeasureMode == ObserveBean.TYPE_MEASURE_BIRD
     }
-}

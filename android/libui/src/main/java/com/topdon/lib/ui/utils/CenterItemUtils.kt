@@ -20,4 +20,3 @@ internal object CenterItemUtils {
     //当前Item索引
     //当前item和居中位置的差值
         (var position: Int, var differ: Int)
-}

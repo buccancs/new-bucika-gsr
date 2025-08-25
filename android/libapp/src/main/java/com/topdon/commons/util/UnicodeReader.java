@@ -100,4 +100,3 @@ public class UnicodeReader extends Reader {
         return internalIn2.read(cbuf, off, len);
     }
 
-}

@@ -49,4 +49,3 @@ internal abstract class BaseMenuAdapter : RecyclerView.Adapter<BaseMenuAdapter.V
     }
 
     class ViewHolder(val binding: ItemMenuBinding) : RecyclerView.ViewHolder(binding.root)
-}

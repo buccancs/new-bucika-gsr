@@ -93,4 +93,3 @@ class SteeringWheelView : LinearLayout, OnClickListener {
             }
         }
     }
-}

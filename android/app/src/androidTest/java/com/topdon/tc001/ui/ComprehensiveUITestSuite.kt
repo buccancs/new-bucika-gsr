@@ -130,4 +130,3 @@ class PerformanceAccessibilityUITestSuite {
     // - Accessibility feature validation
     // - UI performance under load
     // - Memory usage during UI operations
-}

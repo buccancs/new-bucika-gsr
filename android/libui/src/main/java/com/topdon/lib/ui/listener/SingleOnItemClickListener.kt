@@ -26,4 +26,3 @@ abstract class SingleOnItemClickListener: OnItemClickListener {
     }
 
     protected abstract fun onSingleItemClick(adapter: BaseQuickAdapter<*, *>, view: View, position: Int)
-}

@@ -204,4 +204,3 @@ object UnitTools {
         }
         return (if (str.endsWith(".0")) str.substring(0, str.length - 2) else str) + showUnit()
     }
-}

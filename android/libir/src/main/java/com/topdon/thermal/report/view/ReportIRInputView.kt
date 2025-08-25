@@ -251,4 +251,3 @@ class ReportIRInputView: LinearLayout {
             editText.isVisible = isChecked
         }
     }
-}

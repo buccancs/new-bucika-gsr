@@ -232,4 +232,3 @@ public class MP4Encoder extends Encoder {
         }
     }
 
-}

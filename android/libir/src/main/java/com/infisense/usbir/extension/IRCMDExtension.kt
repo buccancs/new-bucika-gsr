@@ -51,4 +51,3 @@ fun IRCMD.setPropDdeLevel(level: Int) {
         3 -> setPropImageParams(PropImageParams.IMAGE_PROP_LEVEL_DDE, DDEType.DDE_3)
         4 -> setPropImageParams(PropImageParams.IMAGE_PROP_LEVEL_DDE, DDEType.DDE_4)
     }
-}

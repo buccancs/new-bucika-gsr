@@ -282,4 +282,3 @@ class GSRManagerTest {
         val signalArtifacts: List<String>,
         val calibrationStatus: String
     )
-}

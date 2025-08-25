@@ -237,4 +237,3 @@ class Comm3DSeekBar: AppCompatSeekBar {
         }
         onSeekBarChangeListener?.onProgressChanged(this, progress, true)
     }
-}

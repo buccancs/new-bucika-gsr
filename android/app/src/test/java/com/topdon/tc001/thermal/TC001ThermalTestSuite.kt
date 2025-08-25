@@ -86,4 +86,3 @@ class TC001ThermalTestSuite {
         const val TEST_RECORDING_DURATION_MS = 5000L
         const val UI_RESPONSE_TIMEOUT_MS = 3000L
     }
-}

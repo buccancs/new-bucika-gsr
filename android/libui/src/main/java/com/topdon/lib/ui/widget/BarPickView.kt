@@ -417,4 +417,3 @@ class BarPickView : View {
             canvas.drawText(labelText, labelX, labelY, paint)
         }
     }
-}

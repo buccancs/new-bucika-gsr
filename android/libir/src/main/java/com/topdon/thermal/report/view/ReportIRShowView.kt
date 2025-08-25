@@ -439,4 +439,3 @@ class ReportIRShowView: LinearLayout {
             tvExplainValue.text = tempBean.comment
         }
     }
-}

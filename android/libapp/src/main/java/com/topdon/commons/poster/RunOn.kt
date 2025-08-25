@@ -13,4 +13,3 @@ annotation class RunOn(
      * 运行线程
      */
     val value: ThreadMode = ThreadMode.UNSPECIFIED
-)

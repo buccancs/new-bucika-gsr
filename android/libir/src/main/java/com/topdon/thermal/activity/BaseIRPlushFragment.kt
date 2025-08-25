@@ -756,4 +756,3 @@ abstract class BaseIRPlushFragment : BaseFragment(), OnUSBConnectListener,ITsTem
     }
 
 
-}

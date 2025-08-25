@@ -105,4 +105,3 @@ class VideoRecordMedia(
         return dstBitmap
     }
 
-}

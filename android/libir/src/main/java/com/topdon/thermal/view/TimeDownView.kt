@@ -266,4 +266,3 @@ public class TimeDownView : AppCompatTextView {
         animationSet!!.interpolator = AccelerateInterpolator()
         animation = animationSet
     }
-}

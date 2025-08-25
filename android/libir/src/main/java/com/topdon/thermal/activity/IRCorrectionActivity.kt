@@ -73,4 +73,3 @@ class IRCorrectionActivity : BaseActivity() {
     fun finishCorrection(event: CorrectionFinishEvent) {
         finish()
     }
-}

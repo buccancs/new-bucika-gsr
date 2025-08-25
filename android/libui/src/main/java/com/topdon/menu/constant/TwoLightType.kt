@@ -26,4 +26,3 @@ enum class TwoLightType {
 
     /** 融合度 */
     BLEND_EXTENT,
-}

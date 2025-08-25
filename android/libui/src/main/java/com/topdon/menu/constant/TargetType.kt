@@ -30,4 +30,3 @@ enum class TargetType {
      * 帮助
      */
     HELP,
-}

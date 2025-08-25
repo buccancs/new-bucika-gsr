@@ -30,4 +30,3 @@ object HttpHelp{
         instant.post(url,true, params, iResponseCallback)
     }
 
-}

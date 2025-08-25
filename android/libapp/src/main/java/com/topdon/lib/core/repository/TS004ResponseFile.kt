@@ -175,4 +175,3 @@ data class RecordStatusBean(
     val path: String,
     val pts: Int,
     val status: Boolean,
-)

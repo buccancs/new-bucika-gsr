@@ -78,4 +78,3 @@ abstract class Shimmer {
      * Stop streaming data - must be implemented by subclasses
      */
     abstract fun stopStreaming()
-}

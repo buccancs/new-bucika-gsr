@@ -214,4 +214,3 @@ class IRCorrectionFourActivity : BaseActivity() {
         // Start countdown timer
         binding.timeDownView.downSecond(time, false)
     }
-}

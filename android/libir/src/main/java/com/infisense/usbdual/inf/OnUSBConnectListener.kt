@@ -35,4 +35,3 @@ interface OnUSBConnectListener {
     fun onCompleteInit()
 
     fun onSetPreviewSizeFail()
-}

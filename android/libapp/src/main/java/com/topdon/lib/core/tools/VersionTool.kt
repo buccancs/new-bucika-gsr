@@ -65,4 +65,3 @@ object VersionTool {
         }
     }
 
-}

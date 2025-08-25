@@ -73,4 +73,3 @@ class WebViewActivity : BaseBindingActivity<ActivityWebViewBinding>() {
         }
         binding.webView.loadUrl(url)
     }
-}

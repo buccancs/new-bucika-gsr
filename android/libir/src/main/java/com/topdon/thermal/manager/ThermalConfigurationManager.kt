@@ -363,4 +363,3 @@ class ThermalConfigurationManager(
         private const val DEFAULT_EMISSIVITY = 0.95f
         private const val DEFAULT_PALETTE = "iron"
     }
-}

@@ -126,4 +126,3 @@ class EmissivityView : View {
             canvas.translate(itemWidth, 0f)
         }
     }
-}

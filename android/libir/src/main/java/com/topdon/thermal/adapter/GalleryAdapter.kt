@@ -222,4 +222,3 @@ class GalleryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
      * Supports multi-selection, download indicators, and research-grade interaction
      */
     inner class ItemView(val binding: ItemGalleryLayBinding) : RecyclerView.ViewHolder(binding.root)
-}

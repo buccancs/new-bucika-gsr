@@ -529,4 +529,3 @@ class MemoryLeakDetector(private val context: Context) {
         val name: String,
         val execute: suspend () -> Unit
     )
-}

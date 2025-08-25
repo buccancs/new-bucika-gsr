@@ -16,4 +16,3 @@ class HeaderView : LinearLayout {
         inflate(context, R.layout.ui_header_view, this)
     }
 
-}

@@ -109,4 +109,3 @@ class GSRActivityUITest {
         
         // Verify menu appears
     }
-}

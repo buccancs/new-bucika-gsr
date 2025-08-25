@@ -63,4 +63,3 @@ object DeviceConfig {
     const val S_ROTATE_ANGLE = 270
     const val S_IS_PORTRAIT = true
 
-}

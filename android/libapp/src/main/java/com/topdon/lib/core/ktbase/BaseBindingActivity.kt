@@ -135,4 +135,3 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
 
         override fun parseResult(resultCode: Int, intent: Intent?): File? = if (resultCode == RESULT_OK) file else null
     }
-}

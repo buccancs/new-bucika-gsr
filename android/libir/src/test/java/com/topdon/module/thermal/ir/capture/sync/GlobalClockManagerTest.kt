@@ -340,4 +340,3 @@ class GlobalClockManagerTest {
         // Memory growth should be reasonable
         Assert.assertTrue("Memory growth should be reasonable", memoryGrowth < 10_000_000L) // Less than 10MB
     }
-}

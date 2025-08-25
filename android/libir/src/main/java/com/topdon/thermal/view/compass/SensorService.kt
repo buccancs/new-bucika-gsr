@@ -27,4 +27,3 @@ class SensorService(ctx: Context) {
         const val ENVIRONMENT_SENSOR_DELAY = SensorManager.SENSOR_DELAY_NORMAL
     }
 
-}

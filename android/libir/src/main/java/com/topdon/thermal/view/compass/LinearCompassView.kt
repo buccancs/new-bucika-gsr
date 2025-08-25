@@ -252,4 +252,3 @@ class LinearCompassView : View {
         super.onDetachedFromWindow()
         scope.cancel()
     }
-}

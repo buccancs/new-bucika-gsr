@@ -272,4 +272,3 @@ class GSRDataQualityMonitorTest {
             sampleIndex = sampleIndex
         )
     }
-}

@@ -49,4 +49,3 @@ class InputTextFilterTool {
             return null
         }
     }
-}

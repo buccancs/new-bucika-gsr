@@ -344,4 +344,3 @@ class LocalFileBrowserActivity : BaseActivity() {
             .setPositiveButton("OK", null)
             .show()
     }
-}

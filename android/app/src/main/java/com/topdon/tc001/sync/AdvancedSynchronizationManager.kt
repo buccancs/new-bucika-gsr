@@ -413,4 +413,3 @@ class AdvancedSynchronizationManager(private val context: Context) {
         val success: Boolean = false,
         val error: String = ""
     )
-}

@@ -651,4 +651,3 @@ class IRMonitorChartActivity : BaseActivity(), ITsTempListener {
             }
         }
     }
-}

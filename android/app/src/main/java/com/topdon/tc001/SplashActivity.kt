@@ -59,4 +59,3 @@ class SplashActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // Intentionally empty - splash screen should not be dismissible via back press
     }
-}

@@ -83,4 +83,3 @@ class IRCorrectionThreeActivity : BaseActivity() {
     override fun initData() {
         // No additional data initialization required
     }
-}

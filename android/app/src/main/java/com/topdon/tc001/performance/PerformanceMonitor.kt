@@ -621,4 +621,3 @@ enum class AlertSeverity {
     WARNING,
     HIGH,
     CRITICAL
-}

@@ -170,4 +170,3 @@ class FirmwareUpDialog(context: Context) : Dialog(context, R.style.InfoDialog), 
             }
         }
     }
-}

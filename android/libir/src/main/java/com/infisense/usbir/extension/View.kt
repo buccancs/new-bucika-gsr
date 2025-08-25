@@ -66,4 +66,3 @@ fun ViewPager2.reduceDragSensitivity() {
     touchSlopField.isAccessible = true
     val touchSlop = touchSlopField.get(recyclerView) as Int
     touchSlopField.set(recyclerView, touchSlop * 5) // "2" was obtained experimentally
-}

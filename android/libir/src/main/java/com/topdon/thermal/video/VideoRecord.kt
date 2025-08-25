@@ -8,4 +8,3 @@ abstract class VideoRecord {
     abstract fun stopRecord()
 
     abstract fun updateAudioState(audioRecord: Boolean);
-}

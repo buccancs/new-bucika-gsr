@@ -27,4 +27,3 @@ class MyImageSpan(drawable: Drawable) : ImageSpan(drawable) {
         drawable.draw(canvas)
         canvas.restore()
     }
-}

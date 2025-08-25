@@ -85,4 +85,3 @@ class TargetColorAdapter(val context: Context,var targetColor: Int) : RecyclerVi
     interface OnItemClickListener {
         fun onClick(index: Int, code: Int)
     }
-}

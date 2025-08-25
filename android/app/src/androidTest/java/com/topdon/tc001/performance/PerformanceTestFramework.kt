@@ -395,4 +395,3 @@ class PerformanceTestFramework {
         
         return false
     }
-}

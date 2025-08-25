@@ -16,4 +16,3 @@ data class ReportPageBean(
     var isOptimizeCountSql: Boolean = false,
     var isSearchCount: Boolean = false,
     var records: MutableList<ReportItemBean>? = null,
-) : Parcelable

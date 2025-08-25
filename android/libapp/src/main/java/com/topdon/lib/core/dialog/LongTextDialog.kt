@@ -93,4 +93,3 @@ class LongTextDialog(
             it.attributes = layoutParams
         }
     }
-}

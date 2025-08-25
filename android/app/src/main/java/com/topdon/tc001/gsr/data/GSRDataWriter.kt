@@ -427,4 +427,3 @@ class GSRDataWriter private constructor(private val context: Context) {
         coroutineScope.cancel()
         dataWriteListener = null
     }
-}

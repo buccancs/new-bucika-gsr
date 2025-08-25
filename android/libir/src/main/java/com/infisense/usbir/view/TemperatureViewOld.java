@@ -1554,4 +1554,3 @@
 //    public interface TempListener {
 //        void getTemp(float max, float min);
 //    }
-//}

@@ -225,4 +225,3 @@ class SynchronizedCaptureSystemTest {
         assertNotEquals("Session ID should be different", 
             firstMetrics.sessionDurationMs, secondSessionInfo.sessionId)
     }
-}

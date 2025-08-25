@@ -18,4 +18,3 @@ object HexUtils {
         }
         return result.toString()
     }
-}

@@ -33,4 +33,3 @@ interface ThermalDao {
         @Ignore
         var showTitle: Boolean = false
     }
-}

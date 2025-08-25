@@ -146,4 +146,3 @@ class IRConfigViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-}

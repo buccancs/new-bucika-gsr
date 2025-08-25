@@ -217,4 +217,3 @@ class IRGalleryTabFragment : BaseFragment() {
             return fragment
         }
     }
-}

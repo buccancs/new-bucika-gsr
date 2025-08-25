@@ -353,4 +353,3 @@ class ThermalIntegrationTest {
         onView(withId(R.id.temperature_view))
             .check(matches(isDisplayed()))
     }
-}

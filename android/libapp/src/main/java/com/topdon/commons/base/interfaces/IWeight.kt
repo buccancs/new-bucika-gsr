@@ -9,4 +9,3 @@ interface IWeight {
      * 获取权重
      */
     fun getWeight(): Int?
-}

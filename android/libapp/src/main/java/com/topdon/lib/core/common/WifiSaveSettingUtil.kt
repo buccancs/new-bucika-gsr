@@ -482,4 +482,3 @@ object WifiSaveSettingUtil {
                 SPUtils.getInstance(SP_NAME).put("reportHumidity", value)
             }
         }
-}

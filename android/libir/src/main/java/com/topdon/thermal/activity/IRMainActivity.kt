@@ -515,4 +515,3 @@ class IRMainActivity : BaseActivity(), View.OnClickListener {
             }
         }
     }
-}

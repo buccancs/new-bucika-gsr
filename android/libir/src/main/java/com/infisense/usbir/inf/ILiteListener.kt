@@ -16,4 +16,3 @@ interface ILiteListener {
 
     fun compensateTemp(temp : Float) : Float
 
-}

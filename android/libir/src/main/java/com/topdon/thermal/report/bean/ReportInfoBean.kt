@@ -26,4 +26,3 @@ data class ReportInfoBean(
     val report_type: Int = 1     //报告类型，1、点线面报告
     val report_version: String = "V1.00"//报告版本，当前为 V1.00
     val report_number: String = "${CommUtils.getAppName()}${System.currentTimeMillis()}"//报告编号，APP名称 + 时间戳秒级
-}

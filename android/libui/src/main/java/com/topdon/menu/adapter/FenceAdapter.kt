@@ -93,4 +93,3 @@ internal class FenceAdapter(menuType: MenuType) : BaseMenuAdapter() {
     override fun getItemCount(): Int = dataList.size
 
     data class Data(@StringRes val stringId: Int, @DrawableRes val drawableId: Int, val fenceType: FenceType)
-}

@@ -151,4 +151,3 @@ class PdfActivity : BaseActivity() {
         myOutput.close()
     }
 
-}

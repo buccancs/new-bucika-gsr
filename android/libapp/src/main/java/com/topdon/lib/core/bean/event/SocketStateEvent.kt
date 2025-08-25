@@ -7,4 +7,3 @@ package com.topdon.lib.core.bean.event
  * @param isConnect true-已连接 false-已断开
  * @param isTS004 true-TS004 false-TC007
  */
-data class SocketStateEvent(val isConnect: Boolean, val isTS004: Boolean)

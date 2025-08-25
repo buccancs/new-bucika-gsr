@@ -485,4 +485,3 @@ class GSRManager private constructor(private val context: Context) {
         fileName: String? = null,
         includeAnalysis: Boolean = true
     ) = dataWriter.exportGSRDataToFile(gsrData, fileName, includeAnalysis)
-}

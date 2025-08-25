@@ -538,4 +538,3 @@ abstract class BaseIRPlushActivity : IRThermalNightActivity(), OnUSBConnectListe
 
 
 
-}

@@ -20,4 +20,3 @@ enum class TempPointType {
      * 删除
      */
     DELETE,
-}

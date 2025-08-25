@@ -17,4 +17,3 @@ class IRGalleryTabViewModel : BaseViewModel() {
      * 点击全选的 Fragment index，如 0 表示照片全选，1表示视频全选.
      */
     val selectAllIndex: MutableLiveData<Int> = MutableLiveData(0)
-}

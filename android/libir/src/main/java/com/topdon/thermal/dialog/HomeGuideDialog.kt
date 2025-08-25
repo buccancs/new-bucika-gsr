@@ -167,4 +167,3 @@ class HomeGuideDialog(context: Context, private val currentStep: Int) : Dialog(c
             }
         }
     }
-}

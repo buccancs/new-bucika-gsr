@@ -213,4 +213,3 @@ class GalleryImageProcessingManager(
     fun cleanup() {
         // Cleanup any resources if needed
     }
-}

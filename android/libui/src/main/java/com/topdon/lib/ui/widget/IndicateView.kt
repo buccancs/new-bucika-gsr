@@ -70,4 +70,3 @@ class IndicateView : View {
             canvas.drawRoundRect(left, top, right, bottom, roundRadius, roundRadius, if (i == currentIndex) selectPaint else defaultPaint)
         }
     }
-}

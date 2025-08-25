@@ -28,4 +28,3 @@ class CommLoadMoreView : BaseLoadMoreView() {
     override fun getLoadFailView(holder: BaseViewHolder): View =
         holder.getView(R.id.load_more_load_fail_view)
 
-}

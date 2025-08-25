@@ -110,4 +110,3 @@ object IRImageUtil {
         srcMat.release()
         dstMat.release()
     }
-}

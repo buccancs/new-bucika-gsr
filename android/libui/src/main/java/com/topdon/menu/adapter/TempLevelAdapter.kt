@@ -93,4 +93,3 @@ internal class TempLevelAdapter(menuType: MenuType) : BaseMenuAdapter() {
     override fun getItemCount(): Int = dataList.size
 
     data class Data(@StringRes val stringId: Int, @DrawableRes val drawableId: Int, val range: IntRange? = null, val code: Int)
-}

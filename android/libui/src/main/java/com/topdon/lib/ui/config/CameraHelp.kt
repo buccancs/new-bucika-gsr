@@ -63,4 +63,3 @@ object CameraHelp {
     val TYPE_SET_TARGET_HELP= 35//帮助
 
 
-}

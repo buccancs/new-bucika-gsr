@@ -382,4 +382,3 @@ class IREmissivityActivity : BaseActivity() {
         ItemBean(name = getString(R.string.material_tin_coated_lead_wire), emStr = "0.28"),
         ItemBean(name = getString(R.string.material_copper_wire), emStr = "0.87～0.88"),
     )
-}

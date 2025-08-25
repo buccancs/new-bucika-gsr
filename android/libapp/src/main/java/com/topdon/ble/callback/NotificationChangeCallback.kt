@@ -14,4 +14,3 @@ interface NotificationChangeCallback : RequestFailedCallback {
      * @param isEnabled 开启或关闭
      */
     fun onNotificationChanged(request: Request, isEnabled: Boolean)
-}

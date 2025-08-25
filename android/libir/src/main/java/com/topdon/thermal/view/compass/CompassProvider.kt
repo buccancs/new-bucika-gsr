@@ -120,4 +120,3 @@ class CompassProvider(private val context: Context) {
         }
     }
 
-}

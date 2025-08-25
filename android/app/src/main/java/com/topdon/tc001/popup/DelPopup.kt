@@ -59,4 +59,3 @@ class DelPopup(val context: Context) : PopupWindow() {
         val y = locationArray[1] - SizeUtils.dp2px(12f)
         showAtLocation(anchor, Gravity.NO_GRAVITY, x, y)
     }
-}

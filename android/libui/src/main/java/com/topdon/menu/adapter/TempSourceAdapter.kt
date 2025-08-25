@@ -59,4 +59,3 @@ internal class TempSourceAdapter : BaseMenuAdapter() {
     override fun getItemCount(): Int = dataArray.size
 
     data class Data(@StringRes val stringId: Int, @DrawableRes val drawableId: Int, val code: Int)
-}

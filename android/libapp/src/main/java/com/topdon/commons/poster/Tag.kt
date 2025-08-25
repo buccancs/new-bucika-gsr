@@ -10,4 +10,3 @@ package com.topdon.commons.poster
 @Target(AnnotationTarget.FUNCTION)
 annotation class Tag(
     val value: String = ""
-)

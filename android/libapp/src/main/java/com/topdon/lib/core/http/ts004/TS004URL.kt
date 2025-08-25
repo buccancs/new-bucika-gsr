@@ -38,4 +38,3 @@ object TS004URL {
     const val SET_TISP= "$BASE_URL/api/v1/system/setTISR"//设置超分
     const val GET_TISR= "$BASE_URL/api/v1/system/getTISR"//获取超分状态
     const val GET_DATE_TIME= "$BASE_URL/api/v1/system/getDateTime"//获取时钟
-}

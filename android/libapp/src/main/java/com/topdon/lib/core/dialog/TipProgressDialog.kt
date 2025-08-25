@@ -164,4 +164,3 @@ class TipProgressDialog : Dialog {
     interface OnClickListener {
         fun onClick(dialog: DialogInterface)
     }
-}

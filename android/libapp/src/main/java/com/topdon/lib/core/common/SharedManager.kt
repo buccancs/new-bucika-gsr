@@ -584,4 +584,3 @@ object SharedManager {
         SPUtils.getInstance().put(SP_CAR_DETECT, GsonUtils.toJson(bean))
     }
 
-}

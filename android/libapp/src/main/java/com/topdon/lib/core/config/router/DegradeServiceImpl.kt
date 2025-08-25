@@ -25,4 +25,3 @@ class DegradeServiceImpl : DegradeService {
         }
     }
 
-}

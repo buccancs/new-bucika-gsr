@@ -131,4 +131,3 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
     fun dismissLoadingDialog() {
         loadingDialog?.dismiss()
     }
-}

@@ -264,4 +264,3 @@ class IRThermalNightActivityUITest {
         onView(withId(R.id.tv_current_temperature))
             .check(matches(isDisplayed()))
     }
-}

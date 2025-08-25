@@ -71,4 +71,3 @@ class GSRTestSuite {
         // All critical components should have corresponding test classes
         Assert.assertTrue("All critical components should have tests", criticalComponents.size >= 5)
     }
-}
