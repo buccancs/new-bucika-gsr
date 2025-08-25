@@ -1,64 +1,47 @@
-
-package com.github.mikephil.charting.buffer;
-
-import java.util.List;
+package com.github.mikephil.charting.buffer
 
 /**
  * Buffer class to boost performance while drawing. Concept: Replace instead of
  * recreate.
  * 
  * @author Philipp Jahoda
- * @param <T> The data the buffer accepts to be fed with.
+ * @param T The data the buffer accepts to be fed with.
  */
-public abstract class AbstractBuffer<T> {
+abstract class AbstractBuffer<T>(size: Int) {
 
     /** index in the buffer */
-    protected int index = 0;
+    protected var index = 0
 
     /** float-buffer that holds the data points to draw, order: x,y,x,y,... */
-    public final float[] buffer;
+    val buffer = FloatArray(size)
 
     /** animation phase x-axis */
-    protected float phaseX = 1f;
+    protected var phaseX = 1f
 
     /** animation phase y-axis */
-    protected float phaseY = 1f;
+    protected var phaseY = 1f
 
     /** indicates from which x-index the visible data begins */
-    protected int mFrom = 0;
+    protected var mFrom = 0
 
     /** indicates to which x-index the visible data ranges */
-    protected int mTo = 0;
+    protected var mTo = 0
 
-    /**
-     * Initialization with buffer-size.
-     * 
-     * @param size
-     */
-    public AbstractBuffer(int size) {
-        index = 0;
-        buffer = new float[size];
+    /** limits the drawing on the x-axis */
+    fun limitFrom(from: Int) {
+        mFrom = if (from < 0) 0 else from
     }
 
     /** limits the drawing on the x-axis */
-    public void limitFrom(int from) {
-        if (from < 0)
-            from = 0;
-        mFrom = from;
-    }
-
-    /** limits the drawing on the x-axis */
-    public void limitTo(int to) {
-        if (to < 0)
-            to = 0;
-        mTo = to;
+    fun limitTo(to: Int) {
+        mTo = if (to < 0) 0 else to
     }
 
     /**
      * Resets the buffer index to 0 and makes the buffer reusable.
      */
-    public void reset() {
-        index = 0;
+    fun reset() {
+        index = 0
     }
 
     /**
@@ -66,9 +49,7 @@ public abstract class AbstractBuffer<T> {
      * 
      * @return
      */
-    public int size() {
-        return buffer.length;
-    }
+    fun size(): Int = buffer.size
 
     /**
      * Set the phases used for animations.
@@ -76,9 +57,9 @@ public abstract class AbstractBuffer<T> {
      * @param phaseX
      * @param phaseY
      */
-    public void setPhases(float phaseX, float phaseY) {
-        this.phaseX = phaseX;
-        this.phaseY = phaseY;
+    fun setPhases(phaseX: Float, phaseY: Float) {
+        this.phaseX = phaseX
+        this.phaseY = phaseY
     }
 
     /**
@@ -87,5 +68,5 @@ public abstract class AbstractBuffer<T> {
      * 
      * @param data
      */
-    public abstract void feed(T data);
+    abstract fun feed(data: T)
 }
