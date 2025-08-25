@@ -3,7 +3,7 @@ package com.topdon.tc001.gsr
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import com.topdon.module.thermal.ir.capture.sync.EnhancedSynchronizedCaptureSystem
+import com.topdon.thermal.capture.sync.EnhancedSynchronizedCaptureSystem
 import com.elvishew.xlog.XLog
 import com.shimmerresearch.android.Shimmer
 import com.shimmerresearch.android.ShimmerBluetooth

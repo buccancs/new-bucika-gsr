@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.topdon.lib.core.ktbase.BaseActivity
-import com.topdon.module.thermal.ir.capture.video.EnhancedVideoRecorder
-import com.topdon.module.thermal.ir.capture.parallel.ParallelCaptureManager
+import com.topdon.thermal.capture.video.EnhancedVideoRecorder
+import com.topdon.thermal.capture.parallel.ParallelCaptureManager
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityEnhancedRecordingBinding
 import com.topdon.tc001.gsr.GSRManager

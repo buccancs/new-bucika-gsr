@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.energy.R;
+import com.topdon.lib.ui.R;
 import com.energy.utils.ScreenUtils;
 
 import java.util.LinkedList;

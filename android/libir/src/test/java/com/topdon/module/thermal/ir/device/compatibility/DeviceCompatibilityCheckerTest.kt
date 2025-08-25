@@ -1,4 +1,4 @@
-package com.topdon.module.thermal.ir.device.compatibility
+package com.topdon.thermal.device.compatibility
 
 import android.content.Context
 import android.os.Build

@@ -47,9 +47,9 @@ import com.topdon.lib.core.utils.CommUtils
 import com.topdon.lib.core.utils.PermissionUtils
 import com.topdon.lib.core.viewmodel.VersionViewModel
 import com.topdon.lms.sdk.LMS
-import com.topdon.module.thermal.ir.activity.IRThermalNightActivity
-import com.topdon.module.thermal.ir.activity.IRThermalPlusActivity
-import com.topdon.module.thermal.ir.fragment.IRGalleryTabFragment
+import com.topdon.thermal.activity.IRThermalNightActivity
+import com.topdon.thermal.activity.IRThermalPlusActivity
+import com.topdon.thermal.fragment.IRGalleryTabFragment
 import com.topdon.module.user.fragment.MineFragment
 import com.topdon.tc001.app.App
 import com.topdon.tc001.fragment.MainFragment

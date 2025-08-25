@@ -1,4 +1,4 @@
-package com.topdon.module.thermal.ir.capture.sync
+package com.topdon.thermal.capture.sync
 
 import android.content.Context
 import org.junit.Assert.*

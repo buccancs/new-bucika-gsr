@@ -1,4 +1,4 @@
-package com.topdon.module.thermal.ir.overlay
+package com.topdon.thermal.overlay
 
 import android.graphics.*
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -12,7 +12,7 @@ import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.Log;
 
-import com.energy.R;
+import com.topdon.lib.ui.R;
 import com.energy.utils.ScreenUtils;
 
 import java.util.LinkedList;

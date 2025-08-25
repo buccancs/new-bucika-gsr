@@ -7,7 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.topdon.module.thermal.ir.activity.IRThermalNightActivity
+import com.topdon.thermal.activity.IRThermalNightActivity
 import com.topdon.tc001.R
 import org.junit.Rule
 import org.junit.Test
