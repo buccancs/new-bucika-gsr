@@ -60,6 +60,23 @@ All module `build.gradle` files have been standardized with:
 - Consistent product flavors across all modules
 - Modern build features (ViewBinding, DataBinding, BuildConfig)
 
+### Modular Configuration Structure
+
+The app module uses modular configuration files in `android/app/config/`:
+
+```
+app/
+├── build.gradle (main - core configuration only)
+├── config/
+│   ├── dependencies.gradle      # All dependencies
+│   ├── signing.gradle          # Signing configuration  
+│   ├── flavors.gradle          # Product flavors
+│   ├── packaging.gradle        # Packaging options
+│   └── build-helpers.gradle    # Custom tasks and utilities
+```
+
+This modular approach reduces the main build.gradle from 367 to 117 lines while improving maintainability.
+
 ## Product Flavors
 
 The project supports multiple product flavors:

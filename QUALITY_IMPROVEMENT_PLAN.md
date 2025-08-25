@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Based on comprehensive code quality analysis of the BucikaGSR project (1,060 source files, 179k+ LOC), this action plan addresses key quality improvement opportunities while maintaining the project's strong foundation.
+Based on comprehensive code quality analysis (see [CODE_QUALITY_ANALYSIS.md](CODE_QUALITY_ANALYSIS.md)), this action plan addresses key improvement opportunities while maintaining the project's strong foundation.
 
 **Current Quality Score: 83/100 (B+)**
 **Target Quality Score: 90/100 (A-)**

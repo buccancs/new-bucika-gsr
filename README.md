@@ -334,29 +334,27 @@ The system provides comprehensive data output and analysis:
 
 ## Documentation
 
-### GSR Functionality Documentation
-- **[GSR API Reference](docs/GSR_API_REFERENCE.md)**: Complete API documentation (19K+ chars) with detailed method signatures and usage examples
-- **[Shimmer Android API Integration](docs/SHIMMER_ANDROID_API_INTEGRATION.md)**: Professional integration guide (15K+ chars) with architecture overview
-- **[GSR Development Setup](docs/GSR_DEVELOPMENT_SETUP.md)**: Comprehensive developer setup guide (12K+ chars)
-- **[GSR Troubleshooting Guide](docs/GSR_TROUBLESHOOTING_GUIDE.md)**: Detailed diagnostics and solutions (16K+ chars)
-- **[GSR Test Suite Documentation](docs/GSR_TEST_SUITE_DOCUMENTATION.md)**: Testing framework documentation (8K+ chars)
+## Documentation
 
-### TC001 Thermal Imaging Documentation
-- **[TC001 API Reference](docs/TC001_API_REFERENCE.md)**: Complete thermal imaging API documentation (21K+ chars) with comprehensive method specifications
-- **[Topdon TC001 Integration](docs/TOPDON_TC001_INTEGRATION.md)**: Professional thermal imaging integration guide (30K+ chars) with architecture overview
-- **[TC001 Development Setup](docs/TC001_DEVELOPMENT_SETUP.md)**: Comprehensive thermal imaging development setup (31K+ chars)
-- **[TC001 Troubleshooting Guide](docs/TC001_TROUBLESHOOTING_GUIDE.md)**: Detailed thermal imaging diagnostics and solutions (49K+ chars)
-- **[TC001 Test Suite Documentation](docs/TC001_TEST_SUITE_DOCUMENTATION.md)**: Comprehensive thermal imaging testing framework (39K+ chars)
+### Core Documentation
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md)**: Main development setup and architecture overview
+- **[Hardware Integration](docs/HARDWARE_INTEGRATION.md)**: GSR and thermal camera setup guide  
+- **[Testing Guide](docs/TESTING_GUIDE.md)**: Comprehensive testing framework documentation
+- **[Troubleshooting Guide](docs/TROUBLESHOOTING_GUIDE.md)**: Common issues and solutions
 
-### Additional Documentation
-- **[Camera Module Documentation](docs/CAMERA_MODULE_DOCUMENTATION.md)**: Samsung S22 camera integration details
-- **[Synchronized Capture System](docs/SYNCHRONIZED_CAPTURE_SYSTEM.md)**: Multi-modal data synchronization
-- **[Samsung S22 Camera Capabilities](docs/SAMSUNG_S22_CAMERA_CAPABILITIES.md)**: Advanced camera features and configuration
+### API References
+- **[GSR API Reference](docs/GSR_API_REFERENCE.md)**: Complete GSR API documentation
+- **[TC001 API Reference](docs/TC001_API_REFERENCE.md)**: Thermal imaging API documentation
+- **[PC Orchestrator API](docs/PC_ORCHESTRATOR_API.md)**: PC coordination API documentation
 
-### Setup and Development
-- **[Gradle Setup Guide](GRADLE_SETUP.md)**: Build system configuration and dependencies
-- **[Run Configurations](RUN_CONFIGURATIONS.md)**: Development environment setup
-- **[Copilot Guidelines](COPILOT_GUIDELINES.md)**: AI-assisted development best practices
+### Specialized Guides  
+- **[Performance Optimization](docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)**: System optimization strategies
+- **[User Manual](docs/USER_MANUAL.md)**: End-user operational guide
+- **[UI Testing Guide](docs/UI_TESTING_GUIDE.md)**: UI automation testing
+
+### Build and Configuration
+- **[Gradle Setup Guide](GRADLE_SETUP.md)**: Build system configuration  
+- **[Quality Improvement Plan](QUALITY_IMPROVEMENT_PLAN.md)**: Code quality initiatives
 
 ## Support and Development
 

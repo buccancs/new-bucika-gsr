@@ -22,10 +22,13 @@ This comprehensive guide helps developers set up, understand, and contribute to 
 ### Prerequisites
 
 - **Java Development Kit**: JDK 17 or higher
-- **Android Studio**: Latest stable version (for Android development)
+- **Android Studio**: Arctic Fox (2020.3.1) or later
 - **Gradle**: 8.10+ (included with project)
 - **Git**: For version control
-- **Hardware**: Shimmer3 GSR+ sensor (optional for testing)
+- **Hardware**: 
+  - Shimmer3 GSR+ sensor (for GSR testing)
+  - Topdon TC001 thermal camera (for thermal imaging)
+  - Android device with USB OTG support
 
 ### 5-Minute Setup
 
@@ -199,91 +202,47 @@ sequenceDiagram
 
 ## Building and Running
 
-### Build Commands
+### Build System Overview
+
+The project uses a modular Gradle build system with:
+- **Unified dependency management** via `shared.gradle` and `depend.gradle`  
+- **Standardized configurations** across all modules
+- **Product flavor consistency** for different deployment targets
+- **Build validation** and optimization scripts
+
+For detailed build configuration, see [GRADLE_SETUP.md](../GRADLE_SETUP.md).
+
+### Quick Build Commands
 
 ```bash
-# Build everything
+# Build entire project
 ./gradlew build
+
+# Build specific variants
+./gradlew :android:app:assembleDevDebug     # Debug build
+./gradlew :android:app:assembleDevRelease   # Release build
+
+# Run validation
+./gradlew validateBuild
 
 # Clean build
 ./gradlew clean build
-
-# Build specific modules
-./gradlew :pc:build
-./gradlew :android:app:assembleDevDebug
-
-# Run tests
-./gradlew test
-./gradlew :android:app:testDevDebugUnitTest
-
-# Generate documentation
-./gradlew dokkaHtml
 ```
 
-### Running PC Orchestrator
+### Running the System
 
-#### GUI Mode (Development)
+#### PC Orchestrator
 ```bash
-./gradlew :pc:run
-
-# With custom port
-./gradlew :pc:run --args="--port=8081"
+./gradlew :pc:run                          # GUI mode
+./gradlew :pc:runDemo                      # Console demo
 ```
 
-#### Console Mode (Testing/CI)
+#### Android Application
 ```bash
-./gradlew :pc:runDemo
-
-# With configuration
-./gradlew :pc:runDemo --args="--config=./config/test.json"
+./gradlew :android:app:installDevDebug     # Install debug APK
 ```
 
-#### JAR Distribution
-```bash
-# Build distribution
-./gradlew :pc:distZip
-
-# Run standalone JAR
-java -jar pc/build/libs/pc-1.0.0.jar
-```
-
-### Running Android Application
-
-#### Debug Build
-```bash
-# Build and install debug APK
-./gradlew :android:app:installDevDebug
-
-# Run instrumented tests
-./gradlew :android:app:connectedDevDebugAndroidTest
-```
-
-#### Release Build
-```bash
-# Build signed release APK
-./gradlew :android:app:assembleDevRelease
-
-# Bundle for Play Store
-./gradlew :android:app:bundleDevRelease
-```
-
-### Docker Support
-
-```dockerfile
-# Dockerfile.pc for PC orchestrator
-FROM openjdk:17-jdk-slim
-
-COPY pc/build/libs/pc-1.0.0.jar app.jar
-EXPOSE 8080 9123
-
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-```
-
-```bash
-# Build and run with Docker
-docker build -f Dockerfile.pc -t bucika-orchestrator .
-docker run -p 8080:8080 -p 9123:9123/udp bucika-orchestrator
-```
+For hardware-specific setup, see [HARDWARE_INTEGRATION.md](HARDWARE_INTEGRATION.md).
 
 ---
 
