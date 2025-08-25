@@ -70,11 +70,9 @@ dependencies {
     implementation(name: 'opengl_1.3.2_standard', ext: 'aar')
     implementation(name: 'library_1.0', ext: 'aar')
 
-    implementation project(':android:libapp')
-    implementation project(':android:libcom')
+    implementation project(':android:libapp') // libcom merged into libapp
     implementation project(':android:libir')
-    implementation project(':android:libmenu')
-    implementation project(':android:libui')
+    implementation project(':android:libui') // libmenu merged into libui
     // Removed house module dependency for bucika_gsr
     // implementation project(':component:house')
     implementation project(':android:component:CommonComponent')

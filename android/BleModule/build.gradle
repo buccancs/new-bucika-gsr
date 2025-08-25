@@ -62,8 +62,8 @@ android {
 }
 
 dependencies {
-    // Use local LMS SDK instead of remote dependency for bucika_gsr
-    implementation files('../libapp/libs/lms_international-3.90.009.0.aar')
+    // Use local LMS SDK as compileOnly to avoid AAR dependency issues
+    compileOnly files('../common-libs/lms_international-3.90.009.0.aar')
     api 'androidx.appcompat:appcompat:1.7.0'
     api 'org.greenrobot:eventbus:3.3.1'
     api 'com.blankj:utilcodex:1.31.1'//工具包
