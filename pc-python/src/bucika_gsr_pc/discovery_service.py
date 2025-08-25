@@ -20,6 +20,7 @@ class DiscoveryService:
         
         self.zeroconf: Optional[Zeroconf] = None
         self.service_info: Optional[ServiceInfo] = None
+        self._running = False
     
     async def start(self):
         """Start the mDNS discovery service"""
@@ -69,6 +70,7 @@ class DiscoveryService:
             
             # Don't wait for completion - return immediately
             logger.info("mDNS service registration started in background")
+            self._running = True
             
         except Exception as e:
             # Log error but don't fail the entire startup
@@ -84,6 +86,11 @@ class DiscoveryService:
                 logger.info("mDNS discovery service stopped")
             except Exception as e:
                 logger.error(f"Error stopping mDNS service: {e}")
+        self._running = False
+    
+    def is_running(self) -> bool:
+        """Check if the discovery service is running"""
+        return self._running
     
     def get_service_info(self) -> dict:
         """Get service information"""

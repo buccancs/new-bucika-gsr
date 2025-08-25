@@ -17,6 +17,7 @@ class TimeSyncService:
         self.port = port
         self.transport: Optional[asyncio.DatagramTransport] = None
         self.protocol: Optional['TimeSyncProtocol'] = None
+        self._running = False
     
     async def start(self):
         """Start the time synchronization service"""
@@ -30,6 +31,7 @@ class TimeSyncService:
             )
             
             logger.info(f"Time sync service started on UDP port {self.port}")
+            self._running = True
             
         except Exception as e:
             logger.error(f"Failed to start time sync service: {e}")
@@ -40,6 +42,11 @@ class TimeSyncService:
         if self.transport:
             self.transport.close()
             logger.info("Time sync service stopped")
+        self._running = False
+    
+    def is_running(self) -> bool:
+        """Check if the time sync service is running"""
+        return self._running
     
     def get_current_time_ns(self) -> int:
         """Get current time in nanoseconds since Unix epoch"""

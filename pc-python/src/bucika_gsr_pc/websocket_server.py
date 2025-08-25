@@ -72,6 +72,11 @@ class WebSocketServer:
         # Ping/pong tracking
         self.ping_interval = 30  # seconds
         self.ping_tasks: Set[asyncio.Task] = set()
+    
+    @property
+    def connected_clients(self):
+        """Get connected clients (for compatibility)"""
+        return self.connected_devices
         
     async def start(self):
         """Start the WebSocket server"""
