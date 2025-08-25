@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.view;
+package com.energy.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,7 +9,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.widget.SwitchCompat;
-import com.energy.commoncomponent.R;
+import com.topdon.lib.ui.R;
 
 /**
  * Created by fengjibo on 2023/5/29.

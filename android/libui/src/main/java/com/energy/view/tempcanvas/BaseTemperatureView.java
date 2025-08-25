@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.view.tempcanvas;
+package com.energy.view.tempcanvas;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.energy.commoncomponent.R;
-import com.energy.commoncomponent.utils.ScreenUtils;
+import com.energy.R;
+import com.energy.utils.ScreenUtils;
 
 import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;

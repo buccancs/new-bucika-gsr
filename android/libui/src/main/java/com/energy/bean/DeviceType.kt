@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.bean
+package com.energy.bean
 
 /**
  * Created by fengjibo on 2023/8/10.

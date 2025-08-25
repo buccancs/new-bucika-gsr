@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.utils
+package com.energy.utils
 
 import java.lang.reflect.InvocationTargetException
 

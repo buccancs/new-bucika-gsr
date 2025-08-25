@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.view.tempcanvas
+package com.energy.view.tempcanvas
 
 /**
  * Created by fengjibo on 2024/2/20.

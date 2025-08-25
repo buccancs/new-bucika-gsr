@@ -1,8 +1,8 @@
-package com.energy.commoncomponent
+package com.energy
 
 import android.os.Environment
 import com.blankj.utilcode.util.Utils
-import com.energy.commoncomponent.bean.DeviceType
+import com.energy.bean.DeviceType
 
 /**
  * Created by fengjibo on 2023/5/8.

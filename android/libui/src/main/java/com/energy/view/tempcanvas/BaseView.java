@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.view.tempcanvas;
+package com.energy.view.tempcanvas;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

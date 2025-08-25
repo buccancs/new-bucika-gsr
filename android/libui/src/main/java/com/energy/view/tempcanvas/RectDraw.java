@@ -1,4 +1,4 @@
-package com.energy.commoncomponent.view.tempcanvas;
+package com.energy.view.tempcanvas;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,8 +12,8 @@ import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.Log;
 
-import com.energy.commoncomponent.R;
-import com.energy.commoncomponent.utils.ScreenUtils;
+import com.energy.R;
+import com.energy.utils.ScreenUtils;
 
 import java.util.LinkedList;
 import java.util.UUID;
