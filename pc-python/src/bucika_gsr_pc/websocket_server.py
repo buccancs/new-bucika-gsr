@@ -17,7 +17,7 @@ from loguru import logger
 
 from .protocol import (
     MessageEnvelope, MessageType, MessagePayload, EmptyPayload,
-    HelloPayload, RegisterPayload, StartPayload, AckPayload, 
+    HelloPayload, RegisterPayload, StartPayload, SyncMarkPayload, AckPayload, 
     ErrorPayload, GSRSamplePayload, UploadBeginPayload,
     UploadChunkPayload, UploadEndPayload, parse_message_payload
 )
@@ -57,10 +57,12 @@ class WebSocketServer:
     """WebSocket server for Android client communication"""
     
     def __init__(self, port: int, session_manager: SessionManager, 
-                 time_sync_service: TimeSyncService):
+                 time_sync_service: TimeSyncService,
+                 performance_monitor: Optional = None):
         self.port = port
         self.session_manager = session_manager
         self.time_sync_service = time_sync_service
+        self.performance_monitor = performance_monitor
         
         self.server = None
         self.connected_devices: Dict[str, ConnectedDevice] = {}
@@ -232,13 +234,21 @@ class WebSocketServer:
         await self.send_message(websocket, device_id, MessageType.ACK, ack)
     
     async def handle_sync_mark(self, websocket: WebSocketServerProtocol,
-                              envelope: MessageEnvelope, payload):
+                              envelope: MessageEnvelope, payload: SyncMarkPayload):
         """Handle SYNC_MARK message"""
-        # TODO: Implement sync mark handling
-        logger.debug(f"Sync mark received from {envelope.deviceId}")
+        device_id = envelope.deviceId
+        
+        # Record sync mark in the session
+        await self.session_manager.record_sync_mark(
+            device_id, 
+            payload.markId, 
+            payload.description
+        )
+        
+        logger.info(f"Sync mark '{payload.markId}' recorded for device {device_id}")
         
         # Send ACK
-        ack = AckPayload(messageId=envelope.id, status="SYNC_MARK_RECEIVED")
+        ack = AckPayload(messageId=envelope.id, status="SYNC_MARK_RECORDED")
         await self.send_message(websocket, envelope.deviceId, MessageType.ACK, ack)
     
     async def handle_gsr_sample(self, websocket: WebSocketServerProtocol,

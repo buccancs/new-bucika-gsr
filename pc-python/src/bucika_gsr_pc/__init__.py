@@ -20,6 +20,7 @@ from .websocket_server import WebSocketServer
 from .discovery_service import DiscoveryService
 from .time_sync_service import TimeSyncService
 from .session_manager import SessionManager
+from .performance_monitor import PerformanceMonitor, PerformanceOptimizer
 
 # Try to import GUI, but make it optional for headless environments
 try:
@@ -42,10 +43,16 @@ class BucikaOrchestrator:
         self.session_manager = SessionManager()
         self.time_sync_service = TimeSyncService()
         self.discovery_service = DiscoveryService()
+        
+        # Performance monitoring
+        self.performance_monitor = PerformanceMonitor()
+        self.performance_optimizer = PerformanceOptimizer(self.performance_monitor)
+        
         self.websocket_server = WebSocketServer(
             port=8080,
             session_manager=self.session_manager,
-            time_sync_service=self.time_sync_service
+            time_sync_service=self.time_sync_service,
+            performance_monitor=self.performance_monitor
         )
         
         # Only create GUI if not headless and GUI is available
@@ -65,6 +72,12 @@ class BucikaOrchestrator:
         logger.info("Starting Bucika GSR Orchestrator v1.0.0 (Python)")
         
         try:
+            # Enable performance optimizations
+            self.performance_optimizer.enable_optimizations()
+            
+            # Start performance monitoring
+            await self.performance_monitor.start()
+            
             # Start core services
             await self.time_sync_service.start()
             await self.discovery_service.start()
@@ -96,6 +109,7 @@ class BucikaOrchestrator:
             await self.websocket_server.stop()
             await self.discovery_service.stop()
             await self.time_sync_service.stop()
+            await self.performance_monitor.stop()
             logger.info("All services stopped successfully")
         except Exception as e:
             logger.error(f"Error during shutdown: {e}")

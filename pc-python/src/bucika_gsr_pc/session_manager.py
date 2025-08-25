@@ -47,6 +47,9 @@ class Session:
         
         # Uploaded files
         self.uploaded_files: List[str] = []
+        
+        # Sync marks for synchronization events
+        self.sync_marks: List[Dict[str, Any]] = []
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert session to dictionary for serialization"""
@@ -61,7 +64,8 @@ class Session:
             "started_at": self.started_at.isoformat() if self.started_at else None,
             "ended_at": self.ended_at.isoformat() if self.ended_at else None,
             "gsr_samples_count": len(self.gsr_samples),
-            "uploaded_files": self.uploaded_files
+            "uploaded_files": self.uploaded_files,
+            "sync_marks": self.sync_marks
         }
 
 
@@ -158,6 +162,31 @@ class SessionManager:
         
         logger.debug(f"Stored {len(samples)} GSR samples for session {session.session_id}")
     
+    async def record_sync_mark(self, device_id: str, mark_id: str, description: Optional[str] = None):
+        """Record a synchronization mark for an active session"""
+        session = self.active_sessions.get(device_id)
+        if not session:
+            logger.warning(f"No active session found for device {device_id}")
+            return
+        
+        # Create sync mark record
+        sync_mark = {
+            "mark_id": mark_id,
+            "timestamp": datetime.now().isoformat(),
+            "timestamp_ns": int(datetime.now().timestamp() * 1_000_000_000),
+            "description": description,
+            "session_id": session.session_id
+        }
+        
+        # Add to session sync marks
+        session.sync_marks.append(sync_mark)
+        
+        # Also write to a separate sync marks file for the session
+        await self._write_sync_mark(session, sync_mark)
+        
+        logger.info(f"Recorded sync mark '{mark_id}' for session {session.session_id}")
+    
+    
     async def save_uploaded_file(self, device_id: str, filename: str, file_data: bytes):
         """Save an uploaded file for the session"""
         session = self.active_sessions.get(device_id)
@@ -243,6 +272,44 @@ class SessionManager:
             
         except Exception as e:
             logger.error(f"Failed to write GSR samples: {e}")
+    
+    async def _write_sync_mark(self, session: Session, sync_mark: Dict[str, Any]):
+        """Write sync mark to session's sync marks file"""
+        try:
+            # Create sync marks file path
+            session_dir = self.base_path / session.session_id
+            sync_marks_file = session_dir / "sync_marks.csv"
+            
+            # Check if file exists to decide on header
+            file_exists = sync_marks_file.exists()
+            
+            # Write sync mark 
+            async with aiofiles.open(sync_marks_file, 'a', newline='') as f:
+                # Write header if new file
+                if not file_exists:
+                    header = "Mark_ID,Timestamp_ns,DateTime_UTC,Description,Session_ID\n"
+                    await f.write(header)
+                
+                # Convert timestamp to human-readable format
+                dt = datetime.fromisoformat(sync_mark["timestamp"])
+                dt_str = dt.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+                
+                # Write sync mark row
+                row = [
+                    sync_mark["mark_id"],
+                    sync_mark["timestamp_ns"],
+                    dt_str,
+                    sync_mark["description"] or "",
+                    sync_mark["session_id"]
+                ]
+                
+                csv_row = ','.join(f'"{field}"' if isinstance(field, str) and ',' in field else str(field) for field in row) + '\n'
+                await f.write(csv_row)
+                await f.flush()
+                
+        except Exception as e:
+            logger.error(f"Failed to write sync mark: {e}")
+    
     
     async def _close_gsr_file(self, device_id: str):
         """Close GSR file for a device"""
