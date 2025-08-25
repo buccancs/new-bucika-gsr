@@ -43,3 +43,5 @@ object JNITool {
                                                             image_w : Int,high_t : Float, low_t : Float,
                                                             color_h : Int, color_l:Int,type : Int) : ByteArray
 
+}
+
