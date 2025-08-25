@@ -61,7 +61,7 @@ class BluetoothManager private constructor() : EventObserver {
 
     private fun setMTUValue() {
         mDevice?.let { device ->
-            if (device.isConnected) {
+            if (device.isConnected()) {
                 Log.e("bcf_ble", "连接设备名称：${device.name}")
                 
                 val mtuValue = when {
@@ -70,7 +70,7 @@ class BluetoothManager private constructor() : EventObserver {
                     else -> 503
                 }
                 
-                val builder = RequestBuilderFactory().getChangeMtuBuilder(mtuValue)
+                val builder = RequestBuilderFactory.getChangeMtuBuilder(mtuValue)
                 val request = builder.setCallback(object : MtuChangeCallback {
                     override fun onMtuChanged(request: Request, mtu: Int) {
                         Log.d("wangchen", "MTU修改成功，新值：$mtu")
@@ -89,7 +89,7 @@ class BluetoothManager private constructor() : EventObserver {
 
     private fun setReadCallback() {
         mDevice?.let { device ->
-            if (device.isConnected) {
+            if (device.isConnected()) {
                 isSending = false
 
                 val serviceUUID = UUID.fromString(UUIDManager.SERVICE_UUID)
@@ -99,9 +99,9 @@ class BluetoothManager private constructor() : EventObserver {
                 val isEnabled = connection?.isNotificationOrIndicationEnabled(serviceUUID, notifyUUID) ?: false
                 LLog.w("bcf_ble", "是否打开了Notifycation: $isEnabled")
 
-                val notificationBuilder = RequestBuilderFactory()
+                val notificationBuilder = RequestBuilderFactory
                     .getSetNotificationBuilder(serviceUUID, notifyUUID, true)
-                val readBuilder = RequestBuilderFactory()
+                val readBuilder = RequestBuilderFactory
                     .getReadCharacteristicBuilder(serviceUUID, readUUID)
 
                 connection?.let { conn ->
@@ -169,7 +169,7 @@ class BluetoothManager private constructor() : EventObserver {
         }
     }
 
-    fun isConnected(): Boolean = mDevice?.isConnected == true
+    fun isConnected(): Boolean = mDevice?.isConnected() == true
 
     @Tag("onConnectionStateChanged")
     @Observe
@@ -181,7 +181,7 @@ class BluetoothManager private constructor() : EventObserver {
             Log.e("wangchen", "发送广播--$state")
         }
         
-        Log.d("ywq", "MyObserver 连接状态：$state 是否已连接：${device.isConnected}-----名称：${device.name}-------mac: ${device.address}")
+        Log.d("ywq", "MyObserver 连接状态：$state 是否已连接：${device.isConnected()}-----名称：${device.name}-------mac: ${device.address}")
         
         when (state) {
             ConnectionState.SCANNING_FOR_RECONNECTION -> {}
@@ -195,7 +195,7 @@ class BluetoothManager private constructor() : EventObserver {
             }
             ConnectionState.SERVICE_DISCOVERED -> {
                 setMTUValue()
-                if (device.isConnected) {
+                if (device.isConnected()) {
                     EventBus.getDefault().post(ConnectionState.SERVICE_DISCOVERED.name)
                 }
             }
@@ -226,7 +226,7 @@ class BluetoothManager private constructor() : EventObserver {
         val device = mDevice
         val conn = connection
         
-        if (device == null || !device.isConnected || conn == null) {
+        if (device == null || !device.isConnected() || conn == null) {
             return false
         }
 

@@ -51,7 +51,7 @@ class EasyBLE private constructor(builder: EasyBLEBuilder) {
     private val posterDispatcher: PosterDispatcher
     private val bondController: BondController?
     private val deviceCreator: DeviceCreator
-    private val observable: Observable
+    val observable: Observable
     private val logger: Logger
     private val scannerType: ScannerType?
     val scanConfiguration: ScanConfiguration

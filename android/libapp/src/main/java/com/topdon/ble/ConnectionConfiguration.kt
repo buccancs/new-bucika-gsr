@@ -18,19 +18,14 @@ class ConnectionConfiguration {
         private set
         
     var connectTimeoutMillis = 10000
-        private set
         
     var requestTimeoutMillis = 3000
-        private set
         
     var tryReconnectMaxTimes = TRY_RECONNECT_TIMES_INFINITE
-        private set
         
     var reconnectImmediatelyMaxTimes = 3
-        private set
         
     var isAutoReconnect = true
-        private set
         
     @RequiresApi(Build.VERSION_CODES.M)
     var transport = BluetoothDevice.TRANSPORT_LE

@@ -174,7 +174,7 @@ abstract class AbstractScanner(
         if (configuration.rssiLowLimit <= rssi) {
             val dev = deviceCreator.create(device, result)
             if (dev != null) {
-                dev.name = if (TextUtils.isEmpty(dev.getName())) name else dev.getName()
+                dev.name = if (TextUtils.isEmpty(dev.name)) name else dev.name
                 dev.rssi = rssi
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     dev.scanResult = result
