@@ -502,4 +502,96 @@ For research institutions and commercial users:
 
 ---
 
+## Hardware Integration Guide
+
+### Shimmer3 GSR+ Integration
+
+#### Setup Requirements
+- Android device with Bluetooth 4.0+
+- Shimmer3 GSR+ sensor with charged battery
+- Shimmer Console software for initial configuration
+
+#### Configuration Steps
+
+1. **Sensor Pairing**
+   ```kotlin
+   // Bluetooth pairing in GSRManager
+   private fun connectToShimmer(bluetoothAddress: String) {
+       shimmerDevice = Shimmer(this)
+       shimmerDevice.connect(bluetoothAddress, "default")
+   }
+   ```
+
+2. **Data Collection Setup**
+   ```kotlin
+   // Configure sampling rate and sensors
+   shimmerDevice.writeGSRRange(0) // ±40µS range
+   shimmerDevice.setSamplingRateShimmer(128.0) // 128Hz
+   shimmerDevice.enableSensors(SENSOR_GSR)
+   ```
+
+3. **Electrode Placement**
+   - Attach GSR electrodes to index and middle fingers
+   - Clean electrode sites with alcohol wipe
+   - Ensure secure but comfortable contact
+   - Allow 2-3 minutes for baseline stabilization
+
+### Topdon TC001 Thermal Camera Integration
+
+#### Prerequisites
+- Android device with USB OTG support
+- TC001 thermal camera
+- USB OTG cable
+
+#### USB Configuration
+
+Add to AndroidManifest.xml:
+```xml
+<uses-feature android:name="android.hardware.usb.host" />
+<uses-permission android:name="android.permission.USB_PERMISSION" />
+```
+
+#### OpenCV Integration
+```cmake
+# CMakeLists.txt for thermal processing
+find_package(OpenCV REQUIRED)
+target_link_libraries(thermal-processing ${OpenCV_LIBS})
+```
+
+#### Performance Optimization
+```kotlin
+// Thermal frame processing optimization
+class ThermalProcessor {
+    companion object {
+        init {
+            if (!OpenCVLoaderCallback.OpenCVCallbackInterface.SUCCESS) {
+                OpenCVLoaderCallback.initDebug()
+            }
+        }
+    }
+}
+```
+
+### Hardware Troubleshooting
+
+#### Common GSR Issues
+- **Connection timeout**: Check Bluetooth permissions and device pairing
+- **Data quality**: Verify sensor placement and skin conductance
+- **Signal noise**: Ensure electrodes are clean and properly attached
+- **Range issues**: Adjust GSR range settings for optimal signal
+
+#### Common TC001 Issues  
+- **USB permission**: Grant USB access in Android settings
+- **Frame rate issues**: Check USB 3.0 connection and processing optimization
+- **Heat dissipation**: Allow thermal camera to warm up before recording
+- **Calibration**: Run thermal calibration sequence before sessions
+
+#### Network and Connectivity
+- **WiFi interference**: Use 5GHz networks when possible
+- **Range limitations**: Keep devices within 10 meters of router
+- **Bandwidth**: Ensure adequate bandwidth for multiple device streams
+- **Firewall**: Allow ports 8080 and 9123 through PC firewall
+
+---
+
 *This manual is for Bucika GSR Platform v1.0. For the latest version, visit our GitHub repository.*

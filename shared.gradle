@@ -216,10 +216,8 @@ project.ext.bucika_dependencies = [
 // Validation function to check all modules have proper configurations
 project.ext.validateModuleConfigs = {
     def requiredModules = [
-        ':android:app', ':android:libapp', ':android:libcom', ':android:libir', ':android:libmenu', ':android:libui',
-        ':android:BleModule', ':android:component:thermal-ir', ':android:component:CommonComponent',
-        ':android:LocalRepo:libcommon', ':android:LocalRepo:libirutils', ':android:RangeSeekBar',
-        ':android:commonlibrary'
+        ':android:app', ':android:libapp', ':android:libir', ':android:libui'
+        // Consolidated modules: BleModule->libapp, thermal-ir->libir, CommonComponent->libui, LocalRepo AAR files moved directly to libir
     ]
     
     requiredModules.each { moduleName ->

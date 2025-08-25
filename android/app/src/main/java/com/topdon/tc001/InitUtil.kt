@@ -30,7 +30,7 @@ import java.util.Date
 object InitUtil {
     fun initLog() {
         val fileName = "logs_${TimeUtils.date2String(Date(), "yyyy-MM-dd")}.log"
-        val fileDir = BaseApplication.instance.getExternalFilesDir("log")!!.absolutePath
+        val fileDir = BaseApplication.instance.getExternalFilesDir("logs")!!.absolutePath
         val tag = "TopInfrared_LOG"
         val pattern = "{d}, {L}, {t}, {m}"
         val backupStrategy = FileSizeBackupStrategy2(5 * 1024 * 1024L, 10) //一份文件的大小

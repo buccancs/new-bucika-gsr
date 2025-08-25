@@ -73,12 +73,6 @@ android {
     }
 }
 
-//kotlin {
-//    experimental {
-//        coroutines 'enable'
-//    }
-//}
-
 dependencies {
     api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     api "androidx.appcompat:appcompat:1.4.1"
@@ -112,9 +106,7 @@ dependencies {
     api "com.trello.rxlifecycle2:rxlifecycle-components:2.2.2" 
     // Temporarily remove problematic ktx dependencies for build stability
     // api "com.trello.rxlifecycle2:rxlifecycle-ktx:2.2.2"
-    // api "com.trello.rxlifecycle2:rxlifecycle-android-lifecycle-ktx:2.2.2"
-
-    // ARouter for navigation - Re-added as it's needed for existing code
+    
     api "com.alibaba:arouter-api:1.5.2"
     ksp "com.alibaba:arouter-compiler:1.5.2"
 
@@ -129,30 +121,33 @@ dependencies {
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
     api "com.scwang.smartrefresh:SmartRefreshLayout:1.1.3"
     api "com.scwang.smartrefresh:SmartRefreshHeader:1.1.3"
-    api "com.scwang.smartrefresh:SmartRefreshHeader:1.1.3"
 
     api "com.squareup.okhttp3:logging-interceptor:4.9.1"
     api "com.github.skydoves:colorpickerview:2.2.4"
-    // Remove problematic dependencies for build stability
-    // api "com.github.maning0303:MNImageBrowser:v2.1.8" 
-    // api "com.github.sd6352051:nifty-slider:1.3"
-    // api "nifty-effect dependency not available"
 
-//    devApi Deps.lms2
-//    betaApi Deps.lms2
-//    prodApi Deps.lms2
-//    prodTopdonApi Deps.lms2
-//    insideChinaApi Deps.lms3
-//    prodTopdonInsideChinaApi Deps.lms3
-
-
-
-    //javacv
+    // JavaCV for video processing
     api "org.bytedeco:javacv:1.5.6"
     api "org.bytedeco:javacpp:1.5.6"
+    
+    // Local AAR dependencies
     api files('libs/abtest-1.0.1.aar')
     api files('libs/auth-number-2.13.2.1.aar')
     api files('libs/lms_international-3.90.009.0.aar')
     api files('libs/logger-2.2.1-release.aar')
     api files('libs/main-2.2.1-release.aar')
+    
+    // Dependencies from merged libcom module
+    api "com.github.skydoves:colorpickerview:2.2.4"
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+    implementation group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '3.1.0'
+    implementation 'javax.xml.stream:stax-api:1.0'
+    implementation 'com.fasterxml:aalto-xml:1.2.2'
+    
+    // Dependencies from merged BleModule
+    api 'org.greenrobot:eventbus:3.3.1' // Updated version from BleModule
+    api 'com.google.code.gson:gson:2.11.0' // Updated version from BleModule  
+    api 'com.elvishew:xlog:1.11.0' // Updated version from BleModule
+    api 'com.alibaba:fastjson:1.2.83' // From BleModule
+    implementation files('libs/ini4j-0.5.5.jar') // From BleModule
 }
