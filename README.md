@@ -358,6 +358,17 @@ The system provides comprehensive data output and analysis:
 - **[Run Configurations](RUN_CONFIGURATIONS.md)**: Development environment setup
 - **[Copilot Guidelines](COPILOT_GUIDELINES.md)**: AI-assisted development best practices
 
+## Tools and Utilities
+
+### Issue Synchronization
+- **[Issue Sync Guide](docs/ISSUE_SYNC_GUIDE.md)**: Guide for keeping GitHub issues synchronized with repository documentation
+- **Backlog Sync Script**: `tools/sync_backlog_to_issue.sh` - Converts BACKLOG.md for safe GitHub issue updating with proper HTML entity encoding
+
+```bash
+# Sync BACKLOG.md content for GitHub issue #20
+./tools/sync_backlog_to_issue.sh
+```
+
 ## Support and Development
 
 ### Technical Resources
