@@ -1,53 +1,86 @@
-# 🚀 Complete Feature Overview - Bucika GSR PC Orchestrator
+# 🚀 Simplified Research Platform - Bucika GSR PC Orchestrator
 
 ## Executive Summary
 
-The **Python PC Orchestrator** represents a **complete research-grade platform** that significantly exceeds the original requirements. This implementation provides enterprise-grade reliability, advanced analytics, and comprehensive data management while maintaining 100% compatibility with existing Android clients.
+The **Python PC Orchestrator** delivers a **streamlined 3-tab research interface** designed exclusively for physiological data collection studies. This implementation eliminates distractions and focuses researchers on the essential tasks while maintaining 100% compatibility with existing Android clients.
 
-## 🌟 Core Platform Capabilities
+## 📷 Core Research Interface
 
-### ✅ **Enterprise WebSocket Server**
-- **High-Performance Architecture**: Async/await design handling 100+ concurrent connections
-- **Complete Protocol Implementation**: Full BucikaGSR message handling with validation
-- **Intelligent Connection Management**: Auto-reconnection, heartbeat monitoring, graceful degradation
-- **Real-time Data Streaming**: 128Hz GSR collection with quality flags and buffering
-- **Advanced File Upload**: Chunked transfers with MD5 verification and resume capability
+### **3-Tab Focused Design**
+The interface has been simplified from complex multi-tab layouts to just **three essential research tabs**:
 
-### 🔍 **Intelligent mDNS Discovery**
-- **Automatic Service Broadcasting**: `_bucika-gsr._tcp` with dynamic property updates
-- **Conflict Resolution**: Automatic service name uniqueness and registration recovery
-- **Multi-Interface Support**: Ethernet, WiFi, and virtual network interface detection
-- **Service Health Monitoring**: Real-time availability tracking and status reporting
+1. **📷 Image Preview** - Real-time IR+RGB camera monitoring
+2. **🎬 Emotion Videos** - Professional stimulus presentation
+3. **📱 Device Monitor** - Session and device management
 
-### ⏱️ **Sub-Millisecond Time Synchronization**
-- **High-Precision UDP Service**: Port 9123 with nanosecond accuracy timestamps
-- **Network Compensation**: Automatic latency calculation and drift correction
-- **Quality Assessment**: Synchronization accuracy monitoring and reporting
-- **Multi-Client Support**: Simultaneous timing coordination for multiple devices
+## 📷 **Image Preview Tab**
 
-### 📊 **Advanced Session Management**
-- **Complete Lifecycle**: NEW → RECORDING → FINALISING → DONE/FAILED state tracking
-- **Persistent Storage**: Atomic CSV operations with metadata and integrity verification
-- **Session Recovery**: Automatic recovery from unexpected shutdowns or crashes
-- **Real-time Monitoring**: Live session status, data quality, and performance metrics
+### Real-time Camera Monitoring
+- **IR+RGB Side-by-Side Display**: Live thermal and RGB camera feeds from each connected Android device
+- **Individual Device Widgets**: Dedicated preview areas showing device name, status, and timestamp
+- **Auto-Refresh**: Configurable refresh intervals (1-30 seconds) for continuous monitoring
+- **Save Functionality**: Capture and save current images for research documentation
+- **Status Indicators**: Real-time updates showing last image received timestamp
 
-## 🧪 Research-Grade Data Analysis
-
-### **Statistical Analysis Engine**
+### Technical Implementation
 ```python
-analyzer = GSRDataAnalyzer()
-results = analyzer.analyze_session("session_id")
-
-# Comprehensive metrics
-print(f"Sample Count: {results.sample_count:,}")
-print(f"Mean GSR: {results.mean_gsr:.3f} μS")
-print(f"Std Dev: {results.std_gsr:.3f} μS") 
-print(f"Quality Score: {results.data_quality_score:.3f}")
-print(f"Artifacts: {results.artifacts_detected}")
+# Each device gets dedicated preview widget
+preview_widget = ImagePreviewWidget(device_id="dev_001")
+preview_widget.display_ir_rgb_images(ir_image, rgb_image)
+preview_widget.update_timestamp(last_received)
 ```
 
-**Advanced Capabilities:**
-- **Z-Score Artifact Detection**: Statistical spike and dropout identification
+## 🎬 **Emotion Videos Tab**
+
+### Professional Stimulus Presentation
+- **Multi-Format Support**: MP4, AVI, MOV, MKV, WebM, FLV, WMV compatibility
+- **Advanced Controls**: Play, pause, stop with frame-by-frame navigation
+- **Variable Speed**: 0.5x to 2.0x playback for precise timing control
+- **Keyboard Shortcuts**: Space (play/pause), arrows (seek), seamless operation
+- **Progress Tracking**: Visual progress bar with time display
+- **Category Filtering**: Organize videos by emotion type or category
+
+### Research Benefits
+- **Standardized Stimulus**: Consistent video presentation across studies
+- **Precise Timing**: Frame-accurate playback for synchronized data collection  
+- **Easy Management**: Browse and import functionality for video libraries
+- **Seamless Operation**: Keyboard control for hands-free operation during studies
+
+## 📱 **Device Monitor Tab**
+
+### Combined Management Interface
+- **Device Connection Monitoring**: Real-time status of connected Android devices
+- **Battery Level Tracking**: Monitor device power status during long sessions
+- **Session State Management**: Visual indicators for session progress (NEW/RECORDING/DONE)
+- **Duration Display**: Live session timing and sample count tracking
+- **Integrated Controls**: Start sessions and stop recordings from single interface
+
+### Session Management
+```python
+# Monitor active sessions
+session_info = {
+    "session_id": "sess_001",
+    "device_id": "dev_001", 
+    "state": "RECORDING",
+    "duration": "00:05:32",
+    "samples": 42_560
+}
+```
+
+## 🛠️ Enterprise-Grade Infrastructure
+
+### Core Services
+- **WebSocket Server**: High-performance async communication (port 8080)
+- **mDNS Discovery**: Automatic device discovery with `_bucika-gsr._tcp`
+- **Time Synchronization**: Sub-millisecond precision UDP service (port 9123)
+- **Session Management**: Complete lifecycle with persistent storage
+- **File Upload**: Chunked transfers with MD5 integrity verification
+
+### Research Benefits
+- **Multi-Device Support**: Coordinate multiple participants simultaneously
+- **Data Integrity**: Automatic validation and quality assurance
+- **Reliable Communication**: Robust error handling and recovery
+- **Standard Compliance**: Full protocol compatibility with Android clients
 - **Signal Quality Assessment**: Multi-dimensional quality scoring (completeness, consistency, accuracy)
 - **Trend Analysis**: Time-series pattern recognition and anomaly detection  
 - **Batch Processing**: Multi-session analysis workflows for research studies

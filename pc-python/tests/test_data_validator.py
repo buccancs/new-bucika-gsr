@@ -167,7 +167,7 @@ class TestDataValidator(unittest.TestCase):
         
         # Test that batch validator exists and can be initialized
         self.assertIsInstance(batch_validator, BatchValidator)
-        self.assertEqual(batch_validator.validation_level, ValidationLevel.STANDARD)
+        self.assertEqual(batch_validator.validator.validation_level, ValidationLevel.STANDARD)
     
     def test_quality_report_structure(self):
         """Test quality report structure"""

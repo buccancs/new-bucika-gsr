@@ -1,205 +1,152 @@
-# 🎬 PyQt6 GUI Features - Bucika GSR PC Orchestrator
+# 🎬 Simplified PyQt6 GUI Features - Bucika GSR PC Orchestrator
 
-## 🚀 Professional GUI Implementation
+## 🚀 Streamlined Research Interface
 
-The Python PC orchestrator now features a comprehensive **PyQt6-based GUI** that provides enterprise-grade functionality for research-quality GSR data collection and analysis.
+The Python PC orchestrator features a **simplified 3-tab PyQt6 GUI** designed exclusively for core research requirements. This streamlined interface eliminates distractions and focuses on essential physiological data collection tasks.
 
-## 🎯 Core GUI Components
+## 🎯 3-Tab Research Design
 
-### 1. **Connected Devices Tab** 📱
-- Real-time device monitoring with connection status
-- Device information display (ID, Name, Version, Battery, Connection Time)
-- Auto-updating table with connected Android clients
-- Visual indicators for device health and status
+### 📷 **Tab 1: Image Preview**
+Real-time monitoring of IR+RGB camera feeds from connected Android devices.
 
-### 2. **Sessions Tab** 📊
-- Active session monitoring and management
-- Session details (ID, Device, Name, State, Start Time, Sample Count)
-- Real-time updates of session progress
-- Session state tracking (NEW → RECORDING → DONE/FAILED)
+#### Key Features:
+- **Individual Device Widgets**: Dedicated preview areas for each connected phone
+- **Side-by-Side Display**: IR thermal and RGB camera feeds displayed simultaneously
+- **Real-time Updates**: Live image refresh with configurable intervals (1-30 seconds)
+- **Timestamp Tracking**: Last received image time displayed for each device
+- **Save Functionality**: Capture and save current images for documentation
+- **Auto-refresh Toggle**: Automatic image updating with customizable intervals
 
-### 3. **Logs Tab** 📝
-- Real-time application logging with timestamps
-- Scrollable log viewer with auto-scroll to latest entries
-- Color-coded log levels and structured information
-- Copy and clear log functionality via menu system
+#### Technical Implementation:
+```python
+class ImagePreviewWidget(QWidget):
+    def __init__(self, device_id: str):
+        self.device_id = device_id
+        self.ir_label = QLabel()      # IR camera display
+        self.rgb_label = QLabel()     # RGB camera display
+        self.timestamp_label = QLabel()
+        
+    def update_images(self, ir_image, rgb_image):
+        # Display side-by-side IR+RGB images
+        self.ir_label.setPixmap(QPixmap.fromImage(ir_image))
+        self.rgb_label.setPixmap(QPixmap.fromImage(rgb_image))
+```
 
-### 4. **🎬 Video Playback Tab** (Advanced Professional Features)
-#### Video Player Controls:
-- **Professional Media Controls**: Play, Pause, Stop, Frame-by-frame navigation
-- **Advanced Seeking**: Clickable progress bar for instant seeking to any position
-- **Speed Control**: 9 speed levels from 0.1x to 4.0x playback speed
-- **Timestamp Display**: Current time / Total time with MM:SS format
-- **Fullscreen Mode**: Toggle fullscreen viewing with F11 or button
-- **Multi-format Support**: MP4, AVI, MOV, MKV, WebM, FLV, WMV
+### 🎬 **Tab 2: Emotion Videos**
+Professional video player optimized for emotion illicitation studies.
 
-#### Keyboard Shortcuts:
-- **Space**: Play/Pause toggle
-- **Arrow Keys**: Frame-by-frame navigation (←/→)
-- **Home**: Reset to beginning
-- **F/F11**: Toggle fullscreen
+#### Video Player Features:
+- **Multi-Format Support**: MP4, AVI, MOV, MKV, WebM, FLV, WMV compatibility
+- **Professional Controls**: Play, Pause, Stop with visual indicators
+- **Frame Navigation**: Precise frame-by-frame control for research accuracy
+- **Variable Speed**: 0.5x to 2.0x playback for timing requirements
+- **Progress Tracking**: Visual progress bar with time display
+- **Category Filtering**: Organize videos by emotion type or study category
+
+#### Keyboard Shortcuts (Research Optimized):
+- **Space**: Play/Pause toggle (hands-free operation)
+- **← →**: Frame-by-frame navigation for precise control
+- **↑ ↓**: Volume control
+- **Home**: Return to video beginning
 - **+/-**: Adjust playback speed
 
-#### Video File Management:
-- **Automatic Discovery**: Scans session directories for uploaded videos
-- **File Browser**: Browse and load external video files
-- **Session Integration**: Direct access to videos uploaded during sessions
-
-### 5. **📊 Data Analysis Tab** (Research-Grade Analysis)
-#### Analysis Features:
-- **Session Selection**: Dropdown with all available sessions (active + saved)
-- **Statistical Analysis**: Comprehensive GSR data analysis with quality metrics
-- **Data Validation**: Multi-level validation (Basic/Standard/Strict/Research-Grade)
-- **Visual Reports**: Detailed analysis summary and comprehensive results
-- **Export Functionality**: Export analysis reports to text files
-
-#### Analysis Capabilities:
-- **Statistical Metrics**: Mean, StdDev, Min/Max, Dynamic Range, Quality Score
-- **Artifact Detection**: Automated identification and classification of data artifacts
-- **Quality Assessment**: Completeness, Accuracy, Consistency scoring
-- **Recommendations**: Automated suggestions for data quality improvement
-- **Batch Processing**: Support for analyzing multiple sessions
-
-### 6. **📈 Real-time Plot Tab** (Live Data Visualization)
-#### Plotting Features:
-- **Matplotlib Integration**: Professional scientific plotting with high-quality graphs
-- **Real-time Updates**: Live GSR data visualization during active sessions
-- **Interactive Controls**: Auto-scale, time window selection, data source indicators
-- **Demo Mode**: Built-in data simulation for testing and demonstrations
-- **Export Capabilities**: Save plots in PNG, PDF, SVG formats
-
-#### Plot Customization:
-- **Time Windows**: 10s, 30s, 60s, 120s, 300s, or All data
-- **Statistical Overlays**: Real-time mean, standard deviation, min/max displays
-- **Data Highlighting**: Recent data highlighted in different colors
-- **Grid and Labels**: Professional scientific graph formatting
-
-### 7. **❓ Help & Info Tab** (Comprehensive Documentation)
-#### Help System:
-- **🚀 Quick Start Guide**: Step-by-step setup and usage instructions
-- **⌨️ Keyboard Shortcuts**: Complete reference for all shortcuts and hotkeys
-- **🔧 Technical Specifications**: Detailed system requirements and specifications
-- **ℹ️ About**: Version information, features list, dependencies, and licensing
-
-## 🎛️ Advanced System Features
-
-### System Status Panel
-Real-time monitoring dashboard showing:
-- **🖥️ Services**: WebSocket, mDNS, TimeSync status indicators
-- **📊 Performance**: CPU usage, RAM consumption, Network throughput
-- **📱 Sessions**: Active session count, connected device count
-- **⚠️ Errors**: Error tracking and recovery rate monitoring
-
-### Professional Menu System
-Complete menu bar with organized functionality:
-
-#### 📤 File Menu:
-- **Export**: Analysis reports, plots, session data
-- **Recent Sessions**: Quick access to recently analyzed sessions
-- **Preferences**: Application settings and configuration
-- **Quit**: Clean application shutdown
-
-#### ✂️ Edit Menu:
-- **Copy Logs**: Copy application logs to clipboard
-- **Clear Logs**: Clear log display
-- **Select All**: Standard text selection
-
-#### 👁️ View Menu:
-- **Refresh**: Update current tab data
-- **Zoom**: In/Out/Reset zoom levels
-- **Full Screen**: Toggle fullscreen mode
-
-#### 📊 Data Menu:
-- **Demo Data**: Start/stop data simulation
-- **Analyze/Validate**: Quick access to analysis functions
-- **Clear Plot**: Reset plotting display
-
-#### 🛠️ Tools Menu:
-- **Performance Monitor**: System performance analysis
-- **Diagnostics**: System health checking
-- **Network Status**: Network connectivity information
-
-#### ❓ Help Menu:
-- **Keyboard Shortcuts**: Quick reference (F1)
-- **Documentation**: User documentation
-- **About**: Application information
-
-## 🔥 Enterprise-Grade Features
-
-### Error Recovery Integration
-- **Visual Error Indicators**: Real-time error status in system panel
-- **Recovery Rate Monitoring**: Success rate tracking and display
-- **Service Health Monitoring**: Individual service status indicators
-
-### Performance Monitoring
-- **Real-time Metrics**: Live CPU, memory, network usage display
-- **Resource Tracking**: Performance impact monitoring
-- **Optimization Recommendations**: Automated performance suggestions
-
-### Cross-Platform Compatibility
-- **Windows**: Full support with native look and feel
-- **macOS**: Native macOS integration and styling
-- **Linux**: Complete functionality on major distributions
-
-### Research-Grade Reliability
-- **Data Integrity**: Comprehensive validation and quality checking
-- **Professional Export**: Multiple format support for research workflows
-- **Scientific Visualization**: High-quality plots suitable for publications
-- **Session Management**: Complete session lifecycle tracking
-
-## 🚀 Installation & Usage
-
-### Requirements
-```bash
-# Core GUI requirements
-PyQt6>=6.6.0
-opencv-python>=4.8.0
-pillow>=10.1.0
-
-# Visualization requirements
-matplotlib>=3.7.0
-numpy>=1.24.0
-
-# System requirements
-python>=3.8
+#### Research Benefits:
+```python
+class VideoPlayer(QWidget):
+    def __init__(self):
+        self.media_player = QMediaPlayer()
+        self.video_widget = QVideoWidget()
+        self.position_slider = QSlider(Qt.Horizontal)
+        
+    def load_emotion_video(self, video_path: str):
+        # Load video for emotion illicitation study
+        self.media_player.setSource(QUrl.fromLocalFile(video_path))
+        
+    def set_playback_speed(self, speed: float):
+        # Precise speed control for timing requirements
+        self.media_player.setPlaybackRate(speed)
 ```
 
-### Quick Start
-```bash
-# GUI mode (recommended)
-python main.py
+### 📱 **Tab 3: Device Monitor**
+Combined device connection monitoring and session management interface.
 
-# Headless mode (servers)
-python main.py --headless
+#### Device Monitoring:
+- **Real-time Connection Status**: Live monitoring of Android device connections
+- **Battery Level Tracking**: Monitor device power status during studies
+- **Device Information**: ID, name, version, capabilities display
+- **Connection Timeline**: Track when devices connect/disconnect
 
-# Debug mode
-python main.py --debug
+#### Session Management:
+- **Session State Tracking**: Visual indicators for session progress
+- **Duration Monitoring**: Live session timing and elapsed time display
+- **Sample Count Display**: Real-time GSR data sample counting
+- **Session Controls**: Start new sessions, stop recordings
+- **Color-coded Status**: Visual indicators for session states
+
+#### Interface Components:
+```python
+class DeviceMonitorTab(QWidget):
+    def __init__(self):
+        # Device connection table
+        self.device_table = QTableWidget()
+        self.device_table.setColumnCount(6)  # ID, Name, Version, Battery, Status, Connected
+        
+        # Session monitoring table  
+        self.session_table = QTableWidget()
+        self.session_table.setColumnCount(6)  # Session, Device, State, Duration, Samples, Actions
+        
+        # Control buttons
+        self.start_session_btn = QPushButton("▶️ Start New Session")
+        self.stop_all_btn = QPushButton("⏹️ Stop All Sessions")
+        self.refresh_btn = QPushButton("🔄 Refresh")
 ```
 
-### System Requirements
-- **OS**: Windows 10+, macOS 10.14+, Linux (Ubuntu 18.04+)
-- **Python**: 3.8 or later
-- **Memory**: 4GB RAM minimum, 8GB recommended
-- **Display**: GUI requires display support (headless mode available)
+## 🛠️ Technical Architecture
 
-## 🎯 Key Advantages
+### Simplified Class Structure:
+```python
+class SimplifiedMainWindow(QMainWindow):
+    """Main GUI class - streamlined for research use"""
+    
+    def __init__(self):
+        self.init_3_tab_interface()
+        
+    def _create_image_preview_tab(self):
+        """Tab 1: IR+RGB image preview from phones"""
+        
+    def _create_emotion_video_tab(self):
+        """Tab 2: Video playback for emotion illicitation"""
+        
+    def _create_device_monitoring_tab(self):
+        """Tab 3: Device and session management"""
+```
 
-### For Researchers:
-- **Professional Interface**: Publication-quality visualization and analysis
-- **Data Integrity**: Research-grade validation and quality assurance
-- **Export Flexibility**: Multiple formats for analysis workflows
-- **Comprehensive Documentation**: Complete user guides and technical specifications
+### Key Improvements:
+- **Reduced Complexity**: From 8+ tabs to 3 focused research tabs
+- **Streamlined Codebase**: ~1,200 lines vs previous ~2,700+ lines
+- **Research-Focused**: Eliminates unnecessary analytics and ML interfaces
+- **Professional Appearance**: Clean, modern interface suitable for research environments
+- **Keyboard Optimized**: Shortcuts designed for hands-free operation during studies
 
-### For Developers:
-- **Modern Architecture**: PyQt6 with async/await integration
-- **Extensible Design**: Modular components for easy enhancement
-- **Professional Standards**: Enterprise-grade error handling and monitoring
-- **Cross-Platform**: Single codebase for all major operating systems
+## 📊 Status Bar & Menu System
 
-### For Operators:
-- **Real-time Monitoring**: Live system health and performance tracking
-- **Intuitive Interface**: User-friendly design with comprehensive help system
-- **Automated Operations**: Self-managing error recovery and optimization
-- **Professional Tools**: Complete suite of analysis and management capabilities
+### Status Bar Information:
+- **Service Status**: WebSocket (✅), mDNS (✅), TimeSync (✅)  
+- **Device Counter**: Active devices and total connections
+- **Session Statistics**: Active sessions and recording status
 
-This PyQt6 implementation represents a significant advancement over traditional desktop applications, providing a modern, professional, and highly capable platform for research-grade GSR data collection and analysis.
+### Menu System:
+- **File Menu**: Import videos, export data, application settings
+- **View Menu**: Refresh intervals, display options, fullscreen toggle
+- **Help Menu**: User documentation, keyboard shortcuts, about
+
+## 🎯 Research Workflow Benefits
+
+The simplified interface supports typical research workflows:
+
+1. **Setup Phase**: Monitor device connections in Device Monitor tab
+2. **Stimulus Presentation**: Use Emotion Videos tab for standardized stimuli  
+3. **Data Collection**: Monitor real-time IR+RGB feeds in Image Preview tab
+4. **Session Management**: Control recording sessions from Device Monitor tab
+
+This design reduces cognitive load and potential operator errors during time-sensitive research data collection, while maintaining all essential functionality for multi-device GSR studies.

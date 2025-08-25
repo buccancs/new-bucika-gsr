@@ -1,52 +1,50 @@
 # Bucika GSR PC Orchestrator - Python Implementation
 
-A **complete research-grade Python implementation** of the PC orchestrator for coordinating GSR (Galvanic Skin Response) data collection from Android devices. This implementation significantly **exceeds the original requirements** while maintaining 100% protocol compatibility with existing Android clients.
+A **complete research-grade Python implementation** of the PC orchestrator for coordinating GSR (Galvanic Skin Response) data collection from Android devices. This implementation provides a **streamlined 3-tab interface** focused exclusively on core research requirements while maintaining 100% protocol compatibility with existing Android clients.
 
-## 🚀 Advanced Features
+## 🚀 Simplified 3-Tab Research Interface
 
-### Enterprise-Grade Core Services
+This implementation delivers a completely redesigned GUI that focuses exclusively on the core research requirements, replacing complex multi-tab interfaces with a streamlined 3-tab design optimized for physiological data collection studies.
+
+### 📷 **Image Preview Tab**
+- **Real-time IR+RGB camera display** from each connected Android device
+- **Individual preview widgets** showing side-by-side thermal and RGB images
+- **Auto-refresh capabilities** with customizable intervals
+- **Save current images functionality** for research documentation
+- **Timestamped updates** showing last received image data
+
+### 🎬 **Emotion Videos Tab**
+- **Professional video player** optimized for emotion illicitation studies
+- **Support for all major video formats**: MP4, AVI, MOV, MKV, WebM, FLV, WMV
+- **Advanced playback controls**: play/pause/stop, frame-by-frame navigation
+- **Variable playback speed** (0.5x to 2.0x) for precise stimulus timing
+- **Keyboard shortcuts** (Space, arrows) for seamless operation during studies
+- **Category filtering** for organizing emotion stimulus videos
+- **Browse and import functionality** for easy video management
+
+### 📱 **Device Monitor Tab**
+- **Combined device connection and session management** interface  
+- **Real-time monitoring** of connected Android devices with battery levels
+- **Session state tracking** with color-coded status indicators
+- **Duration and sample count display** for active recording sessions
+- **Integrated controls** for starting new sessions and stopping all recordings
+- **Connection status monitoring** with automatic updates
+
+## 🛠️ Enterprise-Grade Core Services
+
+### Core Infrastructure
 - **WebSocket Server**: High-performance async/await JSON-over-WebSocket on port 8080
 - **mDNS Discovery**: Automatic device discovery with `_bucika-gsr._tcp` broadcasting
-- **Time Synchronization**: Sub-millisecond precision UDP service (port 9123) with drift compensation
+- **Time Synchronization**: Sub-millisecond precision UDP service (port 9123)
 - **Session Management**: Complete lifecycle with advanced state tracking and persistence
 - **Real-time Data Streaming**: 128Hz GSR collection with quality flags and CSV storage
-- **Intelligent File Upload**: Chunked transfers with MD5 integrity and progress tracking
+- **Intelligent File Upload**: Chunked transfers with MD5 integrity verification
 
-### 🧪 Research-Grade Data Analysis
-- **Statistical Analysis**: Comprehensive metrics (mean, std, percentiles, trends)
-- **Artifact Detection**: Z-score based spike and dropout identification
-- **Quality Assessment**: Multi-dimensional scoring with detailed recommendations
-- **Data Visualization**: Automated plot generation with matplotlib/seaborn
-- **Batch Processing**: Multi-session analysis workflows for research studies
-- **Export Capabilities**: JSON, CSV, and visualization outputs for external analysis
-
-### 🛡️ Enterprise Error Recovery
-- **Intelligent Classification**: Automatic severity assessment (LOW/MEDIUM/HIGH/CRITICAL)
-- **Adaptive Strategies**: Retry, restart, reconnect, and state reset policies
-- **Pattern Recognition**: ML-based error pattern detection and prevention
-- **Escalation Procedures**: Automatic handling with comprehensive reporting
-- **Real-time Monitoring**: Performance tracking with proactive optimization
-
-### ✅ Multi-Level Data Validation
-- **Validation Levels**: Basic, Standard, Strict, and Research-Grade compliance
-- **Quality Metrics**: Completeness, Accuracy, Consistency, Timeliness, Validity, Integrity
-- **Automated Scoring**: Configurable thresholds with detailed quality reports
-- **Batch Validation**: Large-scale data processing for research workflows
-- **Custom Thresholds**: Adaptable quality requirements for different studies
-
-### 📱 Advanced PyQt6 GUI Interface
-- **Device Management**: Real-time monitoring of connected Android devices with battery, version, and connection status
-- **Session Control**: Complete session lifecycle management with state tracking and sample counts  
-- **Application Logs**: Live log streaming with filtering and export capabilities
-- **🎬 Video Playback**: Professional video player with comprehensive media controls
-  - Support for MP4, AVI, MOV, MKV, WebM, FLV, WMV formats
-  - Frame-by-frame navigation with play/pause/stop controls
-  - Progress tracking and adjustable playback speed
-  - Automatic discovery of videos in session uploads
-  - Browse functionality for loading external video files
-  - Synchronized playback capabilities for research analysis
-
-### 📊 Real-Time Performance Monitoring
+### Research-Grade Features
+- **Data Analysis**: Statistical metrics and artifact detection
+- **Error Recovery**: Intelligent error handling with automatic recovery strategies
+- **Performance Monitoring**: Real-time resource tracking and optimization
+- **Data Validation**: Multi-level quality assurance for research data
 - **System Metrics**: CPU, memory, network, and disk usage tracking
 - **Application Metrics**: Session counts, message throughput, data rates
 - **Resource Optimization**: Automatic performance tuning and recommendations
