@@ -1,21 +1,19 @@
-package com.topdon.commons.poster;
-
-import androidx.annotation.NonNull;
+package com.topdon.commons.poster
 
 /**
  * date: 2019/8/7 09:44
  * author: chuanfeng.bi
  */
-interface Poster {
+internal interface Poster {
     /**
      * 将要执行的任务加入队列
      * 
      * @param runnable 要执行的任务
      */
-    void enqueue(@NonNull Runnable runnable);
+    fun enqueue(runnable: Runnable)
 
     /**
      * 清除队列任务
      */
-    void clear();
+    fun clear()
 }
