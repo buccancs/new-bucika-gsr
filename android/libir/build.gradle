@@ -63,13 +63,22 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 //    implementation(name: 'libusbirsdk_1.2.0', ext: 'aar')
     api(name: 'libusbdualsdk_1.3.4_2406271906_standard', ext: 'aar')
     implementation(name: 'opengl_1.3.2_standard', ext: 'aar')
     api 'com.conghuahuadan:superlayout:1.1.0'
     implementation project(':android:libapp')
-    api(project(":android:LocalRepo:libcommon"))
+    // Local AAR dependencies now included directly
+    // api(project(":android:LocalRepo:libcommon")) - now using libcommon_1.2.0_24052117.aar
+    // api(project(":android:LocalRepo:libirutils")) - now using libirutils_1.2.0_2409241055.aar
     api(name: 'suplib-release', ext: 'aar')
     api(name: 'ai-upscale-release', ext: 'aar')
+    
+    // Dependencies from merged thermal-ir component
+    api "com.airbnb.android:lottie:6.1.0"
+    api 'com.github.anzaizai:EasySwipeMenuLayout:1.1.4'
+    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-java:v8.1.4"
+    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-exo_player2:v8.1.4"
+    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-armv64:v8.1.4"
 }
