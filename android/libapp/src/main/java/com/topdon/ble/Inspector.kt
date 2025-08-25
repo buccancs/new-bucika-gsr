@@ -1,19 +1,17 @@
-package com.topdon.ble;
+package com.topdon.ble
 
 /**
  * date: 2019/8/5 16:10
  * author: bichuanfeng
  */
-final class Inspector {
+internal object Inspector {
     /**
      * 对象为空时抛EasyBLEException
      *
      * @param obj     要检查的对象
      * @param message 异常概要消息
      */
-    static <T> T requireNonNull(T obj, String message) {
-        if (obj == null)
-            throw new EasyBLEException(message);
-        return obj;
+    fun <T> requireNonNull(obj: T?, message: String): T {
+        return obj ?: throw EasyBLEException(message)
     }
 }
