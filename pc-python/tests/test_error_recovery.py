@@ -77,8 +77,10 @@ class TestErrorRecovery(unittest.TestCase):
         from src.bucika_gsr_pc.error_recovery import RecoveryStrategy
         
         test_strategy = RecoveryStrategy(
+            error_pattern="ConnectionError.*",
+            severity=ErrorSeverity.HIGH,
             actions=[RecoveryAction.RETRY],
-            max_attempts=3,
+            max_retries=3,
             conditions={}
         )
         
