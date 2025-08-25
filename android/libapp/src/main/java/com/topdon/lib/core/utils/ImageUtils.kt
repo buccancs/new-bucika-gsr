@@ -78,3 +78,4 @@ object ImageUtils {
             XLog.e("一帧图像保存异常: ${e.message}")
         }
     }
+}

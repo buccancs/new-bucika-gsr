@@ -55,3 +55,4 @@ abstract class BaseWifiActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
     }
+}

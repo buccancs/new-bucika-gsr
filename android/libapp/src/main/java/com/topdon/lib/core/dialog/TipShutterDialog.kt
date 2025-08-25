@@ -88,3 +88,4 @@ class TipShutterDialog : Dialog {
             return dialog as TipShutterDialog
         }
     }
+}

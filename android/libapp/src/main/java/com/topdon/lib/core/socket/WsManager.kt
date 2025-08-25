@@ -236,3 +236,4 @@ class WsManager(private val wsUrl: String, private val okHttpClient: OkHttpClien
 
         fun build(): WsManager = WsManager(wsUrl!!, okHttpClient!!, statusListener!!)
     }
+}

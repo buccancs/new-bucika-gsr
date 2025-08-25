@@ -18,3 +18,4 @@ object Constants {
     const val IR_TEMPERATURE_LITE = 7
 
     const val IS_REPORT_FIRST = "IS_REPORT_FIRST"
+}

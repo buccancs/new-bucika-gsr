@@ -145,3 +145,4 @@ object PermissionTool {
 
         fun onNever(isJump: Boolean)
     }
+}

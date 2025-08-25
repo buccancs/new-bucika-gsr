@@ -178,3 +178,4 @@ object ViewBindingAdapter {
         }
         return bgDrawable
     }
+}

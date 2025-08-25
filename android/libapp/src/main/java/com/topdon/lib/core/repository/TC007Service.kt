@@ -103,3 +103,4 @@ interface TC007Service {
 
     @POST("/v1/thermal/temp/isotherm")
     suspend fun setIsotherm(@Body requestBody: RequestBody): TC007Response<Any?>
+}

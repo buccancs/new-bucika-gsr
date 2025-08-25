@@ -25,3 +25,4 @@ object NumberTools {
     fun scale(value: Float, newScale: Int): Float {
         return BigDecimal(value.toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
     }
+}

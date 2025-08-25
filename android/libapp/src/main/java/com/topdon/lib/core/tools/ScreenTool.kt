@@ -24,3 +24,4 @@ object ScreenTool {
         val screenInches = diagonalPixels / densityDpi
         return screenInches >= 7f
     }
+}

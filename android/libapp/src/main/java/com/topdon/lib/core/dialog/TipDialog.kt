@@ -143,3 +143,4 @@ class TipDialog : Dialog {
             return dialog as TipDialog
         }
     }
+}

@@ -54,3 +54,4 @@ class ColorSelectDialog(context: Context, @ColorInt private var color: Int) : Di
             window.attributes = layoutParams
         }
     }
+}

@@ -21,3 +21,4 @@ object VideoTools {
             0
         }
     }
+}

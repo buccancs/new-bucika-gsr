@@ -7,3 +7,4 @@ class ThermalBean {
     var centerTemp = 0f
     var type = 1
     var createTime = 0L
+}

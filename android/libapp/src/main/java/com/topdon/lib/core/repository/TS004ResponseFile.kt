@@ -87,4 +87,5 @@ data class RecordStatusBean(
     val errCode: Int,
     val path: String,
     val pts: Int,
-    val status: Boolean,
+    val status: Boolean
+)

@@ -20,3 +20,4 @@ object CheckDoubleClick {
         val timeDuration = thisClickTime - lastClickTime
         return timeDuration in 1..499
     }
+}

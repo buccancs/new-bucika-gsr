@@ -67,3 +67,4 @@ object LanguageTool {
             else -> "EN"
         }
     }
+}

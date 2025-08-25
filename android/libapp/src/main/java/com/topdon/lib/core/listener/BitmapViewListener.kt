@@ -7,3 +7,4 @@ public interface BitmapViewListener {
     val viewWidth : Float
     val viewHeight : Float
     val viewScale : Float
+}

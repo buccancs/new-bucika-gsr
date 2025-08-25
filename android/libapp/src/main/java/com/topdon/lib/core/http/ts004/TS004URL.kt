@@ -38,3 +38,4 @@ object TS004URL {
     const val SET_TISP= "$BASE_URL/api/v1/system/setTISR"
     const val GET_TISR= "$BASE_URL/api/v1/system/getTISR"
     const val GET_DATE_TIME= "$BASE_URL/api/v1/system/getDateTime"
+}

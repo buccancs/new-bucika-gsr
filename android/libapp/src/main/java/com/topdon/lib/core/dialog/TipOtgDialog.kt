@@ -143,3 +143,4 @@ class TipOtgDialog : Dialog {
             return dialog as TipOtgDialog
         }
     }
+}

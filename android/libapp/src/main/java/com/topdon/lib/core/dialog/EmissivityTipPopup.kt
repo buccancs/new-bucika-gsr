@@ -121,3 +121,4 @@ class EmissivityTipPopup(val context: Context, val isTC007: Boolean) {
         popupWindow?.dismiss()
         closeEvent?.invoke(checkBox?.isChecked ?: false)
     }
+}

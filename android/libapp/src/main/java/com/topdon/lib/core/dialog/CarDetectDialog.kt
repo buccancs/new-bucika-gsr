@@ -296,3 +296,4 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
 
         inner class ItemView(val binding: ItemCarDetectChildLayoutBinding) : RecyclerView.ViewHolder(binding.root)
     }
+}

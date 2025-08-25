@@ -39,3 +39,4 @@ class LoadingDialog(context: Context) : Dialog(context, R.style.TransparentDialo
             it.attributes = layoutParams
         }
     }
+}

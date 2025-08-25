@@ -103,3 +103,4 @@ object DeviceTools {
         usbManager.requestPermission(device, pendingIntent)
         XLog.i("申请usb权限")
     }
+}

@@ -57,3 +57,4 @@ class UserInfoManager {
     private fun getMaskPhone(phone: String?): String? {
         return phone?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(), "$1****$2")
     }
+}

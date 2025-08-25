@@ -66,3 +66,4 @@ class TipCameraProgressDialog : Dialog {
     interface OnClickListener {
         fun onClick(dialog: DialogInterface)
     }
+}

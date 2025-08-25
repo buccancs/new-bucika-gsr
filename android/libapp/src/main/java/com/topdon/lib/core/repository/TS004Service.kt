@@ -105,3 +105,4 @@ interface TS004Service {
     
     @POST("/api/v1/system/getTISR")
     suspend fun getTISR(): TS004Response<TISRBean>
+}

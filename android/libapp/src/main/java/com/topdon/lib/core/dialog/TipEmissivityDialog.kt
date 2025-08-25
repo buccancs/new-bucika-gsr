@@ -156,3 +156,4 @@ class TipEmissivityDialog : Dialog {
             return dialog as TipEmissivityDialog
         }
     }
+}

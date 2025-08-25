@@ -66,3 +66,4 @@ data class AlarmBean(
         .array()
 
     fun isOpen(): Boolean = isHighOpen || isLowOpen
+}

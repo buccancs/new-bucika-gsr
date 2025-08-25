@@ -12,4 +12,5 @@ data class ResponseUserInfo(
     val profilePicture: String,
     val lastVisitTime: String,
     val phone:String?,
-    val avatar:String?,
+    val avatar:String?
+)

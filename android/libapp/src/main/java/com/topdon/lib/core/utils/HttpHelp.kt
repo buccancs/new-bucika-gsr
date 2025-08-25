@@ -21,3 +21,4 @@ object HttpHelp{
         params.addBodyParameter("size", 20)
         instant.post(url,true, params, iResponseCallback)
     }
+}

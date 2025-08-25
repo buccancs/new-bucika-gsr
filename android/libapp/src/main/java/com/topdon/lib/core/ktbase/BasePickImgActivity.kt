@@ -231,3 +231,4 @@ abstract class BasePickImgActivity : BaseActivity(), View.OnClickListener {
         super.disConnected()
         finish()
     }
+}

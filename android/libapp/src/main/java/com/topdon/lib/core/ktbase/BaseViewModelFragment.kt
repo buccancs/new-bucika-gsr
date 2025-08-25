@@ -27,3 +27,4 @@ abstract class BaseViewModelFragment<VM : BaseViewModel> : BaseFragment() {
         if (this::viewModel.isInitialized)
             lifecycle.removeObserver(viewModel)
     }
+}

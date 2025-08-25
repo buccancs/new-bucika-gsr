@@ -19,3 +19,4 @@ class DegradeServiceImpl : DegradeService {
             Toast.makeText(context, "can't find the path:" + postcard?.path, Toast.LENGTH_SHORT).show()
         }
     }
+}

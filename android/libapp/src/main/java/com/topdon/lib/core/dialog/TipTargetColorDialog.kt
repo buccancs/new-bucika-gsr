@@ -102,3 +102,4 @@ class TipTargetColorDialog : Dialog {
             return dialog as TipTargetColorDialog
         }
     }
+}

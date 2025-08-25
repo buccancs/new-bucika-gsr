@@ -14,3 +14,4 @@ data class CarDetectChildBean(
         val temperatures = temperature.split("~")
         return item + TemperatureUtil.getTempStr(temperatures[0].toInt(), temperatures[1].toInt())
     }
+}

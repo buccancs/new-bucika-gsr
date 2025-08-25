@@ -295,3 +295,4 @@ class WebSocketProxy {
             }
         }
     }
+}

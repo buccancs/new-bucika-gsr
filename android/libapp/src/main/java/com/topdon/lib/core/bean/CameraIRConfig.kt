@@ -68,3 +68,4 @@ data class CameraItemBean(
         const val TYPE_TMP_H = 0
 
     }
+}

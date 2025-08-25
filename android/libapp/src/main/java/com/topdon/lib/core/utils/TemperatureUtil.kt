@@ -8,3 +8,4 @@ object TemperatureUtil {
     } else {
         "${(min * 1.8 + 32).toInt()}°F~${(max * 1.8 + 32).toInt()}°F"
     }
+}
