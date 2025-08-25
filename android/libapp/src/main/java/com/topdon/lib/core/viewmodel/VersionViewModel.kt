@@ -50,3 +50,4 @@ class VersionViewModel : BaseViewModel() {
         }
         return ""
     }
+}

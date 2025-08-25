@@ -80,3 +80,4 @@ object WifiUtil {
             listener.invoke(intent?.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false) ?: false)
         }
     }
+}

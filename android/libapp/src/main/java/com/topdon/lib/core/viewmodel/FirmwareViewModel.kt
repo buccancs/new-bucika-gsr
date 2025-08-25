@@ -322,3 +322,4 @@ class FirmwareViewModel(application: Application) : AndroidViewModel(application
         val size: Long?,
         var responseCode: Int,
     )
+}

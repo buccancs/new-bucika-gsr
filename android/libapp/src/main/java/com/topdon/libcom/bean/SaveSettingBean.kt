@@ -268,3 +268,4 @@ class SaveSettingBean(private val isWifi: Boolean = false) {
                 getSPUtils().put("reportHumidity", value)
             }
         }
+}

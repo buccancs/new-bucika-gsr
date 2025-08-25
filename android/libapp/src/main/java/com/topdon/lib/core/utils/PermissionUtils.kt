@@ -18,3 +18,4 @@ object PermissionUtils {
         return ContextCompat.checkSelfPermission(BaseApplication.instance,
             android.Manifest.permission.CAMERA) == PERMISSION_GRANTED
     }
+}

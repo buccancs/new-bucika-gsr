@@ -14,3 +14,4 @@ class MainTitleView @JvmOverloads constructor(
         tvRight3 = addTextView(context)
         tvTitle = addTextView(context)
     }
+}

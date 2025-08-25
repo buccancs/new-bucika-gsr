@@ -25,3 +25,4 @@ object ARouterUtil {
             ARouter.getInstance().build(RouterConfig.IR_IMG_PICK).withString(RESULT_IMAGE_PATH,imgPath).navigation(activity,101)
         }
     }
+}

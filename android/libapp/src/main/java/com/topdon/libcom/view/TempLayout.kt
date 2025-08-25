@@ -107,3 +107,4 @@ class TempLayout : LinearLayout {
     fun startAlphaBreathAnimation() {
         alphaAnimator?.start()
     }
+}

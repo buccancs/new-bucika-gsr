@@ -114,3 +114,4 @@ class MyTextView : AppCompatTextView {
             drawable.setBounds(0, 0, (height * 1f * drawable.intrinsicWidth / drawable.intrinsicHeight).toInt(), height)
         }
     }
+}

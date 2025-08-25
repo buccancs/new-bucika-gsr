@@ -88,3 +88,4 @@ object WsCmdConstants {
     const val APP_EVENT_HEART_BEATS: Int = 1001
     const val APP_EVENT_DISTANCE_DATA: Int  = 500
     const val APP_EVENT_TEMP_DATA: Int  = 500
+}

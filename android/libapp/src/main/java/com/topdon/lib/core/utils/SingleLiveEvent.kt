@@ -29,3 +29,4 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     fun call() {
         this.setValue(null)
     }
+}

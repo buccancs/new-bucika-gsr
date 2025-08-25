@@ -275,3 +275,4 @@ class ColorSelectView : View {
     private fun dp2px(dpValue: Float): Int {
         return (dpValue * density + 0.5f).toInt()
     }
+}

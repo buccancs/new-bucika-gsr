@@ -46,3 +46,4 @@ object ColorUtils {
         }
         return "$m:$s";
     }
+}
