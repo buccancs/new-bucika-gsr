@@ -34,15 +34,17 @@ A **complete research-grade Python implementation** of the PC orchestrator for c
 - **Batch Validation**: Large-scale data processing for research workflows
 - **Custom Thresholds**: Adaptable quality requirements for different studies
 
-### 📱 Advanced GUI Interface
+### 📱 Advanced PyQt6 GUI Interface
 - **Device Management**: Real-time monitoring of connected Android devices with battery, version, and connection status
-- **Session Control**: Complete session lifecycle management with state tracking and sample counts
+- **Session Control**: Complete session lifecycle management with state tracking and sample counts  
 - **Application Logs**: Live log streaming with filtering and export capabilities
-- **Video Playback**: Integrated video player for reviewing uploaded session recordings
+- **🎬 Video Playback**: Professional video player with comprehensive media controls
   - Support for MP4, AVI, MOV, MKV, WebM, FLV, WMV formats
-  - Frame-by-frame navigation and playback controls
+  - Frame-by-frame navigation with play/pause/stop controls
+  - Progress tracking and adjustable playback speed
   - Automatic discovery of videos in session uploads
-  - Synchronized playback with GSR data for research analysis
+  - Browse functionality for loading external video files
+  - Synchronized playback capabilities for research analysis
 
 ### 📊 Real-Time Performance Monitoring
 - **System Metrics**: CPU, memory, network, and disk usage tracking
@@ -58,16 +60,17 @@ A **complete research-grade Python implementation** of the PC orchestrator for c
 # 1. Clone and navigate to Python implementation
 cd pc-python
 
-# 2. Install all dependencies (including video support)
+# 2. Install all dependencies (including PyQt6 and video support)
 pip install -r requirements.txt
 
-# Note: Video playback requires opencv-python which is included in requirements.txt
-# If you encounter issues, install manually: pip install opencv-python
+# Note: PyQt6 GUI and video playback are included in requirements.txt
+# If you encounter display issues on Linux, install system libraries:
+# sudo apt-get install python3-pyqt6 libgl1-mesa-glx
 
-# 3. Run in GUI mode (recommended for first use)
+# 3. Run in PyQt6 GUI mode (recommended for interactive use)
 python main.py
 
-# 4. Or run in headless mode for production
+# 4. Or run in headless mode for production servers
 python demo.py --headless
 ```
 
@@ -76,12 +79,16 @@ python demo.py --headless
 # Create virtual environment (recommended)
 python -m venv bucika-env
 source bucika-env/bin/activate  # Linux/macOS
-# or
+# or  
 bucika-env\Scripts\activate     # Windows
 
 # Install with development dependencies
 pip install -r requirements.txt
 pip install pytest pytest-asyncio black  # Development tools
+
+# Note: PyQt6 GUI requires system libraries on Linux:
+# sudo apt-get install python3-pyqt6 libgl1-mesa-glx  # Ubuntu/Debian
+# sudo dnf install python3-PyQt6                      # Fedora
 
 # Verify installation
 python -m pytest tests/ -v
@@ -89,9 +96,9 @@ python -m pytest tests/ -v
 
 ## 💻 Usage Guide
 
-### GUI Mode - Interactive Interface
+### PyQt6 GUI Mode - Professional Interface
 ```bash
-# Standard GUI with all features
+# Standard PyQt6 GUI with all features
 python main.py
 
 # GUI with debug logging

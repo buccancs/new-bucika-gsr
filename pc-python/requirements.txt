@@ -9,7 +9,7 @@ zeroconf>=0.131.0
 pydantic>=2.5.0
 
 # GUI framework
-tkinter-tooltip>=2.1.0
+PyQt6>=6.6.0
 pillow>=10.1.0
 opencv-python>=4.8.0
 

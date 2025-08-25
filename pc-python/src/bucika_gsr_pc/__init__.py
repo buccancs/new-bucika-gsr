@@ -29,11 +29,11 @@ from .data_validator import DataValidator, BatchValidator, QualityReport, Valida
 
 # Try to import GUI, but make it optional for headless environments
 try:
-    from .gui import BucikaGSRGUI, MainWindow
+    from .gui import MainWindowManager, PyQt6MainWindow
     GUI_AVAILABLE = True
 except ImportError:
-    BucikaGSRGUI = None
-    MainWindow = None
+    MainWindowManager = None
+    PyQt6MainWindow = None
     GUI_AVAILABLE = False
 
 import asyncio
@@ -91,10 +91,8 @@ class BucikaOrchestrator:
         
         # GUI (if not headless and available)
         if not self.headless and GUI_AVAILABLE:
-            if BucikaGSRGUI:
-                self.gui = BucikaGSRGUI(self)
-            elif MainWindow:
-                self.gui = MainWindow(
+            if MainWindowManager:
+                self.gui = MainWindowManager(
                     session_manager=self.session_manager,
                     websocket_server=self.websocket_server,
                     discovery_service=self.discovery_service
@@ -104,7 +102,7 @@ class BucikaOrchestrator:
         else:
             self.gui = None
             if not headless and not GUI_AVAILABLE:
-                logger.warning("GUI requested but tkinter not available. Running in headless mode.")
+                logger.warning("GUI requested but PyQt6 not available. Running in headless mode.")
                 self.headless = True
         
         # State
