@@ -1,0 +1,45 @@
+{
+  "validation_timestamp": "2025-08-25T02:05:30.573324",
+  "validation_level": "research_grade",
+  "summary_statistics": {
+    "total_sessions": 3,
+    "passed_sessions": 3,
+    "pass_rate": 1.0,
+    "average_score": 2.7816861146428002,
+    "min_score": 2.1816271789867634,
+    "max_score": 3.382159545183174
+  },
+  "common_issues": [
+    {
+      "recommendation": "Data quality meets validation standards - no specific improvements needed",
+      "frequency": 2
+    },
+    {
+      "recommendation": "Investigate data validity issues - check for duplicate timestamps and logical inconsistencies",
+      "frequency": 1
+    }
+  ],
+  "session_results": [
+    {
+      "session_id": "demo_session_2_20250825_020528",
+      "overall_score": 2.781271619758463,
+      "passed": true,
+      "validation_timestamp": "2025-08-25T02:05:30.409561",
+      "issues_count": 1
+    },
+    {
+      "session_id": "demo_session_1_20250825_020528",
+      "overall_score": 2.1816271789867634,
+      "passed": true,
+      "validation_timestamp": "2025-08-25T02:05:30.463421",
+      "issues_count": 0
+    },
+    {
+      "session_id": "demo_session_3_20250825_020528",
+      "overall_score": 3.382159545183174,
+      "passed": true,
+      "validation_timestamp": "2025-08-25T02:05:30.567968",
+      "issues_count": 0
+    }
+  ]
+}

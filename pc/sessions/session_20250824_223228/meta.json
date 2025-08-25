@@ -1,0 +1,24 @@
+{
+  "version" : "1.0.0",
+  "devices" : [ {
+    "deviceId" : "device1",
+    "deviceName" : "Mock GSR Device",
+    "capabilities" : [ "GSR_LEADER", "RGB" ],
+    "batteryLevel" : 85,
+    "version" : "1.0.0",
+    "role" : "GSR_LEADER"
+  } ],
+  "events" : [ {
+    "type" : "SESSION_STARTED",
+    "timestamp" : [ 2025, 8, 24, 22, 32, 28, 940756019 ],
+    "data" : { }
+  }, {
+    "type" : "SESSION_STOPPED",
+    "timestamp" : [ 2025, 8, 24, 22, 32, 29, 138966539 ],
+    "data" : { }
+  } ],
+  "files" : [ ],
+  "startTime" : [ 2025, 8, 24, 22, 32, 28, 940737114 ],
+  "endTime" : [ 2025, 8, 24, 22, 32, 29, 138949728 ],
+  "offsets" : { }
+}

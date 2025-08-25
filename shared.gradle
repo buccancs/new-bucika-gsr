@@ -216,10 +216,10 @@ project.ext.bucika_dependencies = [
 // Validation function to check all modules have proper configurations
 project.ext.validateModuleConfigs = {
     def requiredModules = [
-        ':app', ':libapp', ':libcom', ':libir', ':libmenu', ':libui',
-        ':BleModule', ':component:thermal-ir', ':component:CommonComponent',
-        ':LocalRepo:libcommon', ':LocalRepo:libirutils', ':RangeSeekBar',
-        ':commonlibrary'
+        ':android:app', ':android:libapp', ':android:libcom', ':android:libir', ':android:libmenu', ':android:libui',
+        ':android:BleModule', ':android:component:thermal-ir', ':android:component:CommonComponent',
+        ':android:LocalRepo:libcommon', ':android:LocalRepo:libirutils', ':android:RangeSeekBar',
+        ':android:commonlibrary'
     ]
     
     requiredModules.each { moduleName ->

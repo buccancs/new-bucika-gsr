@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BucikaGSR Message Envelope",
+  "description": "Standard message envelope for WebSocket communication between PC orchestrator and Android clients",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique message identifier for correlation"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["HELLO", "REGISTER", "PING", "PONG", "START", "STOP", "SYNC_MARK", "ACK", "ERROR", "GSR_SAMPLE", "UPLOAD_BEGIN", "UPLOAD_CHUNK", "UPLOAD_END"],
+      "description": "Message type identifier"
+    },
+    "ts": {
+      "type": "integer",
+      "description": "Timestamp in nanoseconds (Unix epoch)"
+    },
+    "sessionId": {
+      "type": ["string", "null"],
+      "description": "Current session identifier, null if no active session"
+    },
+    "deviceId": {
+      "type": "string",
+      "description": "Unique device identifier"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Message-specific payload data"
+    }
+  },
+  "required": ["id", "type", "ts", "deviceId", "payload"],
+  "additionalProperties": false
+}
