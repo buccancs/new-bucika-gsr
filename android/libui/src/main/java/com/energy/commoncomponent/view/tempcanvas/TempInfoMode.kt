@@ -1,9 +1,9 @@
-package com.energy.commoncomponent.view.tempcanvas;
+package com.energy.commoncomponent.view.tempcanvas
 
 /**
  * Created by fengjibo on 2024/2/20.
  */
-public enum TempInfoMode {
+enum class TempInfoMode {
     /**
      * 点
      */
@@ -22,5 +22,5 @@ public enum TempInfoMode {
     /**
      * 圆
      */
-    CIRCLE,
+    CIRCLE
 }
