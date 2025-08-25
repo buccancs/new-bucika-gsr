@@ -8,16 +8,19 @@ import threading
 import asyncio
 import os
 import traceback
+import json
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, List
+from dataclasses import asdict
 from loguru import logger
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QTabWidget, QTableWidget, QTableWidgetItem, QTextEdit, QLabel,
     QStatusBar, QSplitter, QListWidget, QPushButton, QFrame,
-    QProgressBar, QComboBox, QFileDialog, QMessageBox, QHeaderView
+    QProgressBar, QComboBox, QFileDialog, QMessageBox, QHeaderView,
+    QCheckBox
 )
 from PyQt6.QtCore import QTimer, pyqtSignal, QThread, pyqtSlot, Qt, QSize
 from PyQt6.QtGui import QPixmap, QFont, QAction
@@ -669,6 +672,7 @@ class PyQt6MainWindow(QMainWindow):
         self._create_logs_tab()
         self._create_video_tab()
         self._create_analysis_tab()
+        self._create_ml_analysis_tab()
         self._create_realtime_plot_tab()
         self._create_help_tab()
         
@@ -1259,6 +1263,11 @@ class PyQt6MainWindow(QMainWindow):
         export_button.clicked.connect(self._export_analysis)
         control_layout.addWidget(export_button)
         
+        # Advanced export options
+        advanced_export_button = QPushButton("📦 Advanced Export...")
+        advanced_export_button.clicked.connect(self._show_advanced_export_dialog)
+        control_layout.addWidget(advanced_export_button)
+        
         control_layout.addStretch()
         
         refresh_sessions_button = QPushButton("🔄 Refresh")
@@ -1497,8 +1506,367 @@ Quality Metrics Detail:
             self.analysis_details.setText(f"Full error:\n{traceback.format_exc()}")
             logger.error(error_msg)
     
+    def _show_advanced_export_dialog(self):
+        """Show advanced export options dialog"""
+        try:
+            from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QRadioButton, QButtonGroup, QPushButton, QListWidget, QCheckBox, QTextEdit
+            
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Advanced Data Export")
+            dialog.setMinimumSize(600, 500)
+            
+            layout = QVBoxLayout(dialog)
+            
+            # Export format selection
+            format_group = QFrame()
+            format_layout = QVBoxLayout(format_group)
+            format_layout.addWidget(QLabel("Export Format:"))
+            
+            self.export_format_group = QButtonGroup()
+            formats = [
+                ("csv", "📊 CSV Data Export", "Export raw data in CSV format for statistical analysis"),
+                ("json", "📋 JSON Complete Export", "Export all data and metadata in JSON format"),
+                ("research_package", "🔬 Research Package", "Complete research package with analysis and visualizations"),
+                ("complete", "📦 Complete Package", "Everything - all formats, analysis, and documentation")
+            ]
+            
+            for i, (value, label, description) in enumerate(formats):
+                radio = QRadioButton(label)
+                radio.setToolTip(description)
+                if i == 2:  # Default to research package
+                    radio.setChecked(True)
+                self.export_format_group.addButton(radio, i)
+                format_layout.addWidget(radio)
+                
+                desc_label = QLabel(f"   {description}")
+                desc_label.setStyleSheet("color: gray; font-size: 10px; margin-left: 20px;")
+                format_layout.addWidget(desc_label)
+            
+            layout.addWidget(format_group)
+            
+            # Session selection
+            session_group = QFrame()
+            session_layout = QVBoxLayout(session_group)
+            session_layout.addWidget(QLabel("Session Selection:"))
+            
+            self.session_list_widget = QListWidget()
+            self.session_list_widget.setMaximumHeight(150)
+            
+            # Populate sessions
+            sessions = self.session_manager.get_all_sessions()
+            sessions_dir = Path("sessions")
+            if sessions_dir.exists():
+                for session_dir in sessions_dir.iterdir():
+                    if session_dir.is_dir():
+                        gsr_files = list(session_dir.glob("gsr_data_*.csv"))
+                        if gsr_files:
+                            item_text = f"{session_dir.name}"
+                            if session_dir.name in sessions:
+                                session = sessions[session_dir.name]
+                                item_text += f" ({session.session_name})"
+                            else:
+                                item_text += " (Saved)"
+                            
+                            from PyQt6.QtCore import Qt
+                            item = QListWidget.ListWidgetItem(item_text)
+                            item.setData(Qt.ItemDataRole.UserRole, session_dir.name)
+                            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+                            item.setCheckState(Qt.CheckState.Unchecked)
+                            self.session_list_widget.addItem(item)
+            
+            session_layout.addWidget(self.session_list_widget)
+            
+            # Selection controls
+            select_controls = QHBoxLayout()
+            select_all_btn = QPushButton("Select All")
+            select_all_btn.clicked.connect(lambda: self._check_all_sessions(True))
+            select_controls.addWidget(select_all_btn)
+            
+            select_none_btn = QPushButton("Select None") 
+            select_none_btn.clicked.connect(lambda: self._check_all_sessions(False))
+            select_controls.addWidget(select_none_btn)
+            select_controls.addStretch()
+            
+            session_layout.addLayout(select_controls)
+            layout.addWidget(session_group)
+            
+            # Options
+            options_group = QFrame()
+            options_layout = QVBoxLayout(options_group)
+            options_layout.addWidget(QLabel("Export Options:"))
+            
+            self.include_visualizations = QCheckBox("Include visualizations and plots")
+            self.include_visualizations.setChecked(True)
+            options_layout.addWidget(self.include_visualizations)
+            
+            self.include_analysis = QCheckBox("Include statistical analysis")
+            self.include_analysis.setChecked(True)
+            options_layout.addWidget(self.include_analysis)
+            
+            self.multi_session_analysis = QCheckBox("Perform multi-session analysis (if multiple sessions selected)")
+            self.multi_session_analysis.setChecked(True)
+            options_layout.addWidget(self.multi_session_analysis)
+            
+            layout.addWidget(options_group)
+            
+            # Preview area
+            preview_group = QFrame()
+            preview_layout = QVBoxLayout(preview_group)
+            preview_layout.addWidget(QLabel("Export Preview:"))
+            
+            self.export_preview = QTextEdit()
+            self.export_preview.setMaximumHeight(100)
+            self.export_preview.setReadOnly(True)
+            self.export_preview.setText("Select sessions and format to see export preview...")
+            preview_layout.addWidget(self.export_preview)
+            
+            layout.addWidget(preview_group)
+            
+            # Buttons
+            button_layout = QHBoxLayout()
+            
+            preview_btn = QPushButton("🔍 Preview Export")
+            preview_btn.clicked.connect(self._preview_export_contents)
+            button_layout.addWidget(preview_btn)
+            
+            button_layout.addStretch()
+            
+            cancel_btn = QPushButton("Cancel")
+            cancel_btn.clicked.connect(dialog.reject)
+            button_layout.addWidget(cancel_btn)
+            
+            export_btn = QPushButton("📦 Export")
+            export_btn.clicked.connect(lambda: self._perform_advanced_export(dialog))
+            export_btn.setDefault(True)
+            button_layout.addWidget(export_btn)
+            
+            layout.addLayout(button_layout)
+            
+            # Show dialog
+            dialog.exec()
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Export Dialog Error", f"Error showing export dialog:\n{str(e)}")
+    
+    def _check_all_sessions(self, checked: bool):
+        """Check or uncheck all sessions in the list"""
+        try:
+            from PyQt6.QtCore import Qt
+            for i in range(self.session_list_widget.count()):
+                item = self.session_list_widget.item(i)
+                item.setCheckState(Qt.CheckState.Checked if checked else Qt.CheckState.Unchecked)
+        except Exception as e:
+            logger.error(f"Error updating session selection: {e}")
+    
+    def _preview_export_contents(self):
+        """Preview what will be exported"""
+        try:
+            from PyQt6.QtCore import Qt
+            
+            # Get selected format
+            format_map = ["csv", "json", "research_package", "complete"]
+            selected_format = format_map[self.export_format_group.checkedId()] if self.export_format_group.checkedId() >= 0 else "research_package"
+            
+            # Get selected sessions
+            selected_sessions = []
+            for i in range(self.session_list_widget.count()):
+                item = self.session_list_widget.item(i)
+                if item.checkState() == Qt.CheckState.Checked:
+                    session_id = item.data(Qt.ItemDataRole.UserRole)
+                    selected_sessions.append(session_id)
+            
+            if not selected_sessions:
+                self.export_preview.setText("❌ No sessions selected")
+                return
+            
+            # Generate preview
+            preview_text = f"Export Format: {selected_format.upper()}\n"
+            preview_text += f"Sessions Selected: {len(selected_sessions)}\n\n"
+            
+            if len(selected_sessions) == 1:
+                preview_text += f"Single Session Export:\n"
+                preview_text += f"• Session: {selected_sessions[0]}\n"
+            else:
+                preview_text += f"Multi-Session Export:\n"
+                for session in selected_sessions[:5]:  # Show first 5
+                    preview_text += f"• {session}\n"
+                if len(selected_sessions) > 5:
+                    preview_text += f"• ... and {len(selected_sessions) - 5} more\n"
+            
+            preview_text += f"\nWill Include:\n"
+            
+            if selected_format == "csv":
+                preview_text += "• Raw GSR data in CSV format\n"
+                preview_text += "• Combined data from all sessions\n"
+            elif selected_format == "json":
+                preview_text += "• Complete data in JSON format\n"
+                preview_text += "• Metadata and session information\n"
+                preview_text += "• Sync marks and timestamps\n"
+            elif selected_format == "research_package":
+                preview_text += "• Original data files\n"
+                preview_text += "• Statistical analysis\n"
+                preview_text += "• Research summary\n"
+                preview_text += "• Documentation\n"
+                if self.include_visualizations.isChecked():
+                    preview_text += "• Visualizations and plots\n"
+            elif selected_format == "complete":
+                preview_text += "• All data in multiple formats\n"
+                preview_text += "• Complete analysis and statistics\n"
+                preview_text += "• Full documentation package\n"
+                preview_text += "• Professional visualizations\n"
+                preview_text += "• Research-ready export\n"
+            
+            if len(selected_sessions) > 1 and self.multi_session_analysis.isChecked():
+                preview_text += "\nMulti-Session Analysis:\n"
+                preview_text += "• Cross-session comparisons\n"
+                preview_text += "• Aggregate statistics\n"
+                preview_text += "• Quality correlations\n"
+                preview_text += "• Research recommendations\n"
+            
+            self.export_preview.setText(preview_text)
+            
+        except Exception as e:
+            self.export_preview.setText(f"Error generating preview: {str(e)}")
+    
+    def _perform_advanced_export(self, dialog):
+        """Perform the advanced export"""
+        try:
+            from PyQt6.QtCore import Qt
+            
+            # Get selected format
+            format_map = ["csv", "json", "research_package", "complete"]
+            selected_format = format_map[self.export_format_group.checkedId()] if self.export_format_group.checkedId() >= 0 else "research_package"
+            
+            # Get selected sessions
+            selected_sessions = []
+            for i in range(self.session_list_widget.count()):
+                item = self.session_list_widget.item(i)
+                if item.checkState() == Qt.CheckState.Checked:
+                    session_id = item.data(Qt.ItemDataRole.UserRole)
+                    selected_sessions.append(session_id)
+            
+            if not selected_sessions:
+                QMessageBox.warning(dialog, "Export Error", "Please select at least one session to export")
+                return
+            
+            # Close dialog
+            dialog.accept()
+            
+            # Show progress
+            from PyQt6.QtWidgets import QProgressDialog
+            progress = QProgressDialog("Preparing export...", "Cancel", 0, len(selected_sessions), self)
+            progress.setWindowModality(Qt.WindowModality.WindowModal)
+            progress.show()
+            
+            # Import research tools
+            try:
+                from .research_tools import SessionExporter, MultiSessionAnalyzer
+                
+                exporter = SessionExporter(Path("sessions"))
+                output_dir = Path("sessions/exports")
+                output_dir.mkdir(exist_ok=True)
+                
+                exported_files = []
+                
+                # Export each session or do multi-session analysis
+                if len(selected_sessions) == 1:
+                    # Single session export
+                    session_id = selected_sessions[0]
+                    progress.setLabelText(f"Exporting {session_id}...")
+                    progress.setValue(0)
+                    
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    
+                    output_file = loop.run_until_complete(
+                        exporter.export_session_comprehensive(session_id, selected_format, output_dir)
+                    )
+                    exported_files.append(output_file)
+                    
+                else:
+                    # Multi-session export
+                    if self.multi_session_analysis.isChecked():
+                        # Multi-session analysis
+                        progress.setLabelText("Performing multi-session analysis...")
+                        progress.setValue(0)
+                        
+                        analyzer = MultiSessionAnalyzer(Path("sessions"))
+                        loop = asyncio.new_event_loop()
+                        asyncio.set_event_loop(loop)
+                        
+                        research_report = loop.run_until_complete(
+                            analyzer.analyze_multiple_sessions(selected_sessions)
+                        )
+                        
+                        # Save research report
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        report_file = output_dir / f"multi_session_report_{timestamp}.json"
+                        
+                        with open(report_file, 'w') as f:
+                            # Convert dataclasses to dict for JSON serialization
+                            report_dict = {
+                                "report_id": research_report.report_id,
+                                "generated_at": research_report.generated_at.isoformat(),
+                                "sessions": [asdict(s) for s in research_report.sessions],
+                                "total_participants": research_report.total_participants,
+                                "total_duration_hours": research_report.total_duration_hours,
+                                "aggregate_statistics": research_report.aggregate_statistics,
+                                "cross_session_analysis": research_report.cross_session_analysis,
+                                "recommendations": research_report.recommendations,
+                                "data_quality_summary": research_report.data_quality_summary,
+                                "export_formats": research_report.export_formats
+                            }
+                            json.dump(report_dict, f, indent=2, default=str)
+                        
+                        exported_files.append(report_file)
+                    
+                    # Individual session exports
+                    for i, session_id in enumerate(selected_sessions):
+                        if progress.wasCanceled():
+                            break
+                        
+                        progress.setLabelText(f"Exporting {session_id} ({i+1}/{len(selected_sessions)})...")
+                        progress.setValue(i)
+                        
+                        try:
+                            loop = asyncio.new_event_loop()
+                            asyncio.set_event_loop(loop)
+                            
+                            output_file = loop.run_until_complete(
+                                exporter.export_session_comprehensive(session_id, selected_format, output_dir)
+                            )
+                            exported_files.append(output_file)
+                            
+                        except Exception as e:
+                            logger.error(f"Error exporting session {session_id}: {e}")
+                            continue
+                
+                progress.setValue(len(selected_sessions))
+                progress.close()
+                
+                # Show success message
+                if exported_files:
+                    files_text = "\n".join(f"• {f.name}" for f in exported_files[:5])
+                    if len(exported_files) > 5:
+                        files_text += f"\n• ... and {len(exported_files) - 5} more files"
+                    
+                    success_msg = f"Export completed successfully!\n\nExported {len(exported_files)} file(s):\n{files_text}\n\nLocation: {output_dir}"
+                    QMessageBox.information(self, "Export Successful", success_msg)
+                    
+                    # Update status
+                    self.general_status.setText(f"Advanced export completed: {len(exported_files)} files")
+                else:
+                    QMessageBox.warning(self, "Export Warning", "No files were successfully exported")
+                
+            except ImportError:
+                QMessageBox.critical(self, "Export Error", "Advanced export features require additional dependencies.\nPlease ensure all Python packages are installed.")
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Export Error", f"Error during export:\n{str(e)}")
+            traceback.print_exc()
+    
     def _export_analysis(self):
-        """Export the current analysis results"""
+        """Export the current analysis results (simple text export)"""
         if not self.analysis_summary.toPlainText().strip():
             QMessageBox.warning(self, "Export Analysis", "No analysis results to export. Please analyze a session first.")
             return
@@ -1526,6 +1894,476 @@ Quality Metrics Detail:
                 
         except Exception as e:
             QMessageBox.critical(self, "Export Error", f"Failed to export analysis report:\n{str(e)}")
+    
+    def _create_ml_analysis_tab(self):
+        """Create the machine learning analysis tab"""
+        ml_widget = QWidget()
+        self.tab_widget.addTab(ml_widget, "🤖 ML Analysis")
+        
+        layout = QVBoxLayout(ml_widget)
+        
+        # Control panel
+        control_panel = QFrame()
+        control_layout = QHBoxLayout(control_panel)
+        
+        # Session selection for ML analysis
+        control_layout.addWidget(QLabel("Session:"))
+        self.ml_session_combo = QComboBox()
+        self.ml_session_combo.setMinimumWidth(200)
+        control_layout.addWidget(self.ml_session_combo)
+        
+        # ML Analysis buttons
+        feature_extraction_btn = QPushButton("🔍 Extract Features")
+        feature_extraction_btn.clicked.connect(self._extract_ml_features)
+        control_layout.addWidget(feature_extraction_btn)
+        
+        emotion_analysis_btn = QPushButton("😊 Emotion Analysis")
+        emotion_analysis_btn.clicked.connect(self._perform_emotion_analysis)
+        control_layout.addWidget(emotion_analysis_btn)
+        
+        artifact_detection_btn = QPushButton("⚡ Artifact Detection")
+        artifact_detection_btn.clicked.connect(self._detect_artifacts)
+        control_layout.addWidget(artifact_detection_btn)
+        
+        filtering_btn = QPushButton("🔧 Apply Filters")
+        filtering_btn.clicked.connect(self._apply_advanced_filtering)
+        control_layout.addWidget(filtering_btn)
+        
+        control_layout.addStretch()
+        
+        # Refresh button for ML tab
+        refresh_ml_btn = QPushButton("🔄 Refresh")
+        refresh_ml_btn.clicked.connect(self._refresh_ml_session_list)
+        control_layout.addWidget(refresh_ml_btn)
+        
+        layout.addWidget(control_panel)
+        
+        # ML Analysis results area
+        ml_splitter = QSplitter(Qt.Orientation.Horizontal)
+        layout.addWidget(ml_splitter)
+        
+        # Left panel - Feature extraction and results
+        left_ml_panel = QWidget()
+        left_ml_layout = QVBoxLayout(left_ml_panel)
+        
+        left_ml_layout.addWidget(QLabel("Feature Extraction & ML Results"))
+        self.ml_features_text = QTextEdit()
+        self.ml_features_text.setReadOnly(True)
+        self.ml_features_text.setMaximumWidth(400)
+        left_ml_layout.addWidget(self.ml_features_text)
+        
+        ml_splitter.addWidget(left_ml_panel)
+        
+        # Right panel - Advanced analysis and visualizations
+        right_ml_panel = QWidget()
+        right_ml_layout = QVBoxLayout(right_ml_panel)
+        
+        right_ml_layout.addWidget(QLabel("Advanced Analysis & Insights"))
+        self.ml_insights_text = QTextEdit()
+        self.ml_insights_text.setReadOnly(True)
+        right_ml_layout.addWidget(self.ml_insights_text)
+        
+        ml_splitter.addWidget(right_ml_panel)
+        
+        # Initialize ML session list
+        self._refresh_ml_session_list()
+    
+    def _refresh_ml_session_list(self):
+        """Refresh the session list for ML analysis"""
+        self.ml_session_combo.clear()
+        
+        # Add sessions from session manager
+        sessions = self.session_manager.get_all_sessions()
+        for session_id, session in sessions.items():
+            display_name = f"{session_id} ({session.session_name})"
+            self.ml_session_combo.addItem(display_name, session_id)
+        
+        # Also look for sessions on disk
+        sessions_dir = Path("sessions")
+        if sessions_dir.exists():
+            for session_dir in sessions_dir.iterdir():
+                if session_dir.is_dir() and session_dir.name not in sessions:
+                    gsr_files = list(session_dir.glob("gsr_data_*.csv"))
+                    if gsr_files:
+                        display_name = f"{session_dir.name} (Saved)"
+                        self.ml_session_combo.addItem(display_name, session_dir.name)
+    
+    def _extract_ml_features(self):
+        """Extract comprehensive machine learning features"""
+        current_session = self.ml_session_combo.currentData()
+        if not current_session:
+            self.ml_features_text.setText("No session selected")
+            return
+        
+        try:
+            # Load GSR data
+            session_path = Path("sessions") / current_session
+            gsr_files = list(session_path.glob("gsr_data_*.csv"))
+            
+            if not gsr_files:
+                self.ml_features_text.setText(f"No GSR data found for session {current_session}")
+                return
+            
+            # Import ML analyzer
+            try:
+                from .ml_analysis import AdvancedGSRAnalyzer
+                import pandas as pd
+                import numpy as np
+                
+                # Load and combine GSR data
+                all_data = []
+                for gsr_file in gsr_files:
+                    df = pd.read_csv(gsr_file)
+                    all_data.append(df)
+                
+                combined_df = pd.concat(all_data, ignore_index=True)
+                
+                # Extract GSR values
+                if 'Raw_GSR_µS' in combined_df.columns:
+                    gsr_values = combined_df['Raw_GSR_µS'].values
+                elif 'GSR_Value' in combined_df.columns:
+                    gsr_values = combined_df['GSR_Value'].values
+                else:
+                    gsr_col = combined_df.select_dtypes(include=[np.number]).columns[0]
+                    gsr_values = combined_df[gsr_col].values
+                
+                # Initialize analyzer
+                analyzer = AdvancedGSRAnalyzer(sampling_rate=128.0)
+                
+                # Extract features
+                features = analyzer.extract_comprehensive_features(gsr_values)
+                
+                # Display results
+                feature_text = f"""🤖 ML Feature Extraction Results for {current_session}
+
+📊 Basic Statistics:
+• Mean GSR: {features.mean_gsr:.4f} µS
+• Std Deviation: {features.std_gsr:.4f} µS
+• Range: {features.range_gsr:.4f} µS
+• Coefficient of Variation: {features.coefficient_of_variation:.4f}
+
+⏱️ Temporal Features:
+• Duration: {features.duration_seconds:.2f} seconds
+• Total Samples: {features.total_samples:,}
+• Sampling Rate: {features.sampling_rate:.1f} Hz
+
+📈 Distribution Features:
+• Skewness: {features.skewness:.4f}
+• Kurtosis: {features.kurtosis:.4f}
+• IQR: {features.interquartile_range:.4f}
+• MAD: {features.mean_absolute_deviation:.4f}
+
+🔊 Signal Processing Features:
+• Signal Energy: {features.signal_energy:.2e}
+• Spectral Centroid: {features.spectral_centroid:.4f} Hz
+• Dominant Frequency: {features.dominant_frequency:.4f} Hz
+• Zero Crossing Rate: {features.zero_crossing_rate:.4f}
+
+🧠 Physiological Features:
+• Tonic Level: {features.tonic_level:.4f} µS
+• Phasic Activity: {features.phasic_activity:.4f} µS
+• Response Amplitude: {features.response_amplitude:.4f} µS
+• Arousal Events: {features.arousal_events}
+• Relaxation Events: {features.relaxation_events}
+
+✅ Quality Indicators:
+• Signal-to-Noise Ratio: {features.signal_to_noise_ratio:.2f} dB
+• Artifact Percentage: {features.artifact_percentage:.1%}
+• Data Completeness: {features.data_completeness:.1%}
+• Overall Quality Score: {features.quality_score:.1%}
+"""
+                
+                self.ml_features_text.setText(feature_text)
+                
+                # Store features for other analyses
+                self._current_ml_features = features
+                self._current_gsr_data = gsr_values
+                
+            except ImportError:
+                self.ml_features_text.setText("ML Analysis requires additional dependencies.\nPlease install scipy and scikit-learn for full ML features.")
+                
+        except Exception as e:
+            error_msg = f"Error extracting ML features for {current_session}: {str(e)}"
+            self.ml_features_text.setText(error_msg)
+            logger.error(error_msg)
+    
+    def _perform_emotion_analysis(self):
+        """Perform emotion analysis on GSR data"""
+        if not hasattr(self, '_current_gsr_data'):
+            self.ml_insights_text.setText("Please extract features first")
+            return
+        
+        try:
+            from .ml_analysis import AdvancedGSRAnalyzer
+            
+            analyzer = AdvancedGSRAnalyzer(sampling_rate=128.0)
+            emotions = analyzer.classify_emotional_state(self._current_gsr_data, window_seconds=30.0)
+            
+            if not emotions:
+                self.ml_insights_text.setText("No emotion analysis results available")
+                return
+            
+            # Aggregate emotions across windows
+            emotion_counts = {}
+            total_confidence = 0
+            total_intensity = 0
+            
+            for emotion in emotions:
+                if emotion.dominant_emotion not in emotion_counts:
+                    emotion_counts[emotion.dominant_emotion] = 0
+                emotion_counts[emotion.dominant_emotion] += 1
+                total_confidence += emotion.confidence
+                total_intensity += emotion.emotional_intensity
+            
+            avg_confidence = total_confidence / len(emotions)
+            avg_intensity = total_intensity / len(emotions)
+            
+            # Get overall emotional state
+            dominant_overall = max(emotion_counts.items(), key=lambda x: x[1])
+            
+            # Get latest detailed emotion
+            latest_emotion = emotions[-1]
+            
+            emotion_text = f"""😊 Emotion Analysis Results
+
+🎯 Overall Emotional State:
+• Dominant Emotion: {dominant_overall[0].upper()}
+• Windows Analyzed: {len(emotions)}
+• Average Confidence: {avg_confidence:.1%}
+• Average Intensity: {avg_intensity:.1%}
+
+📊 Emotion Distribution:
+"""
+            
+            for emotion, count in sorted(emotion_counts.items(), key=lambda x: x[1], reverse=True):
+                percentage = count / len(emotions) * 100
+                emotion_text += f"• {emotion.capitalize()}: {count} windows ({percentage:.1f}%)\n"
+            
+            emotion_text += f"""
+🔍 Latest Analysis Window:
+• Dominant: {latest_emotion.dominant_emotion} ({latest_emotion.confidence:.1%} confidence)
+• Intensity: {latest_emotion.emotional_intensity:.1%}
+• Window Duration: {latest_emotion.analysis_window_seconds}s
+
+📈 Detailed Probabilities:
+• Calm: {latest_emotion.calm:.1%}
+• Excited: {latest_emotion.excited:.1%}
+• Stressed: {latest_emotion.stressed:.1%}
+• Relaxed: {latest_emotion.relaxed:.1%}
+• Aroused: {latest_emotion.aroused:.1%}
+
+🔬 Analysis Details:
+• Method: {latest_emotion.classification_method}
+• Features Used: {', '.join(latest_emotion.features_used)}
+
+💡 Insights:
+"""
+            
+            if dominant_overall[0] == 'stressed':
+                emotion_text += "• High stress indicators detected\n• Consider relaxation techniques\n• Monitor environmental factors\n"
+            elif dominant_overall[0] == 'relaxed':
+                emotion_text += "• Good relaxation state maintained\n• Positive physiological indicators\n• Continue current practices\n"
+            elif dominant_overall[0] == 'excited':
+                emotion_text += "• High arousal with positive valence\n• Good engagement levels\n• Monitor for overstimulation\n"
+            
+            if avg_intensity > 0.7:
+                emotion_text += "• High emotional intensity throughout session\n"
+            elif avg_intensity < 0.3:
+                emotion_text += "• Low emotional intensity - possible disengagement\n"
+            
+            self.ml_insights_text.setText(emotion_text)
+            
+        except Exception as e:
+            error_msg = f"Error performing emotion analysis: {str(e)}"
+            self.ml_insights_text.setText(error_msg)
+            logger.error(error_msg)
+    
+    def _detect_artifacts(self):
+        """Detect artifacts in GSR data using advanced methods"""
+        if not hasattr(self, '_current_gsr_data'):
+            self.ml_insights_text.setText("Please extract features first")
+            return
+        
+        try:
+            from .ml_analysis import AdvancedGSRAnalyzer
+            
+            analyzer = AdvancedGSRAnalyzer(sampling_rate=128.0)
+            artifacts = analyzer.detect_advanced_artifacts(self._current_gsr_data)
+            
+            artifact_text = f"""⚡ Advanced Artifact Detection Results
+
+📊 Detection Summary:
+• Total Artifacts Found: {artifacts.artifacts_found:,}
+• Clean Data Percentage: {artifacts.clean_data_percentage:.1%}
+• Data Quality: {'✅ Excellent' if artifacts.clean_data_percentage > 0.95 else '⚠️ Good' if artifacts.clean_data_percentage > 0.85 else '❌ Needs Attention'}
+
+🔍 Artifact Categorization:
+• Motion Artifacts: {artifacts.motion_artifacts}
+• Electrical Artifacts: {artifacts.electrical_artifacts}
+• Sensor Artifacts: {artifacts.sensor_artifacts}
+• Thermal Artifacts: {artifacts.thermal_artifacts}
+
+📈 Artifact Analysis:
+"""
+            
+            if artifacts.artifacts_found > 0:
+                # Show artifact severity distribution
+                severities = artifacts.artifact_severities
+                if severities:
+                    avg_severity = sum(severities) / len(severities)
+                    max_severity = max(severities)
+                    
+                    artifact_text += f"• Average Severity: {avg_severity:.2f}\n"
+                    artifact_text += f"• Maximum Severity: {max_severity:.2f}\n"
+                    artifact_text += f"• Artifact Positions: {len(artifacts.artifact_positions)} locations\n"
+                
+                # Show first few artifact positions
+                positions = artifacts.artifact_positions[:10]
+                artifact_text += f"• Sample Positions: {positions}"
+                if len(artifacts.artifact_positions) > 10:
+                    artifact_text += f" ... and {len(artifacts.artifact_positions) - 10} more"
+                artifact_text += "\n"
+                
+            else:
+                artifact_text += "• No significant artifacts detected ✅\n"
+            
+            artifact_text += f"""
+🔧 Recommended Filters:
+"""
+            if artifacts.recommended_filters:
+                for filter_name in artifacts.recommended_filters:
+                    filter_descriptions = {
+                        'low_pass_filter_5hz': '• Low-pass filter (5 Hz) - Remove high-frequency noise',
+                        'median_filter': '• Median filter - Remove impulse artifacts', 
+                        'artifact_removal': '• Artifact removal - Interpolate corrupted samples'
+                    }
+                    desc = filter_descriptions.get(filter_name, f'• {filter_name}')
+                    artifact_text += desc + "\n"
+            else:
+                artifact_text += "• No filtering recommended - data quality is good ✅\n"
+            
+            artifact_text += f"""
+📋 Quality Assessment:
+• Signal Integrity: {'High' if artifacts.clean_data_percentage > 0.9 else 'Medium' if artifacts.clean_data_percentage > 0.7 else 'Low'}
+• Research Suitability: {'✅ Suitable' if artifacts.clean_data_percentage > 0.85 else '⚠️ May need preprocessing' if artifacts.clean_data_percentage > 0.7 else '❌ Requires significant cleaning'}
+• Recommended Action: """
+            
+            if artifacts.clean_data_percentage > 0.9:
+                artifact_text += "Data is research-ready\n"
+            elif artifacts.clean_data_percentage > 0.8:
+                artifact_text += "Apply light filtering before analysis\n"
+            elif artifacts.clean_data_percentage > 0.7:
+                artifact_text += "Apply recommended filters and validate results\n"
+            else:
+                artifact_text += "Consider re-recording or extensive preprocessing\n"
+            
+            self.ml_insights_text.setText(artifact_text)
+            
+        except Exception as e:
+            error_msg = f"Error detecting artifacts: {str(e)}"
+            self.ml_insights_text.setText(error_msg)
+            logger.error(error_msg)
+    
+    def _apply_advanced_filtering(self):
+        """Apply advanced filtering to GSR data"""
+        if not hasattr(self, '_current_gsr_data'):
+            self.ml_insights_text.setText("Please extract features first")
+            return
+        
+        try:
+            from .ml_analysis import AdvancedGSRAnalyzer
+            from PyQt6.QtWidgets import QInputDialog
+            
+            # Ask user for filter type
+            filter_options = ['adaptive', 'low_pass', 'median', 'savgol']
+            filter_type, ok = QInputDialog.getItem(
+                self, 
+                'Select Filter Type',
+                'Choose filtering method:',
+                filter_options,
+                0,
+                False
+            )
+            
+            if not ok:
+                return
+            
+            analyzer = AdvancedGSRAnalyzer(sampling_rate=128.0)
+            
+            # Apply filter
+            original_data = self._current_gsr_data.copy()
+            filtered_data = analyzer.apply_advanced_filtering(original_data, filter_type)
+            
+            # Analyze improvement
+            original_features = analyzer.extract_comprehensive_features(original_data)
+            filtered_features = analyzer.extract_comprehensive_features(filtered_data)
+            
+            # Compare results
+            filter_text = f"""🔧 Advanced Filtering Results
+
+Filter Applied: {filter_type.upper()}
+
+📊 Quality Comparison:
+BEFORE → AFTER
+• SNR: {original_features.signal_to_noise_ratio:.2f} dB → {filtered_features.signal_to_noise_ratio:.2f} dB
+• Artifacts: {original_features.artifact_percentage:.1%} → {filtered_features.artifact_percentage:.1%}
+• Quality Score: {original_features.quality_score:.1%} → {filtered_features.quality_score:.1%}
+
+📈 Statistical Changes:
+• Mean GSR: {original_features.mean_gsr:.4f} → {filtered_features.mean_gsr:.4f} µS
+• Std Deviation: {original_features.std_gsr:.4f} → {filtered_features.std_gsr:.4f} µS
+• CV: {original_features.coefficient_of_variation:.4f} → {filtered_features.coefficient_of_variation:.4f}
+
+🔊 Signal Characteristics:
+• Signal Energy: {original_features.signal_energy:.2e} → {filtered_features.signal_energy:.2e}
+• Zero Crossings: {original_features.zero_crossing_rate:.4f} → {filtered_features.zero_crossing_rate:.4f}
+
+🧠 Physiological Impact:
+• Tonic Level: {original_features.tonic_level:.4f} → {filtered_features.tonic_level:.4f} µS
+• Phasic Activity: {original_features.phasic_activity:.4f} → {filtered_features.phasic_activity:.4f} µS
+• Arousal Events: {original_features.arousal_events} → {filtered_features.arousal_events}
+
+📋 Filtering Assessment:
+"""
+            
+            # Determine if filtering improved data
+            quality_improvement = filtered_features.quality_score - original_features.quality_score
+            snr_improvement = filtered_features.signal_to_noise_ratio - original_features.signal_to_noise_ratio
+            artifact_reduction = original_features.artifact_percentage - filtered_features.artifact_percentage
+            
+            if quality_improvement > 0.05:
+                filter_text += "✅ Filtering significantly improved data quality\n"
+            elif quality_improvement > 0.01:
+                filter_text += "✅ Filtering moderately improved data quality\n" 
+            elif quality_improvement > -0.01:
+                filter_text += "⚠️ Filtering had minimal impact on quality\n"
+            else:
+                filter_text += "❌ Filtering may have degraded data quality\n"
+            
+            if snr_improvement > 2.0:
+                filter_text += "✅ Signal-to-noise ratio significantly improved\n"
+            if artifact_reduction > 0.05:
+                filter_text += "✅ Artifact levels substantially reduced\n"
+            
+            filter_text += f"\n💡 Recommendation: "
+            if quality_improvement > 0.02:
+                filter_text += "Use filtered data for analysis"
+            elif quality_improvement > -0.02:
+                filter_text += "Both original and filtered data are acceptable"
+            else:
+                filter_text += "Consider original data or different filter settings"
+            
+            # Update current data with filtered version if improvement
+            if quality_improvement > 0:
+                self._current_gsr_data = filtered_data
+                filter_text += "\n\n🔄 Filtered data is now active for further analysis"
+            
+            self.ml_insights_text.setText(filter_text)
+            
+        except Exception as e:
+            error_msg = f"Error applying advanced filtering: {str(e)}"
+            self.ml_insights_text.setText(error_msg)
+            logger.error(error_msg)
     
     def _create_realtime_plot_tab(self):
         """Create the real-time plotting tab"""
