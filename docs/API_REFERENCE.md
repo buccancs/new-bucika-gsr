@@ -318,4 +318,251 @@ asyncio.run(orchestrator.start())
 - `WEBSOCKET_CONNECTION_LOST` - Network connectivity issue
 - `TIME_SYNC_FAILED` - Clock synchronization error
 
+---
+
+# Python PC Orchestrator Implementation
+
+## Overview
+
+The **Bucika GSR PC Orchestrator Python Implementation** provides a complete research-grade Python-based PC orchestrator for coordinating GSR data collection from Android devices. This implementation features a streamlined 3-tab interface designed for physiological research studies.
+
+## Core Architecture
+
+### WebSocket Server (Port 8080)
+```python
+# High-performance async/await JSON-over-WebSocket server
+class BucikaWebSocketServer:
+    def __init__(self, host="0.0.0.0", port=8080):
+        self.host = host
+        self.port = port
+        
+    async def handle_connection(self, websocket, path):
+        # Handle client connections and message routing
+        await self.register_client(websocket)
+        
+    async def broadcast_message(self, message, exclude_clients=None):
+        # Broadcast to all connected clients
+        pass
+```
+
+### Service Discovery (mDNS)
+```python
+# Automatic device discovery with _bucika-gsr._tcp broadcasting
+class ServiceDiscovery:
+    def __init__(self):
+        self.service_type = "_bucika-gsr._tcp.local."
+        
+    def register_service(self, port=8080):
+        # Register mDNS service for automatic discovery
+        pass
+```
+
+### Time Synchronization (UDP Port 9123)
+```python  
+# Sub-millisecond precision UDP time synchronization
+class TimeSyncService:
+    def handle_sync_request(self, client_addr):
+        # High-precision time synchronization
+        server_timestamp = time.time_ns()
+        return {
+            'server_timestamp': server_timestamp,
+            'precision': 'nanosecond'
+        }
+```
+
+## GUI Interface (3-Tab Design)
+
+### 1. Image Preview Tab
+- **Real-time IR+RGB camera display** from connected Android devices
+- **Individual preview widgets** with side-by-side thermal and RGB images
+- **Auto-refresh** with customizable intervals
+- **Save functionality** for research documentation
+- **Timestamped updates** showing last received data
+
+### 2. Emotion Videos Tab  
+- **Professional video player** for emotion elicitation studies
+- **Support for major formats**: MP4, AVI, MOV, MKV, WebM, FLV, WMV
+- **Advanced playback controls** with frame-by-frame navigation
+- **Variable playback speed** (0.5x to 2.0x)
+- **Keyboard shortcuts** for seamless operation
+- **Category filtering** for organized stimulus management
+
+### 3. Device Monitor Tab
+- **Combined device connection and session management**
+- **Real-time monitoring** with battery levels and connection status
+- **Session state tracking** with color-coded indicators
+- **Duration and sample count** display for active recordings
+- **Integrated controls** for session management
+
+## Message Protocol Details
+
+### Enhanced Message Format
+```json
+{
+  "id": "unique-message-id",
+  "type": "MESSAGE_TYPE",
+  "ts": 1234567890123456789,
+  "deviceId": "device-identifier", 
+  "sessionId": "session-identifier",
+  "payload": {
+    // Type-specific payload with enhanced metadata
+  }
+}
+```
+
+### Python-Specific Message Types
+
+#### Session Control
+```python
+# Start session with enhanced parameters
+{
+  "type": "START_SESSION",
+  "payload": {
+    "sessionName": "Research_Study_001",
+    "participantId": "P001",
+    "condition": "baseline",
+    "duration": 300,
+    "samplingRate": 128,
+    "dataQuality": "research_grade"
+  }
+}
+```
+
+#### Real-time Data Streaming  
+```python
+# Enhanced GSR data with quality metrics
+{
+  "type": "GSR_DATA",
+  "payload": {
+    "samples": [
+      {
+        "timestamp": 1234567890123456789,
+        "gsrValue": 15.73,
+        "conductance": 0.0634,
+        "resistance": 15769.23,
+        "quality": "good",
+        "artifacts": false
+      }
+    ],
+    "batchSize": 16,
+    "samplingRate": 128
+  }
+}
+```
+
+## Research-Grade Features
+
+### Data Analysis Engine
+```python
+class DataAnalyzer:
+    def analyze_session(self, session_data):
+        """
+        Comprehensive session analysis including:
+        - Statistical metrics calculation
+        - Artifact detection algorithms  
+        - Quality score generation
+        - Visualization preparation
+        """
+        return {
+            'statistics': self.calculate_statistics(session_data),
+            'artifacts': self.detect_artifacts(session_data),
+            'quality_score': self.calculate_quality(session_data),
+            'visualizations': self.generate_plots(session_data)
+        }
+```
+
+### Multi-Level Data Validation
+```python
+class DataValidator:
+    def validate_data(self, data, level="research_grade"):
+        """
+        Multi-level validation:
+        - Basic: Format and range validation
+        - Standard: Completeness and consistency  
+        - Strict: Advanced quality metrics
+        - Research-Grade: Publication-ready validation
+        """
+        validators = {
+            'basic': self.basic_validation,
+            'standard': self.standard_validation, 
+            'strict': self.strict_validation,
+            'research_grade': self.research_grade_validation
+        }
+        return validators[level](data)
+```
+
+### Performance Monitoring
+```python
+class PerformanceMonitor:
+    def get_system_metrics(self):
+        """Real-time system performance tracking"""
+        return {
+            'cpu_usage': psutil.cpu_percent(),
+            'memory_usage': psutil.virtual_memory()._asdict(),
+            'network_io': psutil.net_io_counters()._asdict(),
+            'disk_io': psutil.disk_io_counters()._asdict()
+        }
+        
+    def get_application_metrics(self):
+        """Application-specific performance metrics"""
+        return {
+            'active_sessions': len(self.session_manager.active_sessions),
+            'message_throughput': self.websocket_server.message_rate,
+            'data_rate': self.calculate_data_throughput(),
+            'connected_devices': len(self.connected_devices)
+        }
+```
+
+## Installation and Setup
+
+### Requirements
+```bash
+# Core dependencies
+pip install websockets asyncio
+pip install zeroconf  # mDNS service discovery
+pip install numpy pandas  # Data analysis
+pip install matplotlib seaborn  # Visualization
+pip install tkinter  # GUI framework
+pip install opencv-python  # Image processing
+pip install psutil  # Performance monitoring
+```
+
+### Quick Start
+```python
+# Initialize and start orchestrator
+from bucika_orchestrator import BucikaOrchestrator
+
+orchestrator = BucikaOrchestrator()
+orchestrator.start_services()
+orchestrator.show_gui()
+```
+
+## Integration with Android Clients
+
+### Connection Establishment
+```python
+# Android clients auto-discover via mDNS
+# Manual connection also supported:
+ws://[PC_IP]:8080/bucika-gsr
+```
+
+### Session Coordination
+```python
+# Synchronized session management across multiple devices
+await orchestrator.start_coordinated_session({
+    'session_id': 'research_001',
+    'devices': ['android_001', 'android_002'], 
+    'synchronization': 'millisecond_precision',
+    'data_collection': {
+        'gsr': True,
+        'thermal': True,
+        'rgb': True
+    }
+})
+```
+
+---
+
+*This comprehensive API reference covers all aspects of the BucikaGSR system integration, from low-level sensor APIs to high-level orchestration protocols.*
+
 For detailed implementation examples, see the [Developer Guide](DEVELOPER_GUIDE.md) and [Integration Guide](HARDWARE_INTEGRATION.md).
