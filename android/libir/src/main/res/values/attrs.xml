@@ -41,4 +41,7 @@
         <attr name="markerSize" format="dimension" />
     </declare-styleable>
 
+    <!-- Additional attributes -->
+    <attr name="barMin" format="float" />
+
 </resources>

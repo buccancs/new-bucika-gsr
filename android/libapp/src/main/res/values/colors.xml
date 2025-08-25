@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material Design primary colors -->
+    <color name="colorPrimary">#FF6200EE</color>
+    <color name="colorPrimaryDark">#FF3700B3</color>
+    <color name="colorAccent">#FF03DAC5</color>
+
     <color name="color_select1">#FF000000</color>
     <color name="color_select2">#FFFFFFFF</color>
     <color name="color_select3">#FF2B79D8</color>
@@ -15,5 +20,10 @@
     <!-- Missing colors from github dependencies -->
     <color name="toolbar_16131E">#FF16131E</color>
     <color name="base_dialog">#FF16131E</color>
+    
+    <!-- Additional missing colors -->
+    <color name="color_green_point">#FF00FF00</color>
+    <color name="toolbar_5F16131E">#5F16131E</color>
+    <color name="color_img_calibration_right">#FFFFFFFF</color>
 
 </resources>
