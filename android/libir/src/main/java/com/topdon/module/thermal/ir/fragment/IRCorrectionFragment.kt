@@ -23,7 +23,6 @@ import com.infisense.usbir.thread.ImageThreadTC
 import com.infisense.usbir.utils.USBMonitorCallback
 import com.infisense.usbir.view.ITsTempListener
 import com.infisense.usbir.view.TemperatureView.*
-import com.topdon.lib.core.bean.event.device.DeviceCameraEvent
 import com.topdon.lib.core.common.SaveSettingUtil
 import com.topdon.lib.core.config.DeviceConfig
 import com.topdon.lib.core.ktbase.BaseFragment

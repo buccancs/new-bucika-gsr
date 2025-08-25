@@ -90,7 +90,6 @@ class ConfigEmAdapter(val context: Context) : RecyclerView.Adapter<ConfigEmAdapt
         override fun setColorFilter(colorFilter: ColorFilter?) {
         }
 
-        @Deprecated("This method is no longer used in graphics optimizations")
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
     }
 }

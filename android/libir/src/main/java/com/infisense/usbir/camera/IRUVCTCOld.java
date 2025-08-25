@@ -20,7 +20,6 @@
 //import com.infisense.usbir.config.MsgCode;
 //import com.infisense.usbir.event.IRMsgEvent;
 //import com.infisense.usbir.utils.USBMonitorCallback;
-//import com.topdon.lib.core.bean.event.device.DeviceCameraEvent;
 //import com.topdon.lib.core.bean.event.device.ResetConnectEvent;
 //
 //import org.greenrobot.eventbus.EventBus;

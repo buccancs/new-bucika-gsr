@@ -29,7 +29,6 @@ import com.infisense.usbir.utils.PseudocodeUtils
 import com.infisense.usbir.utils.USBMonitorCallback
 import com.infisense.usbir.view.ITsTempListener
 import com.infisense.usbir.view.TemperatureView.*
-import com.topdon.lib.core.bean.event.device.DeviceCameraEvent
 import com.topdon.lib.core.bean.tools.ThermalBean
 import com.topdon.lib.core.common.SaveSettingUtil
 import com.topdon.lib.core.common.SharedManager

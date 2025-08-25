@@ -60,7 +60,6 @@ import com.topdon.lib.core.bean.AlarmBean
 import com.topdon.lib.core.bean.CameraItemBean
 import com.topdon.lib.core.bean.CameraItemBean.Companion.DELAY_TIME_0
 import com.topdon.lib.core.bean.ObserveBean
-import com.topdon.lib.core.bean.event.device.DeviceCameraEvent
 import com.topdon.lib.core.common.ProductType.PRODUCT_NAME_TC
 import com.topdon.lib.core.common.ProductType.PRODUCT_NAME_TCP
 import com.topdon.lib.core.common.ProductType.PRODUCT_NAME_TS

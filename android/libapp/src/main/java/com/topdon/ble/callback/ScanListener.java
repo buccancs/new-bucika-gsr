@@ -39,15 +39,6 @@ public interface ScanListener {
     /**
      * 搜索到BLE设备
      *
-     * @deprecated 使用 {@link #onScanResult(Device, boolean)}，不要再覆写此方法，因为不再会被回调
-     */
-    @Deprecated
-    default void onScanResult(Device device) {
-    }
-
-    /**
-     * 搜索到BLE设备
-     *
      * @param device           搜索到的设备
      * @param isConnectedBySys 是否已被系统蓝牙连接上
      */
