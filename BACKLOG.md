@@ -1,235 +1,259 @@
-# Project Backlog - Bucika GSR
 
-This document tracks all project tasks, features, and improvements for the Bucika GSR multi-modal data collection platform.
 
-## Backlog Overview
+# new-bucika-gsr — Implementation Backlog (v1)
 
-```mermaid
-pie title Task Distribution by Status
-    "Todo" : 45
-    "In Progress" : 25
-    "Done" : 20
-    "Blocked" : 10
-```
+**Scope**
+PC orchestrator controlling multiple Android clients. One Android is the **GSR leader** (Bluetooth to Shimmer). Default **Local** mode (store‑and‑forward); optional **Bridged** mode (live GSR to PC). Tight clock sync, robust ingest, session metadata, calibration.
 
-## Status Visualization
+**Priority legend**: P0 = Must for first working release; P1 = Nice‑to‑have for thesis completeness; P2 = Later.
 
-```mermaid
-kanban
-    Todo
-        Improve data sync accuracy
-        Performance optimization
-        Add heart rate sensor support
-        Implement real-time analysis
-        Cloud storage integration
-        Multi-device coordination
-        Advanced visualization tools
-        Automated testing framework
-    
-    In Progress
-        Documentation system enhancement
-        Copilot guidelines implementation
-        GSR sensor calibration improvements
-        UI/UX enhancements
-        Data export functionality
-    
-    Done
-        Initial project setup
-        Android app foundation
-        Build system configuration
-        GSR sensor integration
-        Thermal camera support
-        Basic synchronization
-        Core architecture
-    
-    Blocked
-        Advanced ML integration
-        Cloud platform selection
-        Hardware procurement delays
-        Third-party API dependencies
-```
-
-## Priority Matrix
-
-```mermaid
-quadrantChart
-    title Priority vs Effort Matrix
-    x-axis Low Effort --> High Effort
-    y-axis Low Priority --> High Priority
-    
-    quadrant-1 Do First
-    quadrant-2 Schedule
-    quadrant-3 Delegate
-    quadrant-4 Don't Do
-    
-    Documentation Enhancement: [0.2, 0.9]
-    GSR Calibration: [0.7, 0.85]
-    Real-time Analysis: [0.9, 0.8]
-    Cloud Storage: [0.6, 0.6]
-    UI Polish: [0.3, 0.4]
-    Automated Testing: [0.5, 0.7]
-    Multi-device Support: [0.8, 0.75]
-```
-
-## Development Timeline
-
-```mermaid
-gantt
-    title Bucika GSR Development Roadmap
-    dateFormat 2024-01-01
-    axisFormat %b %Y
-    
-    section Foundation
-    Project Setup        :done, setup, 2024-01-01, 2024-01-31
-    Architecture Design  :done, arch, 2024-02-01, 2024-02-29
-    
-    section Core Features
-    GSR Integration      :done, gsr, 2024-03-01, 2024-03-31
-    Thermal Camera       :done, thermal, 2024-04-01, 2024-04-30
-    Data Synchronization :active, sync, 2024-05-01, 2024-05-31
-    
-    section Enhancements
-    Documentation        :active, docs, 2024-08-15, 2024-08-31
-    Performance Optimization :perf, 2024-09-01, 2024-09-30
-    Advanced Analysis    :analysis, 2024-10-01, 2024-10-31
-    
-    section Future
-    ML Integration       :ml, 2024-11-01, 2024-12-31
-    Platform Expansion   :expansion, 2025-01-01, 2025-03-31
-```
-
-## Epics and Features
-
-### Epic 1: Core Platform Development ✅
-**Status**: Complete  
-**Priority**: Critical  
-
-- [x] Android application framework
-- [x] GSR sensor integration (Shimmer3 GSR+)
-- [x] Thermal camera support (TC001)
-- [x] Basic data synchronization
-- [x] Build system and dependencies
-
-### Epic 2: Documentation and Guidelines 🔄
-**Status**: In Progress  
-**Priority**: High  
-
-- [x] Copilot guidelines creation
-- [x] ADR system implementation  
-- [x] Changelog management
-- [x] Backlog tracking
-- [ ] API documentation
-- [ ] User manual
-- [ ] Developer guide
-
-### Epic 3: Data Quality and Performance 📋
-**Status**: Planned  
-**Priority**: High  
-
-- [ ] Millisecond-level synchronization accuracy
-- [ ] Memory leak detection and prevention
-- [ ] CPU usage optimization
-- [ ] Battery life optimization
-- [ ] Data validation and quality checks
-- [ ] Automated performance testing
-
-### Epic 4: Advanced Features 📋
-**Status**: Planned  
-**Priority**: Medium  
-
-- [ ] Real-time data analysis
-- [ ] Cloud storage integration
-- [ ] Multi-device coordination
-- [ ] Advanced visualization tools
-- [ ] Machine learning pipeline integration
-- [ ] Predictive GSR modeling
-
-### Epic 5: Platform Expansion 🚫
-**Status**: Blocked  
-**Priority**: Low  
-
-- [ ] Heart rate sensor integration
-- [ ] EEG sensor support  
-- [ ] Respiration monitoring
-- [ ] Environmental sensor fusion
-- [ ] Cross-platform compatibility
-
-## Task Details
-
-### High Priority Tasks
-
-| Task | Priority | Effort | Assignee | Due Date | Dependencies |
-|------|----------|--------|----------|----------|--------------|
-| Sync Accuracy Improvement | Critical | High | TBD | 2024-09-15 | Core platform |
-| Performance Optimization | High | Medium | TBD | 2024-09-30 | Baseline metrics |
-| Documentation Completion | High | Low | In Progress | 2024-08-31 | Guidelines |
-| UI/UX Enhancement | Medium | Medium | TBD | 2024-10-15 | User feedback |
-
-### Medium Priority Tasks
-
-```mermaid
-graph TB
-    A[Data Export] --> B[Format Selection]
-    B --> C[Implementation]
-    D[Cloud Integration] --> E[Platform Analysis]
-    E --> F[API Development]
-    G[Testing Framework] --> H[Test Planning]
-    H --> I[Automation Setup]
-```
-
-### Technical Debt
-
-- [ ] Refactor legacy camera integration code
-- [ ] Update deprecated API usage
-- [ ] Improve error handling consistency
-- [ ] Standardize logging across modules
-- [ ] Code documentation improvements
-
-## Risk Assessment
-
-```mermaid
-graph TD
-    A[Project Risks] --> B[Technical Risks]
-    A --> C[Resource Risks]
-    A --> D[Timeline Risks]
-    
-    B --> B1[Hardware Dependencies]
-    B --> B2[Synchronization Complexity]
-    B --> B3[Performance Issues]
-    
-    C --> C1[Team Availability]
-    C --> C2[Hardware Procurement]
-    C --> C3[Third-party Services]
-    
-    D --> D1[Research Timeline]
-    D --> D2[Integration Delays]
-    D --> D3[Testing Requirements]
-```
-
-## Success Metrics
-
-### Technical Metrics
-- **Synchronization Accuracy**: < 5ms offset between sensors
-- **Data Throughput**: 128 Hz GSR + 30 FPS thermal + 60 FPS RGB
-- **System Reliability**: > 99% uptime during 8-hour sessions
-- **Memory Usage**: < 500MB sustained usage
-- **Battery Life**: > 4 hours continuous recording
-
-### Quality Metrics
-- **Documentation Coverage**: 100% of public APIs
-- **Test Coverage**: > 85% code coverage
-- **ADR Compliance**: All architectural decisions documented
-- **Changelog Completeness**: All changes tracked
-
-## Review Schedule
-
-- **Daily**: Task status updates
-- **Weekly**: Epic progress review
-- **Bi-weekly**: Priority re-assessment
-- **Monthly**: Backlog grooming and planning
-- **Quarterly**: Roadmap review and adjustment
+**Traceability**: FR‑L0, FR1–FR11; NFR‑Perf/Time/Rel/Int/Sec/Use/Scale/Maint as per chapter.
 
 ---
 
-*Last Updated: 2024-08-22*  
-*Next Review: 2024-08-29*
+## Milestones (execution order)
+
+1. **M0 Foundations (P0)** → 2. **M1 Protocol & Time** → 3. **M2 Android Recording + GSR (Local)**
+2. **M3 Session Manager + PC UI** → 5. **M4 Ingest/Offload** → 6. **M5 Reliability + Tests**
+3. **M6 Security + Calibration (P1)** → 8. **M7 Observability + Docs**
+
+---
+
+## Epics and Work Items
+
+### E0. Foundations & Repo Hygiene — **P0** (FR4, NFR‑Maint)
+
+* [ ] Monorepo layout: `pc/`, `android/`, `shared-spec/`, `docs/`, `tools/`.
+* [ ] Code style & hooks (ktlint/detekt; ruff/black; pre‑commit).
+* [ ] CI workflows: build APK; build PC app; unit tests.
+  **DoD:** Clean CI builds for PC+Android; style checks pass; version/tag recorded in app “About”.
+
+---
+
+### E1. Protocol & Discovery — **P0** (FR1, FR2, FR6, FR7)
+
+* [ ] **Control channel**: JSON over WebSocket (WS); envelope `{id,type,ts,sessionId,deviceId,payload}`.
+* [ ] **Messages v1**: `HELLO/REGISTER`, `PING/PONG`, `START`, `STOP`, `SYNC_MARK`, `ACK`, `ERROR`.
+* [ ] **Discovery**: mDNS/UDP beacon + manual IP fallback.
+* [ ] **Liveness**: 3 missed PING ⇒ offline; retries with back‑off.
+  **DoD:** Two phones auto‑register; PC broadcasts `START/STOP/SYNC_MARK`; all commands ACKed; offline detection ≤10 s.
+
+**Deps:** E0.
+
+---
+
+### E2. Time Synchronisation — **P0** (FR3, FR11, NFR‑Time)
+
+* [ ] **PC SNTP‑like service** (local reference clock).
+* [ ] **Android client**: offset + uncertainty; sync pre‑start and periodic during recording.
+* [ ] **Local mode stamping**: leader records offset at start/stop and every 30 s.
+  **DoD:** Median offset ≤5 ms; p95 ≤15 ms over 30 min; offsets written to CSV/sidecar.
+
+**Deps:** E1.
+
+---
+
+### E3. Android Recording Service — **P0** (FR2, FR5, FR8)
+
+* [ ] ForegroundService with notification; survives background/lock.
+* [ ] **RGB**: CameraX 1080p\@30; constant bitrate; rotation fix.
+* [ ] **Thermal** (if available): vendor wrapper; clean enable/disable.
+* [ ] Local writers: MP4 segmenting (\~1 GB); crash‑safe flush.
+  **DoD:** `START` → files created; `STOP` → playable MP4; no corruption; frame rate ≥29 fps avg.
+
+**Deps:** E1, E2.
+
+---
+
+### E4. Android GSR Leader (Local mode) — **P0** (FR1, FR5, FR11)
+
+* [ ] Bluetooth Classic to Shimmer; 32–128 Hz; channel config (GSR, temp).
+* [ ] **CSV schema**: `t_mono_ns,t_utc_ns,offset_ms,seq,gsr_raw_uS,gsr_filt_uS,temp_C,flag_spike,flag_sat,flag_dropout`.
+* [ ] Filters + QC flags (spike/saturation/dropout); deterministic simulator toggle.
+  **DoD:** 30‑min run @128 Hz with <0.1% missing samples; CSV matches schema; simulator output is seed‑stable.
+
+**Deps:** E2.
+
+---
+
+### E5. Session Manager (PC) — **P0** (FR4, FR6)
+
+* [ ] Lifecycle: NEW → ARMED → RECORDING → FINALISING → DONE/FAILED.
+* [ ] Session folder + `meta.json` (devices, versions, offsets, events, files manifest).
+* [ ] Pre‑flight checks: disk space; device online; permissions; battery hints.
+  **DoD:** Starting a session creates folder + metadata; state transitions idempotent; pre‑flight blocks unsafe start.
+
+**Deps:** E1, E2.
+
+---
+
+### E6. Data Packaging & Offload — **P0** (FR10, FR5)
+
+* [ ] Android **packager**: `manifest.json` + SHA‑256 per file; ZIP or raw + chunking.
+* [ ] **Resumable upload**: `UPLOAD_BEGIN/CHUNK/END` with offsets; retry/back‑off.
+* [ ] PC **ingest**: write to session, verify checksums, update `meta.json`.
+  **DoD:** Interrupted upload resumes; all files present with verified hashes; manifest stored.
+
+**Deps:** E1, E5.
+
+---
+
+### E7. PC Orchestrator UI — **P0** (FR6, FR2, FR7, FR10)
+
+* [ ] Dashboard: device list, battery, state, last ping; session controls.
+* [ ] Indicators: elapsed time; per‑device file sizes/bitrate; warnings/errors.
+* [ ] Actions: New Session, Arm, Start, Sync Mark, Stop, Ingest progress.
+  **DoD:** Operator completes end‑to‑end session without touching phones; errors clearly surfaced.
+
+**Deps:** E5, E6.
+
+---
+
+### E8. Time Reconciliation (Local mode) — **P0** (FR11)
+
+* [ ] PC reconciliation: apply offset stamps + `SYNC_MARK` to compute unified `t_ref_ns`.
+* [ ] Export reconciled summary (per‑device lag/jitter; alignment QC).
+  **DoD:** Post‑ingest alignment ≤ ±1 frame across videos; GSR aligned to reference within targets.
+
+**Deps:** E2, E6.
+
+---
+
+### E9. Reliability & Recovery — **P1** (FR8, NFR‑Rel)
+
+* [ ] Auto‑reconnect (WS + Bluetooth); exponential back‑off.
+* [ ] **State replay**: on rejoin, device requests missed commands; resumes if session active.
+* [ ] Crash‑safe writers; partial file salvage.
+  **DoD:** Forced Wi‑Fi drop on one phone does not stop others; rejoin resumes; no corrupted files after forced kill.
+
+**Deps:** E3–E6.
+
+---
+
+### E10. Bridged Mode (optional live GSR) — **P1** (FR‑L0, FR5, NFR‑Perf)
+
+* [ ] Leader → PC live `GSR_SAMPLE` frames (batched); ring buffer; back‑pressure.
+* [ ] UI live counter/preview (no strict requirement in Local mode).
+  **DoD:** p95 Android→PC latency ≤150 ms; zero loss in 30‑min soak; toggle between Local/Bridged recorded in metadata.
+
+**Deps:** E4, E1.
+
+---
+
+### E11. Calibration Utility (RGB↔Thermal) — **P1** (FR9)
+
+* [ ] PC‑driven capture of N paired frames; OpenCV solve; reprojection error.
+* [ ] Persist per‑device params `calibration/<deviceId>.json`; link in metadata.
+  **DoD:** Error reported; params saved; re‑capture flow on high error.
+
+**Deps:** E3, E7.
+
+---
+
+### E12. Security & Enrolment — **P1** (NFR‑Sec)
+
+* [ ] TLS for WS; pinned certs or local CA.
+* [ ] Device enrolment (QR/token); allow‑list on PC.
+* [ ] Security lints (no PII; safe defaults).
+  **DoD:** Only enrolled devices connect; traffic encrypted; warnings on insecure configs.
+
+**Deps:** E1.
+
+---
+
+### E13. Simulation & Test Fixtures — **P1** (NFR‑Maint/Use)
+
+* [ ] GSR simulator (seed, artefact injection).
+* [ ] Synthetic camera source (colour bars/timecode).
+* [ ] Headless Android client stub for CI protocol tests.
+  **DoD:** CI can run end‑to‑end without hardware; reproducible outputs for fixed seed.
+
+**Deps:** E1–E4.
+
+---
+
+### E14. Data Schema, QC & Lints — **P1** (NFR‑Int)
+
+* [ ] JSON Schema for `meta.json`, `manifest.json`.
+* [ ] Data dictionary in `docs/`; schema validator tool.
+  **DoD:** Schemas validate in CI; sample sessions pass lints; QC flags present.
+
+**Deps:** E4–E6.
+
+---
+
+### E15. Observability — **P2** (NFR‑Maint/Rel)
+
+* [ ] Structured logs (JSON) with session/device IDs; rotation.
+* [ ] Metrics: offset, jitter, dropped frames/samples, upload throughput.
+* [ ] One‑click debug bundle (logs + meta).
+  **DoD:** Operators can export a bundle; metrics visible for a session.
+
+**Deps:** E1–E7.
+
+---
+
+### E16. Documentation & Ops — **P0** (NFR‑Use/Maint)
+
+* [ ] Operator guide (PC + Android quick‑start).
+* [ ] Developer guide (architecture, build/run, adding sensors).
+* [ ] Acceptance procedures mapped to FR/NFR; reproducibility note (commit hashes).
+  **DoD:** New user records a 2‑device session in <15 min using docs.
+
+**Deps:** Rolling.
+
+---
+
+## Acceptance / Soak Tests (map to NFRs)
+
+* **T1 Time accuracy (P0)**: 30‑min run; median offset ≤5 ms, p95 ≤15 ms; `SYNC_MARK` alignment ±1 frame. *(NFR‑Time)*
+* **T2 Performance (P0)**: 3 phones (RGB) + GSR leader; 1080p\@30 + 128 Hz; no loss; UI responsive. *(NFR‑Perf)*
+* **T3 Reliability (P1)**: Induced Wi‑Fi drop (5 min) on leader; continuous local CSV; reconciliation OK post‑ingest. *(NFR‑Rel)*
+* **T4 Offload (P0)**: Interrupted upload resumes; checksums verified; manifest complete. *(FR10, NFR‑Int)*
+* **T5 Security (P1)**: Unenrolled device rejected; TLS enforced; warning on downgrade. *(NFR‑Sec)*
+
+---
+
+## Traceability (epic → requirements)
+
+* **E1/E7** → FR2, FR6, FR7
+* **E2/E8** → FR3, FR11, NFR‑Time
+* **E3/E4** → FR1, FR5, FR8
+* **E5/E6** → FR4, FR10
+* **E11** → FR9
+* **E12** → NFR‑Sec
+* **E13/E14/E15/E16** → NFR‑Maint/Int/Use/Rel
+
+---
+
+## Non‑Goals (explicit out of scope for this phase)
+
+* Multi‑host GSR, cloud backends, on‑device ML inference, iOS client.
+
+---
+
+## Issue Labels (suggested)
+
+`priority:P0|P1|P2`, `component:pc|android|proto|time|ui|ingest|security|calibration|sim`, `type:feature|bug|techdebt|docs`, `good-first-issue`.
+
+---
+
+## ADRs to write
+
+1. **Transport**: WS+JSON vs gRPC (chosen: WS+JSON for simplicity).
+2. **Time sync**: SNTP‑like service vs third‑party library (chosen: lightweight service).
+3. **Storage**: MP4 segmenting strategy; CSV vs Parquet for signals (chosen: CSV initially).
+4. **Security**: Local CA + pinning; enrolment flow.
+
+---
+
+### Definition of Done (project‑wide)
+
+* Requirements mapped (ID in PR).
+* Unit/integration tests added or updated.
+* CI green; schemas validated; docs amended.
+* No TODOs in production code; logs free of secrets.
+
+---
+
+**Next step**: create GitHub issues from E0–E8 (P0 scope), link to FR/NFR IDs, and start with M0→M1→M2.
