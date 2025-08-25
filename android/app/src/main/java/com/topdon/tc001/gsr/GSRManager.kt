@@ -12,6 +12,7 @@ import com.shimmerresearch.driver.ProcessedGSRData
 import com.topdon.tc001.gsr.data.GSRDataWriter
 import com.topdon.tc001.gsr.quality.GSRDataQualityMonitor
 import com.topdon.tc001.gsr.quality.QualityAssessment
+import com.topdon.tc001.performance.PerformanceMonitor
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -48,6 +49,9 @@ class GSRManager private constructor(private val context: Context) {
     
     // Quality monitor for data validation
     private val qualityMonitor = GSRDataQualityMonitor()
+    
+    // Performance monitor for system resource tracking
+    private val performanceMonitor = PerformanceMonitor(context)
     
     // State management
     private val isConnected = AtomicBoolean(false)
@@ -210,6 +214,9 @@ class GSRManager private constructor(private val context: Context) {
             // Process data with advanced algorithms
             val processedData = dataProcessor.processGSRData(objectCluster, DEFAULT_SAMPLING_RATE)
             
+            // Record performance metrics
+            performanceMonitor.recordGSRSampleProcessed()
+            
             // Validate data quality if recording
             if (isRecording.get()) {
                 val validationResult = qualityMonitor.processDataSample(processedData)
@@ -217,6 +224,7 @@ class GSRManager private constructor(private val context: Context) {
                 // Only save high-quality data to local file
                 if (validationResult.isValid) {
                     dataWriter.addGSRData(processedData)
+                    performanceMonitor.recordFileOperation()
                 } else {
                     XLog.w(TAG, "Low quality sample detected (${validationResult.qualityScore.toInt()}%): ${validationResult.issues}")
                 }
@@ -304,10 +312,13 @@ class GSRManager private constructor(private val context: Context) {
                 // Reset quality monitor for new recording
                 qualityMonitor.reset()
                 
+                // Start performance monitoring
+                performanceMonitor.startMonitoring()
+                
                 // Start device streaming
                 shimmerDevice?.startStreaming()
                 isRecording.set(true)
-                XLog.i(TAG, "GSR recording started with advanced processing, local storage, and quality monitoring")
+                XLog.i(TAG, "GSR recording started with advanced processing, local storage, quality monitoring, and performance tracking")
                 true
             } catch (e: Exception) {
                 XLog.e(TAG, "Failed to start GSR recording: ${e.message}", e)
@@ -336,16 +347,21 @@ class GSRManager private constructor(private val context: Context) {
                 // Stop local file recording
                 val recordingStopped = dataWriter.stopRecording()
                 
+                // Stop performance monitoring
+                performanceMonitor.stopMonitoring()
+                
                 // Log final statistics
                 val stats = dataProcessor.getStatistics()
                 val recordingInfo = if (recordingStopped) dataWriter.getCurrentRecordingInfo() else null
                 val finalQualityAssessment = qualityMonitor.getCurrentQualityAssessment()
+                val performanceSummary = performanceMonitor.getPerformanceSummary()
                 
                 XLog.i(TAG, "GSR recording stopped. Stats: ${stats.totalSamples} total, ${stats.validSamples} valid, quality: ${stats.currentSignalQuality}%")
                 if (recordingInfo != null) {
                     XLog.i(TAG, "Local file saved: ${recordingInfo.fileName} with ${recordingInfo.samplesWritten} samples")
                 }
                 XLog.i(TAG, "Final quality assessment: ${finalQualityAssessment.grade} (${finalQualityAssessment.qualityScore.toInt()}%)")
+                XLog.i(TAG, "Performance summary: Overall score ${performanceSummary.overallScore.toInt()}%, Memory ${performanceSummary.memoryUsageMB}MB, Battery ${performanceSummary.batteryLevel}%")
                 
                 // Notify listener of final quality assessment
                 advancedDataListener?.let { listener ->
@@ -425,6 +441,7 @@ class GSRManager private constructor(private val context: Context) {
             disconnectShimmer()
             dataProcessor.reset()
             dataWriter.cleanup()
+            performanceMonitor.cleanup()
             gsrDataListener = null
             advancedDataListener = null
             
@@ -449,6 +466,11 @@ class GSRManager private constructor(private val context: Context) {
      * Get current quality assessment
      */
     fun getCurrentQualityAssessment() = qualityMonitor.getCurrentQualityAssessment()
+    
+    /**
+     * Get current performance summary
+     */
+    fun getPerformanceSummary() = performanceMonitor.getPerformanceSummary()
     
     /**
      * Get quality metrics flow for reactive UI updates
