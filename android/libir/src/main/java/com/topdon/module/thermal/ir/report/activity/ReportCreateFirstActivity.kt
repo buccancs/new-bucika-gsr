@@ -16,12 +16,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.github.gzuliyujiang.wheelpicker.DatimePicker
-import com.github.gzuliyujiang.wheelpicker.annotation.DateMode
-import com.github.gzuliyujiang.wheelpicker.annotation.TimeMode
-import com.github.gzuliyujiang.wheelpicker.entity.DateEntity
-import com.github.gzuliyujiang.wheelpicker.entity.DatimeEntity
-import com.github.gzuliyujiang.wheelpicker.entity.TimeEntity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -324,43 +320,34 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
      */
     private var startTime = 0L
     /**
-     * 显示时间拾取弹窗
+     * 显示时间拾取弹窗 - 使用Android原生日期时间选择器
      */
     private fun selectTime() {
-        val picker = DatimePicker(this)
-        picker.setTitle(R.string.chart_start_time)
-        picker.setOnDatimePickedListener { year, month, day, hour, minute, second ->
-            val timeStr = "$year-$month-$day $hour:$minute:$second"
-            val pattern = "yyyy-MM-dd HH:mm:ss"
-            val time: Long = SimpleDateFormat(pattern, Locale.getDefault()).parse(timeStr, ParsePosition(0)).time
-            tv_report_date.text = TimeUtils.millis2String(time, "yyyy.MM.dd HH:mm")
-            startTime = time
-        }
-
-        val startTimeEntity = DatimeEntity()
-        startTimeEntity.date = DateEntity.target(2020, 1, 1)
-        startTimeEntity.time = TimeEntity.target(0, 0, 0)
-
-        val endTimeEntity = DatimeEntity.yearOnFuture(10)
-        if (startTime == 0L) {
-            //设置当前时间
-            picker.wheelLayout.setRange(startTimeEntity, endTimeEntity, DatimeEntity.now())
-        } else {
-            //设置上一次选中时间
-            val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
+        if (startTime != 0L) {
             calendar.timeInMillis = startTime
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH) + 1
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val hours = calendar.get(Calendar.HOUR_OF_DAY)
-            val minutes = calendar.get(Calendar.MINUTE)
-            val seconds = calendar.get(Calendar.SECOND)
-            val timeEntity = DatimeEntity()
-            timeEntity.date = DateEntity.target(year, month, day)
-            timeEntity.time = TimeEntity.target(hours, minutes, seconds)
-            picker.wheelLayout.setRange(startTimeEntity, endTimeEntity, timeEntity)
         }
-        picker.show()
+        
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        // 先选择日期
+        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+            // 日期选择完成后，选择时间
+            val timePickerDialog = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
+                // 更新选中的日期时间
+                val selectedCalendar = Calendar.getInstance()
+                selectedCalendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute, 0)
+                startTime = selectedCalendar.timeInMillis
+                tv_report_date.text = TimeUtils.millis2String(startTime, "yyyy.MM.dd HH:mm")
+            }, hour, minute, true)
+            timePickerDialog.show()
+        }, year, month, day)
+        
+        datePickerDialog.show()
     }
 
     private fun checkLocationPermission() {

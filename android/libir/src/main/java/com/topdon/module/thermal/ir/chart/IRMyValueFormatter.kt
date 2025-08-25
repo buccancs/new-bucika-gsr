@@ -1,17 +1,15 @@
 package com.topdon.module.thermal.ir.chart
 
 import android.annotation.SuppressLint
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.module.thermal.ir.utils.ChartTools
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * X轴文本格式
+ * X轴时间格式化工具类
  */
-class IRMyValueFormatter(private val startTime: Long, private val type: Int = 1) :
-    IndexAxisValueFormatter() {
+class IRMyValueFormatter(private val startTime: Long, private val type: Int = 1) {
 
     companion object {
         const val TYPE_TIME_SECOND = 1
@@ -20,7 +18,7 @@ class IRMyValueFormatter(private val startTime: Long, private val type: Int = 1)
         const val TYPE_TIME_DAY = 4
     }
 
-    override fun getFormattedValue(value: Float): String {
+    fun getFormattedValue(value: Float): String {
         //TODO (秒)传入1000,有可能返回999,确保数据稳定 2022-03-24
         val time = if (value.toLong() % 1000 == 999L) {
             value.toLong() + 1L

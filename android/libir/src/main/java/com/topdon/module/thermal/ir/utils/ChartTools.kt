@@ -2,7 +2,7 @@ package com.topdon.module.thermal.ir.utils
 
 import android.graphics.Point
 import android.util.Log
-import com.github.mikephil.charting.charts.LineChart
+
 import com.topdon.lib.core.tools.UnitTools
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -88,80 +88,7 @@ object ChartTools {
         return getMinimum(type) * 50f
     }
 
-    /**
-     * 设置Y轴范围
-     */
-    fun setY(chart: LineChart) {
-        var maxVol = 0f
-        var minVol = 0f
-        when (chart.data.dataSetCount) {
-            1 -> {
-                val dataSet = chart.data.getDataSetByIndex(0) ?: return
-                maxVol = dataSet.yMax
-                minVol = dataSet.yMin
-            }
-            2 -> {
-                val dataSet1 = chart.data.getDataSetByIndex(0)
-                val dataSet2 = chart.data.getDataSetByIndex(1)
-                maxVol = if (dataSet1.yMax > dataSet2.yMax) dataSet1.yMax else dataSet2.yMax
-                minVol = if (dataSet1.yMin < dataSet2.yMin) dataSet1.yMin else dataSet2.yMin
-            }
-            3 -> {
-                val dataSet1 = chart.data.getDataSetByIndex(0)
-                val dataSet2 = chart.data.getDataSetByIndex(1)
-                val dataSet3 = chart.data.getDataSetByIndex(2)
-                maxVol = if (dataSet1.yMax > dataSet2.yMax) dataSet1.yMax else dataSet2.yMax
-                minVol = if (dataSet1.yMin < dataSet2.yMin) dataSet1.yMin else dataSet2.yMin
 
-                maxVol = if (dataSet3.yMax > maxVol) dataSet3.yMax else maxVol
-                minVol = if (dataSet3.yMin < minVol) dataSet3.yMin else minVol
-            }
-            else -> {
-                return
-            }
-        }
-        if (maxVol == minVol) {
-            chart.axisLeft.axisMaximum = 50f
-            chart.axisLeft.axisMinimum = 0f
-        } else {
-            if (maxVol - minVol < 0.5f) {
-                chart.axisLeft.axisMaximum = (maxVol + minVol) / 2f + 0.3f
-                chart.axisLeft.axisMinimum = (maxVol + minVol) / 2f - 0.3f
-            } else {
-                chart.axisLeft.axisMaximum = maxVol + (maxVol - minVol) * 0.15f
-                chart.axisLeft.axisMinimum = minVol - (maxVol - minVol) * 0.15f
-            }
-        }
-        Log.w("chart", "yAxis max:${chart.axisLeft.axisMaximum}, min:${chart.axisLeft.axisMinimum}")
-    }
-
-    /**
-     * 设置X轴刻度
-     */
-    fun setX(chart: LineChart, type: Int) {
-        //true保证有刻度数量不变,滑动要false
-        val xLen = chart.xChartMax - chart.xChartMin
-//        Log.w("chart", "xLen: $xLen")
-//        chart.xAxis.setLabelCount(getLabCount(xLen.toInt()), getLabCount(xLen.toInt()) < 3)
-//        chart.xAxis.setLabelCount(5, false) // 3点 ok
-//        chart.xAxis.setLabelCount(5, true) //
-        chart.xAxis.setLabelCount(getLabCount(xLen.toInt()), xLen <= 3)
-    }
-
-    /**
-     * x轴显示多少个刻度
-     */
-    private fun getLabCount(count: Int): Int {
-        return when {
-            count <= 2 -> 1
-            count in 3..4 -> 2
-            count in 5..7 -> 3
-//            count in 8..9 -> 4
-//            count >= 9 -> 5
-            count >= 8 -> 4
-            else -> count
-        }
-    }
 
     fun getChartX(x: Long, startTime: Long, type: Int): Long {
         return (x - startTime) / scale(type)

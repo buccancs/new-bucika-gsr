@@ -1,14 +1,13 @@
 package com.topdon.module.thermal.ir.chart
 
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.topdon.lib.core.tools.UnitTools
 
 /**
- * Y轴文本格式
+ * Y轴数值格式化工具类
  */
-class YValueFormatter : IndexAxisValueFormatter() {
+object YValueFormatter {
 
-    override fun getFormattedValue(value: Float): String {
+    fun getFormattedValue(value: Float): String {
         return try {
             String.format("%.1f", value)//检测value是不是数字
             UnitTools.showC(value)
@@ -16,5 +15,4 @@ class YValueFormatter : IndexAxisValueFormatter() {
             UnitTools.showC(value)
         }
     }
-
 }
