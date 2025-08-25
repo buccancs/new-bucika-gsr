@@ -19,14 +19,13 @@ class TestDiscoveryService(unittest.TestCase):
         """Set up test environment"""
         self.temp_dir = tempfile.mkdtemp()
         self.service = DiscoveryService(
-            service_name="Test BucikaGSR PC",
-            service_type="_bucika-gsr._tcp.local.",
-            port=8080
+            port=8080,
+            service_name="Test BucikaGSR PC"
         )
     
     def tearDown(self):
         """Clean up test environment"""
-        if self.service.running:
+        if self.service.is_running():
             try:
                 asyncio.get_event_loop().run_until_complete(self.service.stop())
             except Exception:
@@ -38,7 +37,7 @@ class TestDiscoveryService(unittest.TestCase):
         self.assertEqual(self.service.service_name, "Test BucikaGSR PC")
         self.assertEqual(self.service.service_type, "_bucika-gsr._tcp.local.")
         self.assertEqual(self.service.port, 8080)
-        self.assertFalse(self.service.running)
+        self.assertFalse(self.service.is_running())
         self.assertIsNone(self.service.zeroconf)
     
     def test_service_info_creation(self):
@@ -72,7 +71,7 @@ class TestDiscoveryService(unittest.TestCase):
             mock_zeroconf.register_service.assert_called_once()
             
             # Service should be running
-            self.assertTrue(self.service.running)
+            self.assertTrue(self.service.is_running())
             
             # Stop service
             await self.service.stop()
@@ -81,7 +80,7 @@ class TestDiscoveryService(unittest.TestCase):
             mock_zeroconf.unregister_service.assert_called_once()
             mock_zeroconf.close.assert_called_once()
             
-            self.assertFalse(self.service.running)
+            self.assertFalse(self.service.is_running())
         
         asyncio.run(run_test())
     
@@ -100,7 +99,7 @@ class TestDiscoveryService(unittest.TestCase):
                 self.fail(f"Service start should handle registration errors: {e}")
             
             # Service should not be running due to registration failure
-            self.assertFalse(self.service.running)
+            self.assertFalse(self.service.is_running())
         
         asyncio.run(run_test())
     
@@ -272,7 +271,7 @@ class TestDiscoveryService(unittest.TestCase):
             mock_zeroconf_class.return_value = mock_zeroconf
             
             await self.service.start()
-            self.assertTrue(self.service.running)
+            self.assertTrue(self.service.is_running())
             
             # Stop service
             await self.service.stop()
@@ -280,7 +279,7 @@ class TestDiscoveryService(unittest.TestCase):
             # Should properly cleanup
             mock_zeroconf.unregister_service.assert_called_once()
             mock_zeroconf.close.assert_called_once()
-            self.assertFalse(self.service.running)
+            self.assertFalse(self.service.is_running())
             self.assertIsNone(self.service.zeroconf)
         
         asyncio.run(run_test())
@@ -294,13 +293,13 @@ class TestDiscoveryService(unittest.TestCase):
             
             # Start service
             await self.service.start()
-            self.assertTrue(self.service.running)
+            self.assertTrue(self.service.is_running())
             
             # Restart service
             await self.service.restart()
             
             # Should have stopped and started again
-            self.assertTrue(self.service.running)
+            self.assertTrue(self.service.is_running())
             
             # Should have called unregister and register
             mock_zeroconf.unregister_service.assert_called()

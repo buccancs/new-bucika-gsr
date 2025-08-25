@@ -23,10 +23,15 @@ class TestWebSocketServer(unittest.TestCase):
         """Set up test environment"""
         self.temp_dir = tempfile.mkdtemp()
         self.session_manager = SessionManager(base_path=Path(self.temp_dir))
+        
+        # Create a mock time sync service
+        from src.bucika_gsr_pc.time_sync_service import TimeSyncService
+        self.time_sync_service = TimeSyncService()
+        
         self.server = WebSocketServer(
-            host="localhost",
             port=8081,  # Use different port for tests
-            session_manager=self.session_manager
+            session_manager=self.session_manager,
+            time_sync_service=self.time_sync_service
         )
     
     def tearDown(self):

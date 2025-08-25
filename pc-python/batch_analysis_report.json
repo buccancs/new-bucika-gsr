@@ -1,0 +1,45 @@
+{
+  "analysis_timestamp": "2025-08-25T02:05:28.975997",
+  "total_sessions": 3,
+  "aggregate_statistics": {
+    "mean_quality_score": 0.7895663418555763,
+    "median_quality_score": 0.7898728243592978,
+    "mean_duration_minutes": 2.999869783333333,
+    "total_duration_hours": 0.14999348916666666
+  },
+  "session_results": [
+    {
+      "session_id": "demo_session_2_20250825_020528",
+      "duration_minutes": 2.999869783333333,
+      "quality_score": 0.7818253066125653,
+      "sample_count": 23040,
+      "artifacts_detected": 218,
+      "sync_mark_count": 3,
+      "recommendations": [
+        "Data quality is good - no specific issues detected"
+      ]
+    },
+    {
+      "session_id": "demo_session_1_20250825_020528",
+      "duration_minutes": 1.9998697833333334,
+      "quality_score": 0.7970008945948658,
+      "sample_count": 15360,
+      "artifacts_detected": 148,
+      "sync_mark_count": 2,
+      "recommendations": [
+        "Data quality is good - no specific issues detected"
+      ]
+    },
+    {
+      "session_id": "demo_session_3_20250825_020528",
+      "duration_minutes": 3.999869783333333,
+      "quality_score": 0.7898728243592978,
+      "sample_count": 30720,
+      "artifacts_detected": 307,
+      "sync_mark_count": 4,
+      "recommendations": [
+        "Data quality is good - no specific issues detected"
+      ]
+    }
+  ]
+}

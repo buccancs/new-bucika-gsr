@@ -20,13 +20,12 @@ class TestPerformanceMonitor(unittest.TestCase):
         """Set up test environment"""
         self.temp_dir = tempfile.mkdtemp()
         self.monitor = PerformanceMonitor(
-            monitoring_interval=0.1,  # Fast monitoring for tests
-            history_size=100
+            collection_interval=0.1  # Fast monitoring for tests
         )
     
     def tearDown(self):
         """Clean up test environment"""
-        if self.monitor.running:
+        if self.monitor.is_monitoring:
             try:
                 asyncio.get_event_loop().run_until_complete(self.monitor.stop())
             except Exception:
@@ -35,9 +34,9 @@ class TestPerformanceMonitor(unittest.TestCase):
     
     def test_monitor_initialization(self):
         """Test performance monitor initialization"""
-        self.assertEqual(self.monitor.monitoring_interval, 0.1)
-        self.assertEqual(self.monitor.history_size, 100)
-        self.assertFalse(self.monitor.running)
+        self.assertEqual(self.monitor.collection_interval, 0.1)
+        self.assertEqual(self.monitor.max_history_size, 100)
+        self.assertFalse(self.monitor.is_monitoring)
         self.assertEqual(len(self.monitor.metrics_history), 0)
     
     def test_system_metrics_collection(self):
@@ -75,18 +74,18 @@ class TestPerformanceMonitor(unittest.TestCase):
     def test_monitoring_lifecycle(self):
         """Test monitoring start/stop lifecycle"""
         async def run_test():
-            self.assertFalse(self.monitor.running)
+            self.assertFalse(self.monitor.is_monitoring)
             
             # Start monitoring
             await self.monitor.start()
-            self.assertTrue(self.monitor.running)
+            self.assertTrue(self.monitor.is_monitoring)
             
             # Let it collect some metrics
             await asyncio.sleep(0.3)  # Allow 3 collection cycles
             
             # Stop monitoring
             await self.monitor.stop()
-            self.assertFalse(self.monitor.running)
+            self.assertFalse(self.monitor.is_monitoring)
             
             # Should have collected some metrics
             self.assertGreater(len(self.monitor.metrics_history), 0)
@@ -97,7 +96,7 @@ class TestPerformanceMonitor(unittest.TestCase):
         """Test metrics history size management"""
         async def run_test():
             # Set small history size for testing
-            self.monitor.history_size = 5
+            self.monitor.max_history_size = 5
             
             await self.monitor.start()
             

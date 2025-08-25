@@ -364,5 +364,93 @@ __all__ = [
     'DataValidator',
     'BatchValidator',
     'QualityReport',
-    'ValidationLevel'
+    'ValidationLevel',
+    'main'
 ]
+
+
+def main():
+    """Main entry point for the application"""
+    import argparse
+    import sys
+    from pathlib import Path
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Bucika GSR PC Orchestrator')
+    parser.add_argument('--headless', action='store_true', help='Run without GUI')
+    parser.add_argument('--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument('--data-dir', type=str, help='Data directory for sessions')
+    parser.add_argument('--validation', type=str, default='standard',
+                        choices=['basic', 'standard', 'strict', 'research_grade'],
+                        help='Data validation level')
+    parser.add_argument('--port', type=int, default=8080, help='WebSocket server port')
+    parser.add_argument('--sync-port', type=int, default=9123, help='Time sync service port')
+    
+    args = parser.parse_args()
+    
+    # Configure logging
+    if args.debug:
+        logger.remove()
+        logger.add(sys.stderr, level="DEBUG", 
+                  format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+                         "<level>{level: <8}</level> | "
+                         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+                         "<level>{message}</level>")
+    else:
+        logger.remove()
+        logger.add(sys.stderr, level="INFO", 
+                  format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+                         "<level>{level: <8}</level> | <level>{message}</level>")
+    
+    # Set data directory
+    data_dir = Path(args.data_dir) if args.data_dir else Path("sessions")
+    
+    # Create orchestrator
+    orchestrator = BucikaOrchestrator(
+        headless=args.headless,
+        data_directory=data_dir,
+        validation_level=args.validation
+    )
+    
+    async def run_orchestrator():
+        """Run the orchestrator"""
+        try:
+            await orchestrator.start()
+            
+            if args.headless:
+                logger.info("Running in headless mode. Press Ctrl+C to stop.")
+                await orchestrator.wait_for_shutdown()
+            else:
+                # GUI mode - run the GUI main loop
+                if orchestrator.gui:
+                    if hasattr(orchestrator.gui, 'mainloop'):
+                        orchestrator.gui.mainloop()
+                    elif hasattr(orchestrator.gui, 'run'):
+                        orchestrator.gui.run()
+                    else:
+                        logger.warning("GUI available but no mainloop method found")
+                        await orchestrator.wait_for_shutdown()
+                else:
+                    logger.warning("GUI requested but not available, running headless")
+                    await orchestrator.wait_for_shutdown()
+                    
+        except KeyboardInterrupt:
+            logger.info("Shutdown requested by user")
+        except Exception as e:
+            logger.error(f"Orchestrator error: {e}")
+            raise
+        finally:
+            await orchestrator.stop()
+    
+    # Run the orchestrator
+    try:
+        asyncio.run(run_orchestrator())
+    except KeyboardInterrupt:
+        logger.info("Application interrupted by user")
+    except Exception as e:
+        logger.error(f"Application error: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
