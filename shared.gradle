@@ -218,7 +218,7 @@ project.ext.validateModuleConfigs = {
     def requiredModules = [
         ':android:app', ':android:libapp', ':android:libcom', ':android:libir', ':android:libmenu', ':android:libui',
         ':android:BleModule', ':android:component:thermal-ir', ':android:component:CommonComponent',
-        ':android:LocalRepo:libcommon', ':android:LocalRepo:libirutils', ':android:RangeSeekBar',
+        ':android:LocalRepo:libcommon', ':android:LocalRepo:libirutils',
         ':android:commonlibrary'
     ]
     
