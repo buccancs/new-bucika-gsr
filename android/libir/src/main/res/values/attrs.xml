@@ -43,5 +43,9 @@
 
     <!-- Additional attributes -->
     <attr name="barMin" format="float" />
+    <attr name="deviceType" format="string" />
+    <attr name="guide_text" format="string" />
+    <attr name="guide_icon" format="reference" />
+    <attr name="guide_icon_show" format="boolean" />
 
 </resources>

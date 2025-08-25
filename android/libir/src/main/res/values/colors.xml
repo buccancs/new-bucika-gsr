@@ -20,4 +20,9 @@
     <color name="color_E74380">#FFE74380</color>
     <color name="color_FFBA42">#FFFFBA42</color>
     <color name="tx_333">#FF333333</color>
+    
+    <!-- Missing calibration colors -->
+    <color name="color_img_calibration_normal">#FF888888</color>
+    <color name="color_img_calibration_left">#FF4CAF50</color>
+    <color name="color_img_calibration_button">#FF2196F3</color>
 </resources>
