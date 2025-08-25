@@ -82,8 +82,6 @@ import com.topdon.lib.core.utils.TemperatureUtil
 import com.topdon.lib.ui.dialog.ThermalInputDialog
 import com.topdon.lib.ui.dialog.TipGuideDialog
 import com.topdon.lib.ui.dialog.TipPreviewDialog
-import com.topdon.lib.ui.widget.seekbar.OnRangeChangedListener
-import com.topdon.lib.ui.widget.seekbar.RangeSeekBar
 import com.topdon.libcom.AlarmHelp
 import com.topdon.libcom.dialog.ColorPickDialog
 import com.topdon.libcom.dialog.TempAlarmSetDialog
@@ -658,7 +656,6 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
             saveSetBean.isOpenPseudoBar = SaveSettingUtil.isOpenPseudoBar
             cl_seek_bar.isVisible = saveSetBean.isOpenPseudoBar
             thermal_recycler_night.setSettingSelected(SettingType.PSEUDO_BAR, saveSetBean.isOpenPseudoBar)
-            temperature_seekbar?.setPseudocode(pseudoColorMode)
 
             //清除高温点、低温点
             temperatureView.clear()
@@ -887,17 +884,10 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
     //更新自定义伪彩的颜色的属性值
     private fun updateImageAndSeekbarColorList(customPseudoBean: CustomPseudoBean?) {
         customPseudoBean?.let {
-            temperature_seekbar.setColorList(customPseudoBean.getColorList()?.reversedArray())
-            temperature_seekbar.setPlaces(customPseudoBean.getPlaceList())
             if (it.isUseCustomPseudo) {
                 temperature_iv_lock.visibility = View.INVISIBLE
                 tv_temp_content.visibility = View.VISIBLE
                 updateTemperatureSeekBar(false)//加锁
-                temperature_seekbar.setRangeAndPro(
-                    UnitTools.showUnitValue(it.minTemp),
-                    UnitTools.showUnitValue(it.maxTemp), UnitTools.showUnitValue(it.minTemp),
-                    UnitTools.showUnitValue(it.maxTemp)
-                )
                 setDefLimit()
                 thermal_recycler_night.setPseudoColor(-1)
                 temperature_iv_input.setImageResource(R.drawable.ir_model)
@@ -937,42 +927,6 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
             intent.putExtra(ExtraKeyConfig.IS_TC007, false)
             pseudoSetResult.launch(intent)
         }
-        temperature_seekbar.setOnRangeChangedListener(object : OnRangeChangedListener {
-            override fun onRangeChanged(
-                view: RangeSeekBar?,
-                leftValue: Float,
-                rightValue: Float,
-                isFromUser: Boolean,
-                tempMode: Int
-            ) {
-                if (isTouchSeekBar) {
-                    editMinValue = if (tempMode == RangeSeekBar.TEMP_MODE_MIN || tempMode == RangeSeekBar.TEMP_MODE_INTERVAL){
-                        UnitTools.showToCValue(leftValue,isShowC)
-                    }else{
-                        Float.MIN_VALUE
-                    }
-                    editMaxValue = if (tempMode == RangeSeekBar.TEMP_MODE_MAX || tempMode == RangeSeekBar.TEMP_MODE_INTERVAL){
-                        UnitTools.showToCValue(rightValue,isShowC)
-                    }else{
-                        Float.MAX_VALUE
-                    }
-                    imageThread?.setLimit(
-                        editMaxValue,
-                        editMinValue,
-                        upColor, downColor
-                    ) //自定义颜色
-                }
-            }
-
-            override fun onStartTrackingTouch(view: RangeSeekBar?, isLeft: Boolean) {
-                isTouchSeekBar = true
-            }
-
-            override fun onStopTrackingTouch(view: RangeSeekBar?, isLeft: Boolean) {
-                isTouchSeekBar = false
-            }
-
-        })
 
     }
 
@@ -986,24 +940,11 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
         editMaxValue = Float.MAX_VALUE
         editMinValue = Float.MIN_VALUE
         imageThread?.setLimit(editMaxValue, editMinValue, upColor, downColor) //自定义颜色
-        temperature_seekbar.setRangeAndPro(editMinValue, editMaxValue, realLeftValue, realRightValue) //初始位置
     }
 
     private fun updateTemperatureSeekBar(isEnabled: Boolean) {
-        temperature_seekbar.isEnabled = isEnabled
-        temperature_seekbar.drawIndPath(isEnabled)
         temperature_iv_lock.setImageResource(if (isEnabled) R.drawable.svg_pseudo_bar_unlock else R.drawable.svg_pseudo_bar_lock)
         temperature_iv_lock.contentDescription = if (isEnabled) "unlock" else "lock"
-        if (isEnabled) {
-            temperature_seekbar.tempMode = RangeSeekBar.TEMP_MODE_CLOSE
-            temperature_seekbar.leftSeekBar.indicatorBackgroundColor = 0xffe17606.toInt()
-            temperature_seekbar.rightSeekBar.indicatorBackgroundColor = 0xffe17606.toInt()
-            temperature_seekbar.invalidate()
-        } else {
-            temperature_seekbar.leftSeekBar.indicatorBackgroundColor = 0
-            temperature_seekbar.rightSeekBar.indicatorBackgroundColor = 0
-            temperature_seekbar.invalidate()
-        }
     }
 
     private fun initOrientationEventListener() {
@@ -1532,7 +1473,6 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
     //设置伪彩
     open fun setPColor(code: Int) {
         pseudoColorMode = code
-        temperature_seekbar.setPseudocode(pseudoColorMode)
         /**
          * 设置伪彩【set pseudocolor】
          * 固件机芯实现(部分伪彩为预留,设置后可能无效果)
@@ -2185,7 +2125,6 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
         //伪彩条显示
         cl_seek_bar.isVisible = curChooseTabPos == 1 && saveSetBean.isOpenPseudoBar
         thermal_recycler_night.setSettingSelected(SettingType.PSEUDO_BAR, saveSetBean.isOpenPseudoBar)
-        temperature_seekbar?.setPseudocode(pseudoColorMode)
         if (customPseudoBean.isUseCustomPseudo) {
             updateCustomPseudo()
         } else {
@@ -2263,7 +2202,6 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
      */
     private fun closeCustomPseudo() {
         setCustomPseudoColorList(null, null, true, 0f, 0f)
-        temperature_seekbar.setColorList(null)
         temperature_iv_lock.visibility = View.VISIBLE
         thermal_recycler_night.setPseudoColor(pseudoColorMode)
         tv_temp_content.visibility = View.GONE
@@ -2288,15 +2226,7 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
     }
 
     private fun updateCustomPseudo() {
-        temperature_seekbar.setColorList(customPseudoBean.getColorList()?.reversedArray())
-        temperature_seekbar.setPlaces(customPseudoBean.getPlaceList())
         temperature_iv_lock.visibility = View.INVISIBLE
-        temperature_seekbar.setRangeAndPro(
-            UnitTools.showUnitValue(customPseudoBean.minTemp),
-            UnitTools.showUnitValue(customPseudoBean.maxTemp),
-            UnitTools.showUnitValue(customPseudoBean.minTemp),
-            UnitTools.showUnitValue(customPseudoBean.maxTemp)
-        )
         tv_temp_content.visibility = View.VISIBLE
         thermal_recycler_night.setPseudoColor(-1)
         temperature_iv_input.setImageResource(R.drawable.ir_model)
@@ -2573,11 +2503,7 @@ open class IRThermalNightActivity : BaseIRActivity(), ITsTempListener {
                             watermarkBean.title,
                             watermarkBean.address,
                             if (watermarkBean.isAddTime) TimeTool.getNowTime() else "",
-                            if (temperature_seekbar.isVisible){
-                                temperature_seekbar.measuredWidth
-                            }else{
-                                0
-                            }
+                            0  // No longer using temperature seekbar width
                         )
                     }
 

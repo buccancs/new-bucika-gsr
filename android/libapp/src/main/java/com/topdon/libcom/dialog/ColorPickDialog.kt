@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
-import com.jaygoo.widget.DefRangeSeekBar
-import com.jaygoo.widget.OnRangeChangedListener
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.libcom.R
 import com.topdon.libcom.util.ColorUtils
@@ -75,41 +73,8 @@ class ColorPickDialog(context: Context, @ColorInt private var color: Int,var tex
         }
         if (textSize != -1){
             tv_size_title.visibility = View.VISIBLE
-            tv_size_value.visibility = View.VISIBLE
-            tv_nifty_left.visibility = View.VISIBLE
-            tv_nifty_right.visibility = View.VISIBLE
-            nifty_slider_view.visibility = View.VISIBLE
-            nifty_slider_view.setOnRangeChangedListener(object : OnRangeChangedListener{
-                override fun onRangeChanged(
-                    view: DefRangeSeekBar?,
-                    leftValue: Float,
-                    rightValue: Float,
-                    isFromUser: Boolean
-                ) {
-                    var text = "标准"
-                    text = if (leftValue <= 0){
-                        textSize = 14
-                        context.getString(R.string.temp_text_standard)
-                    }else if(leftValue <= 50){
-                        textSize = 16
-                        context.getString(R.string.temp_text_big)
-                    }else{
-                        textSize = 18
-                        context.getString(R.string.temp_text_sup_big)
-                    }
-                    tv_size_value?.text = text
-                }
-
-                override fun onStartTrackingTouch(view: DefRangeSeekBar?, isLeft: Boolean) {
-                }
-
-                override fun onStopTrackingTouch(view: DefRangeSeekBar?, isLeft: Boolean) {
-                }
-
-            })
-            nifty_slider_view.setProgress(textSizeToNifyValue(textSize,textSizeIsDP))
-        }else{
-            nifty_slider_view.visibility = View.GONE
+        } else {
+            tv_size_title.visibility = View.GONE
         }
         rootView.view_color1.setOnClickListener(this)
         rootView.view_color2.setOnClickListener(this)

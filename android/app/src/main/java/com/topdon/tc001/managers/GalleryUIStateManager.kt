@@ -4,8 +4,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.topdon.lib.ui.widget.seekbar.OnRangeChangedListener
-import com.topdon.lib.ui.widget.seekbar.RangeSeekBar
 import com.topdon.tc001.databinding.ActivityIrGalleryEditBinding
 import kotlinx.coroutines.launch
 
@@ -90,36 +88,7 @@ class GalleryUIStateManager(
     /**
      * Setup temperature range seekbar
      */
-    fun setupTemperatureRangeSeekBar(minTemp: Float, maxTemp: Float) {
-        currentMinTemp = minTemp
-        currentMaxTemp = maxTemp
-        
-        binding.temperatureRangeSeekbar?.apply {
-            setRange(minTemp, maxTemp)
-            setProgress(minTemp, maxTemp)
-            
-            setOnRangeChangedListener(object : OnRangeChangedListener {
-                override fun onRangeChanged(
-                    view: RangeSeekBar?,
-                    leftValue: Float,
-                    rightValue: Float,
-                    isFromUser: Boolean
-                ) {
-                    if (isFromUser && rightValue - leftValue >= MIN_TEMP_RANGE) {
-                        onTemperatureRangeChanged(leftValue, rightValue)
-                    }
-                }
-                
-                override fun onStartTrackingTouch(view: RangeSeekBar?) {
-                    isSeekBarActive = true
-                }
-                
-                override fun onStopTrackingTouch(view: RangeSeekBar?) {
-                    isSeekBarActive = false
-                }
-            })
-        }
-    }
+
     
     /**
      * Update UI elements for specific mode

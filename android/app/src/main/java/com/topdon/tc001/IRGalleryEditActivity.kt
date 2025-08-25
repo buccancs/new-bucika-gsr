@@ -45,8 +45,7 @@ import com.topdon.lib.core.dialog.TipDialog
 import com.topdon.lib.core.dialog.TipWaterMarkDialog
 import com.topdon.lib.core.utils.Constants.IS_REPORT_FIRST
 import com.topdon.lib.core.utils.ScreenUtil
-import com.topdon.lib.ui.widget.seekbar.OnRangeChangedListener
-import com.topdon.lib.ui.widget.seekbar.RangeSeekBar
+
 import com.topdon.libcom.dialog.ColorPickDialog
 import com.topdon.libcom.dialog.TempAlarmSetDialog
 import com.topdon.lms.sdk.LMS.mContext
@@ -248,48 +247,6 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             binding.temperatureView.tempTextSize = struct.textSize
             binding.temperatureView.setData(frameTool.getTempBytes(rotate = rotate))
             updateTemperatureSeekBar(false, R.drawable.svg_pseudo_bar_lock, "lock")//加锁
-            binding.temperatureSeekbar.setPseudocode(pseudocodeMode)
-            binding.temperatureSeekbar.setOnRangeChangedListener(object : OnRangeChangedListener {
-                override fun onRangeChanged(
-                    view: RangeSeekBar?,
-                    leftValue: Float,
-                    rightValue: Float,
-                    isFromUser: Boolean,
-                    tempMode: Int
-                ) {
-                    if (leftValue < rightValue) {
-                        max = rightValue
-                        min = leftValue
-                    } else {
-                        max = leftValue
-                        min = rightValue
-                    }
-                    if (!struct.customPseudoBean.isUseCustomPseudo) {
-                        updateImage(
-                            frameTool.getScrPseudoColorScaledBitmap(
-                                changePseudocodeModeByOld(pseudocodeMode),
-                                showToCValue(max),
-                                showToCValue(min),
-                                rotate,
-                                struct.customPseudoBean,
-                                maxTemperature = tempCorrect(frameTool.getSrcTemp().maxTemperature),
-                                minTemperature = tempCorrect(frameTool.getSrcTemp().minTemperature),
-                                struct.isAmplify
-                            )
-                        )
-                    }
-                }
-
-                override fun onStartTrackingTouch(view: RangeSeekBar?, isLeft: Boolean) {
-                    //调整开始
-                }
-
-                override fun onStopTrackingTouch(view: RangeSeekBar?, isLeft: Boolean) {
-                    //调整结束
-                }
-
-            })
-            binding.temperatureSeekbar.setIndicatorTextStringFormat("%.1f")
             if (struct.customPseudoBean.isUseCustomPseudo) {
                 binding.tvTempContent.visibility = View.VISIBLE
                 binding.tvTempContent.text = "Max:${UnitTools.showC(tempCorrect(tempResult.maxTemperature),isShowC)}\nMin:${UnitTools.showC(tempCorrect(tempResult.minTemperature),isShowC)}"
@@ -297,8 +254,6 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 leftValue = showUnitValue(struct.customPseudoBean.minTemp,isShowC)
                 binding.temperatureIvInput.setImageResource(R.drawable.ir_model)
                 binding.temperatureIvLock.visibility = View.INVISIBLE
-                binding.temperatureSeekbar.setColorList(struct.customPseudoBean.getColorList(struct.isTC007())?.reversedArray())
-                binding.temperatureSeekbar.setPlaces(struct.customPseudoBean.getPlaceList())
             } else {
                 binding.tvTempContent.visibility = View.GONE
                 binding.tvTempContent.text = "Max:${UnitTools.showC(tempCorrect(tempResult.maxTemperature),isShowC)}\nMin:${UnitTools.showC(tempCorrect(tempResult.minTemperature),isShowC)}"
@@ -307,8 +262,6 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 binding.temperatureIvInput.setImageResource(R.drawable.ic_color_edit)
                 binding.temperatureIvLock.visibility = View.VISIBLE
             }
-            binding.temperatureSeekbar.setRange(leftValue, rightValue, 0.1f) //初始温度范围
-            binding.temperatureSeekbar.setProgress(leftValue, rightValue) //初始位置
             if (ScreenTool.isIPad(this@IRGalleryEditActivity)) {
                 binding.colorBarView.setPadding(0, SizeUtils.dp2px(40f), 0, SizeUtils.dp2px(40f))
             }
@@ -334,11 +287,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                         struct.watermarkBean.title,
                         struct.watermarkBean.address,
                         if (struct.watermarkBean.isAddTime) TimeTool.getNowTime() else "",
-                        if (binding.temperatureSeekbar.isVisible){
-                            binding.temperatureSeekbar.measuredWidth
-                        }else{
-                            0
-                        }
+                        0  // No longer using temperature seekbar width
                     )
                 )
             } else {
@@ -404,14 +353,11 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
         val tempResult = frameTool.getSrcTemp()
         rightValue = showUnitValue(tempCorrect(tempResult.maxTemperature),isShowC)
         leftValue = showUnitValue(tempCorrect(tempResult.minTemperature),isShowC)
-        binding.temperatureSeekbar.setRange(leftValue, rightValue, 0.1f) //初始温度范围
-        binding.temperatureSeekbar.setProgress(leftValue, rightValue) //初始位置
     }
 
     //设置伪彩
     private fun setPColor(code: Int) {
         pseudocodeMode = code
-        binding.temperatureSeekbar.setPseudocode(pseudocodeMode)
         updateImage(
             frameTool.getScrPseudoColorScaledBitmap(
                 changePseudocodeModeByOld(pseudocodeMode),
@@ -424,8 +370,6 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 struct.isAmplify
             )
         )
-        binding.temperatureSeekbar.setColorList(struct.customPseudoBean.getColorList(struct.isTC007())?.reversedArray())
-        binding.temperatureSeekbar.setPlaces(struct.customPseudoBean.getPlaceList())
         binding.editRecyclerSecond.setPseudoColor(code)
     }
 
@@ -496,16 +440,8 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     }
 
     private fun updateTemperatureSeekBar(isEnabled: Boolean, resource: Int, content: String) {
-        binding.temperatureSeekbar.isEnabled = isEnabled
         binding.temperatureIvLock.setImageResource(resource)
         binding.temperatureIvLock.contentDescription = content
-        if (isEnabled) {
-            binding.temperatureSeekbar.leftSeekBar.indicatorBackgroundColor = 0xffe17606.toInt()
-            binding.temperatureSeekbar.rightSeekBar.indicatorBackgroundColor = 0xffe17606.toInt()
-        } else {
-            binding.temperatureSeekbar.leftSeekBar.indicatorBackgroundColor = 0
-            binding.temperatureSeekbar.rightSeekBar.indicatorBackgroundColor = 0
-        }
     }
 
     override fun onClick(v: View?) {
@@ -561,11 +497,6 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 binding.temperatureIvLock.visibility = View.INVISIBLE
                 binding.tvTempContent.visibility = View.VISIBLE
                 updateTemperatureSeekBar(false, R.drawable.svg_pseudo_bar_lock, "lock")//加锁
-                binding.temperatureSeekbar.setRangeAndPro(
-                    UnitTools.showUnitValue(it.minTemp,isShowC),
-                    UnitTools.showUnitValue(it.maxTemp,isShowC), UnitTools.showUnitValue(it.minTemp,isShowC),
-                    UnitTools.showUnitValue(it.maxTemp,isShowC)
-                )
                 binding.editRecyclerSecond.setPseudoColor(-1)
                 binding.temperatureIvInput.setImageResource(R.drawable.ir_model)
             } else {
@@ -578,8 +509,6 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 binding.temperatureIvInput.setImageResource(R.drawable.ic_color_edit)
             }
             struct.customPseudoBean = customPseudoBean
-            binding.temperatureSeekbar.setColorList(customPseudoBean.getColorList(struct.isTC007())?.reversedArray())
-            binding.temperatureSeekbar.setPlaces(customPseudoBean.getPlaceList())
         }
 //        binding.tvTempContent.visibility = View.VISIBLE
     }

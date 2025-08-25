@@ -130,80 +130,6 @@
         android:text="@string/text_size"
         />
     <TextView
-        android:id="@+id/tv_size_value"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/nifty_slider_view"
-        app:layout_constraintEnd_toEndOf="@id/nifty_slider_view"
-        app:layout_constraintTop_toBottomOf="@id/tv_size_title"
-        android:textColor="@color/white"
-        android:text="@string/text_size"
-        />
-
-    <com.jaygoo.widget.DefRangeSeekBar
-        android:id="@+id/nifty_slider_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:rsb_gravity="bottom"
-        app:rsb_mode="single"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:rsb_progress_radius="18dp"
-        app:rsb_progress_color="#FFE9F1F9"
-        app:rsb_progress_default_color="#FFE9F1F9"
-        app:rsb_progress_height="20dp"
-        app:rsb_step_auto_bonding="true"
-        app:rsb_step_drawable="@drawable/step_gray_svg"
-        app:rsb_step_height="10dp"
-        app:rsb_step_radius="10dp"
-        app:rsb_step_width="10dp"
-        app:rsb_steps="2"
-        app:rsb_step_padding_right="8dp"
-        app:rsb_step_padding_left="8dp"
-        app:rsb_thumb_width="26dp"
-        app:rsb_thumb_height="26dp"
-        app:rsb_thumb_drawable="@drawable/step_blue_svg"
-        app:rsb_tick_mark_layout_gravity="top"
-        app:rsb_tick_mark_mode="other"
-        app:layout_constraintStart_toEndOf="@id/tv_nifty_left"
-        app:layout_constraintEnd_toStartOf="@id/tv_nifty_right"
-        app:layout_constraintTop_toBottomOf="@id/tv_size_value"
-        />
-
-    <TextView
-        android:id="@+id/tv_nifty_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="5dp"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/nifty_slider_view"
-        android:text="A"
-        />
-    <TextView
-        android:id="@+id/tv_nifty_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/nifty_slider_view"
-        android:text="A"
-        />
-    <TextView
         android:id="@+id/tv_save"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -217,6 +143,6 @@
         app:layout_constraintDimensionRatio="235:44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nifty_slider_view" />
+        app:layout_constraintTop_toBottomOf="@id/tv_size_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
