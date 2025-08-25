@@ -54,11 +54,11 @@ task assembleAllFlavors {
     group 'BucikaGSR'
     description 'Assemble all product flavors'
     dependsOn 'validateBuild'
-    dependsOn gradle.includedBuilds*.task(':assembleDebug')
+    dependsOn ':android:app:assembleDebug'
 }
 
 task testAllModules {
     group 'BucikaGSR'
-    description 'Run tests for all modules'
-    dependsOn gradle.includedBuilds*.task(':test')
+    description 'Run tests for all modules'  
+    dependsOn ':android:app:test'
 }

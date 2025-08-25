@@ -18,7 +18,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "BucikaGSR"
-include ':pc'
 include ':android:app'
 include ':android:commonlibrary'
 include ':android:component:CommonComponent'

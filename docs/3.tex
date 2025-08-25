@@ -1,0 +1,222 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+\geometry{a4paper, margin=1in}
+
+\title{Requirements and Analysis}
+\author{}
+\date{}
+
+\begin{document}
+    \maketitle
+
+    \chapter{Requirements and Analysis}
+    \label{ch:requirements}
+
+    \section{Problem Statement}
+    The system tackles the challenge of contactless physiological monitoring by synchronously collecting wearable GSR measurements and remote sensory data. Unlike traditional GSR, which needs skin-contact sensors, this platform provides ground-truth GSR signals alongside contactless data (thermal imagery, RGB video), aiding research on predicting skin conductance from non-invasive cues. It combines thermal cameras, video, inertial sensors, and GSR to create a comprehensive multi-modal dataset for stress and emotion analysis. Focusing on temporal precision and data integrity, the system captures and aligns subtle physiological responses across modalities. \textbf{Exactly one Android device (the \emph{GSR leader}) pairs with the GSR sensor and, by default, saves timestamped samples locally (store-and-forward).} Ultimately, the goal is to facilitate experiments that correlate a participant's physiological responses with visual and thermal cues, establishing a basis for contactless stress detection.
+
+    \section{Requirements Structure and Approach}
+    Requirements were developed through an iterative, research-driven process. High-level objectives, such as “synchronised GSR and video recording,” were identified from project goals and refined with stakeholder input and hardware constraints. A rapid prototyping methodology was employed: early system versions were built and tested, and user feedback prompted updates to requirements, including data encryption and device fault tolerance as new needs arose. Requirements engineering adhered to IEEE 29148 practices: each requirement has a unique ID and is classified (functional or non-functional). Implementation and code changes were systematically traced to specific requirements, ensuring full traceability. This incremental, user-focused approach began with core research use cases and refined requirements as development insights emerged.
+
+    \subsection*{Acquisition Modes}
+    \begin{description}[leftmargin=0cm]
+        \item \textbf{FR-L0 (Platform: PC, Android; Priority: Must; Verification: Test) – Mode selection.}
+        The system shall support two GSR acquisition modes: \emph{Local (default)} and \emph{Bridged}. In \emph{Local} mode, the Android GSR leader acquires GSR and writes to on-device storage with full timestamps; no live sample streaming to the PC occurs. In \emph{Bridged} mode, the leader forwards samples to the PC in near real time. Orchestration (start/stop/sync) is identical in both.
+        \paragraph{Acceptance Criteria:} The active mode is recorded in session metadata; sessions succeed in either mode without changing operator workflow.
+    \end{description}
+
+    \section{Functional Requirements}
+    \begin{description}[leftmargin=0cm]
+        \item \textbf{(Platform: PC, Android; Priority: Essential; Verification: Test) – Multi-Device Sensor Integration (Android-hosted GSR).} The system shall support connecting and managing multiple Android recording clients simultaneously. \textbf{Exactly one Android (\emph{GSR leader}) pairs with the Shimmer GSR sensor over Bluetooth and acts as the exclusive host.} If no physical sensor is connected, the system shall provide a deterministic simulation mode for dummy GSR.
+        \paragraph{Acceptance Criteria:} Android devices register and advertise capabilities; the elected leader pairs with the GSR sensor and acquires GSR. With no sensor present, a seeded simulator produces continuous dummy output visible to the operator.
+
+        \item \textbf{(Platform: PC, Android; Priority: Essential; Verification: Test) – Synchronised Multi-Modal Recording.} The system shall start and stop data recording synchronously across all connected devices. Upon “Start Recording”, the PC instructs all Android devices to begin capturing GSR (leader only), video (RGB), thermal, and other enabled modalities in parallel. All data streams shall share a common session clock reference to enable alignment.
+        \paragraph{Acceptance Criteria:} A single start/stop command initiates or ends recording on all devices within a sub-second window; recorded data from each device/session is timestamped to reflect a shared timeline.
+
+        \item \textbf{(Platform: PC, Android; Priority: Essential; Verification: Test) – Time Synchronisation Service.} The system shall synchronise clocks across devices to ensure time-aligned data. The PC shall run a time synchronisation service (e.g. SNTP-like) so that each Android periodically calibrates its clock to the PC’s reference. The requirement for millisecond-level accuracy is informed by research-grade frameworks such as LabStreamingLayer (LSL)~\cite{kothe2014lsl}.
+        \paragraph{Acceptance Criteria:} All devices adjust to the PC’s clock; measured timestamp offsets between devices remain very low (e.g. within 5\,ms median; 15\,ms p95) during recording.
+
+        \item \textbf{(Platform: PC; Priority: Essential; Verification: Test) – Session Management.} The system shall organise recordings into discrete sessions, each with a unique ID or name. The user can create a new session (which the system timestamps) and later terminate it. On session start, the PC creates a directory and a metadata file; on session end, it finalises metadata (including start/end times and duration). Only one session may be active at a time.
+        \paragraph{Acceptance Criteria:} A new session command generates a session folder and metadata JSON on disk; ending the session correctly updates metadata with the session’s end time and duration; attempts to start a second session while one is active are disallowed.
+
+        \item \textbf{(Platform: PC, Android; Priority: Essential; Verification: Test) – Data Recording and Storage (Local GSR logging).} For each session: (a) the \textbf{Android GSR leader} acquires GSR (and skin temperature if available) at up to 128\,Hz and writes \texttt{signals.csv} locally with both monotonic and UTC timestamps; (b) each Android records RGB ($\geq 1920{\times}1080$, 30\,FPS) and, where supported, thermal streams to local files. The PC persists session metadata and receives device health/heartbeats; a live GSR waveform is not required in Local mode.
+        \paragraph{Acceptance Criteria:} In a test session the leader logs $\sim$128\,Hz without gaps; each phone records at target quality with no corruption; all expected files exist on-device at stop and are later ingested to the PC.
+
+        \item \textbf{(Platform: PC; Priority: Essential; Verification: Test) – User Interface for Monitoring \& Control.} The system shall provide a graphical UI on the PC for the researcher to control sessions and monitor devices. The UI shall list connected devices and show status indicators (e.g. battery level, recording status). It must allow the user to start/stop sessions and display real-time indicators such as recording time elapsed and sample/frame counts. If a device disconnects or errors, the UI should clearly highlight that device.
+        \paragraph{Acceptance Criteria:} The PC GUI displays all connected devices, their states (streaming/recording, battery, etc.), and provides Start/Stop buttons. UI elements update in real time based on device messages, and disconnects trigger visible alerts.
+
+        \item \textbf{(Platform: PC, Android; Priority: Important; Verification: Test) – Device Synchronisation and Signals.} The system shall coordinate devices by sending synchronisation commands and cues. For example, the PC should be able to broadcast a sync signal (e.g. a screen flash or buzzer) to all Android devices to mark a common event. The use of a visual flash as a hardware-agnostic synchronisation marker aligns with frame-accurate practice in tools like PsychoPy~\cite{peirce2019psychopy}. The system shall use a JSON-based command protocol so that all devices can start/stop recording or perform other actions in unison.
+        \paragraph{Acceptance Criteria:} Activating a synchronisation control (e.g. “Flash Sync”) causes all Android devices to execute the signal simultaneously (observable as simultaneous flashes in recorded videos) and logs this event in the timeline.
+
+        \item \textbf{(Platform: PC, Android; Priority: Important; Verification: Test) – Fault Tolerance and Recovery.} The system shall detect if any device (Android or sensor) disconnects or fails during a session and continue operating with the remaining devices. The PC shall log a warning and mark offline devices. When a device reconnects, it shall automatically rejoin the ongoing session, resynchronise, and execute any missed commands. \textbf{In Local mode, the GSR leader continues local logging while offline and reconciles on ingest.}
+        \paragraph{Acceptance Criteria:} In a test, if an Android’s network is disconnected during recording, the system flags it as offline while other streams continue. Upon reconnection, the Android automatically resumes participation and queued commands are applied without user intervention.
+
+        \item \textbf{(Platform: PC, Android; Priority: Important; Verification: Test) – Calibration Utilities.} The system shall include tools for calibrating sensors and cameras. In particular, it shall allow aligning the thermal camera’s view with the RGB camera using a checkerboard pattern. The researcher shall be able to run a calibration session (capturing paired images) and compute calibration parameters. These parameters (pattern type, size, etc.) shall be configurable and saved for use in later analysis.
+        \paragraph{Acceptance Criteria:} The user can capture multiple RGB–thermal image pairs and compute calibration. Calibration results (intrinsic/extrinsic parameters) are stored. If reprojection error is high, the system warns and allows repeating the process.
+
+        \item \textbf{(Platform: PC, Android; Priority: Essential; Verification: Test) – Data Transfer and Aggregation.} When a session ends, the system shall automatically transfer all recorded data from each Android to the PC using a resumable, verified transfer. The Android apps shall package video, thermal, and local sensor files and send them over the network. The PC shall save each incoming file into the session folder and update metadata (including file name, size, and checksums). The system shall retry failed transfers and log errors if files remain missing.
+        \paragraph{Acceptance Criteria:} After stopping a session, all Android-recorded files (video, thermal, \texttt{signals.csv}, etc.) appear in the PC’s session directory, with entries in the metadata JSON. The researcher is notified when the transfer completes; any missing files are reported.
+
+        \item \textbf{(Platform: PC, Android; Priority: Essential; Verification: Test) – Time Reconciliation for Local GSR.} The GSR leader shall record its current PC offset (from the time synchronisation service) at start/stop and periodically (e.g. every 30\,s) in \texttt{signals.csv} or a sidecar. \texttt{SYNC\_MARK} commands from the PC shall be logged on-device with timestamps. Upon ingest, the PC shall compute a reconciled reference timeline for all modalities.
+        \paragraph{Acceptance Criteria:} After ingest, cross-device alignment using \texttt{SYNC\_MARK} is within $\pm 1$ video frame; median clock offset $\leq 5$\,ms, p95 $\leq 15$\,ms over 30\,min.
+    \end{description}
+
+    \section{Non-Functional Requirements}
+    \begin{description}[leftmargin=0cm]
+        \item \textbf{(Performance – Real-Time Handling).} The system shall process data in real time with minimal latency. It must support at least 128\,Hz sensor sampling and 30\,FPS video recording concurrently without loss or buffering. Multi-threaded and asynchronous I/O techniques shall be used to ensure no frame drops even with multiple devices. \emph{Bridged mode only:} Android$\rightarrow$PC GSR latency p95 $\leq 150$\,ms. \emph{Local mode:} no live GSR latency target; ingest completes within configured bounds with verified checksums.
+
+        \item \textbf{(Temporal Accuracy).} The system shall maintain clock synchronisation accuracy on the order of milliseconds or better. The time service and sync protocol must keep timestamp differences across devices within $\sim$5\,ms during recording (p95 $\leq 15$\,ms), enabling valid sensor fusion~\cite{kothe2014lsl}.
+
+        \item \textbf{(Reliability and Fault Tolerance).} The system shall be robust to interruptions and failures. If a sensor or network link fails, other recordings continue unaffected, and already-recorded data remain preserved. Files shall be written incrementally and closed properly so an unexpected crash does not corrupt data. Queued commands and auto-reconnect features shall support seamless recovery.
+
+        \item \textbf{(Data Integrity and Validation).} The system shall ensure recorded data is accurate and uncorrupted. Incoming sensor values shall be checked against expected ranges. Each file transfer shall include completeness checks (e.g. known file sizes, checksums). Session metadata shall serve as a manifest to detect missing files. All session data shall be stored in unique timestamped folders to prevent overwrites.
+
+        \item \textbf{(Security).} The system shall secure all communications and data. Network links (PC–Android) shall use encryption (e.g. TLS) and authentication tokens to prevent unauthorised devices. The system must warn if security is misconfigured (e.g. missing encryption). Data files shall reside locally on the researcher’s PC by default; any external transfers require the researcher’s explicit action. File permissions and runtime checks ensure no insecure defaults.
+
+        \item \textbf{(Usability).} The system shall be easy to use by researchers without software expertise. The PC GUI shall have clear controls (start/stop, device list) and indicators (recording, battery, status). Sensible defaults and on-screen guidance shall facilitate quick setup. The Android app shall require minimal interaction after initial setup. Help shall be provided for tasks like calibration.
+
+        \item \textbf{(Scalability).} The system shall scale to multiple devices and long sessions. It must support at least eight simultaneous Android devices and sessions of at least 120 minutes. To manage large video files, recordings may be automatically chunked (e.g. $\sim$1\,GB segments) so that long-duration, high-resolution sessions do not overwhelm storage or processing.
+
+        \item \textbf{(Maintainability and Modularity).} The system shall be modular and configurable. Components (e.g. \textit{Session Manager}, \textit{Network Server}) shall have clear interfaces, allowing parts to be updated independently (for example, swapping a thermal camera SDK). Configuration parameters (e.g. sensor types, sampling rates) shall be externalised (e.g. \texttt{config.json}). Extensive logging and test scripts shall support debugging and future development.
+    \end{description}
+
+    \section{Use Case Scenarios}
+
+    \subsection{Conducting a Multi-Modal Recording Session}
+    \paragraph{Description:} A researcher captures synchronised GSR (Local mode), video, and thermal streams from multiple devices during a recording session.
+    \paragraph{Primary Actor:} Researcher.
+    \paragraph{Secondary Actors:} Participant (passive subject of recording).
+    \paragraph{Preconditions:} The Shimmer GSR sensor is paired to the elected Android leader; all Android devices are powered, running the app, and on the same network as the PC. Device clocks are synchronised; the researcher has configured session settings.
+    \paragraph{Main Flow:}
+    \begin{enumerate}
+        \item The researcher opens the PC control interface and creates a new session (entering a name or accepting a default). The system validates it and sets up a session folder and metadata file.
+        \item Android devices appear as “connected” in the UI, with the leader shown as “GSR leader (paired)”. If needed, the researcher clicks “Scan for Devices”.
+        \item The UI shows healthy indicators (e.g. camera ready) and device heartbeats; the leader is ready for local GSR logging (no live waveform required in Local mode).
+        \item The researcher clicks “Start Recording”. The PC sends a start command to all Androids with the session ID; each Android begins recording its camera(s) and any local sensors. The leader starts GSR acquisition (local file). The session metadata is marked “recording”.
+        \item During recording, the UI shows elapsed time and frame/sample counters; an optional “Flash Sync” broadcasts a cue and logs the event for later alignment~\cite{peirce2019psychopy}.
+        \item If any device disconnects mid-session, the system alerts the researcher but continues recording on the remaining devices. In Local mode, the leader continues saving GSR locally.
+        \item When the device reconnects, the system automatically resynchronises and applies any missed commands without user action.
+        \item When the researcher stops the session, the PC issues stop commands to all devices. All devices finalise and close their files. The session manager timestamps the end and updates metadata.
+        \item The system initiates data transfer: each Android’s \textit{FileTransferManager} sends recorded video, thermal, and sensor files to the PC via resumable upload. The PC saves each file and records details in metadata (including checksums).
+        \item Once transfers complete, the PC reconciles timelines using periodic offsets and \texttt{SYNC\_MARK} events and notifies the researcher that the session is complete.
+    \end{enumerate}
+    \paragraph{Postconditions:} All data (GSR CSV, videos, thermal files) are stored in the PC's session directory. The metadata JSON lists all devices and files. The system returns to an idle state, ready for a new session. Transfer failures are logged for follow-up.
+
+    \subsection{Camera Calibration for Thermal Alignment}
+    \paragraph{Description:} Before using a thermal camera, the researcher calibrates it with the RGB camera for pixel correspondence in analysis.
+    \paragraph{Primary Actor:} Researcher.
+    \paragraph{Preconditions:} An Android device has an RGB and a thermal camera. A calibration pattern (e.g. checkerboard) is available; calibration settings (pattern size, image count) are configured.
+    \paragraph{Main Flow:}
+    \begin{enumerate}
+        \item The researcher opens the Calibration Tool on the PC and selects the device to calibrate; the system instructs the device to enter calibration mode.
+        \item The Android app activates its cameras in calibration mode; the researcher presents the checkerboard pattern so it is visible in both views.
+        \item On “Capture”, paired RGB and thermal images are acquired; repeated for the configured number of poses (e.g. 10). Progress feedback is shown.
+        \item “Compute Calibration” estimates intrinsics/extrinsics (e.g. Zhang’s method) and reports reprojection error.
+        \item Parameters are saved; if error is high, the tool warns and allows repeat.
+    \end{enumerate}
+    \paragraph{Postconditions:} Calibration parameters are stored on the PC and linked to future sessions.
+
+    \section{System Analysis (Architecture \& Data Flow)}
+    The system employs a hub-and-spoke architecture~\cite{azure_hub_spoke}: a central PC serves as the master controller and timing hub, while each Android device acts as a recording client. PC modules include a \textit{Session Manager} (lifecycle and metadata), a \textit{Network Server} (JSON/TCP/IP control~\cite{bray2017json}), a \textit{Time Synchronisation Service} (SNTP-like), a \textit{GSR Ingestor} (reconciles on ingest), and a \textit{GUI Module} (e.g. \texttt{PyQt5}~\cite{pyqt5}). Android components include a \textit{Recording Controller} (receives start/stop), modality-specific \textit{Recorders} (e.g. \textit{CameraRecorder}, \textit{ThermalRecorder}, \textit{ShimmerRecorder} using Camera2 and Bluetooth~\cite{android_camera2_api,bluetooth_spec}), a \textit{Network Client} (PC socket for commands/status), and a \textit{FileTransferManager} (resumable uploads)~\cite{junit5}. Communication and data flow follow a client–server model~\cite{clientserver_model_wiki}. Messages (JSON) include device registration, session start/stop, sync signals, status updates, and file transfer requests.
+
+    \paragraph{GSR Data Path (Local mode).} The Shimmer sensor connects via Bluetooth to the \textbf{Android leader}. The leader timestamps samples against its synchronised clock, writes them locally, and—after stop—uploads \texttt{signals.csv} to the PC. Optional \emph{Bridged} mode can stream a live preview to the PC, but is not required for the core workflow.
+
+    \paragraph{Video/Thermal Path.} Each Android records video and (if available) thermal streams locally to avoid network saturation; optional low-rate previews may be sent. A synchronisation cue (screen flash) provides a visible marker. After recording stops, the PC issues file transfer commands; Androids send their video/thermal files; the PC ingests and updates metadata.
+
+    \paragraph{Time Sync and Heartbeats.} Throughout the session, the PC’s time service and periodic sync packets keep Android clocks aligned; heartbeats allow rapid offline detection. Periodic offset stamps from the leader enable precise post-hoc reconciliation.
+
+    \paragraph{Data Aggregation.} Once all data are collected on the PC, the \textit{Session Manager} finalises the manifest and stores checksums. All distributed data are then centralised for analysis.
+
+    \section{Requirements Summary Table}
+    \begin{table}[h!]
+        \centering
+        \caption{Summary of Functional Requirements}
+        \label{tab:fr_summary}
+        \begin{tabular}{@{}lllll@{}}
+            \toprule
+            \textbf{FR ID} & \textbf{Description} & \textbf{Platform} & \textbf{Priority} & \textbf{Verification} \\ \midrule
+            FR-L0 & Mode selection: Local (default) / Bridged & PC, Android & Must & Test (T) \\
+            FR1 & Multi-device integration; Android-hosted GSR (sim mode) & PC, Android & Essential & Test (T) \\
+            FR2 & Synchronised start/stop of recordings across devices & PC, Android & Essential & Test (T) \\
+            FR3 & Time synchronisation of all device clocks & PC, Android & Essential & Test (T) \\
+            FR4 & Session creation and management (IDs, metadata) & PC & Essential & Test (T) \\
+            FR5 & Recording/storage of GSR (Local), video, thermal, audio & PC, Android & Essential & Test (T) \\
+            FR6 & PC-based GUI for control and device monitoring & PC & Essential & Test (T) \\
+            FR7 & Device coordination with sync signals (e.g.\ flash) & PC, Android & Important & Test (T) \\
+            FR8 & Fault detection and recovery for disconnected devices & PC, Android & Important & Test (T) \\
+            FR9 & Calibration tools for RGB–thermal alignment & PC, Android & Important & Test (T) \\
+            FR10 & Automatic data transfer from Android devices to PC & PC, Android & Essential & Test (T) \\
+            FR11 & Time reconciliation for Local GSR (offsets + SYNC\_MARK) & PC, Android & Essential & Test (T) \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \chapter*{References}
+    \addcontentsline{toc}{chapter}{References}
+    \begin{thebibliography}{99}
+
+        \bibitem{kothe2014lsl}
+        C.~A. Kothe and S.~Makeig.
+        \newblock Lab Streaming Layer (LSL).
+        \newblock Software project, 2013–.
+        \newblock \url{https://github.com/sccn/labstreaminglayer}.
+
+        \bibitem{peirce2019psychopy}
+        J.~W. Peirce, J.~R. Gray, S.~H. Simpson, M.~MacAskill, R.~H{\"o}chenberger, H.~Sogo, E.~Kastman, and J.~Kriegeskorte.
+        \newblock PsychoPy2: Experiments in behavior made easy.
+        \newblock {\em Behavior Research Methods}, 51:195--203, 2019.
+        \newblock doi:10.3758/s13428-018-01193-y.
+
+        \bibitem{azure_hub_spoke}
+        Microsoft.
+        \newblock Hub-spoke network topology in Azure.
+        \newblock Microsoft Learn, accessed 2025.
+        \newblock \url{https://learn.microsoft.com/azure/architecture/reference-architectures/hub-spoke/hub-spoke-network}.
+
+        \bibitem{bray2017json}
+        T.~Bray.
+        \newblock The JavaScript Object Notation (JSON) Data Interchange Format.
+        \newblock RFC 8259, IETF, 2017.
+        \newblock \url{https://www.rfc-editor.org/rfc/rfc8259}.
+
+        \bibitem{android_camera2_api}
+        Google.
+        \newblock Camera2 API.
+        \newblock Android Developers, accessed 2025.
+        \newblock \url{https://developer.android.com/reference/android/hardware/camera2/package-summary}.
+
+        \bibitem{bluetooth_spec}
+        Bluetooth SIG.
+        \newblock Bluetooth Core Specification v5.4.
+        \newblock 2023.
+        \newblock \url{https://www.bluetooth.com/specifications/bluetooth-core-specification/}.
+
+        \bibitem{pyqt5}
+        Riverbank Computing.
+        \newblock PyQt5 Reference Guide.
+        \newblock Accessed 2025.
+        \newblock \url{https://www.riverbankcomputing.com/static/Docs/PyQt5/}.
+
+        \bibitem{junit5}
+        JUnit Team.
+        \newblock JUnit 5 User Guide.
+        \newblock Accessed 2025.
+        \newblock \url{https://junit.org/junit5/docs/current/user-guide/}.
+
+        \bibitem{clientserver_model_wiki}
+        Wikipedia.
+        \newblock Client--server model.
+        \newblock Accessed 2025.
+        \newblock \url{https://en.wikipedia.org/wiki/Client%E2%80%93server_model}.
+
+    \end{thebibliography}
+
+\end{document}
