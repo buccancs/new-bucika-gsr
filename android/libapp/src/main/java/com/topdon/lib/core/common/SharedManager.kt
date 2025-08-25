@@ -34,23 +34,7 @@ object SharedManager {
         get() = SPUtils.getInstance().getBoolean("isNeedShowTrendTips", true)
         set(value) = SPUtils.getInstance().put("isNeedShowTrendTips", value)
 
-    /**
-     * 房屋检测 - 建筑面积单位 0-英亩 1-平方米 2-公顷
-     */
-    var houseSpaceUnit: Int
-        get() = SPUtils.getInstance().getInt("houseSpaceUnit", 0)
-        set(value) {
-            SPUtils.getInstance().put("houseSpaceUnit", value)
-        }
 
-    /**
-     * 房屋检测 - 检测费用单位，0-美元USD 1-欧元EUR 2-英镑GBP 3-澳元AUD 4-日元JPY 5-加元CAD 6-新西兰NZD 7-人民币RMB 8-港币HKD
-     */
-    var costUnit: Int
-        get() = SPUtils.getInstance().getInt("costUnit", 0)
-        set(value) {
-            SPUtils.getInstance().put("costUnit", value)
-        }
 
     /**
      * 设备列表中是否有 TC 有线设备，默认 false.

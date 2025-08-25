@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.launcher.ARouter
-import com.topdon.house.activity.HouseHomeActivity
 import com.topdon.lib.core.bean.event.WinterClickEvent
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.config.ExtraKeyConfig
@@ -31,7 +30,6 @@ import org.greenrobot.eventbus.EventBus
  * This fragment serves as the main navigation hub for professional thermal applications including:
  * - **Winter Detection Guidance:** Industry-standard seasonal thermal analysis workflows
  * - **Temperature Monitoring:** Real-time thermal monitoring for research applications
- * - **House Detection:** Professional building thermal analysis for energy efficiency
  * - **Vehicle Detection:** Advanced automotive thermal analysis with device-specific routing
  * 
  * The fragment implements sophisticated device-specific navigation supporting multiple
@@ -79,8 +77,10 @@ class AbilityFragment : BaseFragment(), View.OnClickListener {
         mIsTC007 = arguments?.getBoolean(ExtraKeyConfig.IS_TC007, false) ?: false
         binding.ivWinter.setOnClickListener(this)
         binding.viewMonitory.setOnClickListener(this)
-        binding.viewHouse.setOnClickListener(this)
         binding.viewCar.setOnClickListener(this)
+        
+        // Hide house detection functionality
+        binding.viewHouse.visibility = View.GONE
     }
 
     /**
@@ -98,7 +98,6 @@ class AbilityFragment : BaseFragment(), View.OnClickListener {
      * Implements industry-standard thermal application entry points including:
      * - **Winter Detection:** Professional seasonal thermal analysis with localized guidance
      * - **Temperature Monitoring:** Real-time thermal monitoring for research applications
-     * - **House Detection:** Building thermal analysis for energy efficiency assessments
      * - **Vehicle Detection:** Advanced automotive thermal analysis with device compatibility
      * 
      * Provides sophisticated thermal device detection and routing capabilities suitable
@@ -127,14 +126,6 @@ class AbilityFragment : BaseFragment(), View.OnClickListener {
             binding.viewMonitory -> {
                 // Professional temperature monitoring workflow with device passthrough
                 val intent = Intent(requireContext(), MonitoryHomeActivity::class.java).apply {
-                    putExtra(ExtraKeyConfig.IS_TC007, mIsTC007)
-                }
-                startActivity(intent)
-            }
-
-            binding.viewHouse -> {
-                // Professional building thermal detection with device compatibility
-                val intent = Intent(requireContext(), HouseHomeActivity::class.java).apply {
                     putExtra(ExtraKeyConfig.IS_TC007, mIsTC007)
                 }
                 startActivity(intent)

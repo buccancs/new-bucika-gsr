@@ -11,5 +11,9 @@
     
     <!-- Color merged from previous module definitions -->
     <color name="color_16131E">#FF16131E</color>
+    
+    <!-- Missing colors from github dependencies -->
+    <color name="toolbar_16131E">#FF16131E</color>
+    <color name="base_dialog">#FF16131E</color>
 
 </resources>
