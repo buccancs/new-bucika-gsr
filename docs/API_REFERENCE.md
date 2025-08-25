@@ -565,4 +565,279 @@ await orchestrator.start_coordinated_session({
 
 *This comprehensive API reference covers all aspects of the BucikaGSR system integration, from low-level sensor APIs to high-level orchestration protocols.*
 
+---
+
+## BucikaGSR Protocol Specification v1
+
+### Overview
+
+The BucikaGSR protocol defines WebSocket-based communication between a PC orchestrator and multiple Android clients for coordinated GSR data collection sessions.
+
+### Message Envelope
+
+All messages use a standard JSON envelope:
+
+```json
+{
+  "id": "unique-message-id",
+  "type": "MESSAGE_TYPE", 
+  "ts": 1234567890123456789,
+  "sessionId": "session-uuid-or-null",
+  "deviceId": "device-unique-identifier",
+  "payload": { ... }
+}
+```
+
+**Envelope Fields:**
+- `id` (string): Unique message identifier for request/response correlation
+- `type` (string): Message type identifier (see Message Types below)
+- `ts` (number): Unix timestamp in nanoseconds when message was created
+- `sessionId` (string|null): Current session UUID, null for session-independent messages
+- `deviceId` (string): Unique identifier for the sending device
+- `payload` (object): Message-specific data payload
+
+### Message Types
+
+#### Connection Management
+
+**DEVICE_REGISTER** (Android → PC)
+```json
+{
+  "type": "DEVICE_REGISTER",
+  "payload": {
+    "deviceName": "Android Device Name",
+    "capabilities": ["GSR", "THERMAL", "STORAGE"],
+    "version": "1.0.0"
+  }
+}
+```
+
+**DEVICE_REGISTER_ACK** (PC → Android)
+```json
+{
+  "type": "DEVICE_REGISTER_ACK", 
+  "payload": {
+    "registered": true,
+    "deviceId": "assigned-device-id"
+  }
+}
+```
+
+**HEARTBEAT** (Bidirectional)
+```json
+{
+  "type": "HEARTBEAT",
+  "payload": {
+    "status": "CONNECTED",
+    "uptime": 12345678
+  }
+}
+```
+
+#### Session Management
+
+**SESSION_CREATE** (PC → Android)
+```json
+{
+  "type": "SESSION_CREATE",
+  "payload": {
+    "sessionName": "Research Session 1",
+    "parameters": {
+      "duration": 300,
+      "gsrSampleRate": 512,
+      "thermalFrameRate": 30
+    }
+  }
+}
+```
+
+**SESSION_START** (PC → Android)
+```json
+{
+  "type": "SESSION_START",
+  "payload": {
+    "syncTimestamp": 1234567890123456789
+  }
+}
+```
+
+**SESSION_STOP** (PC → Android)
+```json
+{
+  "type": "SESSION_STOP",
+  "payload": {
+    "reason": "MANUAL_STOP"
+  }
+}
+```
+
+**SESSION_STATUS** (Android → PC)
+```json
+{
+  "type": "SESSION_STATUS",
+  "payload": {
+    "state": "RECORDING",
+    "progress": 0.45,
+    "dataPoints": 15432,
+    "errors": []
+  }
+}
+```
+
+#### Data Collection
+
+**GSR_DATA** (Android → PC) - Optional real-time streaming
+```json
+{
+  "type": "GSR_DATA",
+  "payload": {
+    "samples": [
+      {"ts": 1234567890123456789, "value": 2.45},
+      {"ts": 1234567890123457000, "value": 2.47}
+    ],
+    "quality": "HIGH"
+  }
+}
+```
+
+**THERMAL_DATA** (Android → PC) - Optional real-time streaming
+```json
+{
+  "type": "THERMAL_DATA", 
+  "payload": {
+    "frameId": "frame-12345",
+    "timestamp": 1234567890123456789,
+    "width": 640,
+    "height": 480,
+    "data": "base64-encoded-thermal-frame"
+  }
+}
+```
+
+#### Time Synchronization
+
+**TIME_SYNC_REQUEST** (PC → Android)
+```json
+{
+  "type": "TIME_SYNC_REQUEST",
+  "payload": {
+    "t1": 1234567890123456789
+  }
+}
+```
+
+**TIME_SYNC_RESPONSE** (Android → PC)
+```json
+{
+  "type": "TIME_SYNC_RESPONSE",
+  "payload": {
+    "t1": 1234567890123456789,
+    "t2": 1234567890123457000,
+    "t3": 1234567890123458000
+  }
+}
+```
+
+#### Data Management
+
+**DATA_OFFLOAD_REQUEST** (PC → Android)
+```json
+{
+  "type": "DATA_OFFLOAD_REQUEST",
+  "payload": {
+    "sessionIds": ["session-uuid-1", "session-uuid-2"],
+    "format": "JSON",
+    "compression": true
+  }
+}
+```
+
+**DATA_OFFLOAD_CHUNK** (Android → PC)
+```json
+{
+  "type": "DATA_OFFLOAD_CHUNK",
+  "payload": {
+    "chunkId": "chunk-001",
+    "totalChunks": 45,
+    "data": "compressed-base64-data",
+    "checksum": "sha256-hash"
+  }
+}
+```
+
+#### Error Handling
+
+**ERROR** (Bidirectional)
+```json
+{
+  "type": "ERROR",
+  "payload": {
+    "errorCode": "GSR_CONNECTION_FAILED",
+    "message": "Unable to connect to Shimmer device",
+    "details": {
+      "bluetoothState": "DISABLED",
+      "lastKnownDevice": "Shimmer3-ABC123"
+    }
+  }
+}
+```
+
+### Connection Lifecycle
+
+1. **Connection Establishment**: Android connects via WebSocket to PC
+2. **Device Registration**: Android sends DEVICE_REGISTER, PC responds with ACK
+3. **Heartbeat Maintenance**: Regular HEARTBEAT messages maintain connection
+4. **Time Synchronization**: Periodic TIME_SYNC cycles ensure clock alignment
+5. **Session Operations**: PC orchestrates session creation, start, stop
+6. **Data Collection**: Local storage with optional real-time streaming
+7. **Data Offload**: Bulk data transfer after session completion
+
+### Quality of Service
+
+**Message Reliability**
+- All request messages expect acknowledgment within 5 seconds
+- Automatic retry with exponential backoff for failed messages
+- Message ordering preserved within session context
+
+**Time Synchronization**
+- Target accuracy: < 10ms across all devices
+- Sync frequency: Every 60 seconds during active sessions
+- Drift detection and correction algorithms
+
+**Error Recovery**
+- Graceful degradation on connection loss
+- Local data buffering continues during network interruptions
+- Automatic reconnection with state restoration
+
+### Security Considerations
+
+**Transport Security**
+- WebSocket Secure (WSS) for production deployments
+- Certificate validation and mutual authentication
+
+**Data Protection** 
+- No sensitive personal data in protocol messages
+- Session data encrypted at rest on Android devices
+- Secure data transfer protocols for offload operations
+
+### Implementation Notes
+
+**Android Client Requirements**
+- WebSocket client library (e.g., OkHttp)
+- JSON serialization/deserialization
+- Background service for connection maintenance
+- Local storage for offline data collection
+
+**PC Server Requirements**
+- WebSocket server framework
+- Multi-client connection management
+- Time synchronization service
+- Data ingestion and storage systems
+
+**Testing and Validation**
+- Protocol compliance test suite
+- Multi-device synchronization testing
+- Network interruption and recovery scenarios
+- Performance testing under various loads
+
 For detailed implementation examples, see the [Developer Guide](DEVELOPER_GUIDE.md) and [Integration Guide](HARDWARE_INTEGRATION.md).

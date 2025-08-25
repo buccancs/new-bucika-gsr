@@ -129,12 +129,12 @@ dependencies {
     api "org.bytedeco:javacv:1.5.6"
     api "org.bytedeco:javacpp:1.5.6"
     
-    // Local AAR dependencies from common location
-    api files('../common-libs/abtest-1.0.1.aar')
-    api files('../common-libs/auth-number-2.13.2.1.aar')
-    api files('../common-libs/lms_international-3.90.009.0.aar')
-    api files('../common-libs/logger-2.2.1-release.aar')
-    api files('../common-libs/main-2.2.1-release.aar')
+    // Local AAR dependencies
+    api files('libs/abtest-1.0.1.aar')
+    api files('libs/auth-number-2.13.2.1.aar')
+    api files('libs/lms_international-3.90.009.0.aar')
+    api files('libs/logger-2.2.1-release.aar')
+    api files('libs/main-2.2.1-release.aar')
     
     // Dependencies from merged libcom module
     api "com.github.skydoves:colorpickerview:2.2.4"

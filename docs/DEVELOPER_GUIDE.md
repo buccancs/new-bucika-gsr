@@ -877,5 +877,415 @@ class EncryptedDataWriter(private val encryptionKey: SecretKey) {
 
 ---
 
+## Development Roadmap
+
+### new-bucika-gsr — Implementation Backlog (v1)
+
+**Scope**
+PC orchestrator controlling multiple Android clients. One Android is the **GSR leader** (Bluetooth to Shimmer). Default **Local** mode (store‑and‑forward); optional **Bridged** mode (live GSR to PC). Tight clock sync, robust ingest, session metadata, calibration.
+
+**Priority legend**: P0 = Must for first working release; P1 = Nice‑to‑have for thesis completeness; P2 = Later.
+
+**Traceability**: FR‑L0, FR1–FR11; NFR‑Perf/Time/Rel/Int/Sec/Use/Scale/Maint as per chapter.
+
+---
+
+### Milestones (execution order)
+
+1. **M0 Foundations (P0)** → 2. **M1 Protocol & Time** → 3. **M2 Android Recording + GSR (Local)**
+2. **M3 Session Manager + PC UI** → 5. **M4 Ingest/Offload** → 6. **M5 Reliability + Tests**
+3. **M6 Security + Calibration (P1)** → 8. **M7 Observability + Docs**
+
+---
+
+### M0 Foundations (P0)
+
+**Expected deliverables**:
+- **Base Android app** (thermal imaging + UI)
+- **GSR sensor integration** (Shimmer via Bluetooth)
+- **Basic PC orchestrator** (WebSocket server)
+- **Core protocol messages** (connection, status)
+
+#### M0.1 Android Base App [FR-L0, FR1, FR2]
+
+- [ ] **Android project setup** with thermal imaging library
+- [ ] **Basic UI framework** for session control
+- [ ] **Bluetooth permissions** and basic scanning
+- [ ] **Shimmer SDK integration** (BLE connection to GSR sensor)
+- [ ] **Basic GSR data collection** (connect, start, stream samples locally)
+- [ ] **Local storage** for GSR data (Room database or file)
+
+*Acceptance*: Android app can connect to Shimmer, collect GSR samples, store locally.
+
+#### M0.2 PC Orchestrator Core [FR3, FR4]
+
+- [ ] **PC WebSocket server** (Node.js/Python, TBD)
+- [ ] **Basic message routing** to connected Android clients
+- [ ] **Connection management** (client registration, heartbeat)
+- [ ] **Session lifecycle** (create, start, stop, cleanup)
+
+*Acceptance*: PC can accept Android connections, send basic commands.
+
+#### M0.3 Android-PC Protocol [FR5]
+
+- [ ] **WebSocket client** in Android (OkHttp or similar)
+- [ ] **Message serialization** (JSON, protobuf TBD)
+- [ ] **Connection state management** (reconnect, error handling)
+- [ ] **Basic commands** (CONNECT, STATUS, SESSION_START, SESSION_STOP)
+
+*Acceptance*: Android connects to PC, responds to basic session commands.
+
+---
+
+### M1 Protocol & Time (P0)
+
+**Goal**: Robust time synchronization and extended protocol.
+
+#### M1.1 Time Synchronization [NFR-Time]
+
+- [ ] **NTP-style sync** between PC and all Android clients
+- [ ] **Clock offset calculation** and compensation
+- [ ] **Timestamp alignment** for GSR samples
+- [ ] **Sync validation** and re-sync triggers
+
+*Acceptance*: All devices maintain <10ms clock synchronization.
+
+#### M1.2 Extended Protocol Messages [FR5]
+
+- [ ] **GSR_START/GSR_STOP** commands
+- [ ] **GSR_DATA** streaming message format
+- [ ] **ERROR** and **ACK** response handling
+- [ ] **DEVICE_INFO** and capability exchange
+
+*Acceptance*: PC can control GSR recording across multiple Android devices.
+
+---
+
+### M2 Android Recording + GSR (Local Mode) [P0]
+
+**Goal**: Complete local GSR recording with thermal imaging.
+
+#### M2.1 GSR Data Collection [FR1, FR2, NFR-Perf]
+
+- [ ] **High-frequency GSR sampling** (configurable rate, e.g., 512Hz)
+- [ ] **Buffered data collection** with overflow protection
+- [ ] **Metadata capture** (session ID, device ID, timestamps)
+- [ ] **Data validation** and quality checks
+
+*Acceptance*: Clean GSR data collection at target sampling rates.
+
+#### M2.2 Thermal Integration [FR1]
+
+- [ ] **Thermal camera control** (if available on device)
+- [ ] **Synchronized thermal+GSR** capture
+- [ ] **Thermal metadata** (frame rate, resolution, calibration)
+- [ ] **Combined data storage** with consistent timestamps
+
+*Acceptance*: Synchronized thermal and GSR data collection.
+
+#### M2.3 Local Storage & Management [FR6, NFR-Rel]
+
+- [ ] **Efficient local storage** (SQLite, file-based, or hybrid)
+- [ ] **Data integrity** checks and validation
+- [ ] **Storage space management** and cleanup policies
+- [ ] **Session metadata** storage
+
+*Acceptance*: Reliable local data persistence with integrity guarantees.
+
+---
+
+### M3 Session Manager + PC UI [P0]
+
+**Goal**: Complete session orchestration from PC.
+
+#### M3.1 Multi-Device Session Management [FR3, FR4]
+
+- [ ] **Device discovery** and registration
+- [ ] **Session planning** (assign roles, parameters)
+- [ ] **Coordinated session start/stop** across all devices
+- [ ] **Real-time status monitoring** during sessions
+
+*Acceptance*: PC can orchestrate synchronized sessions across multiple Android clients.
+
+#### M3.2 PC User Interface [FR4, NFR-Use]
+
+- [ ] **Device management dashboard** (connect, configure, monitor)
+- [ ] **Session control interface** (create, start, stop, parameters)
+- [ ] **Real-time monitoring** (connection status, data rates, errors)
+- [ ] **Session history** and basic analytics
+
+*Acceptance*: Intuitive PC interface for session management.
+
+---
+
+### M4 Ingest/Offload [P0]
+
+**Goal**: Data transfer from Android to PC.
+
+#### M4.1 Data Export/Offload [FR7, FR8]
+
+- [ ] **Data serialization** (efficient format for transfer)
+- [ ] **Selective data offload** (by session, time range, device)
+- [ ] **Transfer progress** tracking and resume capability
+- [ ] **Data validation** after transfer
+
+*Acceptance*: Reliable data transfer from Android to PC.
+
+#### M4.2 PC Data Ingest & Storage [FR8, FR9]
+
+- [ ] **PC data repository** (file system, database TBD)
+- [ ] **Data deduplication** and conflict resolution
+- [ ] **Metadata indexing** for efficient queries
+- [ ] **Export capabilities** (CSV, JSON, research formats)
+
+*Acceptance*: PC can store and manage collected data from multiple sessions.
+
+---
+
+### M5 Reliability + Tests [P0]
+
+**Goal**: Production-ready reliability and quality.
+
+#### M5.1 Error Handling & Recovery [NFR-Rel]
+
+- [ ] **Connection failure recovery** (auto-reconnect, failover)
+- [ ] **Data loss prevention** (local buffering, retry mechanisms)
+- [ ] **Graceful degradation** (continue recording if PC disconnects)
+- [ ] **Error reporting** and diagnostics
+
+*Acceptance*: System continues operating through common failure scenarios.
+
+#### M5.2 Testing & Validation [NFR-Rel, NFR-Perf]
+
+- [ ] **Unit tests** for core components
+- [ ] **Integration tests** for PC-Android communication
+- [ ] **Performance tests** (data rates, memory usage, battery)
+- [ ] **Multi-device stress testing**
+
+*Acceptance*: Comprehensive test coverage with performance validation.
+
+---
+
+### M6 Security + Calibration [P1]
+
+**Goal**: Enhanced security and sensor calibration.
+
+#### M6.1 Security Hardening [NFR-Sec]
+
+- [ ] **Encrypted communication** (TLS for WebSocket)
+- [ ] **Device authentication** and authorization
+- [ ] **Data encryption** at rest (Android local storage)
+- [ ] **Access control** and audit logging
+
+*Acceptance*: Secure communication and data protection.
+
+#### M6.2 GSR Calibration & Quality [FR10, FR11]
+
+- [ ] **Sensor calibration** procedures and storage
+- [ ] **Data quality metrics** and real-time assessment
+- [ ] **Artifact detection** and filtering
+- [ ] **Calibration validation** and drift detection
+
+*Acceptance*: High-quality, calibrated GSR data collection.
+
+---
+
+### M7 Observability + Docs [P1]
+
+**Goal**: Production monitoring and complete documentation.
+
+#### M7.1 Monitoring & Observability [NFR-Maint]
+
+- [ ] **System health monitoring** (device status, performance metrics)
+- [ ] **Data quality dashboards** and alerting
+- [ ] **Log aggregation** and analysis tools
+- [ ] **Performance profiling** and optimization
+
+*Acceptance*: Complete system observability and monitoring.
+
+#### M7.2 Documentation & Deployment [NFR-Use, NFR-Maint]
+
+- [ ] **User documentation** (setup, operation, troubleshooting)
+- [ ] **Developer documentation** (API, architecture, extension points)
+- [ ] **Deployment guides** (installation, configuration, updates)
+- [ ] **Training materials** for researchers/operators
+
+*Acceptance*: Complete documentation for users and developers.
+
+---
+
+## Technical Decisions & Risks
+
+### Architecture Decisions
+
+- **Android-first approach**: Android devices handle GSR collection, PC orchestrates
+- **Local-first storage**: Data persisted locally before offload (reliability)
+- **WebSocket protocol**: Real-time bidirectional communication
+- **Time synchronization**: NTP-style approach for sample alignment
+
+### Key Technical Risks
+
+1. **Bluetooth reliability**: Shimmer connection stability under load
+2. **Time synchronization accuracy**: Maintaining <10ms sync across devices
+3. **Data throughput**: High-frequency GSR streaming + thermal data
+4. **Battery optimization**: Long recording sessions on Android
+5. **Multi-device coordination**: Race conditions, state consistency
+
+### Mitigation Strategies
+
+- **Extensive testing** with actual Shimmer devices
+- **Buffered data collection** with local persistence
+- **Graceful degradation** for connection failures
+- **Performance profiling** and battery optimization
+- **State machine design** for robust coordination
+
+---
+
+## Version History
+
+All notable changes to the Bucika GSR project are documented in this section.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+### Development Workflow
+
+```mermaid
+gitgraph
+    commit id: "Initial Setup"
+    branch develop
+    checkout develop
+    commit id: "Feature Development"
+    branch feature/gsr-integration
+    checkout feature/gsr-integration
+    commit id: "Add GSR sensor"
+    commit id: "Update changelog"
+    checkout develop
+    merge feature/gsr-integration
+    commit id: "Integration Complete"
+    checkout main
+    merge develop
+    commit id: "Release v1.0.0"
+```
+
+### [Unreleased]
+
+#### Added
+- Initial project structure with Android thermal imaging app
+- GSR sensor integration framework with Shimmer device support
+- PC orchestrator WebSocket server foundation
+- Basic protocol definition for Android-PC communication
+- Time synchronization framework for multi-device coordination
+
+#### In Progress
+- Multi-device session management
+- Data collection and local storage optimization
+- Real-time monitoring and control interface
+- Comprehensive testing and quality assurance
+
+#### Planned
+- Enhanced security with encrypted communication
+- Advanced GSR calibration and quality metrics
+- Production deployment and monitoring tools
+- Complete user and developer documentation
+
+### Architecture Evolution
+
+The project architecture has evolved through several phases:
+
+1. **Phase 1: Foundation** - Basic Android app with thermal imaging
+2. **Phase 2: GSR Integration** - Shimmer device connectivity and data collection
+3. **Phase 3: PC Orchestration** - WebSocket server and multi-device coordination
+4. **Phase 4: Production Ready** - Security, monitoring, and comprehensive testing
+
+### Technical Milestones
+
+- **M0: Foundations** - Basic GSR collection and PC connectivity
+- **M1: Protocol & Time** - Robust synchronization and extended protocol
+- **M2: Recording (Local)** - Complete local data collection capabilities
+- **M3: Session Manager** - Multi-device orchestration from PC
+- **M4: Ingest/Offload** - Data transfer and PC storage
+- **M5: Reliability** - Production-ready error handling and testing
+- **M6: Security** - Encrypted communication and calibration
+- **M7: Observability** - Monitoring, documentation, and deployment
+
+---
+
+## Build and Setup Integration
+
+### BucikaGSR Build and Setup Guide
+
+This section provides comprehensive build, setup, and configuration information for the BucikaGSR Android application.
+
+#### Overview
+
+The BucikaGSR project is a standalone thermal imaging application with GSR (Galvanic Skin Response) sensor integration. It combines thermal imaging capabilities with physiological monitoring.
+
+#### Build System
+
+The project uses a comprehensive Gradle build system with:
+
+- **Unified dependency management** across all modules
+- **Standardized build configurations** for Java 17 and modern Android development  
+- **Product flavor consistency** across all modules
+- **Build validation and optimization** scripts
+- **Shared app setup** for easier maintenance
+
+#### Project Structure
+
+The simplified project structure after consolidation:
+
+```
+android/
+├── app/                    # Main Android application
+├── libapp/                # Application logic + BLE functionality
+├── libir/                 # Infrared and thermal imaging
+└── libui/                 # User interface components
+```
+
+#### Dependencies
+
+All dependencies are managed through the unified build system with shared configurations for:
+
+- **Android SDK**: Target SDK 34, Min SDK 26
+- **Java**: Java 17 with Kotlin support
+- **Libraries**: Thermal imaging, BLE communication, UI components
+- **Testing**: JUnit, Espresso, and custom test frameworks
+
+#### Build Commands
+
+```bash
+# Clean build
+./gradlew clean
+
+# Debug build
+./gradlew assembleDebug
+
+# Release build  
+./gradlew assembleRelease
+
+# Run tests
+./gradlew test
+
+# Install debug APK
+./gradlew installDebug
+```
+
+#### Configuration
+
+The build system supports multiple product flavors:
+- **dev**: Development build with debugging enabled
+- **staging**: Pre-production testing environment
+- **prod**: Production release configuration
+
+#### Validation
+
+The project includes automated validation scripts:
+- **Build validation**: Ensures all modules compile successfully
+- **Dependency validation**: Checks for conflicts and missing dependencies
+- **Code quality**: Integrated linting and static analysis
+
+For detailed setup instructions, refer to the main project documentation.
+
 *Last Updated: December 25, 2024*  
 *Version: 2.0.0*
