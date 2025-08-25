@@ -1,4 +1,4 @@
-package com.infisense.usbir.utils;
+package com.infisense.usbir.utils
 
 /**
  * @ProjectName: ANDROID_IRUVC_SDK
@@ -12,18 +12,17 @@ package com.infisense.usbir.utils;
  * @UpdateRemark:
  * @Version: 1.0.0
  */
-public interface USBMonitorCallback {
+interface USBMonitorCallback {
 
-    void onAttach();
+    fun onAttach()
 
-    void onGranted();
+    fun onGranted()
 
-    void onConnect();
+    fun onConnect()
 
-    void onDisconnect();
+    fun onDisconnect()
 
-    void onDettach();
+    fun onDettach()
 
-    void onCancel();
-
+    fun onCancel()
 }
