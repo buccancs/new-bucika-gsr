@@ -4,3 +4,4 @@ interface Observer {
     
     @Observe
     fun onChanged(o: Any?) {}
+}

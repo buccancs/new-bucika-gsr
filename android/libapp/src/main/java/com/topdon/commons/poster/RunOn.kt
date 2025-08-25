@@ -5,3 +5,4 @@ package com.topdon.commons.poster
 annotation class RunOn(
     
     val value: ThreadMode = ThreadMode.UNSPECIFIED
+)
