@@ -359,15 +359,32 @@ The system provides comprehensive data output and analysis:
 ## Support and Development
 
 ### Technical Resources
-- Complete API documentation with detailed examples
-- Comprehensive troubleshooting guide with diagnostics
-- Professional development setup instructions
-- Extensive test suite with >90% coverage
+- Streamlined documentation with focused guides
+- Consolidated troubleshooting across all components  
+- Unified testing framework with comprehensive coverage
+- Modular build system with clear separation of concerns
 
 ### Quality Assurance
 - Automated testing pipeline with CI/CD integration
 - Memory usage monitoring and optimization
 - Performance benchmarking and validation
 - Code quality metrics and standards compliance
+
+## Project Structure
+
+The repository has been organized for clarity and maintainability:
+
+```
+new-bucika-gsr/
+├── android/                    # Android modules
+├── pc/                        # PC orchestrator
+├── docs/                      # Consolidated documentation
+│   ├── DEVELOPER_GUIDE.md     # Main development guide
+│   ├── HARDWARE_INTEGRATION.md # Hardware setup
+│   ├── TESTING_GUIDE.md       # Testing procedures  
+│   └── TROUBLESHOOTING_GUIDE.md # Issue resolution
+├── GRADLE_SETUP.md            # Build system guide
+└── CODE_QUALITY_ANALYSIS.md   # Quality metrics
+```
 
 This BucikaGSR system provides a complete professional-grade solution for physiological monitoring with ShimmerAndroidAPI integration, suitable for research, clinical, and professional applications requiring high-precision GSR data collection and analysis.

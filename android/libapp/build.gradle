@@ -73,12 +73,6 @@ android {
     }
 }
 
-//kotlin {
-//    experimental {
-//        coroutines 'enable'
-//    }
-//}
-
 dependencies {
     api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     api "androidx.appcompat:appcompat:1.4.1"
@@ -129,27 +123,15 @@ dependencies {
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
     api "com.scwang.smartrefresh:SmartRefreshLayout:1.1.3"
     api "com.scwang.smartrefresh:SmartRefreshHeader:1.1.3"
-    api "com.scwang.smartrefresh:SmartRefreshHeader:1.1.3"
 
     api "com.squareup.okhttp3:logging-interceptor:4.9.1"
     api "com.github.skydoves:colorpickerview:2.2.4"
-    // Remove problematic dependencies for build stability
-    // api "com.github.maning0303:MNImageBrowser:v2.1.8" 
-    // api "com.github.sd6352051:nifty-slider:1.3"
-    // api "nifty-effect dependency not available"
 
-//    devApi Deps.lms2
-//    betaApi Deps.lms2
-//    prodApi Deps.lms2
-//    prodTopdonApi Deps.lms2
-//    insideChinaApi Deps.lms3
-//    prodTopdonInsideChinaApi Deps.lms3
-
-
-
-    //javacv
+    // JavaCV for video processing
     api "org.bytedeco:javacv:1.5.6"
     api "org.bytedeco:javacpp:1.5.6"
+    
+    // Local AAR dependencies
     api files('libs/abtest-1.0.1.aar')
     api files('libs/auth-number-2.13.2.1.aar')
     api files('libs/lms_international-3.90.009.0.aar')
