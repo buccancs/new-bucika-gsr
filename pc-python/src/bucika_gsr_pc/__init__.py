@@ -29,11 +29,11 @@ from .data_validator import DataValidator, BatchValidator, QualityReport, Valida
 
 # Try to import GUI, but make it optional for headless environments
 try:
-    from .gui import MainWindowManager, PyQt6MainWindow
+    from .gui import MainWindowManager, SimplifiedMainWindow
     GUI_AVAILABLE = True
 except ImportError:
     MainWindowManager = None
-    PyQt6MainWindow = None
+    SimplifiedMainWindow = None
     GUI_AVAILABLE = False
 
 import asyncio
