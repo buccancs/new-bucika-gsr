@@ -17,12 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.random.Random
 
-/**
- * Enhanced GSR Manager with official Shimmer3 SDK integration
- * Uses official Shimmer Android API for professional GSR data collection
- * Integrated with global master clock for nanosecond-precision synchronization
- * Optimized for concurrent operation with video and DNG capture
- */
 class EnhancedGSRManager private constructor(private val context: Context) {
     
     companion object {
@@ -40,11 +34,9 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    // Official Shimmer SDK components
     private var shimmerDevice: Shimmer? = null
     private var bluetoothAddress: String? = null
     
-    // Thread-safe state management
     private val isConnecting = AtomicBoolean(false)
     private val isRecording = AtomicBoolean(false)
     private val isConnected = AtomicBoolean(false)
@@ -54,12 +46,10 @@ class EnhancedGSRManager private constructor(private val context: Context) {
     private var connectedDeviceName = "Shimmer3 GSR Device"
     private var recordingStartTime: Long = 0
     
-    // Multi-threaded components for zero-drop sampling
     private var connectionExecutor: ScheduledExecutorService? = null
     private val handler = Handler(Looper.getMainLooper())
     private var syncSystem: EnhancedSynchronizedCaptureSystem? = null
     
-    // Performance monitoring
     private val samplingPerformanceMetrics = mutableMapOf<String, Double>()
     
     interface EnhancedGSRDataListener {
@@ -76,28 +66,19 @@ class EnhancedGSRManager private constructor(private val context: Context) {
     
     private var dataListener: EnhancedGSRDataListener? = null
     
-    /**
-     * Set GSR data listener for synchronized data reception
-     */
     fun setGSRDataListener(listener: EnhancedGSRDataListener) {
         this.dataListener = listener
         XLog.i(TAG, "Enhanced GSR data listener registered")
     }
     
-    /**
-     * Set synchronization system for temporal alignment
-     */
     fun setSynchronizationSystem(syncSystem: EnhancedSynchronizedCaptureSystem) {
         this.syncSystem = syncSystem
         XLog.i(TAG, "Synchronization system integrated with GSR manager")
     }
     
-    /**
-     * Initialize Shimmer3 GSR device using official Shimmer Android SDK
-     */
     fun initializeShimmer() {
         try {
-            // Initialize global master clock if not already done
+
             EnhancedSynchronizedCaptureSystem.initializeGlobalMasterClock()
             
             XLog.i(TAG, "Shimmer3 GSR device initialized with official SDK")
@@ -108,9 +89,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Start synchronized GSR recording using official Shimmer3 SDK
-     */
     fun startRecording(): Boolean {
         return if (isConnected.get() && !isRecording.get()) {
             try {
@@ -119,7 +97,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
                 samplesCollected.set(0)
                 lastSampleTimestamp.set(0)
                 
-                // Start data streaming using official SDK
                 shimmerDevice?.startStreaming()
                 
                 XLog.i(TAG, "Shimmer3 GSR recording started using official SDK")
@@ -137,13 +114,10 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Stop synchronized GSR recording using official Shimmer3 SDK
-     */
     fun stopRecording(): Boolean {
         return if (isRecording.get()) {
             try {
-                // Stop data streaming using official SDK
+
                 shimmerDevice?.stopStreaming()
                 
                 isRecording.set(false)
@@ -170,9 +144,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Connect to Shimmer3 device using official Shimmer Android SDK
-     */
     fun connectToShimmer(bluetoothAddress: String) {
         if (isConnecting.get() || isConnected.get()) {
             XLog.w(TAG, "Already connecting or connected to Shimmer device")
@@ -185,25 +156,20 @@ class EnhancedGSRManager private constructor(private val context: Context) {
             
             XLog.i(TAG, "Connecting to Shimmer3 GSR device at $bluetoothAddress using official SDK")
             
-            // Create Shimmer device instance using official SDK
             shimmerDevice = ShimmerBluetooth(context, handler, bluetoothAddress, false, false)
             
-            // Configure Shimmer device for GSR data collection
             configureShimmerForGSR()
             
-            // Create connection executor for non-blocking connection
             connectionExecutor = Executors.newSingleThreadScheduledExecutor { runnable ->
                 Thread(runnable, "ShimmerSDKConnection").apply {
                     priority = Thread.NORM_PRIORITY
                 }
             }
             
-            // Set up connection callbacks using official SDK
             shimmerDevice?.let { device ->
-                // Set connection listener
+
                 device.setShimmerMessageHandler(createShimmerMessageHandler())
                 
-                // Attempt connection on background thread
                 connectionExecutor?.execute {
                     try {
                         device.connect()
@@ -214,7 +180,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
                 }
             }
             
-            // Set connection timeout
             connectionExecutor?.schedule({
                 if (isConnecting.get() && !isConnected.get()) {
                     XLog.w(TAG, "Connection timeout after ${CONNECTION_TIMEOUT_MS}ms")
@@ -229,9 +194,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Create message handler for official Shimmer SDK callbacks
-     */
     private fun createShimmerMessageHandler(): Handler {
         return object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: android.os.Message) {
@@ -266,9 +228,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Handle successful connection using official SDK
-     */
     private fun handleSuccessfulConnection() {
         isConnecting.set(false)
         isConnected.set(true)
@@ -280,31 +239,24 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Process data from Shimmer device using official SDK
-     */
     private fun processShimmerSDKData(objectCluster: ObjectCluster) {
         try {
             val startTime = System.nanoTime()
             
-            // Extract GSR and skin temperature data using official SDK
             val gsrValue = extractGSRValue(objectCluster)
             val skinTemp = extractSkinTemperature(objectCluster)
             
-            // Get timestamps
             val originalTimestamp = System.currentTimeMillis()
             val globalTimestamp = EnhancedSynchronizedCaptureSystem.getGlobalMasterClock()
             
             val sampleIndex = samplesCollected.incrementAndGet()
             lastSampleTimestamp.set(globalTimestamp)
             
-            // Register with synchronization system if available
             var synchronizedTimestamp = globalTimestamp
             syncSystem?.let { sync ->
                 synchronizedTimestamp = sync.registerGSRSample(gsrValue, skinTemp, originalTimestamp)
             }
             
-            // Deliver data on main thread for UI updates
             handler.post {
                 dataListener?.onGSRDataReceived(
                     timestamp = originalTimestamp,
@@ -315,12 +267,10 @@ class EnhancedGSRManager private constructor(private val context: Context) {
                 )
             }
             
-            // Monitor performance
-            val processingTime = (System.nanoTime() - startTime) / 1_000_000.0 // Convert to ms
+            val processingTime = (System.nanoTime() - startTime) / 1_000_000.0
             updateSamplingPerformance("sample_processing", processingTime)
             
-            // Report sync quality periodically
-            if (sampleIndex % (GSR_SAMPLING_RATE_HZ.toLong() / 2) == 0L) { // Every 0.5 seconds
+            if (sampleIndex % (GSR_SAMPLING_RATE_HZ.toLong() / 2) == 0L) {
                 reportSyncQuality()
             }
             
@@ -329,12 +279,9 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Extract GSR value from ObjectCluster using official SDK
-     */
     private fun extractGSRValue(objectCluster: ObjectCluster): Double {
         return try {
-            // Use official SDK channel names for GSR
+
             val gsrChannel = objectCluster.getFormatClusterValue(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE, Configuration.CALIBRATED)
             gsrChannel?.data ?: generateRealisticGSRValue()
         } catch (e: Exception) {
@@ -343,12 +290,9 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Extract skin temperature from ObjectCluster using official SDK
-     */
     private fun extractSkinTemperature(objectCluster: ObjectCluster): Double {
         return try {
-            // Use official SDK channel names for temperature
+
             val tempChannel = objectCluster.getFormatClusterValue("Temperature", Configuration.CALIBRATED)
             tempChannel?.data ?: generateRealisticSkinTemperature()
         } catch (e: Exception) {
@@ -357,9 +301,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Generate realistic GSR value for fallback or testing
-     */
     private fun generateRealisticGSRValue(): Double {
         val timeMs = (EnhancedSynchronizedCaptureSystem.getGlobalMasterClock() - recordingStartTime) / 1_000_000
         
@@ -372,9 +313,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         return kotlin.math.max(0.1, baseGSR + breathingPattern + heartRatePattern + noiseComponent + trendComponent)
     }
     
-    /**
-     * Generate realistic skin temperature for fallback or testing
-     */
     private fun generateRealisticSkinTemperature(): Double {
         val timeMs = (EnhancedSynchronizedCaptureSystem.getGlobalMasterClock() - recordingStartTime) / 1_000_000
         
@@ -385,16 +323,12 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         return baseTemp + thermalDrift + noiseComponent
     }
     
-    /**
-     * Configure Shimmer device for GSR data collection using official SDK
-     */
     private fun configureShimmerForGSR() {
         try {
             shimmerDevice?.let { device ->
-                // Set sampling rate using official SDK
+
                 device.setSamplingRateShimmer(GSR_SAMPLING_RATE_HZ)
                 
-                // Enable GSR sensor using official SDK configuration
                 device.setEnabledSensors(Configuration.Shimmer3.SensorMap.GSR.mValue)
                 
                 XLog.i(TAG, "Shimmer configured for GSR using official SDK: ${GSR_SAMPLING_RATE_HZ} Hz")
@@ -404,9 +338,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Handle connection timeout with official SDK
-     */
     private fun handleConnectionTimeout() {
         XLog.e(TAG, "Shimmer SDK connection timed out")
         isConnecting.set(false)
@@ -419,9 +350,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Handle disconnection with official SDK
-     */
     private fun handleDisconnection() {
         XLog.i(TAG, "Shimmer SDK disconnected")
         isConnected.set(false)
@@ -435,9 +363,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Handle connection errors with official SDK
-     */
     private fun handleConnectionError(exception: Exception) {
         XLog.e(TAG, "Shimmer SDK connection error: ${exception.message}", exception)
         isConnecting.set(false)
@@ -448,26 +373,20 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Disconnect from Shimmer3 device using official SDK
-     */
     fun disconnectShimmer() {
         try {
-            // Stop recording if active
+
             if (isRecording.get()) {
                 stopRecording()
             }
             
-            // Disconnect using official SDK
             shimmerDevice?.disconnect()
             shimmerDevice = null
             
-            // Clean up connection state
             isConnecting.set(false)
             isConnected.set(false)
             bluetoothAddress = null
             
-            // Shutdown connection executor
             connectionExecutor?.shutdown()
             try {
                 if (!connectionExecutor?.awaitTermination(1000, TimeUnit.MILLISECONDS) == true) {
@@ -489,28 +408,16 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Check connection status
-     */
     fun isConnected(): Boolean = isConnected.get()
     
-    /**
-     * Check recording status
-     */
     fun isRecording(): Boolean = isRecording.get()
     
-    /**
-     * Get connected device name
-     */
     fun getConnectedDeviceName(): String? = if (isConnected.get()) connectedDeviceName else null
     
-    /**
-     * Get current sampling statistics
-     */
     fun getSamplingStatistics(): GSRSamplingStatistics {
         val currentTime = EnhancedSynchronizedCaptureSystem.getGlobalMasterClock()
         val recordingDuration = if (isRecording.get() && recordingStartTime > 0) {
-            (currentTime - recordingStartTime) / 1_000_000 // Convert to milliseconds
+            (currentTime - recordingStartTime) / 1_000_000
         } else 0L
         
         val totalSamples = samplesCollected.get()
@@ -531,21 +438,14 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         )
     }
     
-    /**
-     * Update sampling performance metrics
-     */
     private fun updateSamplingPerformance(metric: String, value: Double) {
         samplingPerformanceMetrics[metric] = value
         
-        // Warn if sampling is too slow
-        if (metric == "sample_processing" && value > 1.0) { // > 1ms processing time
+        if (metric == "sample_processing" && value > 1.0) {
             XLog.w(TAG, "Slow GSR sample processing: %.2f ms".format(value))
         }
     }
     
-    /**
-     * Report synchronization quality to listener
-     */
     private fun reportSyncQuality() {
         syncSystem?.let { sync ->
             val metrics = sync.getSynchronizationMetrics()
@@ -553,7 +453,7 @@ class EnhancedGSRManager private constructor(private val context: Context) {
                 (metrics.totalGSRSamplesSynced.toDouble() / metrics.gsrSamplesCaptured) * 100.0
             } else 0.0
             
-            val temporalDrift = metrics.averageTemporalDriftNs / 1_000_000.0 // Convert to ms
+            val temporalDrift = metrics.averageTemporalDriftNs / 1_000_000.0
             
             handler.post {
                 dataListener?.onSyncQualityChanged(syncAccuracy, temporalDrift)
@@ -561,20 +461,15 @@ class EnhancedGSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Cleanup Shimmer3 GSR manager and release resources using official SDK
-     */
     fun cleanup() {
         try {
-            // Stop recording if active
+
             if (isRecording.get()) {
                 stopRecording()
             }
             
-            // Disconnect from Shimmer device using SDK
             disconnectShimmer()
             
-            // Shutdown executors
             connectionExecutor?.shutdown()
             samplingPerformanceMetrics.clear()
             
@@ -586,9 +481,6 @@ class EnhancedGSRManager private constructor(private val context: Context) {
     }
 }
 
-/**
- * GSR sampling statistics
- */
 data class GSRSamplingStatistics(
     val isRecording: Boolean,
     val totalSamples: Long,

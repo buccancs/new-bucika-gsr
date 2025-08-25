@@ -10,10 +10,6 @@ import androidx.core.content.ContextCompat
 import com.topdon.lib.core.db.entity.ThermalEntity
 import com.topdon.thermal.R
 
-/**
- * 简化的日志图表视图 - 图表功能已移除
- * Simple chart log view - Chart functionality removed
- */
 class ChartLogView : View {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -39,13 +35,12 @@ class ChartLogView : View {
         canvas.drawText("Chart functionality removed", centerX, centerY + 60f, paint)
     }
 
-    // 保持原有的公共方法以防其他代码调用
     fun setData(list: List<ThermalEntity>, type: Int = 1) {
-        // 空实现 - 图表功能已移除
+
         invalidate()
     }
 
     fun clearData() {
-        // 空实现 - 图表功能已移除
+
         invalidate()
     }

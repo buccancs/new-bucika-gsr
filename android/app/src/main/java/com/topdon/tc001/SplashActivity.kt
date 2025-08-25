@@ -15,23 +15,10 @@ import com.topdon.tc001.databinding.ActivitySplashBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * Splash screen activity that displays the app logo and name.
- * Handles initial app setup and navigation to the main activity or clause screen.
- * 
- * @author BucikaGSR Development Team
- * @since 1.0.0
- */
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
 
-    /**
-     * Initialize the splash screen and set up navigation logic.
-     * 
-     * @param savedInstanceState If the activity is being re-initialized after previously 
-     * being shut down then this Bundle contains the data it most recently supplied.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -53,9 +40,6 @@ class SplashActivity : AppCompatActivity() {
         binding.tvAppName.text = CommUtils.getAppName()
     }
 
-    /**
-     * Override back press to prevent users from accidentally exiting the splash screen.
-     */
     override fun onBackPressed() {
-        // Intentionally empty - splash screen should not be dismissible via back press
+
     }

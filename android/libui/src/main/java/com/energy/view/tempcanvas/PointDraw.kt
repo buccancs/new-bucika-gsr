@@ -8,10 +8,6 @@ import com.energy.utils.ScreenUtils
 import com.topdon.lib.ui.R
 import java.util.*
 
-/**
- * Created by fengjibo on 2023/6/21.
- * 点绘制工具
- */
 class PointDraw(context: Context) : BaseDraw(context) {
 
     companion object {
@@ -21,14 +17,14 @@ class PointDraw(context: Context) : BaseDraw(context) {
         const val OPERATE_STATUS_POINT_REMOVE = 2
         private const val MAX_POINT_COUNT = 3
         private const val STROKE_WIDTH = 8
-        private const val TEXT_SIZE = 14 // 文字大小
-        private const val TOUCH_EXTRA = 20f //额外的触摸范围
+        private const val TEXT_SIZE = 14
+        private const val TOUCH_EXTRA = 20f
     }
 
-    private val textPointMargin = ScreenUtils.dp2px(4) // 数字和点之间的距离
+    private val textPointMargin = ScreenUtils.dp2px(4)
     private val labelPointMargin = ScreenUtils.dp2px(24)
     private val pointList = LinkedList<PointView>()
-    private var tempPoint: PointView? = null //临时绘制的point，比如手势移动过程中
+    private var tempPoint: PointView? = null
     
     private val textPaint = Paint().apply {
         strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH).toFloat()
@@ -53,9 +49,6 @@ class PointDraw(context: Context) : BaseDraw(context) {
         Log.d(TAG, "setOperateStatus = $operateStatus")
     }
 
-    /**
-     * 添加一个点数据
-     */
     fun addPoint(mode: Int, centerX: Float, centerY: Float) {
         val pointView = PointView(mContext, mode, centerX, centerY)
         val size = pointList.size
@@ -86,25 +79,16 @@ class PointDraw(context: Context) : BaseDraw(context) {
         }
     }
 
-    /**
-     * 删除一个点数据
-     */
     fun removePoint(index: Int) {
         if (pointList.size > index) {
             pointList.removeAt(index)
         }
     }
 
-    /**
-     * 删除所有点数据
-     */
     fun removePoint() {
         pointList.clear()
     }
 
-    /**
-     * 绘制所有点
-     */
     override fun onDraw(canvas: Canvas, isScroll: Boolean) {
         pointList.forEach { pointView ->
             drawLabel(canvas, pointView)
@@ -125,9 +109,6 @@ class PointDraw(context: Context) : BaseDraw(context) {
         }
     }
 
-    /**
-     * 绘制临时点
-     */
     fun onTempDraw(canvas: Canvas, mode: Int, centerX: Float, centerY: Float) {
         if (tempPoint == null) {
             tempPoint = PointView(mContext, mode, centerX, centerY).apply {
@@ -159,7 +140,6 @@ class PointDraw(context: Context) : BaseDraw(context) {
         var top = pointView.centerY - textPointMargin - labelPointMargin - pointView.mPointSize / 2
         var bottom = pointView.centerY - textPointMargin - pointView.mPointSize / 2
         
-        //顶部超出在point下方展示
         if (top < 0) {
             top = pointView.centerY + textPointMargin + pointView.mPointSize / 2
             bottom = top + labelPointMargin
@@ -183,12 +163,11 @@ class PointDraw(context: Context) : BaseDraw(context) {
         val top = rectF.top
         val bottom = rectF.bottom
         
-        //左侧超出
         if (left < 0) {
             left = 0f
             right = rectWidth.toFloat()
         }
-        //右侧超出
+
         if (right > mViewWidth) {
             left = mViewWidth - rectWidth.toFloat()
             right = mViewWidth.toFloat()
@@ -219,18 +198,12 @@ class PointDraw(context: Context) : BaseDraw(context) {
         return rectF
     }
 
-    /**
-     * 修改选中的点坐标
-     */
     fun changeTouchPointLocationByIndex(touchIndex: Int, centerX: Float, centerY: Float) {
         if (touchIndex in 0 until pointList.size) {
             pointList[touchIndex].changeLocation(centerX, centerY)
         }
     }
 
-    /**
-     * 检查当前是否存在手势选中的点
-     */
     fun checkTouchPointInclude(rawX: Float, rawY: Float): Int {
         mTouchIndex = -1
         pointList.forEachIndexed { i, pointView ->
@@ -249,7 +222,7 @@ class PointDraw(context: Context) : BaseDraw(context) {
         var centerY: Float = centerY
             private set
         
-        val inRect = Rect() //范围
+        val inRect = Rect()
         val pointBitmap: Bitmap
         var tempPoint: Point? = null
 

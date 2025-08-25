@@ -19,28 +19,12 @@ import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * @ProjectName: ANDROID_IRUVC_SDK
- * @Package: com.infisense.iruvc.utils
- * @ClassName: FileUtil
- * @Description:
- * @Author: brilliantzhao
- * @CreateDate: 2021.11.11 13:56
- * @UpdateUser:
- * @UpdateDate: 2021.11.11 13:56
- * @UpdateRemark:
- * @Version: 1.0.0
- */
 object FileUtil {
 
     private const val TAG = "FileUtil"
     private const val DATA_SAVE_DIR = "InfiRay"
     private const val BUFFER_SIZE = 524288
 
-    /**
-     * @param context
-     * @return
-     */
     fun getDiskCacheDir(context: Context): String {
         var cachePath = context.cacheDir.path
         if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() ||
@@ -54,12 +38,6 @@ object FileUtil {
         return cachePath
     }
 
-    /**
-     * @param context
-     * @param srcFileName
-     * @param strOutFileName
-     * @throws IOException
-     */
     @Throws(IOException::class)
     fun copyAssetsDataToSD(context: Context, srcFileName: String, strOutFileName: String) {
         val file = File(strOutFileName)
@@ -79,10 +57,6 @@ object FileUtil {
         myOutput.close()
     }
 
-    /**
-     * @param bytes
-     * @param fileTitle
-     */
     fun saveByteFile(context: Context, bytes: ByteArray, fileTitle: String) {
         try {
             val fileSaveDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath
@@ -102,22 +76,14 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param bytes
-     * @param fileTitle
-     */
     fun saveByteFile(bytes: ByteArray, fileTitle: String) {
-        // Commented out implementation
+
     }
 
     fun getTableDirPath(): String {
         return "${Utils.getApp().cacheDir.absolutePath}/table"
     }
 
-    /**
-     * @param bytes
-     * @param fileTitle
-     */
     fun saveShortFileForDeviceData(bytes: ShortArray, fileTitle: String) {
         try {
             val fileSaveDir = getTableDirPath()
@@ -132,10 +98,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param bytes
-     * @param fileTitle
-     */
     fun saveShortFile(bytes: ShortArray, fileTitle: String) {
         try {
             val path = File("/sdcard")
@@ -154,12 +116,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 根据数据流获取Y16类型
-     *
-     * @param dataFlowMode
-     * @return
-     */
     fun getY16SrcTypeByDataFlowMode(dataFlowMode: CommonParams.DataFlowMode): CommonParams.Y16ModePreviewSrcType? {
         return when (dataFlowMode) {
             CommonParams.DataFlowMode.TEMP_OUTPUT -> CommonParams.Y16ModePreviewSrcType.Y16_MODE_TEMPERATURE
@@ -177,12 +133,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 创建文件夹---之所以要一层层创建，是因为一次性创建多层文件夹可能会失败！
-     *
-     * @param dirFile
-     * @return
-     */
     fun createFileDir(dirFile: File?): Boolean {
         if (dirFile == null) return true
         if (dirFile.exists()) {
@@ -190,7 +140,7 @@ object FileUtil {
         }
         val parentFile = dirFile.parentFile
         return if (parentFile != null && !parentFile.exists()) {
-            // 父文件夹不存在，则先创建父文件夹，再创建自身文件夹
+
             createFileDir(parentFile) && createFileDir(dirFile)
         } else {
             val mkdirs = dirFile.mkdirs()
@@ -202,11 +152,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param dirPath
-     * @param fileName
-     * @return
-     */
     fun createFile(dirPath: String, fileName: String): File? {
         try {
             val dirFile = File(dirPath)
@@ -239,12 +184,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准
-     *
-     * @param bytes  在底部的位图
-     * @param bytes2 盖在上面的位图
-     */
     fun savaRawFile(bytes: ByteArray, bytes2: ByteArray) {
         try {
             val path = File("/sdcard")
@@ -264,11 +203,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 保存红外数据
-     *
-     * @param bytes
-     */
     fun savaIRFile(bytes: ByteArray) {
         try {
             val path = File("/sdcard")
@@ -289,11 +223,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 保存温度数据
-     *
-     * @param bytes
-     */
     fun savaTempFile(bytes: ByteArray) {
         try {
             val path = File("/sdcard")
@@ -314,11 +243,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param context
-     * @param file
-     * @return
-     */
     fun isFileExists(context: Context, file: File?): Boolean {
         if (file == null) {
             return false
@@ -329,12 +253,6 @@ object FileUtil {
         return isFileExists(context, file.absolutePath)
     }
 
-    /**
-     * Return whether the file exists.
-     *
-     * @param filePath The path of file.
-     * @return `true`: yes<br></br>`false`: no
-     */
     fun isFileExists(context: Context, filePath: String?): Boolean {
         val file = File(filePath ?: return false)
         if (file.exists()) {
@@ -343,11 +261,6 @@ object FileUtil {
         return isFileExistsApi29(context, filePath)
     }
 
-    /**
-     * @param context
-     * @param filePath
-     * @return
-     */
     private fun isFileExistsApi29(context: Context, filePath: String): Boolean {
         if (Build.VERSION.SDK_INT >= 29) {
             try {
@@ -367,12 +280,6 @@ object FileUtil {
         return false
     }
 
-    /**
-     * short数组转byte数组
-     *
-     * @param src
-     * @return
-     */
     private fun toByteArray(src: ShortArray): ByteArray {
         val count = src.size
         val dest = ByteArray(count shl 1)
@@ -383,12 +290,6 @@ object FileUtil {
         return dest
     }
 
-    /**
-     * byte数组转short数组
-     *
-     * @param src
-     * @return
-     */
     fun toShortArray(src: ByteArray): ShortArray {
         val count = src.size shr 1
         val dest = ShortArray(count)
@@ -398,12 +299,8 @@ object FileUtil {
         return dest
     }
 
-    /**
-     * @param bytes
-     * @param fileTitle
-     */
     fun saveShortFile(fileDir: String, bytes: ShortArray, fileTitle: String) {
-        // 创建目录
+
         createOrExistsDir(fileDir)
         try {
             val file = File(fileDir, "$fileTitle.bin")
@@ -417,11 +314,8 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param file
-     */
     private fun createOrExistsDir(file: File) {
-        // 文件不存在则创建文件
+
         if (!file.exists()) {
             try {
                 file.createNewFile()
@@ -431,25 +325,15 @@ object FileUtil {
         }
     }
 
-    /**
-     * 如果文件夹不存在则创建
-     *
-     * @param fileDir
-     */
     private fun createOrExistsDir(fileDir: String) {
         val file = File(fileDir)
-        // 如果文件夹不存在则创建
+
         if (!file.exists() && !file.isDirectory) {
-            // 不存在
+
             file.mkdir()
         }
     }
 
-    /**
-     * @param context
-     * @param file
-     * @return
-     */
     fun readFile2BytesByStream(context: Context, file: File): ByteArray? {
         if (!isFileExists(context, file)) {
             return null
@@ -486,19 +370,12 @@ object FileUtil {
         }
     }
 
-    /**
-     * 从Assets拷贝数据到SD
-     *
-     * @param context
-     * @param srcFileName
-     * @param strOutFileName
-     */
     fun copyAssetsBigDataToSD(context: Context, srcFileName: String, strOutFileName: String) {
         try {
             val file = File(strOutFileName)
             Log.i(TAG, "file.exists->getAbsolutePath = ${file.absolutePath}")
             if (file.exists()) {
-                // 如果文件存在则删除文件，重新创建，避免修改的内容不生效
+
                 file.delete()
             }
             if (!file.createNewFile()) {
@@ -522,12 +399,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 根据增益状态获取对应的ISP算法的配置文件
-     *
-     * @param gainStatus
-     * @return
-     */
     fun getISPConfigByGainStatus(gainStatus: CommonParams.GainStatus): String {
         return if (CommonParams.GainStatus.HIGH_GAIN == gainStatus) {
             "${infisenseSaveDir()}${File.separator}isp_H.json"
@@ -536,10 +407,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param gainStatus
-     * @return 输出hex
-     */
     fun getISPConfigWithEncryptHexByGainStatus(gainStatus: CommonParams.GainStatus): String {
         return if (CommonParams.GainStatus.HIGH_GAIN == gainStatus) {
             "${infisenseSaveDir()}${File.separator}isp_H_encrypt_hex.json"
@@ -552,15 +419,10 @@ object FileUtil {
         return Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath
     }
 
-    // === 设备信息存储到私有区域，app删除后一起删除
     private fun deviceDataSaveDir(): String {
         return Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!.absolutePath
     }
 
-    /**
-     * @param gainStatus
-     * @return 输出base64
-     */
     fun getISPConfigWithEncryptBase64ByGainStatus(gainStatus: CommonParams.GainStatus): String {
         return if (CommonParams.GainStatus.HIGH_GAIN == gainStatus) {
             "${infisenseSaveDir()}${File.separator}isp_H_encrypt_base64.json"
@@ -569,12 +431,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 获取版本信息
-     *
-     * @param context
-     * @return
-     */
     fun getVersionName(context: Context): String? {
         val manager = context.packageManager
         var name: String? = null
@@ -587,10 +443,6 @@ object FileUtil {
         return name
     }
 
-    /**
-     * @param string
-     * @return
-     */
     fun getMD5Key(string: String): String {
         if (TextUtils.isEmpty(string)) {
             return ""
@@ -613,9 +465,6 @@ object FileUtil {
         return ""
     }
 
-    /**
-     * @param filePath
-     */
     fun makeDirectory(filePath: String) {
         val file = File(filePath)
         if (!file.exists()) {
@@ -623,10 +472,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param context
-     * @return
-     */
     fun getSaveFilePath(context: Context): String {
         val useExternalStorage: Boolean
         var directoryPath = ""
@@ -653,12 +498,6 @@ object FileUtil {
         return directoryPath
     }
 
-    /**
-     * @param filePath
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
     @Throws(IOException::class)
     private fun makeFile(filePath: String, fileName: String): File {
         makeDirectory(filePath)
@@ -669,12 +508,6 @@ object FileUtil {
         return file
     }
 
-    /**
-     * @param bytes
-     * @param filePath
-     * @param fileName
-     * @return
-     */
     fun writeTxtToFile(bytes: ByteArray, filePath: String, fileName: String): Int {
         var result = -1
         var fc: FileChannel? = null
@@ -702,12 +535,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * 存储String到本地，覆盖原始数据
-     *
-     * @param str
-     * @param path
-     */
     fun saveStringToFile(str: String, path: String) {
         var stream: FileOutputStream? = null
         try {
@@ -717,7 +544,7 @@ object FileUtil {
                 file.createNewFile()
             }
             val contentInBytes = str.toByteArray()
-            stream.write(contentInBytes) // 写入
+            stream.write(contentInBytes)
             stream.flush()
             stream.close()
         } catch (e: IOException) {
@@ -725,10 +552,6 @@ object FileUtil {
         }
     }
 
-    /**
-     * @param path
-     * @return
-     */
     fun getStringFromFile(path: String): String {
         val txtContent = StringBuffer()
         val b = ByteArray(2048)
@@ -756,14 +579,10 @@ object FileUtil {
         return txtContent.toString()
     }
 
-    /**
-     * @param num
-     * @param numbyte
-     */
     fun float2Byte(num: Float, numbyte: ByteArray) {
         val fbit = java.lang.Float.floatToIntBits(num)
         for (i in 0 until 4) {
-            numbyte[i] = (fbit shr (i * 8)).toByte() // little-endian
+            numbyte[i] = (fbit shr (i * 8)).toByte()
             Log.i(TAG, "numbyte[=$i]=${numbyte[i]}")
         }
     }

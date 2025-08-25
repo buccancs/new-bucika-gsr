@@ -9,10 +9,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.topdon.thermal.R
 
-/**
- * 简化的趋势图表视图 - 图表功能已移除
- * Simple trend chart view - Chart functionality removed
- */
 class ChartTrendView : View {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -38,13 +34,12 @@ class ChartTrendView : View {
         canvas.drawText("Trend chart functionality removed", centerX, centerY + 60f, paint)
     }
 
-    // 保持原有的公共方法以防其他代码调用
     fun refreshData(vararg temp: Float) {
-        // 空实现 - 图表功能已移除
+
         invalidate()
     }
 
     fun clearData() {
-        // 空实现 - 图表功能已移除
+
         invalidate()
     }

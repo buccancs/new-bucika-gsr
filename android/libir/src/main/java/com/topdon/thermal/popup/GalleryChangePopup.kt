@@ -10,28 +10,12 @@ import com.blankj.utilcode.util.SizeUtils
 import com.topdon.thermal.R
 import com.topdon.thermal.databinding.PopupGalleryChangeBinding
 
-/**
- * Gallery directory switching PopupWindow with ViewBinding implementation.
- * 
- * Provides modern device selection interface for thermal imaging gallery management
- * with support for multiple device types (TC001, TS004, TC007).
- * 
- * @param context Application context for popup display
- * @author Topdon Thermal Imaging Team  
- * @since 2024-01-05
- */
 class GalleryChangePopup(private val context: Context) : PopupWindow() {
 
     private val binding: PopupGalleryChangeBinding = PopupGalleryChangeBinding.inflate(
         LayoutInflater.from(context)
     )
 
-    /**
-     * Selection event listener for gallery device type changes.
-     * 
-     * @param position Device selection position (0=Line, 1=TS004, 2=TC007)
-     * @param str Selected device identifier string
-     */
     var onPickListener: ((position: Int, str: String) -> Unit)? = null
 
     init {
@@ -54,9 +38,6 @@ class GalleryChangePopup(private val context: Context) : PopupWindow() {
         setupClickListeners()
     }
 
-    /**
-     * Configure click listeners for device selection options.
-     */
     private fun setupClickListeners() {
         binding.tvLine.setOnClickListener {
             dismiss()
@@ -74,11 +55,6 @@ class GalleryChangePopup(private val context: Context) : PopupWindow() {
         }
     }
 
-    /**
-     * Display the popup relative to anchor view with optimal positioning.
-     * 
-     * @param anchor Reference view for popup positioning
-     */
     fun show(anchor: View) {
         val locationArray = IntArray(2)
         anchor.getLocationInWindow(locationArray)

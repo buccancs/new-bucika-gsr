@@ -21,19 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * Policy and agreement activity for displaying various legal documents.
- * 
- * Types:
- * - 1: User Service Agreement
- * - 2: Privacy Policy  
- * - 3: Third Party Components
- *
- * Falls back to default local documents when network request fails.
- * 
- * @author BucikaGSR Development Team
- * @since 1.0.0
- */
 @Route(path = RouterConfig.POLICY)
 class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
@@ -42,7 +29,7 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
     companion object {
         const val KEY_THEME_TYPE = "key_theme_type"
-        const val KEY_USE_TYPE = "key_use_type"     //使用类型 用本地和用网络
+        const val KEY_USE_TYPE = "key_use_type"
     }
 
     private var themeType = 1
@@ -54,9 +41,6 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
     override fun initContentView() = R.layout.activity_policy
 
-    /**
-     * Initialize the activity views and set up the policy document loading logic.
-     */
     override fun initView() {
         binding = ActivityPolicyBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -95,9 +79,6 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
         mHandler.removeCallbacksAndMessages(null)
     }
 
-    /**
-     * Delays showing the WebView to resolve white screen flashing issues.
-     */
     private fun delayShowWebView() {
         lifecycleScope.launch(Dispatchers.IO) {
             delay(200)
@@ -114,16 +95,11 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
         }
     }
 
-    /**
-     * Initialize WebView with the provided HTML content.
-     * 
-     * @param url HTML content to load in the WebView
-     */
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWeb(url: String) {
         binding.policyWeb.visibility = View.INVISIBLE
         val webSettings: WebSettings = binding.policyWeb.settings
-        webSettings.javaScriptEnabled = true //设置支持javascript
+        webSettings.javaScriptEnabled = true
 
         binding.policyWeb.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -162,14 +138,6 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
 
     }
 
-    /**
-     * Processes rich text HTML content with custom styling.
-     *
-     * @param htmlBody The HTML body content
-     * @param fontColor Font color to apply  
-     * @param backgroundColor Background color to apply
-     * @return Formatted HTML string with styling
-     */
     fun getHtmlData(htmlBody: String, fontColor: String, backgroundColor: String): String {
         val head = "<head>" +
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"> " +
@@ -183,36 +151,26 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
         delayShowWebView()
     }
 
-    /**
-     * Load network policy content when not initialized locally.
-     * 
-     * @param view WebView to load content into
-     */
     fun loadHttpWhenNotInit(view: WebView) {
         reloadCount--
         when (themeType) {
             1 -> {
-                //用户服务协议
+
                 view.loadUrl("https://plat.topdon.com/topdon-plat/out-user/baseinfo/template/getHtmlContentById?softCode=${BaseApplication.instance.getSoftWareCode()}&language=1&type=21")
             }
 
             2 -> {
-                //隐私政策
+
                 view.loadUrl("https://plat.topdon.com/topdon-plat/out-user/baseinfo/template/getHtmlContentById?softCode=${BaseApplication.instance.getSoftWareCode()}&language=1&type=22")
             }
 
             3 -> {
-                //第三方组件
+
                 view.loadUrl("file:///android_asset/web/third_statement.html")
             }
         }
     }
 
-    /**
-     * Load default local policy documents (fallback when network fails).
-     * 
-     * @param view WebView to load content into
-     */
     fun loadHttp(view: WebView) {
         reloadCount--
         when (themeType) {
@@ -220,7 +178,7 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
                 if (BaseApplication.instance.isDomestic()) {
                     view.loadUrl("file:///android_asset/web/services_agreement_default_inside_china.html")
                 } else {
-                    //用户服务协议
+
                     view.loadUrl("file:///android_asset/web/services_agreement_default.html")
                 }
             }
@@ -229,13 +187,13 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
                 if (BaseApplication.instance.isDomestic()) {
                     view.loadUrl("file:///android_asset/web/privacy_default_inside_china.html")
                 } else {
-                    //隐私政策
+
                     view.loadUrl("file:///android_asset/web/privacy_default.html")
                 }
             }
 
             3 -> {
-                //第三方组件
+
                 view.loadUrl("file:///android_asset/web/third_statement.html")
             }
         }

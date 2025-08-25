@@ -10,19 +10,6 @@ import com.topdon.thermal.event.ManualFinishBean
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-/**
- * Dual-light calibration Step 1 with ViewBinding implementation.
- * 
- * Provides professional interface for thermal imaging dual-light calibration workflow
- * with comprehensive before/after visualization and research-grade documentation.
- * 
- * First step in the dual-light calibration process, demonstrating the improvement
- * achieved through proper calibration with visual comparison interface.
- * 
- * @author Topdon Thermal Imaging Team
- * @since 2023-12-29
- * @see ManualStep2Activity
- */
 @Route(path = RouterConfig.MANUAL_START)
 class ManualStep1Activity : BaseActivity() {
 
@@ -37,9 +24,6 @@ class ManualStep1Activity : BaseActivity() {
         setupClickListeners()
     }
 
-    /**
-     * Configure click listeners for calibration workflow navigation.
-     */
     private fun setupClickListeners() {
         binding.tvManual.setOnClickListener {
             startActivity(Intent(this, ManualStep2Activity::class.java))
@@ -47,22 +31,14 @@ class ManualStep1Activity : BaseActivity() {
     }
 
     override fun initData() {
-        // No initial data loading required for this step
+
     }
 
-    /**
-     * Handle device disconnection by terminating calibration process.
-     */
     override fun disConnected() {
         super.disConnected()
         finish()
     }
 
-    /**
-     * Handle calibration completion event from subsequent steps.
-     * 
-     * @param manualFinishBean Event indicating calibration workflow completion
-     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onManualFinishBean(manualFinishBean: ManualFinishBean) {
         finish()

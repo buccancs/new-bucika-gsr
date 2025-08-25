@@ -14,30 +14,11 @@ import com.topdon.libcom.R
 import com.topdon.libcom.util.ColorUtils
 import com.topdon.libcom.databinding.DialogColorPickBinding
 
-/**
- * Professional color picker dialog for thermal imaging systems
- * 
- * Provides comprehensive color selection including:
- * - Range slider for precise color adjustment
- * - Text size configuration with DP/pixel support
- * - Professional validation and preview capabilities
- * - Industry-standard color picker interface
- * - Type-safe view access with ViewBinding
- * 
- * @param color Initial color value for the picker
- * @param textSize Initial text size value
- * @param textSizeIsDP Whether text size is specified in DP units
- * @property onPickListener Callback for color and text size selection events
- */
 class ColorPickDialog(context: Context, @ColorInt private var color: Int,var textSize: Int,var textSizeIsDP : Boolean = false) : Dialog(context, R.style.InfoDialog), View.OnClickListener {
 
-    /**
-     * 颜色值拾取事件监听.
-     */
     var onPickListener: ((color: Int,textSize : Int) -> Unit)? = null
 
     private val rootView: View = LayoutInflater.from(context).inflate(R.layout.dialog_color_pick, null)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +86,7 @@ class ColorPickDialog(context: Context, @ColorInt private var color: Int,var tex
         when (v) {
             rootView.rl_close -> dismiss()
 
-            rootView.tv_save -> {//保存
+            rootView.tv_save -> {
                 dismiss()
                 onPickListener?.invoke(color,textSize)
             }
@@ -149,9 +130,6 @@ class ColorPickDialog(context: Context, @ColorInt private var color: Int,var tex
         }
     }
 
-    /**
-     * 将 6 个固定的颜色按钮重置为未选中状态.
-     */
     private fun unSelect6Color() {
         rootView.view_color1.isSelected = false
         rootView.view_color2.isSelected = false

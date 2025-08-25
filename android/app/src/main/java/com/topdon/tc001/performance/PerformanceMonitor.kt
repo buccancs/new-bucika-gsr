@@ -15,69 +15,41 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.max
 
-/**
- * Performance Monitor for Bucika GSR Application
- * 
- * Provides comprehensive monitoring of system resources including:
- * - Memory usage (heap, native, graphics)
- * - CPU utilization tracking
- * - Battery consumption monitoring
- * - Network usage statistics
- * - Storage I/O performance
- * - GSR data processing metrics
- * 
- * Key Features:
- * - Real-time performance alerts
- * - Automatic memory leak detection
- * - Battery optimization recommendations
- * - Performance bottleneck identification
- * - Historical performance tracking
- */
 class PerformanceMonitor(private val context: Context) {
     
     companion object {
         private const val TAG = "PerformanceMonitor"
         
-        // Performance thresholds
         private const val MEMORY_WARNING_THRESHOLD_MB = 400
         private const val MEMORY_CRITICAL_THRESHOLD_MB = 500
         private const val CPU_WARNING_THRESHOLD = 80.0
         private const val BATTERY_WARNING_LEVEL = 20
-        private const val UPDATE_INTERVAL_MS = 5000L // 5 seconds
+        private const val UPDATE_INTERVAL_MS = 5000L
         
-        // Memory categories
         private const val BYTES_IN_MEGABYTE = 1024 * 1024
     }
     
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     
-    // Performance metrics state
     private val _performanceMetrics = MutableStateFlow(PerformanceMetrics())
     val performanceMetrics: StateFlow<PerformanceMetrics> = _performanceMetrics.asStateFlow()
     
-    // System services
     private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     private val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager?
     
-    // Performance counters
     private val gsrSamplesProcessed = AtomicLong(0)
     private val networkBytesTransferred = AtomicLong(0)
     private val fileOperationsCount = AtomicLong(0)
     
-    // Historical data for trend analysis
     private val memoryHistory = mutableListOf<Long>()
     private val cpuHistory = mutableListOf<Double>()
     private val batteryHistory = mutableListOf<Int>()
     private var lastCpuTime = 0L
     private var lastCpuIdleTime = 0L
     
-    // Monitoring job
     private var monitoringJob: Job? = null
     private var isMonitoring = false
     
-    /**
-     * Start performance monitoring
-     */
     fun startMonitoring() {
         if (isMonitoring) {
             XLog.w(TAG, "Performance monitoring already running")
@@ -94,15 +66,12 @@ class PerformanceMonitor(private val context: Context) {
                     delay(UPDATE_INTERVAL_MS)
                 } catch (e: Exception) {
                     XLog.e(TAG, "Error in performance monitoring: ${e.message}", e)
-                    delay(UPDATE_INTERVAL_MS) // Continue monitoring even on errors
+                    delay(UPDATE_INTERVAL_MS)
                 }
             }
         }
     }
     
-    /**
-     * Stop performance monitoring
-     */
     fun stopMonitoring() {
         isMonitoring = false
         monitoringJob?.cancel()
@@ -110,9 +79,6 @@ class PerformanceMonitor(private val context: Context) {
         XLog.i(TAG, "Stopped performance monitoring")
     }
     
-    /**
-     * Update all performance metrics
-     */
     private suspend fun updatePerformanceMetrics() = withContext(Dispatchers.IO) {
         val memoryInfo = getMemoryInfo()
         val cpuUsage = getCpuUsage()
@@ -120,20 +86,16 @@ class PerformanceMonitor(private val context: Context) {
         val storageInfo = getStorageInfo()
         val networkInfo = getNetworkInfo()
         
-        // Update historical data
         updateHistoricalData(memoryInfo.usedMemoryMB, cpuUsage, batteryInfo.level)
         
-        // Analyze trends and generate alerts
         val alerts = generatePerformanceAlerts(memoryInfo, cpuUsage, batteryInfo)
         val recommendations = generateOptimizationRecommendations(memoryInfo, cpuUsage, batteryInfo)
         
-        // Calculate performance scores
         val memoryScore = calculateMemoryScore(memoryInfo)
         val cpuScore = calculateCpuScore(cpuUsage)
         val batteryScore = calculateBatteryScore(batteryInfo)
         val overallScore = (memoryScore + cpuScore + batteryScore) / 3.0
         
-        // Emit updated metrics
         _performanceMetrics.value = PerformanceMetrics(
             memoryInfo = memoryInfo,
             cpuUsage = cpuUsage,
@@ -159,9 +121,6 @@ class PerformanceMonitor(private val context: Context) {
         )
     }
     
-    /**
-     * Get comprehensive memory information
-     */
     private fun getMemoryInfo(): MemoryInfo {
         val memInfo = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(memInfo)
@@ -184,9 +143,6 @@ class PerformanceMonitor(private val context: Context) {
         )
     }
     
-    /**
-     * Calculate current CPU usage percentage
-     */
     private fun getCpuUsage(): Double {
         try {
             val cpuInfo = readCpuInfo()
@@ -216,9 +172,6 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Read CPU information from /proc/stat
-     */
     private fun readCpuInfo(): CpuInfo {
         return try {
             val cpuLine = File("/proc/stat").readLines().first { it.startsWith("cpu ") }
@@ -239,9 +192,6 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Get battery information
-     */
     private fun getBatteryInfo(): BatteryInfo {
         return try {
             val level = batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: -1
@@ -250,8 +200,8 @@ class PerformanceMonitor(private val context: Context) {
             
             BatteryInfo(
                 level = level,
-                temperature = temperature / 10.0, // Convert from tenths of degree
-                voltage = voltage / 1000.0, // Convert from millivolts
+                temperature = temperature / 10.0,
+                voltage = voltage / 1000.0,
                 isCharging = batteryManager?.isCharging ?: false,
                 chargingTimeRemaining = batteryManager?.computeChargeTimeRemaining() ?: -1L
             )
@@ -261,9 +211,6 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Get storage information
-     */
     private fun getStorageInfo(): StorageInfo {
         return try {
             val dataDir = context.filesDir
@@ -283,16 +230,12 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Get network information
-     */
     private fun getNetworkInfo(): NetworkInfo {
         return try {
-            // Note: Network usage tracking would require additional permissions
-            // For now, we track our own counters
+
             NetworkInfo(
                 bytesTransferred = networkBytesTransferred.get(),
-                connectionCount = 1, // WebSocket connection
+                connectionCount = 1,
                 transferRate = calculateNetworkTransferRate()
             )
         } catch (e: Exception) {
@@ -301,9 +244,6 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Calculate GSR processing rate (samples per second)
-     */
     private fun calculateGSRProcessingRate(): Double {
         val currentTime = System.currentTimeMillis()
         val timeElapsed = currentTime - (_performanceMetrics.value.lastUpdateTime.takeIf { it > 0 } ?: currentTime)
@@ -315,9 +255,6 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Calculate network transfer rate
-     */
     private fun calculateNetworkTransferRate(): Double {
         val currentTime = System.currentTimeMillis()
         val timeElapsed = currentTime - (_performanceMetrics.value.lastUpdateTime.takeIf { it > 0 } ?: currentTime)
@@ -329,26 +266,18 @@ class PerformanceMonitor(private val context: Context) {
         }
     }
     
-    /**
-     * Update historical data for trend analysis
-     */
     private fun updateHistoricalData(memoryUsage: Long, cpuUsage: Double, batteryLevel: Int) {
-        // Memory history (last 24 data points = 2 minutes at 5s intervals)
+
         memoryHistory.add(memoryUsage)
         if (memoryHistory.size > 24) memoryHistory.removeAt(0)
         
-        // CPU history
         cpuHistory.add(cpuUsage)
         if (cpuHistory.size > 24) cpuHistory.removeAt(0)
         
-        // Battery history (last 60 data points = 5 minutes)
         batteryHistory.add(batteryLevel)
         if (batteryHistory.size > 60) batteryHistory.removeAt(0)
     }
     
-    /**
-     * Generate performance alerts
-     */
     private fun generatePerformanceAlerts(
         memoryInfo: MemoryInfo,
         cpuUsage: Double,
@@ -356,7 +285,6 @@ class PerformanceMonitor(private val context: Context) {
     ): List<PerformanceAlert> {
         val alerts = mutableListOf<PerformanceAlert>()
         
-        // Memory alerts
         when {
             memoryInfo.usedMemoryMB > MEMORY_CRITICAL_THRESHOLD_MB -> {
                 alerts.add(PerformanceAlert(
@@ -376,7 +304,6 @@ class PerformanceMonitor(private val context: Context) {
             }
         }
         
-        // CPU alerts
         if (cpuUsage > CPU_WARNING_THRESHOLD) {
             alerts.add(PerformanceAlert(
                 type = AlertType.CPU_HIGH,
@@ -386,7 +313,6 @@ class PerformanceMonitor(private val context: Context) {
             ))
         }
         
-        // Battery alerts
         if (batteryInfo.level > 0 && batteryInfo.level < BATTERY_WARNING_LEVEL) {
             alerts.add(PerformanceAlert(
                 type = AlertType.BATTERY_LOW,
@@ -396,7 +322,6 @@ class PerformanceMonitor(private val context: Context) {
             ))
         }
         
-        // Memory leak detection
         if (memoryHistory.size >= 10) {
             val recentTrend = memoryHistory.takeLast(10)
             val isIncreasing = recentTrend.zipWithNext { a, b -> b > a }.all { it }
@@ -413,9 +338,6 @@ class PerformanceMonitor(private val context: Context) {
         return alerts
     }
     
-    /**
-     * Generate optimization recommendations
-     */
     private fun generateOptimizationRecommendations(
         memoryInfo: MemoryInfo,
         cpuUsage: Double,
@@ -446,9 +368,6 @@ class PerformanceMonitor(private val context: Context) {
         return recommendations
     }
     
-    /**
-     * Calculate performance scores (0-100)
-     */
     private fun calculateMemoryScore(memoryInfo: MemoryInfo): Double {
         val usageRatio = memoryInfo.usedMemoryMB.toDouble() / memoryInfo.totalMemoryMB.toDouble()
         return max(0.0, 100.0 - (usageRatio * 100.0))
@@ -462,34 +381,22 @@ class PerformanceMonitor(private val context: Context) {
         return if (batteryInfo.level > 0) {
             batteryInfo.level.toDouble()
         } else {
-            50.0 // Unknown battery state
+            50.0
         }
     }
     
-    /**
-     * Record GSR sample processing for performance tracking
-     */
     fun recordGSRSampleProcessed() {
         gsrSamplesProcessed.incrementAndGet()
     }
     
-    /**
-     * Record network data transfer
-     */
     fun recordNetworkTransfer(bytes: Long) {
         networkBytesTransferred.addAndGet(bytes)
     }
     
-    /**
-     * Record file operation
-     */
     fun recordFileOperation() {
         fileOperationsCount.incrementAndGet()
     }
     
-    /**
-     * Get current performance summary
-     */
     fun getPerformanceSummary(): PerformanceSummary {
         val current = _performanceMetrics.value
         
@@ -504,9 +411,6 @@ class PerformanceMonitor(private val context: Context) {
         )
     }
     
-    /**
-     * Cleanup resources
-     */
     fun cleanup() {
         stopMonitoring()
         coroutineScope.cancel()
@@ -516,8 +420,6 @@ class PerformanceMonitor(private val context: Context) {
         XLog.i(TAG, "Performance monitor cleaned up")
     }
 }
-
-// Data classes for performance metrics
 
 data class PerformanceMetrics(
     val memoryInfo: MemoryInfo = MemoryInfo(),

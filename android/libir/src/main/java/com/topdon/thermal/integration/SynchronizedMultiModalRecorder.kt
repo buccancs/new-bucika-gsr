@@ -13,11 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicBoolean
 
-/**
- * Comprehensive Multi-Modal Synchronized Recording System
- * Integrates 4K video, RAW DNG, and GSR data with nanosecond-precision synchronization
- * Optimized for Samsung S22 series with zero frame drop architecture
- */
 class SynchronizedMultiModalRecorder(
     private val context: Context
 ) {
@@ -27,22 +22,18 @@ class SynchronizedMultiModalRecorder(
         private const val METRICS_UPDATE_INTERVAL_MS = 1000L
     }
     
-    // Core recording components
     private lateinit var parallelCaptureManager: ParallelCaptureManager
     private lateinit var videoRecorder: EnhancedVideoRecorder
     private lateinit var gsrManager: EnhancedGSRManager
     private lateinit var syncSystem: EnhancedSynchronizedCaptureSystem
     
-    // State management
     private val isRecording = AtomicBoolean(false)
     private val isInitialized = AtomicBoolean(false)
     private var recordingStartTime: Long = 0
     
-    // UI updates
     private val handler = Handler(Looper.getMainLooper())
     private var metricsUpdateRunnable: Runnable? = null
     
-    // Listener interface for recording updates
     interface MultiModalRecordingListener {
         fun onRecordingStarted(sessionId: String)
         fun onRecordingStopped(duration: Long, metrics: RecordingSessionMetrics)
@@ -55,44 +46,32 @@ class SynchronizedMultiModalRecorder(
     
     private var recordingListener: MultiModalRecordingListener? = null
     
-    /**
-     * Set listener for recording events and updates
-     */
     fun setRecordingListener(listener: MultiModalRecordingListener) {
         this.recordingListener = listener
     }
     
-    /**
-     * Initialize the multi-modal recording system
-     */
     fun initialize(): Boolean {
         return try {
             XLog.i(TAG, "Initializing synchronized multi-modal recording system...")
             
-            // Initialize global master clock first
             EnhancedSynchronizedCaptureSystem.initializeGlobalMasterClock()
             
-            // Initialize core components
             syncSystem = EnhancedSynchronizedCaptureSystem(context)
             videoRecorder = EnhancedVideoRecorder(context)
             gsrManager = EnhancedGSRManager.getInstance(context)
             parallelCaptureManager = ParallelCaptureManager(context)
             
-            // Initialize synchronization system
             if (!syncSystem.initialize()) {
                 throw Exception("Failed to initialize synchronization system")
             }
             
-            // Initialize parallel capture manager
             if (!parallelCaptureManager.initialize(videoRecorder)) {
                 throw Exception("Failed to initialize parallel capture manager")
             }
             
-            // Initialize GSR manager with sync system
             gsrManager.setSynchronizationSystem(syncSystem)
             gsrManager.initializeShimmer()
             
-            // Set up GSR data listener
             gsrManager.setGSRDataListener(object : EnhancedGSRManager.EnhancedGSRDataListener {
                 override fun onGSRDataReceived(
                     timestamp: Long,
@@ -116,7 +95,6 @@ class SynchronizedMultiModalRecorder(
                 }
             })
             
-            // Check device compatibility
             if (!parallelCaptureManager.isParallelCaptureSupported()) {
                 XLog.w(TAG, "Device may not fully support concurrent 4K+RAW capture")
                 XLog.i(TAG, "Compatibility report:\n${parallelCaptureManager.getCompatibilityReport()}")
@@ -133,9 +111,6 @@ class SynchronizedMultiModalRecorder(
         }
     }
     
-    /**
-     * Start synchronized multi-modal recording
-     */
     fun startRecording(): Boolean {
         if (!isInitialized.get()) {
             XLog.e(TAG, "Cannot start recording - system not initialized")
@@ -150,11 +125,9 @@ class SynchronizedMultiModalRecorder(
         return try {
             XLog.i(TAG, "Starting synchronized multi-modal recording...")
             
-            // Connect GSR device if not already connected
             if (!gsrManager.isConnected()) {
-                gsrManager.connectToShimmer("00:06:66:66:66:66") // Simulated address
+                gsrManager.connectToShimmer("00:06:66:66:66:66")
                 
-                // Wait for connection
                 var connectionTimeout = 0
                 while (!gsrManager.isConnected() && connectionTimeout < 30) {
                     Thread.sleep(100)
@@ -168,12 +141,10 @@ class SynchronizedMultiModalRecorder(
             
             recordingStartTime = EnhancedSynchronizedCaptureSystem.getGlobalMasterClock()
             
-            // Start parallel video + DNG capture
             if (!parallelCaptureManager.startParallelCapture()) {
                 throw Exception("Failed to start parallel capture")
             }
             
-            // Start GSR recording if connected
             if (gsrManager.isConnected()) {
                 if (!gsrManager.startRecording()) {
                     XLog.w(TAG, "Failed to start GSR recording - continuing with video/DNG only")
@@ -182,7 +153,6 @@ class SynchronizedMultiModalRecorder(
             
             isRecording.set(true)
             
-            // Start metrics monitoring
             startMetricsMonitoring()
             
             val sessionId = "multimodal_${System.currentTimeMillis()}"
@@ -197,14 +167,11 @@ class SynchronizedMultiModalRecorder(
         } catch (e: Exception) {
             XLog.e(TAG, "Failed to start multi-modal recording: ${e.message}", e)
             recordingListener?.onError("Recording start failed", e)
-            stopRecording() // Cleanup partial state
+            stopRecording()
             false
         }
     }
     
-    /**
-     * Stop synchronized multi-modal recording
-     */
     fun stopRecording(): Boolean {
         if (!isRecording.get()) {
             XLog.w(TAG, "No recording in progress")
@@ -214,25 +181,20 @@ class SynchronizedMultiModalRecorder(
         return try {
             XLog.i(TAG, "Stopping synchronized multi-modal recording...")
             
-            // Stop metrics monitoring
             stopMetricsMonitoring()
             
-            // Stop GSR recording
             val gsrStopped = if (gsrManager.isRecording()) {
                 gsrManager.stopRecording()
             } else true
             
-            // Stop parallel capture
             val parallelStopped = parallelCaptureManager.stopParallelCapture()
             
-            // Calculate recording duration
             val recordingDuration = if (recordingStartTime > 0) {
                 (EnhancedSynchronizedCaptureSystem.getGlobalMasterClock() - recordingStartTime) / 1_000_000
             } else 0L
             
             isRecording.set(false)
             
-            // Collect final metrics
             val finalMetrics = collectRecordingMetrics(recordingDuration)
             
             XLog.i(TAG, "Multi-modal recording stopped")
@@ -251,9 +213,6 @@ class SynchronizedMultiModalRecorder(
         }
     }
     
-    /**
-     * Start real-time metrics monitoring
-     */
     private fun startMetricsMonitoring() {
         metricsUpdateRunnable = object : Runnable {
             override fun run() {
@@ -266,7 +225,6 @@ class SynchronizedMultiModalRecorder(
                         val metrics = collectRecordingMetrics(currentDuration)
                         recordingListener?.onSyncMetricsUpdated(metrics)
                         
-                        // Schedule next update
                         handler.postDelayed(this, METRICS_UPDATE_INTERVAL_MS)
                         
                     } catch (e: Exception) {
@@ -279,9 +237,6 @@ class SynchronizedMultiModalRecorder(
         handler.post(metricsUpdateRunnable!!)
     }
     
-    /**
-     * Stop metrics monitoring
-     */
     private fun stopMetricsMonitoring() {
         metricsUpdateRunnable?.let { runnable ->
             handler.removeCallbacks(runnable)
@@ -289,9 +244,6 @@ class SynchronizedMultiModalRecorder(
         }
     }
     
-    /**
-     * Collect comprehensive recording metrics
-     */
     private fun collectRecordingMetrics(durationMs: Long): RecordingSessionMetrics {
         val parallelMetrics = parallelCaptureManager.getPerformanceMetrics()
         val syncMetrics = parallelCaptureManager.getSynchronizationMetrics()
@@ -318,23 +270,14 @@ class SynchronizedMultiModalRecorder(
         )
     }
     
-    /**
-     * Get current recording status
-     */
     fun isRecording(): Boolean = isRecording.get()
     
-    /**
-     * Get current recording duration in milliseconds
-     */
     fun getRecordingDuration(): Long {
         return if (isRecording.get() && recordingStartTime > 0) {
             (EnhancedSynchronizedCaptureSystem.getGlobalMasterClock() - recordingStartTime) / 1_000_000
         } else 0L
     }
     
-    /**
-     * Cleanup all resources
-     */
     fun cleanup() {
         try {
             stopRecording()
@@ -356,9 +299,6 @@ class SynchronizedMultiModalRecorder(
     }
 }
 
-/**
- * Comprehensive recording session metrics
- */
 data class RecordingSessionMetrics(
     val sessionDurationMs: Long,
     val videoFramesRecorded: Int,
@@ -378,35 +318,25 @@ data class RecordingSessionMetrics(
     val averageGsrProcessingTimeMs: Double,
     val correlationTaskQueueSize: Int
 ) {
-    /**
-     * Get overall system performance score (0-100)
-     */
+    
     val overallPerformanceScore: Double
         get() {
             var score = 100.0
             
-            // Deduct for sync accuracy
             if (syncAccuracyPercent < 95.0) score -= (95.0 - syncAccuracyPercent)
             
-            // Deduct for frame drops
             if (frameDropCount > 0) score -= (frameDropCount * 2.0)
             
-            // Deduct for high temporal drift
             if (averageTemporalDriftMs > 4.0) score -= (averageTemporalDriftMs - 4.0) * 5.0
             
-            // Deduct for GSR sampling issues
             if (gsrSamplingAccuracy < 95.0) score -= (95.0 - gsrSamplingAccuracy) * 0.5
             
-            // Deduct for processing delays
             if (averageVideoProcessingTimeMs > 2.0) score -= (averageVideoProcessingTimeMs - 2.0) * 2.0
             if (averageDngProcessingTimeMs > 5.0) score -= (averageDngProcessingTimeMs - 5.0) * 1.0
             
             return maxOf(0.0, minOf(100.0, score))
         }
     
-    /**
-     * Get performance category
-     */
     val performanceCategory: String
         get() = when {
             overallPerformanceScore >= 95.0 -> "EXCELLENT"

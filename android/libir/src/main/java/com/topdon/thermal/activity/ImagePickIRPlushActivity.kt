@@ -9,11 +9,6 @@ import com.topdon.thermal.R
 import com.topdon.thermal.fragment.IRCorrectionFragment
 import com.topdon.thermal.fragment.IRPlushFragment
 
-/**
- * des:双光的红外拍照
- * author: CaiSongL
- * date: 2024/8/24 18:10
- **/
 @Route(path = RouterConfig.IR_IMG_PICK_PLUS)
 class ImagePickIRPlushActivity : BasePickImgActivity() {
     var irFragment : IRPlushFragment ?= null
@@ -39,5 +34,3 @@ class ImagePickIRPlushActivity : BasePickImgActivity() {
     override fun initData() {
 
     }
-
-

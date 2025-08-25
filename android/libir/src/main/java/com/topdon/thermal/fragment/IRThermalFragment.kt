@@ -32,21 +32,8 @@ import com.topdon.thermal.activity.IRThermalNightActivity
 import com.topdon.thermal.activity.IRThermalPlusActivity
 import com.topdon.thermal.databinding.FragmentThermalIrBinding
 
-/**
- * Professional thermal imaging fragment supporting multi-device thermal camera integration
- * for clinical and research applications.
- * 
- * Provides comprehensive functionality for:
- * - Professional TC007 and TC001/TC001-Lite device connection management
- * - Industry-standard thermal imaging application navigation
- * - Research-grade device detection and connection workflows
- * - Professional multi-device thermal camera integration
- * - Clinical-grade thermal imaging system initialization
- * - Advanced thermal device permission and connectivity management
- */
 class IRThermalFragment : BaseFragment(), View.OnClickListener {
 
-    /** ViewBinding instance for type-safe view access */
     private var _binding: FragmentThermalIrBinding? = null
     private val binding get() = _binding!!
 
@@ -60,10 +47,6 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
         _binding = null
     }
 
-    /**
-     * Device type flag indicating whether current device is TC007 or other plugin-style device.
-     * true=TC007, false=other plugin devices (TC001/TC001-Lite)
-     */
     private var isTC007 = false
 
     override fun initContentView() = R.layout.fragment_thermal_ir
@@ -91,7 +74,7 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
         }
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
-                // 要是当前已连接 TS004、TC007，切到流量上，不然登录注册意见反馈那些没网
+
                 if (WebSocketProxy.getInstance().isConnected()) {
                     NetWorkUtils.switchNetwork(true)
                 }else{
@@ -141,15 +124,12 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    /**
-     * Actively detect and validate thermal device connection
-     */
     private fun checkConnect() {
         if (DeviceTools.isConnect(isAutoRequest = false)) {
             connected()
         } else {
             disConnected()
-            if (DeviceTools.findUsbDevice() != null) {//找到设备,但不能连接
+            if (DeviceTools.findUsbDevice() != null) {
                 showConnectTip()
             }
         }
@@ -174,7 +154,7 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
             }
             binding.tvMainEnter -> {
                 if (!DeviceTools.isConnect()) {
-                    //没有接入设备不需要提示，有系统授权提示框
+
                     if (DeviceTools.findUsbDevice() == null) {
                         activity?.let {
                             TipDialog.Builder(it)
@@ -196,7 +176,7 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
 
                                 override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
                                     if (doNotAskAgain) {
-                                        //拒绝授权并且不再提醒
+
                                         context?.let {
                                             TipDialog.Builder(it)
                                                 .setTitleMessage(getString(R.string.app_tip))
@@ -215,12 +195,12 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
                     }
                 }
             }
-            binding.cl07ConnectTips -> {//TC007 连接提示
+            binding.cl07ConnectTips -> {
                 ARouter.getInstance().build(RouterConfig.IR_CONNECT_TIPS)
                     .withBoolean(ExtraKeyConfig.IS_TC007, true)
                     .navigation(requireContext())
             }
-            binding.tv07Connect -> {//TC007 连接设备
+            binding.tv07Connect -> {
                 ARouter.getInstance()
                     .build(RouterConfig.IR_DEVICE_ADD)
                     .withBoolean("isTS004", false)
@@ -232,9 +212,9 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
     private var tipConnectDialog: TipDialog? = null
 
     private var isCancelUpdateVersion = false
-    // 针对android10 usb连接问题,提供android 27版本
+
     private fun showConnectTip() {
-        // targetSdk高于27且android os为10
+
         if (requireContext().applicationInfo.targetSdkVersion >= Build.VERSION_CODES.P &&
             Build.VERSION.SDK_INT == Build.VERSION_CODES.Q
         ) {
@@ -296,13 +276,8 @@ class IRThermalFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    /**
-     * 动态申请权限
-     */
     private fun initStoragePermission(permissionList: List<String>) {
 
     }
-
-
 
 }

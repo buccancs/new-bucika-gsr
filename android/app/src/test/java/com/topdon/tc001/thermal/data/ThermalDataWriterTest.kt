@@ -52,17 +52,14 @@ class ThermalDataWriterTest {
             includeMetadata = true
         }
         
-        // Start recording
         val started = dataWriter.startRecording("test_session", config)
         assertTrue(started, "Recording should start successfully")
         assertTrue(dataWriter.isRecording(), "Recording should be active")
         
-        // Stop recording
         val filePath = dataWriter.stopRecording()
         assertNotNull(filePath, "File path should be returned")
         assertFalse(dataWriter.isRecording(), "Recording should be stopped")
         
-        // Verify file exists
         val recordingFile = File(filePath)
         assertTrue(recordingFile.exists(), "Recording file should exist")
         assertTrue(recordingFile.length() > 0, "Recording file should not be empty")
@@ -77,10 +74,9 @@ class ThermalDataWriterTest {
         
         dataWriter.startRecording("frame_test", config)
         
-        // Record test frames with varying temperatures
         val testFrames = 10
         repeat(testFrames) { i ->
-            val timestamp = System.currentTimeMillis() + i * 40 // 25 FPS
+            val timestamp = System.currentTimeMillis() + i * 40
             val tempData = generateTestTemperatureData(25.0f + i)
             val metadata = ThermalMetadata().apply {
                 this.timestamp = timestamp
@@ -94,14 +90,12 @@ class ThermalDataWriterTest {
         
         val filePath = dataWriter.stopRecording()
         
-        // Verify recording content
         val recordingFile = File(filePath)
         val lines = recordingFile.readLines()
         
         assertTrue(lines.isNotEmpty(), "Should have header line")
         assertTrue(lines.size > testFrames, "Should have data lines")
         
-        // Verify CSV header contains expected columns
         val header = lines.first()
         assertTrue(header.contains("Timestamp"), "Header should contain Timestamp")
         assertTrue(header.contains("MinTemp"), "Header should contain MinTemp")
@@ -111,7 +105,7 @@ class ThermalDataWriterTest {
     
     @Test
     fun `should export data with analysis correctly`() {
-        // Record some test data first
+
         recordTestSession()
         
         val exportConfig = ExportConfig().apply {
@@ -128,7 +122,6 @@ class ThermalDataWriterTest {
         assertTrue(exportFile.exists(), "Export file should exist")
         assertTrue(exportFile.length() > 0, "Export file should contain data")
         
-        // Verify export contains analysis
         val exportContent = exportFile.readText()
         assertTrue(exportContent.contains("Statistical Analysis") || 
                   exportContent.contains("Temperature Statistics"), 
@@ -137,28 +130,25 @@ class ThermalDataWriterTest {
     
     @Test
     fun `should handle insufficient storage gracefully`() {
-        // Create a config that would require more storage than available
+
         val config = RecordingConfig().apply {
             format = RecordingFormat.CSV
             includeMetadata = true
         }
         
-        // This test simulates insufficient storage by trying to write to a read-only location
-        // In a real scenario, we would mock StatFs to return low available space
         val started = dataWriter.startRecording("storage_test", config)
         
-        // The test should either succeed (if there's enough space) or fail gracefully
         if (!started) {
-            // Verify that recording is not active when start fails
+
             assertFalse(dataWriter.isRecording(), "Recording should not be active if start failed")
         }
     }
     
     @Test
     fun `should validate recording configuration`() {
-        // Test invalid frame rate
+
         val invalidConfig = RecordingConfig().apply {
-            frameRate = -1 // Invalid frame rate
+            frameRate = -1
             format = RecordingFormat.CSV
         }
         
@@ -166,9 +156,8 @@ class ThermalDataWriterTest {
             dataWriter.startRecording("invalid_test", invalidConfig)
         }
         
-        // Test invalid frame rate (too high)
         val invalidConfig2 = RecordingConfig().apply {
-            frameRate = 1000 // Unrealistic frame rate
+            frameRate = 1000
             format = RecordingFormat.CSV
         }
         
@@ -176,14 +165,12 @@ class ThermalDataWriterTest {
             dataWriter.startRecording("invalid_test2", invalidConfig2)
         }
         
-        // Test valid configuration
         val validConfig = RecordingConfig().apply {
             frameRate = 25
             format = RecordingFormat.CSV
             includeMetadata = true
         }
         
-        // Should not throw exception
         val started = dataWriter.startRecording("valid_test", validConfig)
         if (started) {
             dataWriter.stopRecording()
@@ -196,18 +183,14 @@ class ThermalDataWriterTest {
             format = RecordingFormat.CSV
         }
         
-        // Start first recording
         val started1 = dataWriter.startRecording("concurrent_1", config)
         assertTrue(started1, "First recording should start")
         
-        // Try to start second recording
         val started2 = dataWriter.startRecording("concurrent_2", config)
         assertFalse(started2, "Second recording should fail")
         
-        // Stop first recording
         dataWriter.stopRecording()
         
-        // Now second recording should work
         val started3 = dataWriter.startRecording("concurrent_3", config)
         assertTrue(started3, "Recording should work after stopping previous")
         
@@ -231,7 +214,6 @@ class ThermalDataWriterTest {
             val started = dataWriter.startRecording("format_test_$format", config)
             assertTrue(started, "Recording should start with format $format")
             
-            // Record a few frames
             repeat(5) { i ->
                 val tempData = generateTestTemperatureData(25.0f + i)
                 dataWriter.recordThermalFrame(System.currentTimeMillis(), tempData, null)
@@ -254,7 +236,6 @@ class ThermalDataWriterTest {
         
         dataWriter.startRecording("stats_test", config)
         
-        // Record frames with known temperature patterns
         val expectedMinTemp = 20.0f
         val expectedMaxTemp = 30.0f
         val expectedAvgTemp = 25.0f
@@ -264,16 +245,14 @@ class ThermalDataWriterTest {
         
         val filePath = dataWriter.stopRecording()
         
-        // Parse recorded data and verify statistics
         val recordingFile = File(filePath)
         val lines = recordingFile.readLines()
         
         assertTrue(lines.size >= 2, "Should have header and at least one data line")
         
-        val dataLine = lines[1] // First data line after header
+        val dataLine = lines[1]
         val values = dataLine.split(",")
         
-        // Assuming CSV format: Timestamp,MinTemp,MaxTemp,AvgTemp,...
         assertTrue(values.size >= 4, "Should have at least timestamp and temperature stats")
         
         val recordedAvg = values[3].toFloatOrNull()
@@ -289,13 +268,11 @@ class ThermalDataWriterTest {
         
         dataWriter.startRecording("large_test", config)
         
-        // Record many frames to test memory management
         val frameCount = 1000
         repeat(frameCount) { i ->
-            val tempData = generateTestTemperatureData(25.0f + (i % 20)) // Cycling temperatures
+            val tempData = generateTestTemperatureData(25.0f + (i % 20))
             dataWriter.recordThermalFrame(System.currentTimeMillis() + i * 40L, tempData, null)
             
-            // Occasionally yield to prevent test timeout
             if (i % 100 == 0) {
                 Thread.sleep(10)
             }
@@ -309,14 +286,13 @@ class ThermalDataWriterTest {
         val lines = recordingFile.readLines()
         assertTrue(lines.size > frameCount, "Should have recorded all frames plus header")
         
-        // Verify file size is reasonable (not excessively large due to memory issues)
         val fileSizeMB = recordingFile.length() / 1024 / 1024
         assertTrue(fileSizeMB < 100, "File size should be reasonable (< 100MB)")
     }
     
     @Test
     fun `should export with different formats correctly`() {
-        // Record test session
+
         recordTestSession()
         
         val exportFormats = listOf(
@@ -336,7 +312,6 @@ class ThermalDataWriterTest {
             val exportFile = File(exportPath)
             assertTrue(exportFile.exists(), "Export file should exist for format $format")
             
-            // Verify file content based on format
             val content = exportFile.readText()
             when (format) {
                 ExportFormat.CSV -> {
@@ -346,12 +321,11 @@ class ThermalDataWriterTest {
                     assertTrue(content.contains("{") && content.contains("}"), 
                              "JSON should contain object brackets")
                 }
-                else -> { /* Other formats */ }
+                else -> {  }
             }
         }
     }
     
-    // Helper methods
     private fun recordTestSession() {
         val config = RecordingConfig().apply {
             format = RecordingFormat.CSV

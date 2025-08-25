@@ -14,37 +14,18 @@ import com.topdon.thermal.report.bean.ReportTempBean
 import com.topdon.thermal.databinding.ViewReportIrShowBinding
 import com.topdon.thermal.databinding.ItemReportIrShowBinding
 
-/**
- * Professional thermal imaging report IR data preview view component for clinical and research applications.
- *
- * Provides comprehensive temperature measurement visualization supporting:
- * - Full-screen thermal analysis with min/max temperature detection
- * - Multi-point temperature measurement (up to 5 points)
- * - Linear temperature profile analysis (up to 5 lines)
- * - Rectangular region temperature analysis (up to 5 areas)
- * - Industry-standard PDF report generation compatibility
- *
- * This component implements professional thermal data visualization patterns
- * suitable for research documentation and clinical thermal imaging workflows.
- *
- * @constructor Creates thermal IR show view with professional measurement capabilities
- * @param context The application context for resource access
- * @param attrs Optional XML attributes for customization
- * @param defStyleAttr Optional default style attributes
- */
 class ReportIRShowView: LinearLayout {
     companion object {
-        /** Temperature measurement type: Full screen thermal analysis */
+        
         private const val TYPE_FULL = 0
-        /** Temperature measurement type: Point measurement */
+        
         private const val TYPE_POINT = 1
-        /** Temperature measurement type: Linear temperature profile */
+        
         private const val TYPE_LINE = 2
-        /** Temperature measurement type: Rectangular region analysis */
+        
         private const val TYPE_RECT = 3
     }
 
-    /** ViewBinding for the main report IR show layout */
     private val binding: ViewReportIrShowBinding
 
     constructor(context: Context) : this(context, null)
@@ -79,16 +60,6 @@ class ReportIRShowView: LinearLayout {
         }
     }
 
-    /**
-     * Initializes professional temperature measurement title text for specified measurement type.
-     *
-     * Sets up localized title text, average temperature labels, and explanatory text
-     * for different thermal measurement modes (full screen, point, line, rectangular).
-     *
-     * @param itemRoot The root view container for this measurement item
-     * @param type The measurement type (TYPE_FULL, TYPE_POINT, TYPE_LINE, TYPE_RECT)
-     * @param index The measurement index within the type (0-4 for multiple measurements)
-     */
     private fun initTitleText(itemRoot: View, type: Int, index: Int) {
         val itemBinding = ItemReportIrShowBinding.bind(itemRoot)
         
@@ -101,7 +72,7 @@ class ReportIRShowView: LinearLayout {
                 else -> context.getString(R.string.thermal_rect) + "(R)"
             }
             tvAverageTitle.text = when (type) {
-                TYPE_FULL, TYPE_POINT -> "" //全图、点没有平均温
+                TYPE_FULL, TYPE_POINT -> ""
                 TYPE_LINE -> "L${index + 1} " + context.getString(R.string.album_report_mean_temperature)
                 else -> "R${index + 1} " + context.getString(R.string.album_report_mean_temperature)
             }
@@ -114,15 +85,6 @@ class ReportIRShowView: LinearLayout {
         }
     }
 
-    /**
-     * Retrieves comprehensive list of views for professional PDF thermal report generation.
-     *
-     * Collects all visible thermal measurement views including image, temperature ranges,
-     * averages, and explanatory text for industry-standard documentation output.
-     * Supports research-grade thermal analysis with complete measurement traceability.
-     *
-     * @return ArrayList of views ready for PDF conversion in clinical report format
-     */
     fun getPrintViewList(): ArrayList<View> {
         val result = ArrayList<View>()
         
@@ -153,12 +115,6 @@ class ReportIRShowView: LinearLayout {
         return result
     }
 
-    /**
-     * Collects visible measurement child views for PDF generation.
-     *
-     * @param itemRoot The measurement item container
-     * @param resultList The collection to add visible views to
-     */
     private fun getItemChild(itemRoot: View, resultList: ArrayList<View>) {
         if (itemRoot.isVisible) {
             val itemBinding = ItemReportIrShowBinding.bind(itemRoot)
@@ -176,14 +132,6 @@ class ReportIRShowView: LinearLayout {
         }
     }
 
-    /**
-     * Sets professional thermal image drawable with research-grade aspect ratio management.
-     *
-     * Automatically calculates optimal display dimensions based on screen size and image
-     * aspect ratio for consistent thermal data visualization across different devices.
-     *
-     * @param drawable The thermal image drawable to display
-     */
     fun setImageDrawable(drawable: Drawable?) {
         val isLand = (drawable?.intrinsicWidth ?: 0) > (drawable?.intrinsicHeight ?: 0)
         val width = (ScreenUtil.getScreenWidth(context) * (if (isLand) 234 else 175) / 375f).toInt()
@@ -198,17 +146,6 @@ class ReportIRShowView: LinearLayout {
         }
     }
 
-    /**
-     * Refreshes comprehensive thermal measurement data with professional formatting.
-     *
-     * Updates all thermal measurement displays including full-screen analysis, multi-point
-     * measurements, linear profiles, and rectangular regions. Implements industry-standard
-     * thermal data visualization patterns suitable for clinical and research applications.
-     *
-     * @param isFirst Whether this is the first measurement in a series
-     * @param isLast Whether this is the last measurement in a series  
-     * @param reportIRBean The thermal measurement data container with all measurement types
-     */
     fun refreshData(isFirst: Boolean, isLast: Boolean, reportIRBean: ReportIRBean) {
         with(binding) {
             tvHead.isVisible = isFirst
@@ -221,7 +158,6 @@ class ReportIRShowView: LinearLayout {
 
             refreshItem(clFull, reportIRBean.full_graph_data, TYPE_FULL, 0)
 
-            // Process point measurements (up to 5 points)
             val pointList = reportIRBean.point_data
             for (i in pointList.indices) {
                 when (i) {
@@ -233,7 +169,6 @@ class ReportIRShowView: LinearLayout {
                 }
             }
             
-            // Handle point measurement title visibility
             val point1Binding = ItemReportIrShowBinding.bind(clPoint1)
             val point2Binding = ItemReportIrShowBinding.bind(clPoint2)
             val point3Binding = ItemReportIrShowBinding.bind(clPoint3)
@@ -245,7 +180,6 @@ class ReportIRShowView: LinearLayout {
             point4Binding.tvTitle.isVisible = !clPoint1.isVisible && !clPoint2.isVisible && !clPoint3.isVisible
             point5Binding.tvTitle.isVisible = !clPoint1.isVisible && !clPoint2.isVisible && !clPoint3.isVisible && !clPoint4.isVisible
 
-            // Process line measurements (up to 5 lines)
             val lineList = reportIRBean.line_data
             for (i in lineList.indices) {
                 when (i) {
@@ -257,7 +191,6 @@ class ReportIRShowView: LinearLayout {
                 }
             }
             
-            // Handle line measurement title visibility
             val line1Binding = ItemReportIrShowBinding.bind(clLine1)
             val line2Binding = ItemReportIrShowBinding.bind(clLine2)
             val line3Binding = ItemReportIrShowBinding.bind(clLine3)
@@ -269,7 +202,6 @@ class ReportIRShowView: LinearLayout {
             line4Binding.tvTitle.isVisible = !clLine1.isVisible && !clLine2.isVisible && !clLine3.isVisible
             line5Binding.tvTitle.isVisible = !clLine1.isVisible && !clLine2.isVisible && !clLine3.isVisible && !clLine4.isVisible
 
-            // Process rectangular measurements (up to 5 rectangles)  
             val rectList = reportIRBean.surface_data
             for (i in rectList.indices) {
                 when (i) {
@@ -281,7 +213,6 @@ class ReportIRShowView: LinearLayout {
                 }
             }
             
-            // Handle rectangular measurement title visibility
             val rect1Binding = ItemReportIrShowBinding.bind(clRect1)
             val rect2Binding = ItemReportIrShowBinding.bind(clRect2)
             val rect3Binding = ItemReportIrShowBinding.bind(clRect3)
@@ -293,7 +224,6 @@ class ReportIRShowView: LinearLayout {
             rect4Binding.tvTitle.isVisible = !clRect1.isVisible && !clRect2.isVisible && !clRect3.isVisible
             rect5Binding.tvTitle.isVisible = !clRect1.isVisible && !clRect2.isVisible && !clRect3.isVisible && !clRect4.isVisible
 
-            // Handle bottom line visibility for last measurement
             when {
                 rectList.isNotEmpty() -> {
                     when (rectList.size) {
@@ -330,14 +260,6 @@ class ReportIRShowView: LinearLayout {
         }
     }
 
-    /**
-     * Hides the last separator line for professional report formatting.
-     *
-     * @param isLast Whether this is the last measurement item
-     * @param itemRoot The measurement item container
-     * @param tempBean The temperature data bean
-     * @param type The measurement type
-     */
     private fun hideLastLine(isLast: Boolean, itemRoot: View, tempBean: ReportTempBean?, type: Int) {
         if (tempBean == null) return
         
@@ -369,17 +291,6 @@ class ReportIRShowView: LinearLayout {
         }
     }
 
-    /**
-     * Refreshes individual thermal measurement item with professional data formatting.
-     *
-     * Updates temperature ranges, averages, and explanatory text for specific measurement types.
-     * Implements industry-standard thermal data presentation suitable for clinical documentation.
-     *
-     * @param itemRoot The measurement item container view
-     * @param tempBean The temperature measurement data
-     * @param type The measurement type (full screen, point, line, rectangle)
-     * @param index The measurement index within the type
-     */
     private fun refreshItem(itemRoot: View, tempBean: ReportTempBean?, type: Int, index: Int) {
         if (tempBean == null) {
             itemRoot.isVisible = false
@@ -396,7 +307,6 @@ class ReportIRShowView: LinearLayout {
 
         val itemBinding = ItemReportIrShowBinding.bind(itemRoot)
         
-        // Determine appropriate title and value text
         val rangeTitle = if (type == TYPE_POINT) {
             "P${index + 1} " + context.getString(R.string.chart_temperature)
         } else {
@@ -426,7 +336,6 @@ class ReportIRShowView: LinearLayout {
             }
         }
 
-        // Update UI elements with professional thermal data
         with(itemBinding) {
             tvRangeTitle.isVisible = if (type == TYPE_POINT) tempBean.isTempOpen() else tempBean.isMinOpen() || tempBean.isMaxOpen()
             tvRangeValue.isVisible = if (type == TYPE_POINT) tempBean.isTempOpen() else tempBean.isMinOpen() || tempBean.isMaxOpen()

@@ -9,10 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.topdon.lib.ui.R
 
-/**
- * @author: CaiSongL
- * @date: 2023/4/1 13:48
- */
 class CameraItemAdapter(context: Context) : RecyclerView.Adapter<CameraItemAdapter.ViewHolder>() {
 
     val data: List<String> = listOf(
@@ -63,7 +59,7 @@ class CameraItemAdapter(context: Context) : RecyclerView.Adapter<CameraItemAdapt
 
         fun hideText() {
             textView.setTextColor(ContextCompat.getColor(textView.context, R.color.ui_main_custom_color))
-            //            textView.setColorFilter(ContextCompat.getColor(imageView.getContext(), R.color.Grey700));
+
             textView.animate().scaleX(1f).scaleY(1f)
                 .setDuration(100)
                 .start()

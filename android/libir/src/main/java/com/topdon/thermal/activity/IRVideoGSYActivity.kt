@@ -32,70 +32,19 @@ import org.greenrobot.eventbus.EventBus
 import tv.danmaku.ijk.media.exo2.Exo2PlayerManager
 import java.io.File
 
-/**
- * Professional Video Player Activity for Thermal IR Video Playback
- * 
- * This activity provides comprehensive video playback capabilities for thermal IR videos
- * captured by TC001 devices, with support for both local and remote TS004 video files.
- * Essential for reviewing thermal video recordings in research and clinical applications.
- * 
- * **Video Playback Features:**
- * - Professional GSY video player integration with ExoPlayer backend
- * - Support for both local files and remote TS004 device streaming
- * - Full-screen video playback with optimized thermal video rendering
- * - Professional video controls with research-grade playback accuracy
- * - Automatic file format detection and appropriate codec selection
- * 
- * **Gallery Management:**
- * - Download remote videos for offline analysis and archival
- * - Share thermal videos with research collaborators
- * - Professional deletion with local/remote synchronization options
- * - File information display including size, date, and storage location
- * - Integration with system media scanner for gallery visibility
- * 
- * **Research Application Features:**
- * - Thermal video archival system for research data management
- * - Professional metadata display for research documentation
- * - Integrated download management for research workflow efficiency
- * - Cross-platform sharing capabilities for research collaboration
- * 
- * **Device Integration:**
- * - TS004 remote device video streaming and management
- * - TC001 local video file playback and organization
- * - Professional loading indicators for research application standards
- * - Real-time file status tracking and synchronization
- * 
- * @author BucikaGSR Development Team
- * @since 2024.1.0
- * @see GalleryBean For video metadata and file information structure
- * @see TS004Repository For remote video download and management operations
- */
 @Route(path = RouterConfig.IR_VIDEO_GSY)
 class IRVideoGSYActivity : BaseActivity() {
 
-    /**
-     * ViewBinding instance for type-safe view access
-     * Replaces deprecated Kotlin synthetics with modern binding pattern
-     */
     private lateinit var binding: ActivityIrVideoGsyBinding
 
-    /**
-     * Flag indicating whether this video is from a remote TS004 device
-     * - true: Video from remote TS004 device (requires download for offline access)
-     * - false: Local video file stored on device (immediate playback available)
-     */
     private var isRemote = false
     
-    /**
-     * Video metadata containing file path, download status, and display information
-     * Essential for managing thermal video files in research workflows
-     */
     private lateinit var data: GalleryBean
     
     override fun initContentView(): Int {
         binding = ActivityIrVideoGsyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        return 0 // ViewBinding handles layout inflation
+        return 0
     }
 
     override fun initView() {
@@ -104,7 +53,7 @@ class IRVideoGSYActivity : BaseActivity() {
         isRemote = intent.getBooleanExtra("isRemote", false)
         data = intent.getParcelableExtra("data") ?: throw NullPointerException("传递 data")
 
-        binding.clBottom.isVisible = isRemote //查看远端时底部才有3个按钮
+        binding.clBottom.isVisible = isRemote
 
         if (!isRemote) {
             binding.titleView.setRightDrawable(R.drawable.ic_toolbar_info_svg)
@@ -150,15 +99,15 @@ class IRVideoGSYActivity : BaseActivity() {
         GSYVideoOptionBuilder()
             .setUrl(url)
             .build(gsy_play)
-        //界面设置
-        binding.gsyPlay.isNeedShowWifiTip = false //不显示消耗流量弹框
+
+        binding.gsyPlay.isNeedShowWifiTip = false
         binding.gsyPlay.titleTextView.visibility = View.GONE
         binding.gsyPlay.backButton.visibility = View.GONE
         binding.gsyPlay.fullscreenButton.visibility = View.GONE
     }
 
     private fun actionDownload(isToShare: Boolean) {
-        if (data.hasDownload) {//已下载
+        if (data.hasDownload) {
             if (isToShare) {
                 actionShare()
             }
@@ -191,7 +140,7 @@ class IRVideoGSYActivity : BaseActivity() {
         str.append(getString(R.string.detail_date)).append("\n")
         str.append(TimeTool.showDateType(data.timeMillis)).append("\n\n")
         str.append(getString(R.string.detail_info)).append("\n")
-//        str.append("尺寸: ").append(whStr).append("\n")
+
         str.append("${getString(R.string.detail_len)}: ").append(sizeStr).append("\n")
         str.append("${getString(R.string.detail_path)}: ").append(data.path).append("\n")
         TipDialog.Builder(this)

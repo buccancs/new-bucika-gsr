@@ -13,10 +13,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
-/**
- * Comprehensive GSR Data Writing Service
- * Handles file system integration for GSR data export and storage
- */
 class GSRDataWriter private constructor(private val context: Context) {
     
     companion object {
@@ -40,14 +36,12 @@ class GSRDataWriter private constructor(private val context: Context) {
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
     private val timestampFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
     
-    // Recording state
     private var isRecordingData = false
     private var currentRecordingFile: File? = null
     private var currentRecordingWriter: FileWriter? = null
     private var samplesWritten = 0L
     private var recordingStartTime = 0L
     
-    // Listeners
     private var dataWriteListener: DataWriteListener? = null
     
     interface DataWriteListener {
@@ -57,16 +51,10 @@ class GSRDataWriter private constructor(private val context: Context) {
         fun onWriteError(error: String)
     }
     
-    /**
-     * Set data write listener
-     */
     fun setDataWriteListener(listener: DataWriteListener) {
         this.dataWriteListener = listener
     }
     
-    /**
-     * Start recording GSR data to file
-     */
     fun startRecording(sessionName: String? = null): Boolean {
         if (isRecordingData) {
             XLog.w(TAG, "Recording already in progress")
@@ -85,7 +73,6 @@ class GSRDataWriter private constructor(private val context: Context) {
             samplesWritten = 0L
             recordingStartTime = System.currentTimeMillis()
             
-            // Start background writing coroutine
             startDataWritingCoroutine()
             
             dataWriteListener?.onRecordingStarted(fileName, currentRecordingFile!!.absolutePath)
@@ -101,9 +88,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Stop recording GSR data
-     */
     fun stopRecording(): Boolean {
         if (!isRecordingData) {
             XLog.w(TAG, "No recording in progress")
@@ -113,7 +97,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         try {
             isRecordingData = false
             
-            // Process any remaining data in queue
             runBlocking {
                 processDataQueue()
             }
@@ -136,15 +119,11 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Add GSR data to writing queue
-     */
     fun addGSRData(data: ProcessedGSRData) {
         if (!isRecordingData) return
         
         dataQueue.offer(data)
         
-        // Process queue if it's getting full
         if (dataQueue.size >= BUFFER_SIZE) {
             coroutineScope.launch {
                 processDataQueue()
@@ -152,9 +131,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Export existing GSR data to CSV file
-     */
     suspend fun exportGSRDataToFile(
         gsrData: List<ProcessedGSRData>,
         fileName: String? = null,
@@ -167,14 +143,13 @@ class GSRDataWriter private constructor(private val context: Context) {
         
         try {
             FileWriter(exportFile).use { writer ->
-                // Write header
+
                 if (includeAnalysis) {
                     writer.write("Timestamp,DateTime,Raw_GSR_µS,Filtered_GSR_µS,Raw_Temp_°C,Filtered_Temp_°C,GSR_Derivative,GSR_Variability,Temp_Variability,Signal_Quality,Has_Artifact,Is_Valid,Sample_Index\n")
                 } else {
                     writer.write("Timestamp,DateTime,GSR_µS,Temperature_°C\n")
                 }
                 
-                // Write data
                 gsrData.forEach { data ->
                     val dateTime = timestampFormatter.format(Date(data.timestamp))
                     
@@ -195,9 +170,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Export GSR statistics to file
-     */
     suspend fun exportStatisticsToFile(
         statistics: GSRAPIHelper.GSRStatistics,
         analysisData: Map<String, Any> = emptyMap(),
@@ -241,9 +213,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Get list of recorded GSR files
-     */
     fun getRecordedFiles(): List<File> {
         val gsrDataDir = getGSRDataDirectory()
         return gsrDataDir.listFiles { file ->
@@ -251,9 +220,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         }?.toList() ?: emptyList()
     }
     
-    /**
-     * Delete recorded file
-     */
     fun deleteRecordedFile(fileName: String): Boolean {
         val gsrDataDir = getGSRDataDirectory()
         val file = File(gsrDataDir, fileName)
@@ -272,9 +238,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Get GSR data directory size
-     */
     fun getDataDirectorySize(): Long {
         val gsrDataDir = getGSRDataDirectory()
         return gsrDataDir.walkTopDown()
@@ -283,9 +246,6 @@ class GSRDataWriter private constructor(private val context: Context) {
             .sum()
     }
     
-    /**
-     * Clean up old files (older than specified days)
-     */
     fun cleanupOldFiles(olderThanDays: Int = 30): Int {
         val gsrDataDir = getGSRDataDirectory()
         val cutoffTime = System.currentTimeMillis() - (olderThanDays * 24 * 60 * 60 * 1000L)
@@ -335,7 +295,7 @@ class GSRDataWriter private constructor(private val context: Context) {
         coroutineScope.launch {
             while (isRecordingData) {
                 processDataQueue()
-                delay(100) // Check queue every 100ms
+                delay(100)
             }
         }
     }
@@ -354,7 +314,6 @@ class GSRDataWriter private constructor(private val context: Context) {
                 samplesWritten++
                 processedCount++
                 
-                // Periodic flush and size update
                 if (samplesWritten % 100 == 0L) {
                     writer.flush()
                     val fileSize = currentRecordingFile?.length() ?: 0L
@@ -368,7 +327,6 @@ class GSRDataWriter private constructor(private val context: Context) {
             }
         }
         
-        // Final flush
         try {
             writer.flush()
         } catch (e: IOException) {
@@ -389,14 +347,8 @@ class GSRDataWriter private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Check if currently recording
-     */
     fun isRecording(): Boolean = isRecordingData
     
-    /**
-     * Get current recording file info
-     */
     fun getCurrentRecordingInfo(): RecordingInfo? {
         return if (isRecordingData && currentRecordingFile != null) {
             RecordingInfo(
@@ -417,9 +369,6 @@ class GSRDataWriter private constructor(private val context: Context) {
         val fileSize: Long
     )
     
-    /**
-     * Cleanup resources
-     */
     fun cleanup() {
         if (isRecordingData) {
             stopRecording()

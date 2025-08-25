@@ -11,10 +11,6 @@ import com.topdon.lib.core.bean.tools.ThermalBean
 import com.topdon.lib.core.db.entity.ThermalEntity
 import com.topdon.thermal.R
 
-/**
- * 简化的监控图表视图 - 图表功能已移除
- * Simple monitor chart view - Chart functionality removed
- */
 class ChartMonitorView : View {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -40,19 +36,18 @@ class ChartMonitorView : View {
         canvas.drawText("Monitor chart functionality removed", centerX, centerY + 60f, paint)
     }
 
-    // 保持原有的公共方法以防其他代码调用
     fun addEntry(data: ThermalBean?) {
-        // 空实现 - 图表功能已移除
+
         invalidate()
     }
 
     fun clearData() {
-        // 空实现 - 图表功能已移除
+
         invalidate()
     }
 
     fun setOnChartSlidingListener(listener: OnChartSlidingListener?) {
-        // 空实现 - 图表功能已移除
+
     }
 
     interface OnChartSlidingListener {

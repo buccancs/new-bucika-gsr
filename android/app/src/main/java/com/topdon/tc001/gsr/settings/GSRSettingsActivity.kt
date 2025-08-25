@@ -14,27 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-/**
- * Industry-standard GSR Settings Activity for BucikaGSR research application.
- * 
- * Provides comprehensive configuration interface for Shimmer GSR device settings,
- * data export capabilities, and file management functionality with modern ViewBinding
- * patterns and professional error handling.
- * 
- * Features:
- * - Real-time Shimmer device configuration
- * - Professional data export to CSV format
- * - Comprehensive file management and cleanup
- * - Statistical analysis and reporting
- * - Test recording capabilities
- * 
- * @author BucikaGSR Team
- * @since 2024.1.0
- * @see BaseActivity
- * @see ShimmerSensorPanel
- * @see GSRManager
- * @see GSRDataWriter
- */
 class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurationListener, GSRDataWriter.DataWriteListener {
     
     companion object {
@@ -50,28 +29,20 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
     
     override fun initContentView(): Int = R.layout.activity_gsr_settings
     
-    /**
-     * Initialize ViewBinding and configure UI components.
-     * Sets up professional interface with comprehensive error handling.
-     */
     override fun initView() {
         binding = ActivityGsrSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        // Configure title bar with professional styling
         binding.titleView.setTitle("GSR Settings & Configuration")
         binding.titleView.setLeftClickListener { finish() }
         
-        // Initialize core components with error handling
         try {
             gsrManager = GSRManager.getInstance(this)
             gsrDataWriter = GSRDataWriter.getInstance(this)
             
-            // Setup shimmer sensor panel with ViewBinding
             shimmerSensorPanel = binding.shimmerSensorPanel
             shimmerSensorPanel.setConfigurationListener(this)
             
-            // Setup data writer listener for real-time updates
             gsrDataWriter.setDataWriteListener(this)
             
             setupDataManagementSection()
@@ -87,7 +58,7 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
     }
     
     override fun initData() {
-        // Load current configuration and display initial status
+
         try {
             binding.tvConfigStatus.text = "Configuration ready"
             binding.tvDataStatus.text = "Data management ready"
@@ -97,56 +68,42 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
 
-    /**
-     * Configure data management UI with professional click handlers.
-     * Sets up export, testing, and file management functionality.
-     */
     private fun setupDataManagementSection() {
         with(binding) {
-            // Export current GSR data
+
             btnExportCurrentData.setOnClickListener {
                 exportCurrentGSRData()
             }
             
-            // Export statistical analysis
             btnExportStatistics.setOnClickListener {
                 exportGSRStatistics()
             }
             
-            // View recorded files with metadata
             btnViewRecordedFiles.setOnClickListener {
                 viewRecordedFiles()
             }
             
-            // Cleanup old files with confirmation
             btnCleanupOldFiles.setOnClickListener {
                 cleanupOldFiles()
             }
             
-            // Test data writing functionality
             btnTestDataWriting.setOnClickListener {
                 testDataWriting()
             }
         }
     }
     
-    /**
-     * Export current GSR data to CSV format with professional error handling.
-     * Provides real-time status updates and comprehensive feedback to user.
-     */
     private fun exportCurrentGSRData() {
         coroutineScope.launch {
             try {
                 binding.tvDataStatus.text = "Exporting GSR data..."
                 
-                // Get current GSR data from API helper
                 val gsrAPIHelper = com.topdon.tc001.gsr.api.GSRAPIHelper.getInstance(this@GSRSettingsActivity)
                 val csvData = gsrAPIHelper.exportGSRDataToCSV()
                 
-                // Convert CSV string to ProcessedGSRData list for file export
                 if (csvData.isNotEmpty()) {
                     val filePath = gsrDataWriter.exportGSRDataToFile(
-                        emptyList(), // Simplified export for demonstration
+                        emptyList(),
                         "manual_export_${System.currentTimeMillis()}.csv"
                     )
                     
@@ -165,10 +122,6 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Export comprehensive GSR statistics and analysis data.
-     * Includes device configuration, recording status, and file system metrics.
-     */
     private fun exportGSRStatistics() {
         coroutineScope.launch {
             try {
@@ -177,7 +130,6 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
                 val gsrAPIHelper = com.topdon.tc001.gsr.api.GSRAPIHelper.getInstance(this@GSRSettingsActivity)
                 val statistics = gsrAPIHelper.getGSRStatistics()
                 
-                // Create comprehensive analysis data
                 val analysisData = mapOf(
                     "Configuration" to shimmerSensorPanel.getConfiguration().toString(),
                     "Connected Device" to (gsrManager.getConnectedDeviceName() ?: "None"),
@@ -198,10 +150,6 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Display comprehensive recorded files information with metadata.
-     * Shows file sizes, modification dates, and organized listing.
-     */
     private fun viewRecordedFiles() {
         val recordedFiles = gsrDataWriter.getRecordedFiles()
         
@@ -220,32 +168,23 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Clean up old files with professional confirmation and feedback.
-     * Removes files older than specified days and updates UI accordingly.
-     */
     private fun cleanupOldFiles() {
         val deletedCount = gsrDataWriter.cleanupOldFiles(DEFAULT_CLEANUP_DAYS)
         
         binding.tvDataStatus.text = "Cleaned up $deletedCount old files"
         Toast.makeText(this, "Cleaned up $deletedCount old files", Toast.LENGTH_SHORT).show()
         
-        // Refresh file list display
         updateFileManagementInfo()
     }
     
-    /**
-     * Test data writing functionality with real-time status updates.
-     * Allows starting/stopping test recordings with immediate feedback.
-     */
     private fun testDataWriting() {
         if (gsrDataWriter.isRecording()) {
-            // Stop test recording
+
             gsrDataWriter.stopRecording()
             binding.btnTestDataWriting.text = "Test Data Writing"
             Toast.makeText(this, "Test recording stopped", Toast.LENGTH_SHORT).show()
         } else {
-            // Start test recording
+
             if (gsrDataWriter.startRecording("test_session")) {
                 binding.btnTestDataWriting.text = "Stop Test Recording"
                 Toast.makeText(this, "Test recording started", Toast.LENGTH_SHORT).show()
@@ -255,10 +194,6 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Update file management information display with current metrics.
-     * Shows file count, total size, and detailed file listings.
-     */
     private fun updateFileManagementInfo() {
         val recordedFiles = gsrDataWriter.getRecordedFiles()
         val totalSizeKB = gsrDataWriter.getDataDirectorySize() / 1024
@@ -269,14 +204,8 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         viewRecordedFiles()
     }
     
-    // ShimmerConfigurationListener implementation
-    /**
-     * Handle real-time configuration changes with live preview updates.
-     * 
-     * @param config Updated Shimmer sensor configuration
-     */
     override fun onConfigurationChanged(config: ShimmerSensorPanel.ShimmerConfiguration) {
-        // Professional real-time configuration preview
+
         val configText = """
             Sampling Rate: ${config.samplingRate} Hz
             GSR: ${if (config.gsrEnabled) "Enabled" else "Disabled"}
@@ -289,16 +218,11 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         XLog.d(TAG, "Configuration changed: $config")
     }
     
-    /**
-     * Apply configuration changes to connected device with comprehensive error handling.
-     * 
-     * @param config Applied Shimmer sensor configuration
-     */
     override fun onConfigurationApplied(config: ShimmerSensorPanel.ShimmerConfiguration) {
-        // Apply configuration to GSR manager if connected
+
         if (gsrManager.isConnected()) {
             try {
-                // Professional device configuration application
+
                 binding.tvConfigStatus.text = "Configuration applied (device connected)"
                 Toast.makeText(this, "Configuration applied successfully", Toast.LENGTH_SHORT).show()
                 
@@ -315,22 +239,12 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         XLog.i(TAG, "Configuration applied: $config")
     }
     
-    /**
-     * Handle configuration reset to default values.
-     */
     override fun onConfigurationReset() {
         binding.tvConfigStatus.text = "Configuration reset to defaults"
         Toast.makeText(this, "Configuration reset to defaults", Toast.LENGTH_SHORT).show()
         XLog.i(TAG, "Configuration reset to defaults")
     }
     
-    // GSRDataWriter.DataWriteListener implementation
-    /**
-     * Handle recording start events with UI updates.
-     * 
-     * @param fileName Recording file name
-     * @param filePath Full file path
-     */
     override fun onRecordingStarted(fileName: String, filePath: String) {
         runOnUiThread {
             binding.tvRecordingStatus.text = "Recording to: $fileName"
@@ -338,25 +252,12 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Handle real-time data write updates.
-     * 
-     * @param samplesWritten Number of samples written to file
-     * @param fileSize Current file size in bytes
-     */
     override fun onDataWritten(samplesWritten: Long, fileSize: Long) {
         runOnUiThread {
             binding.tvRecordingStatus.text = "Recording: $samplesWritten samples, ${fileSize / 1024} KB"
         }
     }
     
-    /**
-     * Handle recording stop events with final statistics.
-     * 
-     * @param fileName Final recording file name
-     * @param totalSamples Total samples recorded
-     * @param fileSize Final file size in bytes
-     */
     override fun onRecordingStopped(fileName: String, totalSamples: Long, fileSize: Long) {
         runOnUiThread {
             binding.tvRecordingStatus.text = "Last recording: $fileName ($totalSamples samples, ${fileSize / 1024} KB)"
@@ -365,11 +266,6 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Handle data write errors with user notification.
-     * 
-     * @param error Error message describing the issue
-     */
     override fun onWriteError(error: String) {
         runOnUiThread {
             binding.tvDataStatus.text = "Write error: $error"
@@ -377,14 +273,10 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
     }
     
-    /**
-     * Clean up resources when activity is destroyed.
-     * Note: GSRDataWriter is a singleton and should not be cleaned up here.
-     */
     override fun onDestroy() {
         super.onDestroy()
         coroutineScope.launch { 
-            // Cancel any ongoing operations
+
         }
         XLog.i(TAG, "GSR Settings Activity destroyed")
     }

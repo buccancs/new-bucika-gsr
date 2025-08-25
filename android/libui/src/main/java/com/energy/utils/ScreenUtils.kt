@@ -13,19 +13,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.PopupWindow
 
-/*
- * @Description:
- * @Author:         brilliantzhao
- * @CreateDate:     2022.9.8 10:25
- * @UpdateUser:
- * @UpdateDate:     2022.9.8 10:25
- * @UpdateRemark:
- */
 object ScreenUtils {
 
-    /**
-     * 获得屏幕高度
-     */
     fun getScreenWidth(context: Context): Int {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val outMetrics = DisplayMetrics()
@@ -33,9 +22,6 @@ object ScreenUtils {
         return outMetrics.widthPixels
     }
 
-    /**
-     * 获得屏幕宽度
-     */
     fun getScreenHeight(context: Context): Int {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val outMetrics = DisplayMetrics()
@@ -43,9 +29,6 @@ object ScreenUtils {
         return outMetrics.heightPixels
     }
 
-    /**
-     * 获得状态栏的高度
-     */
     fun getStatusHeight(context: Context): Int {
         var statusHeight = -1
         try {
@@ -59,9 +42,6 @@ object ScreenUtils {
         return statusHeight
     }
 
-    /**
-     * 获取当前屏幕截图，包含状态栏
-     */
     fun snapShotWithStatusBar(activity: Activity): Bitmap? {
         val view = activity.window.decorView
         view.isDrawingCacheEnabled = true
@@ -74,16 +54,10 @@ object ScreenUtils {
         return bp
     }
 
-    /**
-     * 得到设备的dpi
-     */
     fun getScreenDensityDpi(context: Context): Int {
         return context.resources.displayMetrics.densityDpi
     }
 
-    /**
-     * 获取当前屏幕截图，不包含状态栏
-     */
     fun snapShotWithoutStatusBar(activity: Activity): Bitmap? {
         val view = activity.window.decorView
         view.isDrawingCacheEnabled = true
@@ -100,18 +74,12 @@ object ScreenUtils {
         return bp
     }
 
-    /**
-     * 获取 虚拟按键的高度
-     */
     fun getBottomStatusHeight(context: Context): Int {
         val totalHeight = getDpi(context)
         val contentHeight = getScreenHeight(context)
         return totalHeight - contentHeight
     }
 
-    /**
-     * 获取屏幕原始尺寸高度，包括虚拟功能键高度
-     */
     fun getDpi(context: Context): Int {
         var dpi = 0
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -128,11 +96,6 @@ object ScreenUtils {
         return dpi
     }
 
-    /**
-     * dp转px
-     * 16dp - 48px
-     * 17dp - 51px
-     */
     fun dp2px(dpValue: Float): Int {
         val scale = Resources.getSystem().displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
@@ -143,9 +106,6 @@ object ScreenUtils {
         return (spValue * fontScale + 0.5f).toInt()
     }
 
-    /**
-     * 屏幕密度比例
-     */
     fun getScreenDensity(context: Context): Float {
         return context.resources.displayMetrics.density
     }

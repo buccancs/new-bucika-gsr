@@ -8,11 +8,6 @@ import org.robolectric.annotation.Config
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Comprehensive test suite for TemperatureOverlayManager
- * Tests thermal data processing, overlay generation, and GSR integration
- * Critical for improving test coverage from 84% to 90% target
- */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [29])
 class TemperatureOverlayManagerTest {
@@ -26,13 +21,13 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testInitialization() {
-        // Test manager initialization
+
         Assert.assertNotNull("TemperatureOverlayManager should initialize", temperatureOverlayManager)
     }
 
     @Test
     fun testTemperatureFormatting() {
-        // Test temperature value formatting
+
         val testTemperature = 36.5f
         val formattedTemp = temperatureOverlayManager.formatTemperature(testTemperature)
         
@@ -61,7 +56,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testTimestampGeneration() {
-        // Test timestamp generation for overlays
+
         val timestamp = System.currentTimeMillis()
         val formattedTime = temperatureOverlayManager.formatTimestamp(timestamp)
         
@@ -71,7 +66,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testOverlayBoundsCalculation() {
-        // Test overlay bounds calculation for different screen sizes
+
         val screenWidth = 1920
         val screenHeight = 1080
         
@@ -85,7 +80,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testCrosshairPositioning() {
-        // Test crosshair positioning for temperature measurement points
+
         val centerX = 960f
         val centerY = 540f
         val crosshairSize = 50f
@@ -98,7 +93,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testMultipleTemperaturePoints() {
-        // Test handling multiple temperature measurement points
+
         val temperaturePoints = listOf(
             TemperaturePoint(100f, 100f, 36.5f),
             TemperaturePoint(200f, 200f, 37.2f),
@@ -112,7 +107,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testGSRDataIntegration() {
-        // Test integration with GSR data in overlays
+
         val gsrData = GSROverlayData(
             gsrValue = 450.5,
             skinTemperature = 32.1f,
@@ -130,7 +125,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testColorTemperatureMapping() {
-        // Test color mapping based on temperature ranges
+
         val temperatures = listOf(20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f)
         
         temperatures.forEach { temp ->
@@ -143,7 +138,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testHeatmapColorScale() {
-        // Test heatmap color scale generation
+
         val minTemp = 20.0f
         val maxTemp = 50.0f
         val testTemp = 35.0f
@@ -152,7 +147,6 @@ class TemperatureOverlayManagerTest {
         
         Assert.assertNotEquals("Heatmap color should be generated", Color.TRANSPARENT, color)
         
-        // Test boundary conditions
         val minColor = temperatureOverlayManager.getHeatmapColor(minTemp, minTemp, maxTemp)
         val maxColor = temperatureOverlayManager.getHeatmapColor(maxTemp, minTemp, maxTemp)
         
@@ -162,7 +156,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testOverlayTextMeasurement() {
-        // Test text measurement for proper overlay positioning
+
         val testText = "36.5°C"
         val paint = Paint().apply {
             textSize = 36f
@@ -178,7 +172,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testBackgroundPadding() {
-        // Test background padding calculation for text overlays
+
         val textBounds = Rect(0, 0, 100, 30)
         val padding = 10
         
@@ -192,7 +186,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testOverlayVisibilityControl() {
-        // Test overlay visibility control
+
         Assert.assertTrue("Temperature overlay should be visible by default", 
             temperatureOverlayManager.isTemperatureOverlayVisible())
         
@@ -207,7 +201,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testOverlayConfiguration() {
-        // Test overlay configuration options
+
         val config = OverlayConfiguration(
             temperatureUnit = TemperatureUnit.CELSIUS,
             showCrosshair = true,
@@ -227,7 +221,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testDataValidation() {
-        // Test validation of temperature and GSR data
+
         val validTemperature = 36.5f
         val invalidTemperature = -300f
         
@@ -247,7 +241,7 @@ class TemperatureOverlayManagerTest {
 
     @Test
     fun testPerformanceOptimization() {
-        // Test performance with rapid overlay generation
+
         val startTime = System.nanoTime()
         val iterations = 1000
         
@@ -263,17 +257,15 @@ class TemperatureOverlayManagerTest {
         val endTime = System.nanoTime()
         val averageTime = (endTime - startTime) / iterations
         
-        // Should complete overlay generation efficiently
         Assert.assertTrue("Overlay generation should be efficient", 
-            averageTime < 1_000_000L) // Less than 1ms per overlay
+            averageTime < 1_000_000L)
     }
 
     @Test
     fun testMemoryManagement() {
-        // Test memory management during overlay operations
+
         val initialMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         
-        // Generate many overlays to test memory usage
         repeat(100) { index ->
             val points = (0 until 10).map { 
                 TemperaturePoint(it * 50f, it * 40f, 20f + it)
@@ -281,20 +273,18 @@ class TemperatureOverlayManagerTest {
             temperatureOverlayManager.createMultiPointOverlay(points, 1920, 1080)
         }
         
-        // Force garbage collection
         System.gc()
         Thread.sleep(100)
         
         val afterOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         val memoryGrowth = afterOperations - initialMemory
         
-        // Memory growth should be reasonable
-        Assert.assertTrue("Memory growth should be controlled", memoryGrowth < 50_000_000L) // Less than 50MB
+        Assert.assertTrue("Memory growth should be controlled", memoryGrowth < 50_000_000L)
     }
 
     @Test
     fun testErrorHandling() {
-        // Test error handling with invalid inputs
+
         val result1 = temperatureOverlayManager.createSinglePointOverlay(null, 800, 600)
         Assert.assertNull("Should handle null temperature point gracefully", result1)
         
@@ -305,7 +295,6 @@ class TemperatureOverlayManagerTest {
         Assert.assertEquals("Should handle infinite temperature", Color.RED, result3)
     }
 
-    // Data classes for testing
     data class TemperaturePoint(
         val x: Float,
         val y: Float,

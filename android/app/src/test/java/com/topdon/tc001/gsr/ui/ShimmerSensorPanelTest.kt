@@ -13,10 +13,6 @@ import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/**
- * Comprehensive test suite for ShimmerSensorPanel
- * Tests UI configuration, Settings API connectivity, and SharedPreferences integration
- */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29])
 class ShimmerSensorPanelTest {
@@ -41,7 +37,6 @@ class ShimmerSensorPanelTest {
         MockitoAnnotations.openMocks(this)
         realContext = ApplicationProvider.getApplicationContext()
         
-        // Mock SharedPreferences behavior
         whenever(mockContext.getSharedPreferences(any(), any())).thenReturn(mockSharedPreferences)
         whenever(mockSharedPreferences.edit()).thenReturn(mockEditor)
         whenever(mockEditor.putString(any(), any())).thenReturn(mockEditor)
@@ -49,7 +44,6 @@ class ShimmerSensorPanelTest {
         whenever(mockEditor.putInt(any(), any())).thenReturn(mockEditor)
         whenever(mockEditor.commit()).thenReturn(true)
         
-        // Setup default preference values
         whenever(mockSharedPreferences.getInt("sampling_rate", 128)).thenReturn(128)
         whenever(mockSharedPreferences.getBoolean("gsr_enabled", true)).thenReturn(true)
         whenever(mockSharedPreferences.getBoolean("temperature_enabled", true)).thenReturn(true)
@@ -64,22 +58,21 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testInitialization() {
-        // Test that panel initializes correctly
+
         Assert.assertNotNull("Sensor panel should be initialized", sensorPanel)
     }
 
     @Test
     fun testSamplingRateOptions() {
-        // Test sampling rate configuration options
+
         val expectedRates = arrayOf(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024)
         
-        // This would test the spinner adapter content
         Assert.assertTrue("Should support standard sampling rates", expectedRates.contains(128))
     }
 
     @Test
     fun testGSRRangeOptions() {
-        // Test GSR range configuration options  
+
         val expectedRanges = arrayOf("40kΩ", "287kΩ", "1MΩ", "3.3MΩ")
         
         Assert.assertTrue("Should support standard GSR ranges", expectedRanges.isNotEmpty())
@@ -87,7 +80,7 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testConfigurationGeneration() {
-        // Test configuration object generation
+
         val config = sensorPanel.generateConfiguration()
         
         Assert.assertNotNull("Should generate valid configuration", config)
@@ -96,7 +89,7 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testConfigurationValidation() {
-        // Test configuration validation
+
         val validConfig = createValidConfiguration()
         val isValid = sensorPanel.validateConfiguration(validConfig)
         
@@ -105,7 +98,7 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testInvalidConfigurationHandling() {
-        // Test handling of invalid configurations
+
         val invalidConfig = createInvalidConfiguration()
         val isValid = sensorPanel.validateConfiguration(invalidConfig)
         
@@ -114,7 +107,7 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testSensorBitmapGeneration() {
-        // Test Shimmer sensor bitmap generation
+
         val bitmap = sensorPanel.generateSensorBitmap()
         
         Assert.assertTrue("Should generate valid sensor bitmap", bitmap > 0)
@@ -122,7 +115,7 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testResetToDefaults() {
-        // Test reset to default settings
+
         sensorPanel.resetToDefaults()
         
         val config = sensorPanel.generateConfiguration()
@@ -131,24 +124,23 @@ class ShimmerSensorPanelTest {
 
     @Test
     fun testSettingsValidationErrors() {
-        // Test handling of invalid settings combinations
-        sensorPanel.setSamplingRate(0) // Invalid sampling rate
+
+        sensorPanel.setSamplingRate(0)
         val errors = sensorPanel.validateCurrentSettings()
         
         Assert.assertTrue("Should detect validation errors", errors.isNotEmpty())
     }
 
-    // Helper methods for creating test configurations
     private fun createValidConfiguration(): Configuration {
         return Configuration().apply {
             setSamplingRateShimmer(128.0)
-            setSensorEnabledState(0x04, true) // GSR
-            setSensorEnabledState(0x80, true) // Temperature
+            setSensorEnabledState(0x04, true)
+            setSensorEnabledState(0x80, true)
         }
     }
 
     private fun createInvalidConfiguration(): Configuration {
         return Configuration().apply {
-            setSamplingRateShimmer(0.0) // Invalid sampling rate
+            setSamplingRateShimmer(0.0)
         }
     }

@@ -39,18 +39,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
 
-/**
- * Industry-standard main fragment implementation for BucikaGSR application.
- * 
- * This fragment serves as the central hub for device management and GSR monitoring access,
- * implementing modern ViewBinding patterns and comprehensive lifecycle management for
- * professional research applications.
- * 
- * @author BucikaGSR Team
- * @since 2024.1.0
- * @see BaseFragment
- * @see GSRActivity
- */
 @SuppressLint("NotifyDataSetChanged")
 class MainFragment : BaseFragment(), View.OnClickListener {
     
@@ -58,24 +46,17 @@ class MainFragment : BaseFragment(), View.OnClickListener {
 
     override fun initContentView(): Int = R.layout.fragment_main
 
-    /**
-     * Initialize fragment view binding and UI components.
-     * Sets up RecyclerView adapter, click listeners, and lifecycle observers.
-     */
     override fun initView() {
         adapter = MyAdapter()
         
-        // Set up click listeners - using traditional approach initially
         findViewById<TextView>(R.id.tv_connect_device).setOnClickListener(this)
         findViewById<TextView>(R.id.tv_gsr_monitoring).setOnClickListener(this)
         findViewById<ImageView>(R.id.iv_add).setOnClickListener(this)
         
-        // Initialize adapter state
         adapter.hasConnectLine = DeviceTools.isConnect()
         adapter.hasConnectTS004 = WebSocketProxy.getInstance().isTS004Connect()
         adapter.hasConnectTC007 = WebSocketProxy.getInstance().isTC007Connect()
         
-        // Set up item click handling for device connections
         adapter.onItemClickListener = {
             when (it) {
                 ConnectType.LINE -> {
@@ -103,7 +84,6 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             }
         }
         
-        // Set up long click handling for device deletion
         adapter.onItemLongClickListener = { view, type ->
             val popup = DelPopup(requireContext())
             popup.onDelListener = {
@@ -126,13 +106,11 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             popup.show(view)
         }
 
-        // Set up RecyclerView
         findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@MainFragment.adapter
         }
 
-        // Initialize TC007 battery info if connected
         if (WebSocketProxy.getInstance().isTC007Connect()) {
             lifecycleScope.launch {
                 val batteryInfo: BatteryInfo? = TC007Repository.getBatteryInfo()
@@ -142,10 +120,9 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             }
         }
         
-        // Set up lifecycle observer for network management
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
-                // Switch to mobile data if connected to TS004/TC007 to ensure network access
+
                 if (WebSocketProxy.getInstance().isConnected()) {
                     NetWorkUtils.switchNetwork(true)
                 }
@@ -154,23 +131,15 @@ class MainFragment : BaseFragment(), View.OnClickListener {
     }
 
     override fun initData() {
-        // Data initialization handled in initView()
+
     }
 
-    /**
-     * Refresh UI state when fragment resumes.
-     * Updates device connection states and adapter data.
-     */
     override fun onResume() {
         super.onResume()
         refresh()
         adapter.notifyDataSetChanged()
     }
 
-    /**
-     * Refresh device connection states and update UI visibility.
-     * Manages the display of connected vs. no-device states.
-     */
     private fun refresh() {
         val hasAnyDevice = SharedManager.hasTcLine || SharedManager.hasTS004 || SharedManager.hasTC007
         findViewById<ConstraintLayout>(R.id.cl_has_device).isVisible = hasAnyDevice
@@ -215,30 +184,19 @@ class MainFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    /**
-     * Handle click events for UI elements.
-     * 
-     * @param v The clicked view
-     */
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.tv_connect_device, R.id.iv_add -> {
-                // Navigate to device connection setup
+
                 startActivity(Intent(requireContext(), DeviceTypeActivity::class.java))
             }
             R.id.tv_gsr_monitoring -> {
-                // Navigate to GSR monitoring interface for research data collection
+
                 startActivity(Intent(requireContext(), com.topdon.tc001.gsr.GSRActivity::class.java))
             }
         }
     }
 
-    /**
-     * Handle socket message events for real-time device communication.
-     * Processes heartbeat messages and updates battery information for TC007 devices.
-     * 
-     * @param event Socket message event containing device status updates
-     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketMsgEvent(event: SocketMsgEvent) {
         if (SocketCmdUtil.getCmdResponse(event.text) == WsCmdConstants.APP_EVENT_HEART_BEATS) {
@@ -249,46 +207,31 @@ class MainFragment : BaseFragment(), View.OnClickListener {
                 val battery: JSONObject = JSONObject(event.text).getJSONObject("battery")
                 adapter.tc007Battery = BatteryInfo(battery.getString("status"), battery.getString("remaining"))
             } catch (_: Exception) {
-                // Handle battery info parsing errors silently
+
             }
         }
     }
 
-    /**
-     * Professional RecyclerView adapter for device connection management.
-     * Implements industry-standard ViewBinding patterns with comprehensive device state management.
-     */
     private class MyAdapter : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
-        /**
-         * Wired device connection state.
-         */
+        
         var hasConnectLine: Boolean = false
             set(value) {
                 field = value
                 notifyItemRangeChanged(0, 3)
             }
         
-        /**
-         * TS004 device connection state.
-         */
         var hasConnectTS004: Boolean = false
             set(value) {
                 field = value
                 notifyItemRangeChanged(0, itemCount)
             }
         
-        /**
-         * TC007 device connection state.
-         */
         var hasConnectTC007: Boolean = false
             set(value) {
                 field = value
                 notifyItemRangeChanged(0, itemCount)
             }
         
-        /**
-         * TC007 device battery information.
-         */
         var tc007Battery: BatteryInfo? = null
             set(value) {
                 if (field != value) {
@@ -320,24 +263,21 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             }
 
             with(holder.binding) {
-                // Configure title visibility and text
+
                 tvTitle.isVisible = hasTitle
                 tvTitle.text = AppLanguageUtils.attachBaseContext(
                     root.context, SharedManager.getLanguage(root.context))
                     .getString(if (type == ConnectType.LINE) R.string.tc_connect_line else R.string.tc_connect_wifi)
 
-                // Update connection state styling
                 ivBg.isSelected = hasConnect
                 tvDeviceName.isSelected = hasConnect
                 viewDeviceState.isSelected = hasConnect
                 tvDeviceState.isSelected = hasConnect
                 tvDeviceState.text = if (hasConnect) "online" else "offline"
                 
-                // Show battery info for TC007 when connected
                 tvBattery.isVisible = type == ConnectType.TC007 && hasConnectTC007 && tc007Battery != null
                 batteryView.isVisible = type == ConnectType.TC007 && hasConnectTC007 && tc007Battery != null
 
-                // Configure device-specific settings
                 when (type) {
                     ConnectType.LINE -> {
                         tvDeviceName.text = AppLanguageUtils.attachBaseContext(
@@ -377,10 +317,6 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             return result
         }
 
-        /**
-         * ViewHolder with modern ViewBinding implementation.
-         * Provides type-safe access to item views with comprehensive click handling.
-         */
         inner class ViewHolder(val binding: ItemDeviceConnectBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.ivBg.setOnClickListener {
@@ -393,7 +329,7 @@ class MainFragment : BaseFragment(), View.OnClickListener {
                 binding.ivBg.setOnLongClickListener {
                     val position = bindingAdapterPosition
                     if (position != RecyclerView.NO_POSITION) {
-                        // Only allow deletion of offline devices
+
                         val deviceType = getConnectType(position)
                         when (deviceType) {
                             ConnectType.LINE -> {
@@ -412,12 +348,6 @@ class MainFragment : BaseFragment(), View.OnClickListener {
                 }
             }
 
-            /**
-             * Determine connection type based on adapter position and device preferences.
-             * 
-             * @param position Adapter position
-             * @return ConnectType for the device at this position
-             */
             fun getConnectType(position: Int): ConnectType = when (position) {
                 0 -> if (SharedManager.hasTcLine) {
                     ConnectType.LINE
@@ -436,14 +366,11 @@ class MainFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    /**
-     * Device connection type enumeration for type-safe device management.
-     */
     enum class ConnectType {
-        /** Wired device connection */
+        
         LINE,
-        /** TS004 wireless device */
+        
         TS004,
-        /** TC007 wireless device */
+        
         TC007,
     }

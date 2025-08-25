@@ -28,11 +28,6 @@ import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
-/**
- * Enhanced Video Recorder for bucika_gsr
- * Supports Samsung S22 optimized 4K30FPS recording and concurrent RAW DNG capture
- * Includes device compatibility checking and Samsung S22 specific optimizations
- */
 @SuppressLint("MissingPermission")
 class EnhancedVideoRecorder(
     private val context: Context,
@@ -40,23 +35,19 @@ class EnhancedVideoRecorder(
     private val visualView: TextureView?
 ) {
 
-    // Recording modes
     enum class RecordingMode {
         SAMSUNG_4K_30FPS,
         RAD_DNG_LEVEL3_30FPS,  
         PARALLEL_DUAL_STREAM,
-        CONCURRENT_4K_AND_RAW  // New mode for Samsung S22 concurrent capture
+        CONCURRENT_4K_AND_RAW
     }
 
-    // Recording state
     private var isRecording = false
     private var recordingMode: RecordingMode = RecordingMode.SAMSUNG_4K_30FPS
 
-    // Device compatibility and optimization
     private val compatibilityChecker = DeviceCompatibilityChecker(context)
     private val optimizationParams: S22OptimizationParams = compatibilityChecker.getSamsungS22OptimizationParams()
 
-    // Camera2 API components
     private var cameraManager: CameraManager? = null
     private var cameraDevice: CameraDevice? = null
     private var cameraCaptureSession: CameraCaptureSession? = null
@@ -64,40 +55,31 @@ class EnhancedVideoRecorder(
     private var backgroundThread: HandlerThread? = null
     private val cameraOpenCloseLock = Semaphore(1)
 
-    // MediaRecorder components
     private var mediaRecorder: MediaRecorder? = null
     private var thermalRecorder: MediaRecorder? = null
     private var visualRecorder: MediaRecorder? = null
     
-    // DNG Capture Manager for RAD DNG Level 3
     private var dngCaptureManager: DNGCaptureManager? = null
     
-    // Synchronization system integration
     private var syncSystem: SynchronizedCaptureSystem? = null
 
-    // Recording parameters (optimized for Samsung S22)
-    private val samsung4KSize = Size(3840, 2160) // 4K UHD
-    private val radDngSize = Size(1920, 1080)    // Full HD for RAD DNG
+    private val samsung4KSize = Size(3840, 2160)
+    private val radDngSize = Size(1920, 1080)
     private val targetFps = 30
 
-    // File paths
     private var currentVideoFile: File? = null
     private var currentThermalFile: File? = null
 
-    // Temperature overlay manager
     private val overlayManager = TemperatureOverlayManager()
 
     companion object {
         private const val TAG = "EnhancedVideoRecorder"
         
-        // Samsung specific camera characteristics
         private const val SAMSUNG_CAMERA_ID = "0"
         
-        // Samsung 4K optimized bitrate (will be overridden by device-specific optimization)
-        private const val SAMSUNG_4K_BITRATE = 20000000 // 20 Mbps default
+        private const val SAMSUNG_4K_BITRATE = 20000000
         
-        // STAGE 3/LEVEL 3 RAD DNG specifications
-        private const val RAD_DNG_BITRATE = 8000000 // 8 Mbps for high quality
+        private const val RAD_DNG_BITRATE = 8000000
     }
     }
 
@@ -105,7 +87,6 @@ class EnhancedVideoRecorder(
         cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         dngCaptureManager = DNGCaptureManager(context)
         
-        // Log device compatibility information
         XLog.i(TAG, "Enhanced Video Recorder initialized:")
         XLog.i(TAG, "- Samsung S22: ${compatibilityChecker.isSamsungS22()}")
         XLog.i(TAG, "- 4K30fps support: ${compatibilityChecker.supports4K30fps()}")
@@ -114,9 +95,6 @@ class EnhancedVideoRecorder(
         XLog.i(TAG, "- Optimization params: $optimizationParams")
     }
     
-    /**
-     * Get device compatibility information
-     */
     fun getCompatibilityInfo(): String {
         return buildString {
             appendLine("Device Compatibility Report:")
@@ -130,9 +108,6 @@ class EnhancedVideoRecorder(
         }
     }
     
-    /**
-     * Validate recording mode compatibility
-     */
     fun validateRecordingMode(mode: RecordingMode): Pair<Boolean, String> {
         return when (mode) {
             RecordingMode.SAMSUNG_4K_30FPS -> {
@@ -148,7 +123,7 @@ class EnhancedVideoRecorder(
                 Pair(result.isSupported, result.issues.joinToString("; "))
             }
             RecordingMode.PARALLEL_DUAL_STREAM -> {
-                // Parallel dual stream doesn't use 4K+RAW concurrently, just check basic support
+
                 val has4K = compatibilityChecker.supports4K30fps()
                 val message = if (!has4K) "4K recording not supported" else ""
                 Pair(has4K, message)
@@ -156,19 +131,14 @@ class EnhancedVideoRecorder(
         }
     }
 
-    /**
-     * Start enhanced recording with specified mode and compatibility validation
-     */
     fun startRecording(mode: RecordingMode, syncSystem: SynchronizedCaptureSystem? = null): Boolean {
         if (isRecording) {
             XLog.w(TAG, "Recording already in progress")
             return false
         }
 
-        // Set sync system if provided
         this.syncSystem = syncSystem
 
-        // Validate mode compatibility first
         val (isSupported, issues) = validateRecordingMode(mode)
         if (!isSupported) {
             XLog.e(TAG, "Recording mode $mode not supported: $issues")
@@ -193,9 +163,6 @@ class EnhancedVideoRecorder(
     }
     }
 
-    /**
-     * Start Samsung specific 4K 30FPS recording with S22 optimizations
-     */
     private fun startSamsung4KRecording(): Boolean {
         XLog.i(TAG, "Starting Samsung 4K 30FPS recording with optimizations")
         
@@ -203,20 +170,18 @@ class EnhancedVideoRecorder(
         currentVideoFile = videoFile
         
         mediaRecorder = MediaRecorder().apply {
-            // Samsung optimized settings for 4K recording
+
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
             setAudioSource(MediaRecorder.AudioSource.MIC)
             
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(videoFile.absolutePath)
             
-            // 4K video settings optimized for Samsung S22 devices
             setVideoEncoder(VideoEncoder.H264)
             setVideoSize(samsung4KSize.width, samsung4KSize.height)
             setVideoFrameRate(targetFps)
             setVideoEncodingBitRate(optimizationParams.recommended4KBitrate)
             
-            // Audio settings
             setAudioEncoder(AudioEncoder.AAC)
             setAudioSamplingRate(44100)
             setAudioEncodingBitRate(128000)
@@ -225,7 +190,6 @@ class EnhancedVideoRecorder(
                 prepare()
                 start()
                 
-                // Start frame timestamp estimation if sync system is available
                 syncSystem?.let { sync ->
                     startVideoFrameTimestampEstimation(sync)
                 }
@@ -243,9 +207,6 @@ class EnhancedVideoRecorder(
         return false
     }
 
-    /**
-     * Start concurrent 4K video + RAW DNG recording (Samsung S22 optimized)
-     */
     private fun startConcurrent4KAndRawRecording(): Boolean {
         if (!compatibilityChecker.isSamsungS22()) {
             XLog.e(TAG, "Concurrent 4K+RAW recording requires Samsung S22 series device")
@@ -254,18 +215,16 @@ class EnhancedVideoRecorder(
         
         XLog.i(TAG, "Starting concurrent 4K + RAW DNG recording on Samsung S22")
         
-        // Start 4K video recording first
         val videoSuccess = startSamsung4KRecording()
         if (!videoSuccess) {
             XLog.e(TAG, "Failed to start 4K video for concurrent recording")
             return false
         }
         
-        // Start concurrent RAW DNG capture
         val rawSuccess = dngCaptureManager?.startConcurrentDNGCapture() ?: false
         if (!rawSuccess) {
             XLog.e(TAG, "Failed to start concurrent RAW DNG capture")
-            // Stop the video recording since concurrent mode failed
+
             stopRecording()
             return false
         }
@@ -293,9 +252,6 @@ class EnhancedVideoRecorder(
         }
     }
 
-    /**
-     * Start parallel dual stream recording (thermal + visual)
-     */
     private fun startParallelRecording(): Boolean {
         XLog.i(TAG, "Starting parallel dual stream recording")
         
@@ -305,7 +261,6 @@ class EnhancedVideoRecorder(
         currentVideoFile = visualFile
         currentThermalFile = thermalFile
         
-        // Setup thermal stream recorder
         thermalRecorder = MediaRecorder().apply {
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -317,7 +272,6 @@ class EnhancedVideoRecorder(
             setVideoEncodingBitRate(RAD_DNG_BITRATE)
         }
         
-        // Setup visual stream recorder
         visualRecorder = MediaRecorder().apply {
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -351,9 +305,6 @@ class EnhancedVideoRecorder(
         }
     }
 
-    /**
-     * Stop recording
-     */
     fun stopRecording(): Boolean {
         if (!isRecording) {
             XLog.w(TAG, "No recording in progress")
@@ -363,7 +314,7 @@ class EnhancedVideoRecorder(
         return try {
             when (recordingMode) {
                 RecordingMode.PARALLEL_DUAL_STREAM -> stopParallelRecording()
-                RecordingMode.RAD_DNG_LEVEL3_30FPS -> stopDNGRecording()  // Updated method
+                RecordingMode.RAD_DNG_LEVEL3_30FPS -> stopDNGRecording()
                 else -> stopSingleRecording()
             }
             
@@ -408,9 +359,6 @@ class EnhancedVideoRecorder(
         visualRecorder = null
     }
 
-    /**
-     * Add temperature measurement overlay to frame
-     */
     fun addTemperatureOverlay(
         frame: Bitmap, 
         temperature: Float, 
@@ -431,9 +379,6 @@ class EnhancedVideoRecorder(
         )
     }
 
-    /**
-     * Add dual stream overlays for parallel recording
-     */
     fun addDualStreamOverlays(
         thermalFrame: Bitmap,
         visualFrame: Bitmap,
@@ -448,25 +393,15 @@ class EnhancedVideoRecorder(
         )
     }
 
-    /**
-     * Get current recording status
-     */
     fun isRecording(): Boolean = isRecording
 
-    /**
-     * Get current recording mode
-     */
     fun getRecordingMode(): RecordingMode = recordingMode
 
-    /**
-     * Get recorded files (includes both video files and DNG files)
-     */
     fun getRecordedFiles(): List<File> {
         val files = mutableListOf<File>()
         currentVideoFile?.let { files.add(it) }
         currentThermalFile?.let { files.add(it) }
         
-        // Add DNG files if in DNG recording mode
         if (recordingMode == RecordingMode.RAD_DNG_LEVEL3_30FPS) {
             val dngFiles = dngCaptureManager?.getCapturedFiles() ?: emptyList()
             files.addAll(dngFiles)
@@ -475,9 +410,6 @@ class EnhancedVideoRecorder(
         return files
     }
     
-    /**
-     * Get DNG capture statistics (frames captured, FPS, etc.)
-     */
     fun getDNGCaptureStats(): Map<String, Any> {
         return dngCaptureManager?.getCaptureStats() ?: emptyMap()
     }
@@ -520,9 +452,6 @@ class EnhancedVideoRecorder(
         visualRecorder = null
     }
 
-    /**
-     * Cleanup resources
-     */
     fun cleanup() {
         stopRecording()
         releaseAllRecorders()
@@ -530,31 +459,25 @@ class EnhancedVideoRecorder(
         stopBackgroundThread()
     }
     
-    /**
-     * Start video frame timestamp estimation for synchronization
-     * Since MediaRecorder doesn't provide frame-level timestamps, we estimate based on target FPS
-     */
     private fun startVideoFrameTimestampEstimation(syncSystem: SynchronizedCaptureSystem) {
         backgroundHandler?.post {
-            val frameIntervalMs = 1000L / targetFps // ~33.33ms for 30 FPS
+            val frameIntervalMs = 1000L / targetFps
             var frameCount = 0L
             
             val estimationRunnable = object : Runnable {
                 override fun run() {
                     if (isRecording) {
-                        // Estimate presentation time for this frame
+
                         val presentationTimeUs = frameCount * (frameIntervalMs * 1000)
                         syncSystem.registerVideoFrame(presentationTimeUs)
                         
                         frameCount++
                         
-                        // Schedule next frame estimation
                         backgroundHandler?.postDelayed(this, frameIntervalMs)
                     }
                 }
             }
             
-            // Start frame estimation
             backgroundHandler?.post(estimationRunnable)
             XLog.d(TAG, "Started video frame timestamp estimation at ${targetFps}fps")
         }

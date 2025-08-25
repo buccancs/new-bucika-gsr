@@ -19,9 +19,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun thermalDao(): ThermalDao
 
-
-
-
     companion object {
 
         @Volatile
@@ -36,14 +33,14 @@ abstract class AppDatabase : RoomDatabase() {
             Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "TopInfrared.db")
                 .addMigrations(object : Migration(5, 6) {
                     override fun migrate(database: SupportSQLiteDatabase) {
-                        // Remove all house-related tables
+
                         database.execSQL("DROP TABLE IF EXISTS HouseDetect")
                         database.execSQL("DROP TABLE IF EXISTS HouseReport")
                         database.execSQL("DROP TABLE IF EXISTS DirDetect")
                         database.execSQL("DROP TABLE IF EXISTS DirReport")
                         database.execSQL("DROP TABLE IF EXISTS ItemDetect")
                         database.execSQL("DROP TABLE IF EXISTS ItemReport")
-                        // Drop indexes for removed tables
+
                         database.execSQL("DROP INDEX IF EXISTS index_DirDetect_parentId")
                         database.execSQL("DROP INDEX IF EXISTS index_DirReport_parentId")
                         database.execSQL("DROP INDEX IF EXISTS index_ItemDetect_parentId")

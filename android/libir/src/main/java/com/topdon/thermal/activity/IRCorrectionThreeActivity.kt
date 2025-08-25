@@ -9,23 +9,6 @@ import com.topdon.thermal.R
 import com.topdon.thermal.databinding.ActivityIrCorrectionThreeBinding
 import com.topdon.thermal.fragment.IRCorrectionFragment
 
-/**
- * Lens cap correction Step 3 with ViewBinding implementation.
- * 
- * Provides professional interface for thermal imaging correction workflow
- * with real-time frame readiness validation and fragment-based correction display.
- * 
- * Features include:
- * - IRCorrectionFragment integration for live correction preview
- * - Frame readiness validation before proceeding
- * - Professional correction workflow navigation
- * - Research-grade error handling and state management
- * 
- * @author CaiSongL
- * @since 2023-08-04
- * @see IRCorrectionFragment
- * @see IRCorrectionFourActivity
- */
 @Route(path = RouterConfig.IR_CORRECTION_THREE)
 class IRCorrectionThreeActivity : BaseActivity() {
 
@@ -43,11 +26,6 @@ class IRCorrectionThreeActivity : BaseActivity() {
         setupCorrectionButton()
     }
 
-    /**
-     * Initialize correction fragment with proper state management.
-     * 
-     * @param savedInstanceState Bundle containing saved fragment state
-     */
     private fun setupCorrectionFragment(savedInstanceState: Bundle?) {
         correctionFragment = if (savedInstanceState == null) {
             IRCorrectionFragment()
@@ -63,9 +41,6 @@ class IRCorrectionThreeActivity : BaseActivity() {
         }
     }
 
-    /**
-     * Configure correction workflow advancement button with frame validation.
-     */
     private fun setupCorrectionButton() {
         binding.tvCorrection.setOnClickListener {
             if (correctionFragment.frameReady) {
@@ -77,9 +52,9 @@ class IRCorrectionThreeActivity : BaseActivity() {
     }
 
     override fun initView() {
-        // Fragment-based initialization handled in onCreate
+
     }
 
     override fun initData() {
-        // No additional data initialization required
+
     }

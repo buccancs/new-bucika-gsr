@@ -14,20 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 
-/**
- * Thermal Configuration Management Component
- * 
- * Extracted from IRThermalNightActivity to handle all configuration-related operations
- * with improved separation of concerns and reduced complexity.
- * 
- * Responsibilities:
- * - Device configuration management
- * - Settings persistence and retrieval
- * - Temperature calibration settings
- * - Emissivity configuration
- * - Pseudo-color palette management
- * - Measurement mode configuration
- */
 class ThermalConfigurationManager(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner
@@ -38,7 +24,6 @@ class ThermalConfigurationManager(
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
     
-    // Configuration state
     private var currentEmissivity: Float = DEFAULT_EMISSIVITY
     private var currentTemperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS
     private var currentPseudoColorPalette: String = DEFAULT_PALETTE
@@ -52,13 +37,10 @@ class ThermalConfigurationManager(
     }
     
     enum class MeasurementMode {
-        TEMPERATURE,    // Temperature measurement mode
-        OBSERVATION     // Observation mode
+        TEMPERATURE,
+        OBSERVATION
     }
     
-    /**
-     * Initialize configuration manager
-     */
     fun initializeConfiguration() {
         lifecycleOwner.lifecycleScope.launch {
             try {
@@ -72,9 +54,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Load saved settings from SharedPreferences
-     */
     private suspend fun loadSavedSettings() = withContext(Dispatchers.IO) {
         currentEmissivity = sharedPreferences.getFloat(KEY_EMISSIVITY, DEFAULT_EMISSIVITY)
         currentTemperatureUnit = TemperatureUnit.values()[
@@ -89,9 +68,6 @@ class ThermalConfigurationManager(
         Log.d(TAG, "Settings loaded - Emissivity: $currentEmissivity, Unit: $currentTemperatureUnit")
     }
     
-    /**
-     * Apply initial configuration to device
-     */
     private suspend fun applyInitialConfiguration() {
         applyEmissivity(currentEmissivity)
         applyTemperatureUnit(currentTemperatureUnit)
@@ -100,9 +76,6 @@ class ThermalConfigurationManager(
         applyMeasurementMode(currentMeasurementMode)
     }
     
-    /**
-     * Apply default configuration if loading fails
-     */
     private suspend fun applyDefaultConfiguration() {
         currentEmissivity = DEFAULT_EMISSIVITY
         currentTemperatureUnit = TemperatureUnit.CELSIUS
@@ -114,9 +87,6 @@ class ThermalConfigurationManager(
         saveCurrentSettings()
     }
     
-    /**
-     * Set emissivity value
-     */
     fun setEmissivity(emissivity: Float) {
         if (emissivity !in 0.01f..1.0f) {
             Log.w(TAG, "Invalid emissivity value: $emissivity. Must be between 0.01 and 1.0")
@@ -135,9 +105,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Apply emissivity to device
-     */
     private suspend fun applyEmissivity(emissivity: Float) = withContext(Dispatchers.Main) {
         IRCMD.getInstance()?.let { ircmd ->
             val emissivityInt = (emissivity * 100).toInt()
@@ -145,9 +112,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Set temperature unit
-     */
     fun setTemperatureUnit(unit: TemperatureUnit) {
         lifecycleOwner.lifecycleScope.launch {
             try {
@@ -161,28 +125,20 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Apply temperature unit to device
-     */
     private suspend fun applyTemperatureUnit(unit: TemperatureUnit) = withContext(Dispatchers.Main) {
-        // Apply temperature unit configuration to the thermal system
+
         SharedManager.setTemperatureUnit(context, unit.ordinal)
     }
     
-    /**
-     * Convert temperature between units
-     */
     fun convertTemperature(value: Float, fromUnit: TemperatureUnit, toUnit: TemperatureUnit): Float {
         if (fromUnit == toUnit) return value
         
-        // Convert to Celsius first
         val celsiusValue = when (fromUnit) {
             TemperatureUnit.CELSIUS -> value
             TemperatureUnit.FAHRENHEIT -> (value - 32.0f) / 1.8f
             TemperatureUnit.KELVIN -> value - 273.15f
         }
         
-        // Convert from Celsius to target unit
         return when (toUnit) {
             TemperatureUnit.CELSIUS -> celsiusValue
             TemperatureUnit.FAHRENHEIT -> celsiusValue * 1.8f + 32.0f
@@ -190,9 +146,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Set pseudo-color palette
-     */
     fun setPseudoColorPalette(palette: String) {
         lifecycleOwner.lifecycleScope.launch {
             try {
@@ -206,9 +159,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Apply pseudo-color palette to device
-     */
     private suspend fun applyPseudoColorPalette(palette: String) = withContext(Dispatchers.Main) {
         IRCMD.getInstance()?.let { ircmd ->
             val paletteIndex = getPaletteIndex(palette)
@@ -216,9 +166,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Get palette index from palette name
-     */
     private fun getPaletteIndex(palette: String): Int {
         return when (palette.lowercase()) {
             "iron" -> 0
@@ -227,13 +174,10 @@ class ThermalConfigurationManager(
             "hotmetal" -> 3
             "medical" -> 4
             "grayscale" -> 5
-            else -> 0 // Default to iron
+            else -> 0
         }
     }
     
-    /**
-     * Set auto shutter enabled/disabled
-     */
     fun setAutoShutterEnabled(enabled: Boolean) {
         lifecycleOwner.lifecycleScope.launch {
             try {
@@ -247,16 +191,10 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Apply auto shutter setting to device
-     */
     private suspend fun applyAutoShutterSetting(enabled: Boolean) = withContext(Dispatchers.Main) {
         IRCMD.getInstance()?.setParam(IRCMDType.AUTO_SHUTTER, if (enabled) 1 else 0)
     }
     
-    /**
-     * Set measurement mode
-     */
     fun setMeasurementMode(mode: MeasurementMode) {
         lifecycleOwner.lifecycleScope.launch {
             try {
@@ -270,9 +208,6 @@ class ThermalConfigurationManager(
         }
     }
     
-    /**
-     * Apply measurement mode to device
-     */
     private suspend fun applyMeasurementMode(mode: MeasurementMode) = withContext(Dispatchers.Main) {
         val modeValue = when (mode) {
             MeasurementMode.TEMPERATURE -> 1
@@ -281,9 +216,6 @@ class ThermalConfigurationManager(
         IRCMD.getInstance()?.setParam(IRCMDType.MEASUREMENT_MODE, modeValue)
     }
     
-    /**
-     * Save current settings to SharedPreferences
-     */
     private fun saveCurrentSettings() {
         lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             sharedPreferences.edit().apply {
@@ -317,9 +249,6 @@ class ThermalConfigurationManager(
         sharedPreferences.edit().putInt(KEY_MEASUREMENT_MODE, mode.ordinal).apply()
     }
     
-    /**
-     * Get current configuration state
-     */
     fun getCurrentConfiguration(): ConfigurationState {
         return ConfigurationState(
             emissivity = currentEmissivity,
@@ -330,9 +259,6 @@ class ThermalConfigurationManager(
         )
     }
     
-    /**
-     * Reset to default configuration
-     */
     fun resetToDefaults() {
         lifecycleOwner.lifecycleScope.launch {
             applyDefaultConfiguration()
@@ -352,14 +278,12 @@ class ThermalConfigurationManager(
         private const val TAG = "ThermalConfigManager"
         private const val PREFS_NAME = "thermal_config_prefs"
         
-        // SharedPreferences keys
         private const val KEY_EMISSIVITY = "emissivity"
         private const val KEY_TEMP_UNIT = "temperature_unit"
         private const val KEY_PALETTE = "pseudo_color_palette"
         private const val KEY_AUTO_SHUTTER = "auto_shutter_enabled"
         private const val KEY_MEASUREMENT_MODE = "measurement_mode"
         
-        // Default values
         private const val DEFAULT_EMISSIVITY = 0.95f
         private const val DEFAULT_PALETTE = "iron"
     }

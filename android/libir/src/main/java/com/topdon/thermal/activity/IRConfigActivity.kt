@@ -40,40 +40,15 @@ import com.topdon.thermal.viewmodel.IRConfigViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * Professional thermal configuration activity for research-grade temperature correction.
- * 
- * Provides comprehensive configuration management for thermal imaging parameters including:
- * - Environmental temperature compensation (-10°C to 55°C range)
- * - Distance correction for accurate temperature measurement (0.2m to 5m)
- * - Material emissivity settings (0.01 to 1.00 range)
- * - Custom configuration profiles for specialized research applications
- * - Device-specific parameters for TC007 and other thermal imaging devices
- * 
- * Critical for achieving clinical-grade accuracy in thermal measurements and research applications.
- *
- * Required parameters:
- * - [ExtraKeyConfig.IS_TC007] - Device type identification for proper configuration limits
- *
- * @author System
- * @since 2024
- */
 @Route(path = RouterConfig.IR_SETTING)
 class IRConfigActivity : BaseActivity(), View.OnClickListener {
 
-    /**
-     * Device type identification - true for TC007, false for other plug-in devices.
-     * Determines configuration limits and parameter ranges.
-     */
     private var isTC007 = false
 
-    /** ViewModel for thermal configuration management */
     private val viewModel: IRConfigViewModel by viewModels()
 
-    /** ViewBinding instance for type-safe view access */
     private lateinit var binding: ActivityIrConfigBinding
 
-    /** Configuration adapter for custom profiles */
     private lateinit var adapter: ConfigAdapter
 
     override fun initContentView(): Int = R.layout.activity_ir_config
@@ -129,7 +104,7 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
         binding.recyclerView.adapter = ConcatAdapter(adapter, ConfigEmAdapter(this))
 
         viewModel.configLiveData.observe(this) {
-            // First refresh default configuration, then show custom configurations after guide
+
             binding.tvDefaultTempValue.text = NumberTools.to02(UnitTools.showUnitValue(it.defaultModel.environment))
             binding.tvDefaultDisValue.text = NumberTools.to02(it.defaultModel.distance)
             binding.tvDefaultEmValue.text = NumberTools.to02(it.defaultModel.radiation)
@@ -150,16 +125,8 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
     override fun initData() {
     }
 
-    /**
-     * Displays configuration guide dialog for first-time users.
-     * 
-     * Provides professional onboarding with device-specific guidance and background blur effects
-     * for enhanced user experience in clinical environments.
-     *
-     * @param modelBean Current configuration model data
-     */
     private fun showGuideDialog(modelBean: ModelBean) {
-        if (SharedManager.configGuideStep == 0) { // Already viewed or dismissed
+        if (SharedManager.configGuideStep == 0) {
             binding.ivDefaultSelector.isSelected = modelBean.defaultModel.use
             adapter.refresh(modelBean.myselfModel)
             return
@@ -178,20 +145,19 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
             window?.decorView?.setRenderEffect(RenderEffect.createBlurEffect(20f, 20f, Shader.TileMode.MIRROR))
         } else {
             lifecycleScope.launch {
-                // Allow interface refresh time before applying background blur
+
                 delay(100)
                 guideDialog.blurBg(binding.llRoot)
             }
         }
     }
 
-
     override fun onClick(v: View?) {
         when (v) {
-            binding.ivDefaultSelector -> { // Default mode selection
+            binding.ivDefaultSelector -> {
                 viewModel.checkConfig(isTC007, 0)
             }
-            binding.viewDefaultTempBg -> { // Default mode - environmental temperature
+            binding.viewDefaultTempBg -> {
                 IRConfigInputDialog(this, IRConfigInputDialog.Type.TEMP, isTC007)
                     .setInput(UnitTools.showUnitValue(viewModel.configLiveData.value?.defaultModel?.environment!!))
                     .setConfirmListener {
@@ -199,7 +165,7 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
                     }
                     .show()
             }
-            binding.viewDefaultDisBg -> { // Default mode - measurement distance
+            binding.viewDefaultDisBg -> {
                 IRConfigInputDialog(this, IRConfigInputDialog.Type.DIS, isTC007)
                     .setInput(viewModel.configLiveData.value?.defaultModel?.distance)
                     .setConfirmListener {
@@ -207,7 +173,7 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
                     }
                     .show()
             }
-            binding.tvDefaultEmValue -> { // Default mode - emissivity
+            binding.tvDefaultEmValue -> {
                 IRConfigInputDialog(this, IRConfigInputDialog.Type.EM, isTC007)
                     .setInput(viewModel.configLiveData.value?.defaultModel?.radiation)
                     .setConfirmListener {
@@ -218,34 +184,15 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Professional configuration adapter for custom thermal parameter profiles.
-     * 
-     * Manages custom configuration entries with comprehensive parameter editing,
-     * selection, and deletion capabilities for research applications.
-     *
-     * @param context Application context for resource access
-     * @param isTC007 Device type flag for parameter validation
-     */
     private class ConfigAdapter(val context: Context, val isTC007: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val dataList: ArrayList<DataBean> = ArrayList()
 
-        /**
-         * Custom configuration selection listener
-         */
         var onSelectListener: ((id: Int) -> Unit)? = null
-        /**
-         * Custom configuration deletion listener  
-         */
+        
         var onDeleteListener: ((bean: DataBean) -> Unit)? = null
-        /**
-         * Custom configuration update listener
-         */
+        
         var onUpdateListener: ((bean: DataBean) -> Unit)? = null
 
-        /**
-         * Add new configuration listener
-         */
         var onAddListener: View.OnClickListener? = null
 
         @SuppressLint("NotifyDataSetChanged")
@@ -289,10 +236,6 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
 
         override fun getItemCount(): Int = dataList.size + 1
 
-
-        /**
-         * ViewHolder for custom configuration items with comprehensive parameter editing
-         */
         inner class ItemViewHolder(val binding: ItemIrConfigConfigBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.ivSelector.setOnClickListener {
@@ -349,9 +292,6 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
             }
         }
 
-        /**
-         * ViewHolder for footer with add configuration and emissivity reference options
-         */
         inner class FootViewHolder(val binding: ItemIrConfigFootBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.viewAdd.setOnClickListener {

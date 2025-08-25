@@ -11,44 +11,30 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 
-/**
- * Global Application Clock Synchronization Manager
- * Provides app-wide synchronized timing reference for all components
- * Ensures nanosecond precision across video, DNG, GSR, and system components
- */
 object GlobalClockManager {
     
     private const val TAG = "GlobalClockManager"
     
-    // Global synchronization constants
-    private const val SYNC_UPDATE_INTERVAL_MS = 100L // Update every 100ms
-    private const val CLOCK_DRIFT_THRESHOLD_NS = 1_000_000L // 1ms threshold
-    private const val MAX_COMPONENT_SKEW_NS = 5_000_000L // 5ms max skew between components
+    private const val SYNC_UPDATE_INTERVAL_MS = 100L
+    private const val CLOCK_DRIFT_THRESHOLD_NS = 1_000_000L
+    private const val MAX_COMPONENT_SKEW_NS = 5_000_000L
     
-    // Master timing reference
     private val globalMasterClock = AtomicLong(0)
     private val systemBootTime = AtomicLong(0)
     private var initializationTime: Long = 0
     
-    // Synchronization state
     private val isInitialized = AtomicBoolean(false)
     private val isSyncActive = AtomicBoolean(false)
     
-    // Component synchronization tracking
     private val componentSyncInfo = ConcurrentHashMap<String, ComponentSyncInfo>()
     private val syncedComponents = mutableSetOf<String>()
     
-    // Background synchronization
     private var clockSyncExecutor: ScheduledExecutorService? = null
     
-    // Performance monitoring
     private val syncOperationCount = AtomicLong(0)
     private val totalDriftCorrected = AtomicLong(0)
     private val maxDetectedSkew = AtomicLong(0)
     
-    /**
-     * Initialize the global clock synchronization system
-     */
     fun initialize(): Boolean {
         return try {
             if (isInitialized.get()) {
@@ -58,15 +44,12 @@ object GlobalClockManager {
             
             XLog.i(TAG, "Initializing global clock synchronization system...")
             
-            // Capture system boot time for reference
             systemBootTime.set(System.currentTimeMillis() - SystemClock.elapsedRealtime())
             
-            // Initialize master clock with hardware timestamp
             val currentTime = SystemClock.elapsedRealtimeNanos()
             globalMasterClock.set(currentTime)
             initializationTime = currentTime
             
-            // Start background synchronization
             startBackgroundSync()
             
             isInitialized.set(true)
@@ -84,9 +67,6 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Get the current global synchronized timestamp
-     */
     fun getCurrentTimestamp(): Long {
         if (!isInitialized.get()) {
             initialize()
@@ -94,18 +74,12 @@ object GlobalClockManager {
         return globalMasterClock.get()
     }
     
-    /**
-     * Get synchronized timestamp with hardware precision
-     */
     fun getSynchronizedTimestamp(): Long {
         val hardwareTime = SystemClock.elapsedRealtimeNanos()
         updateMasterClock(hardwareTime)
         return globalMasterClock.get()
     }
     
-    /**
-     * Register a component for synchronization tracking
-     */
     fun registerComponent(componentId: String, componentType: ComponentType): Boolean {
         return try {
             val currentTime = getSynchronizedTimestamp()
@@ -135,18 +109,12 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Unregister a component from synchronization
-     */
     fun unregisterComponent(componentId: String) {
         componentSyncInfo.remove(componentId)
         syncedComponents.remove(componentId)
         XLog.i(TAG, "Component unregistered from sync: $componentId")
     }
     
-    /**
-     * Synchronize a component's timestamp with the global clock
-     */
     fun synchronizeComponent(componentId: String, componentTimestamp: Long): SyncResult {
         if (!isInitialized.get()) {
             return SyncResult(false, 0, "Global clock not initialized")
@@ -162,10 +130,8 @@ object GlobalClockManager {
             val globalTime = getSynchronizedTimestamp()
             val drift = abs(componentTimestamp - globalTime)
             
-            // Update component sync information
             updateComponentSyncInfo(componentId, drift)
             
-            // Check if drift is within acceptable range
             val isWithinTolerance = drift <= CLOCK_DRIFT_THRESHOLD_NS
             val syncSuccessful = drift <= MAX_COMPONENT_SKEW_NS
             
@@ -173,7 +139,6 @@ object GlobalClockManager {
                 XLog.w(TAG, "High drift detected for $componentId: ${drift / 1_000_000.0}ms")
             }
             
-            // Update performance metrics
             syncOperationCount.incrementAndGet()
             if (drift > 0) {
                 totalDriftCorrected.addAndGet(drift)
@@ -192,8 +157,7 @@ object GlobalClockManager {
                 isWithinTolerance = isWithinTolerance
             )
             
-            // Log significant sync events
-            if (syncOperationCount.get() % 1000 == 0L) { // Every 1000 syncs
+            if (syncOperationCount.get() % 1000 == 0L) {
                 logSyncPerformance()
             }
             
@@ -205,34 +169,24 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Get synchronized timestamp for a specific component
-     */
     fun getComponentSynchronizedTimestamp(componentId: String): Long {
         val syncResult = synchronizeComponent(componentId, System.nanoTime())
         return syncResult.synchronizedTimestamp
     }
     
-    /**
-     * Update the master clock with hardware precision
-     */
     private fun updateMasterClock(hardwareTimestamp: Long) {
         val currentMaster = globalMasterClock.get()
         val drift = abs(hardwareTimestamp - currentMaster)
         
-        // Only update if there's significant drift to prevent jitter
         if (drift > CLOCK_DRIFT_THRESHOLD_NS) {
             globalMasterClock.set(hardwareTimestamp)
             
-            if (drift > 10_000_000L) { // > 10ms drift
+            if (drift > 10_000_000L) {
                 XLog.w(TAG, "Significant clock drift corrected: ${drift / 1_000_000.0}ms")
             }
         }
     }
     
-    /**
-     * Update component synchronization information
-     */
     private fun updateComponentSyncInfo(componentId: String, drift: Long) {
         componentSyncInfo[componentId]?.let { syncInfo ->
             val updatedInfo = syncInfo.copy(
@@ -246,9 +200,6 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Start background clock synchronization
-     */
     private fun startBackgroundSync() {
         clockSyncExecutor = Executors.newSingleThreadScheduledExecutor { runnable ->
             Thread(runnable, "GlobalClockSync").apply {
@@ -264,22 +215,16 @@ object GlobalClockManager {
         XLog.i(TAG, "Background clock synchronization started (interval: ${SYNC_UPDATE_INTERVAL_MS}ms)")
     }
     
-    /**
-     * Perform background synchronization maintenance
-     */
     private fun performBackgroundSync() {
         try {
             if (!isSyncActive.get()) return
             
-            // Update master clock with fresh hardware timestamp
             val hardwareTime = SystemClock.elapsedRealtimeNanos()
             updateMasterClock(hardwareTime)
             
-            // Check component sync health
             checkComponentSyncHealth()
             
-            // Periodic cleanup of inactive components
-            if (System.currentTimeMillis() % 10000 == 0L) { // Every 10 seconds
+            if (System.currentTimeMillis() % 10000 == 0L) {
                 cleanupInactiveComponents()
             }
             
@@ -288,9 +233,6 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Check synchronization health of all components
-     */
     private fun checkComponentSyncHealth() {
         val currentTime = getSynchronizedTimestamp()
         var unhealthyComponents = 0
@@ -298,13 +240,11 @@ object GlobalClockManager {
         componentSyncInfo.values.forEach { syncInfo ->
             val timeSinceLastSync = currentTime - syncInfo.lastSyncTime
             
-            // Check if component hasn't synced recently
-            if (timeSinceLastSync > 5_000_000_000L) { // 5 seconds
+            if (timeSinceLastSync > 5_000_000_000L) {
                 XLog.w(TAG, "Component ${syncInfo.componentId} hasn't synced recently: ${timeSinceLastSync / 1_000_000}ms")
                 unhealthyComponents++
             }
             
-            // Check if component has excessive average drift
             if (syncInfo.avgDrift > CLOCK_DRIFT_THRESHOLD_NS) {
                 XLog.w(TAG, "Component ${syncInfo.componentId} has high average drift: ${syncInfo.avgDrift / 1_000_000.0}ms")
                 unhealthyComponents++
@@ -316,9 +256,6 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Cleanup components that are no longer active
-     */
     private fun cleanupInactiveComponents() {
         val currentTime = getSynchronizedTimestamp()
         val componentsToRemove = mutableListOf<String>()
@@ -326,7 +263,6 @@ object GlobalClockManager {
         componentSyncInfo.values.forEach { syncInfo ->
             val timeSinceLastSync = currentTime - syncInfo.lastSyncTime
             
-            // Remove components that haven't synced in over 30 seconds
             if (timeSinceLastSync > 30_000_000_000L) {
                 componentsToRemove.add(syncInfo.componentId)
             }
@@ -342,13 +278,10 @@ object GlobalClockManager {
         }
     }
     
-    /**
-     * Log comprehensive synchronization performance
-     */
     private fun logSyncPerformance() {
         val totalSyncs = syncOperationCount.get()
         val avgDriftCorrected = if (totalSyncs > 0) {
-            totalDriftCorrected.get().toDouble() / totalSyncs / 1_000_000.0 // Convert to ms
+            totalDriftCorrected.get().toDouble() / totalSyncs / 1_000_000.0
         } else 0.0
         
         val maxSkewMs = maxDetectedSkew.get() / 1_000_000.0
@@ -364,9 +297,6 @@ object GlobalClockManager {
         """.trimIndent().format(avgDriftCorrected, maxSkewMs))
     }
     
-    /**
-     * Get comprehensive synchronization statistics
-     */
     fun getSynchronizationStatistics(): GlobalSyncStatistics {
         val currentTime = getSynchronizedTimestamp()
         val uptimeSeconds = (currentTime - initializationTime) / 1_000_000_000L
@@ -398,9 +328,6 @@ object GlobalClockManager {
         )
     }
     
-    /**
-     * Force synchronization for all registered components
-     */
     fun forceSynchronizeAllComponents(): Map<String, SyncResult> {
         val results = mutableMapOf<String, SyncResult>()
         val currentTime = getSynchronizedTimestamp()
@@ -414,9 +341,6 @@ object GlobalClockManager {
         return results
     }
     
-    /**
-     * Shutdown the global clock synchronization system
-     */
     fun shutdown() {
         try {
             isSyncActive.set(false)
@@ -439,9 +363,6 @@ object GlobalClockManager {
     }
 }
 
-/**
- * Component type enumeration for synchronization tracking
- */
 enum class ComponentType {
     VIDEO_RECORDER,
     DNG_CAPTURE,
@@ -451,9 +372,6 @@ enum class ComponentType {
     USER_INTERFACE
 }
 
-/**
- * Component synchronization information
- */
 data class ComponentSyncInfo(
     val componentId: String,
     val componentType: ComponentType,
@@ -465,9 +383,6 @@ data class ComponentSyncInfo(
     val isActive: Boolean
 )
 
-/**
- * Synchronization result information
- */
 data class SyncResult(
     val success: Boolean,
     val synchronizedTimestamp: Long,
@@ -478,22 +393,16 @@ data class SyncResult(
     val driftMs: Double get() = drift / 1_000_000.0
 }
 
-/**
- * Component synchronization statistics
- */
 data class ComponentSyncStatistics(
     val componentId: String,
     val componentType: ComponentType,
     val syncCount: Long,
     val averageDriftMs: Double,
     val maxDriftMs: Double,
-    val lastSyncTimeRelative: Long, // Milliseconds since last sync
+    val lastSyncTimeRelative: Long,
     val isHealthy: Boolean
 )
 
-/**
- * Global synchronization statistics
- */
 data class GlobalSyncStatistics(
     val isActive: Boolean,
     val uptimeSeconds: Long,

@@ -7,8 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.*
-// ARouter replaced with ModernRouter (internal) for BucikaGSR
-// import com.alibaba.android.arouter.launcher.ARouter
+
 import com.topdon.lib.core.R
 import com.topdon.lib.core.config.ExtraKeyConfig
 import com.topdon.lib.core.config.RouterConfig
@@ -17,9 +16,6 @@ import com.topdon.lib.core.tools.UnitTools
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.lib.core.databinding.DialogTipEmissivityBinding
 
-/**
- * 发射率的提示弹窗
- */
 class TipEmissivityDialog : Dialog {
 
     constructor(context: Context) : super(context)
@@ -70,7 +66,6 @@ class TipEmissivityDialog : Dialog {
             return this
         }
 
-
         fun setCancelListener(event: ((check: Boolean) -> Unit)? = null): Builder {
             this.closeEvent = event
             return this
@@ -103,10 +98,7 @@ class TipEmissivityDialog : Dialog {
             }
             binding.dialogTipCancelBtn.setOnClickListener {
                 dialog?.onDismissListener?.invoke(hasCheck)
-                // ARouter.getInstance().build(RouterConfig.IR_SETTING)
-                //     .withBoolean(ExtraKeyConfig.IS_TC007, isTC007)
-                //     .navigation(context)
-                // Navigation replaced with ModernRouter for BucikaGSR - IR Settings navigation
+
                 dismiss()
             }
             val tvEmissivity = binding.tvEmissivity
@@ -136,13 +128,13 @@ class TipEmissivityDialog : Dialog {
             val lp = dialog!!.window!!.attributes
             val wRatio =
                 if (context!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    //竖屏
+
                     0.75
                 } else {
-                    //横屏
+
                     0.35
                 }
-            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt() //设置宽度
+            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt()
             dialog!!.window!!.attributes = lp
 
             dialog!!.setCanceledOnTouchOutside(canceled)
@@ -155,17 +147,11 @@ class TipEmissivityDialog : Dialog {
                 dismiss()
                 closeEvent?.invoke(hasCheck)
             }
-            //title
+
             if (title != null) {
                 titleText.setText(title, TextView.BufferType.NORMAL)
             }
-            //msg
-//            if (message != null) {
-//                messageText.visibility = View.VISIBLE
-//                messageText.setText(message, TextView.BufferType.NORMAL)
-//            } else {
-//                messageText.visibility = View.GONE
-//            }
+
             dialog!!.setContentView(binding.root)
             return dialog as TipEmissivityDialog
         }

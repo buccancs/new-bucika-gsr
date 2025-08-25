@@ -2,9 +2,6 @@ package com.topdon.lib.core.bean
 
 import com.topdon.lib.core.utils.TemperatureUtil
 
-/**
- * @author qiang.lv
- */
 data class CarDetectChildBean(
     var type: Int,
     var pos: Int,

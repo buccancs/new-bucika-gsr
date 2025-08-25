@@ -7,13 +7,6 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 
-/**
- * HexUtil
- * HEX转字符串工具类
- *
- * @author chuanfeng.bi
- * @date 2021/8/27 10:33
- */
 object HexUtil {
     private var inputStream: FileInputStream? = null
 
@@ -34,11 +27,6 @@ object HexUtil {
         return if (hex.length < 2) "0$hex".uppercase() else hex.uppercase()
     }
 
-    /**
-     * 进16进制字符串转换成字节数组
-     *
-     * @param hexStr 16进制的字符串
-     */
     fun toByteArray(hexStr: String): ByteArray {
         var s = hexStr.replace("", "")
         if (s.length % 2 != 0) {
@@ -100,11 +88,8 @@ object HexUtil {
         return (b0.toInt() xor b1.toInt()).toByte()
     }
 
-    /**
-     * hex转byte数组
-     */
     fun hexToByte(hex: String): ByteArray {
-        val byteLen = hex.length / 2 // 每两个字符描述一个字节
+        val byteLen = hex.length / 2
         val ret = ByteArray(byteLen)
         
         for (i in 0 until byteLen) {
@@ -121,7 +106,6 @@ object HexUtil {
         val hexString = "0123456789ABCDEFabcdef"
         val baos = ByteArrayOutputStream(upperBytes.length / 2)
         
-        // 将每2位16进制整数组装成一个字节
         var i = 0
         while (i < upperBytes.length) {
             baos.write((hexString.indexOf(upperBytes[i]) shl 4) or hexString.indexOf(upperBytes[i + 1]))
@@ -139,14 +123,14 @@ object HexUtil {
         
         return try {
             inputStream = FileInputStream(file)
-            val inSize = inputStream!!.channel.size() // 判断FileInputStream中是否有内容
+            val inSize = inputStream!!.channel.size()
             if (inSize == 0L) {
                 Log.d("bcf", "The FileInputStream has no content!")
                 return null
             }
             
-            val buffer = ByteArray(inputStream!!.available()) // in.available() 表示要读取的文件中的数据长度
-            inputStream!!.read(buffer) // 将文件中的数据读到buffer中
+            val buffer = ByteArray(inputStream!!.available())
+            inputStream!!.read(buffer)
             buffer
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -158,7 +142,7 @@ object HexUtil {
             try {
                 inputStream?.close()
             } catch (e: IOException) {
-                // Log error but don't return null here as we might have valid data
+
             }
         }
     }

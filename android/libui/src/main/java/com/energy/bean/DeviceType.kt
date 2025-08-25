@@ -1,8 +1,5 @@
 package com.energy.bean
 
-/**
- * Created by fengjibo on 2023/8/10.
- */
 enum class DeviceType(val type: String) {
     DEVICE_TYPE_TC2C("TC2C"),
     DEVICE_TYPE_WN2256("WN2256"),

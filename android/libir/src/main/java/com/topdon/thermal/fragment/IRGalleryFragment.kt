@@ -42,21 +42,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
-/**
- * Professional thermal imaging gallery fragment with comprehensive image and video management 
- * capabilities for research and clinical applications.
- * 
- * Provides advanced functionality for:
- * - Multi-device thermal image gallery management (TC001/TC007/TS004)
- * - Professional thermal video playback and analysis
- * - Research-grade batch operations (download, share, delete)
- * - Industry-standard remote data synchronization
- * - Professional gallery editing and selection workflows
- * - Clinical-grade thermal data organization and archival
- */
 class IRGalleryFragment : BaseFragment() {
 
-    /** ViewBinding instance for type-safe view access */
     private var _binding: FragmentIrGalleryBinding? = null
     private val binding get() = _binding!!
 
@@ -70,23 +57,14 @@ class IRGalleryFragment : BaseFragment() {
         _binding = null
     }
 
-    /**
-     * Gallery directory type passed from previous screen for thermal data organization
-     */
     private var currentDirType = DirType.LINE
 
-    /** ViewModel for thermal gallery data management and professional operations */
     private val viewModel: IRGalleryViewModel by viewModels()
 
-    /** Shared ViewModel for thermal gallery tab coordination and edit mode management */
     private val tabViewModel: IRGalleryTabViewModel by activityViewModels()
 
-    /** Professional thermal gallery adapter with comprehensive batch operation support */
     private val adapter = GalleryAdapter()
 
-    /**
-     * Content type flag indicating whether viewing thermal images or videos
-     */
     private var isVideo = false
 
     override fun initContentView() = R.layout.fragment_ir_gallery
@@ -195,19 +173,10 @@ class IRGalleryFragment : BaseFragment() {
         refresh()
     }
 
-    /**
-     * Initialize professional thermal gallery RecyclerView with comprehensive multi-device support.
-     * 
-     * Provides advanced functionality for:
-     * - Research-grade thermal image grid layout management
-     * - Professional batch selection and editing workflows
-     * - Industry-standard thermal data navigation and preview
-     * - Clinical-grade thermal video playback integration
-     */
     private fun initRecycler() {
         val spanCount = 3
         val gridLayoutManager = GridLayoutManager(requireActivity(), spanCount)
-        //动态设置span
+
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (adapter.dataList[position] is GalleryTitle) spanCount else 1
@@ -241,7 +210,6 @@ class IRGalleryFragment : BaseFragment() {
                     }
                 }
 
-
                 if (currentDirType == DirType.LINE || currentDirType == DirType.TC007) {
                     ARouter.getInstance().build(RouterConfig.IR_GALLERY_DETAIL_01)
                         .withBoolean(ExtraKeyConfig.IS_TC007, currentDirType == DirType.TC007)
@@ -258,7 +226,6 @@ class IRGalleryFragment : BaseFragment() {
             }
         }
 
-
         binding.refreshLayout.setOnRefreshListener {
             refresh()
         }
@@ -270,9 +237,6 @@ class IRGalleryFragment : BaseFragment() {
         binding.refreshLayout.autoRefresh()
     }
 
-    /**
-     * Refresh thermal gallery data with professional pagination support
-     */
     private fun refresh() {
         binding.refreshLayout.setEnableLoadMore(true)
         viewModel.hasLoadPage = 0
@@ -341,7 +305,7 @@ class IRGalleryFragment : BaseFragment() {
                         }
                     }
                 }
-                if (successCount == downloadMap.size) {//全都下载成功
+                if (successCount == downloadMap.size) {
                     dismissLoadingDialog()
                     if (isShare) {
                         shareImage(downloadList)
@@ -382,4 +346,3 @@ class IRGalleryFragment : BaseFragment() {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.battery_share)))
     }
 }
-

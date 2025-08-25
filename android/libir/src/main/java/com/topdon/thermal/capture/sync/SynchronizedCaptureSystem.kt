@@ -15,10 +15,6 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 import kotlin.math.abs
 
-/**
- * Synchronized Capture System for temporal alignment of concurrent 4K video and RAW DNG capture
- * Provides hardware-timestamp based synchronization for Samsung S22 research applications
- */
 @SuppressLint("MissingPermission")
 class SynchronizedCaptureSystem(
     private val context: Context
@@ -27,33 +23,26 @@ class SynchronizedCaptureSystem(
     companion object {
         private const val TAG = "SynchronizedCaptureSystem"
         
-        // Synchronization tolerances
-        private const val MAX_TEMPORAL_DRIFT_NS = 16_666_666L // 16.67ms (0.5 frame @ 30fps)
-        private const val SYNC_VALIDATION_INTERVAL_MS = 1000L // Check sync every second
-        private const val TIMESTAMP_CORRELATION_WINDOW_NS = 33_333_333L // 33.33ms (1 frame @ 30fps)
+        private const val MAX_TEMPORAL_DRIFT_NS = 16_666_666L
+        private const val SYNC_VALIDATION_INTERVAL_MS = 1000L
+        private const val TIMESTAMP_CORRELATION_WINDOW_NS = 33_333_333L
     }
     
-    // Master timestamp reference (hardware monotonic clock)
     private val masterClock = AtomicLong(0)
     private var captureStartTimeNs: Long = 0
     private var captureStartRealtimeMs: Long = 0
     
-    // Frame correlation tracking
     private val videoFrameTimestamps = ConcurrentHashMap<Long, VideoFrameInfo>()
     private val dngFrameTimestamps = ConcurrentHashMap<Long, DNGFrameInfo>()
     
-    // Synchronization metrics
     private var totalFramesPaired = 0
     private var averageTemporalDrift = 0.0
     private var maxTemporalDrift = 0L
     private var syncValidationCount = 0
     
-    /**
-     * Initialize the synchronized capture system
-     */
     fun initialize(): Boolean {
         return try {
-            // Reset all timing data
+
             masterClock.set(0)
             captureStartTimeNs = 0
             captureStartRealtimeMs = 0
@@ -61,7 +50,6 @@ class SynchronizedCaptureSystem(
             videoFrameTimestamps.clear()
             dngFrameTimestamps.clear()
             
-            // Reset metrics
             totalFramesPaired = 0
             averageTemporalDrift = 0.0
             maxTemporalDrift = 0
@@ -75,9 +63,6 @@ class SynchronizedCaptureSystem(
         }
     }
     
-    /**
-     * Start synchronized capture session
-     */
     fun startSynchronizedCapture(): CaptureSessionInfo {
         captureStartTimeNs = SystemClock.elapsedRealtimeNanos()
         captureStartRealtimeMs = System.currentTimeMillis()
@@ -95,9 +80,6 @@ class SynchronizedCaptureSystem(
         return sessionInfo
     }
     
-    /**
-     * Register a video frame timestamp (called by video recorder)
-     */
     fun registerVideoFrame(presentationTimeUs: Long): Long {
         val hardwareTimestampNs = SystemClock.elapsedRealtimeNanos()
         val relativeTimestampNs = hardwareTimestampNs - captureStartTimeNs
@@ -111,15 +93,11 @@ class SynchronizedCaptureSystem(
         
         videoFrameTimestamps[hardwareTimestampNs] = frameInfo
         
-        // Correlate with DNG frames if available
         tryCorrelateFrames(hardwareTimestampNs, isVideo = true)
         
         return hardwareTimestampNs
     }
     
-    /**
-     * Register a DNG frame timestamp (called by DNG capture manager)
-     */
     fun registerDNGFrame(imageTimestampNs: Long, frameIndex: Int): Long {
         val hardwareTimestampNs = if (imageTimestampNs > 0) imageTimestampNs else SystemClock.elapsedRealtimeNanos()
         val relativeTimestampNs = hardwareTimestampNs - captureStartTimeNs
@@ -134,22 +112,15 @@ class SynchronizedCaptureSystem(
         
         dngFrameTimestamps[hardwareTimestampNs] = frameInfo
         
-        // Correlate with video frames if available
         tryCorrelateFrames(hardwareTimestampNs, isVideo = false)
         
         return hardwareTimestampNs
     }
     
-    /**
-     * Get temporal correlation info for a specific timestamp
-     */
     fun getCorrelationInfo(timestampNs: Long): TemporalCorrelationInfo? {
         return findBestCorrelation(timestampNs)
     }
     
-    /**
-     * Get complete synchronization metrics
-     */
     fun getSynchronizationMetrics(): SynchronizationMetrics {
         val currentTimeNs = SystemClock.elapsedRealtimeNanos()
         val sessionDurationMs = if (captureStartTimeNs > 0) {
@@ -171,13 +142,12 @@ class SynchronizedCaptureSystem(
     private fun tryCorrelateFrames(newTimestampNs: Long, isVideo: Boolean) {
         val otherFrames = if (isVideo) dngFrameTimestamps else videoFrameTimestamps
         
-        // Find frames within correlation window
         val correlatedFrames = otherFrames.entries.filter { entry ->
             abs(entry.key - newTimestampNs) <= TIMESTAMP_CORRELATION_WINDOW_NS
         }
         
         if (correlatedFrames.isNotEmpty()) {
-            // Find closest temporal match
+
             val closestMatch = correlatedFrames.minByOrNull { entry ->
                 abs(entry.key - newTimestampNs)
             }
@@ -187,7 +157,7 @@ class SynchronizedCaptureSystem(
                 updateDriftMetrics(drift)
                 totalFramesPaired++
                 
-                if (totalFramesPaired % 30 == 0) { // Log every second
+                if (totalFramesPaired % 30 == 0) {
                     XLog.d(TAG, "Frame correlation: ${totalFramesPaired} pairs, avg drift: %.2f ms"
                         .format(averageTemporalDrift / 1_000_000.0))
                 }
@@ -198,7 +168,6 @@ class SynchronizedCaptureSystem(
     private fun updateDriftMetrics(driftNs: Long) {
         maxTemporalDrift = maxOf(maxTemporalDrift, driftNs)
         
-        // Update running average
         val totalSamples = totalFramesPaired + 1
         averageTemporalDrift = (averageTemporalDrift * totalFramesPaired + driftNs) / totalSamples
     }
@@ -225,7 +194,6 @@ class SynchronizedCaptureSystem(
             )
         }
         
-        // Look for nearest matches
         val nearestVideo = findNearestVideoFrame(timestampNs)
         val nearestDNG = findNearestDNGFrame(timestampNs)
         
@@ -265,9 +233,6 @@ class SynchronizedCaptureSystem(
         return "sync_${System.currentTimeMillis()}_${(Math.random() * 1000).toInt()}"
     }
     
-    /**
-     * Cleanup sync system resources
-     */
     fun cleanup() {
         videoFrameTimestamps.clear()
         dngFrameTimestamps.clear()
@@ -275,18 +240,12 @@ class SynchronizedCaptureSystem(
     }
 }
 
-/**
- * Capture session information
- */
 data class CaptureSessionInfo(
     val sessionId: String,
     val startTimeNs: Long,
     val startTimeMs: Long
 )
 
-/**
- * Video frame timing information
- */
 data class VideoFrameInfo(
     val presentationTimeUs: Long,
     val hardwareTimestampNs: Long,
@@ -294,9 +253,6 @@ data class VideoFrameInfo(
     val sequenceNumber: Long
 )
 
-/**
- * DNG frame timing information
- */
 data class DNGFrameInfo(
     val imageTimestampNs: Long,
     val hardwareTimestampNs: Long,
@@ -305,9 +261,6 @@ data class DNGFrameInfo(
     val captureTimeMs: Long
 )
 
-/**
- * Temporal correlation between video and DNG frames
- */
 data class TemporalCorrelationInfo(
     val videoFrame: VideoFrameInfo,
     val dngFrame: DNGFrameInfo,
@@ -315,20 +268,14 @@ data class TemporalCorrelationInfo(
     val correlationQuality: CorrelationQuality
 )
 
-/**
- * Quality rating for frame correlation
- */
 enum class CorrelationQuality {
-    EXACT,    // Perfect timestamp match
-    HIGH,     // < 4ms drift
-    MEDIUM,   // < 8ms drift  
-    LOW,      // < 16ms drift
-    POOR      // > 16ms drift
+    EXACT,
+    HIGH,
+    MEDIUM,
+    LOW,
+    POOR
 }
 
-/**
- * Complete synchronization metrics
- */
 data class SynchronizationMetrics(
     val sessionDurationMs: Long,
     val videoFramesRecorded: Int,

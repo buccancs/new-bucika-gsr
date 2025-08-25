@@ -8,36 +8,26 @@ import android.os.Build
 import android.util.Size
 import com.elvishew.xlog.XLog
 
-/**
- * Device compatibility checker for camera capabilities
- * Specifically validates Samsung S22 series support for concurrent 4K30fps + RAW DNG capture
- */
 class DeviceCompatibilityChecker(private val context: Context) {
 
     companion object {
         private const val TAG = "DeviceCompatibilityChecker"
         
-        // Samsung S22 series model identifiers
         private val SAMSUNG_S22_MODELS = setOf(
-            "SM-S901B", "SM-S901U", "SM-S901W", "SM-S901N", // S22 Base
-            "SM-S906B", "SM-S906U", "SM-S906W", "SM-S906N", // S22 Plus
-            "SM-S908B", "SM-S908U", "SM-S908W", "SM-S908N"  // S22 Ultra
+            "SM-S901B", "SM-S901U", "SM-S901W", "SM-S901N",
+            "SM-S906B", "SM-S906U", "SM-S906W", "SM-S906N",
+            "SM-S908B", "SM-S908U", "SM-S908W", "SM-S908N"
         )
         
-        // 4K resolution
         private val TARGET_4K_SIZE = Size(3840, 2160)
         private const val TARGET_FPS = 30
         
-        // Samsung S22 camera specifications (researched capabilities)
         private const val S22_MAX_CONCURRENT_STREAMS = 3
-        private const val S22_MAX_RAW_BUFFER_SIZE = 8 // Max RAW images in flight
+        private const val S22_MAX_RAW_BUFFER_SIZE = 8
     }
 
     private val cameraManager: CameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    /**
-     * Check if current device is Samsung S22 series
-     */
     fun isSamsungS22(): Boolean {
         val model = Build.MODEL
         val isSamsungS22 = SAMSUNG_S22_MODELS.contains(model)
@@ -45,9 +35,6 @@ class DeviceCompatibilityChecker(private val context: Context) {
         return isSamsungS22
     }
 
-    /**
-     * Check if device supports 4K recording at 30fps
-     */
     fun supports4K30fps(): Boolean {
         return try {
             val cameraIds = cameraManager.cameraIdList
@@ -55,18 +42,17 @@ class DeviceCompatibilityChecker(private val context: Context) {
                 val characteristics = cameraManager.getCameraCharacteristics(cameraId)
                 val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
                 
-                // Check back camera (typically camera 0)
                 if (facing == CameraCharacteristics.LENS_FACING_BACK) {
                     val streamConfigMap = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                     streamConfigMap?.let { configMap ->
-                        // Check if 4K size is supported
+
                         val outputSizes = configMap.getOutputSizes(ImageFormat.YUV_420_888)
                         val supports4K = outputSizes.any { size ->
                             size.width >= TARGET_4K_SIZE.width && size.height >= TARGET_4K_SIZE.height
                         }
                         
                         if (supports4K) {
-                            // Check frame rate ranges
+
                             val fpsRanges = configMap.getHighSpeedVideoFpsRanges()
                             val supports30fps = fpsRanges.any { range ->
                                 range.lower <= TARGET_FPS && range.upper >= TARGET_FPS
@@ -85,9 +71,6 @@ class DeviceCompatibilityChecker(private val context: Context) {
         }
     }
 
-    /**
-     * Check if device supports RAW (DNG) capture
-     */
     fun supportsRawCapture(): Boolean {
         return try {
             val cameraIds = cameraManager.cameraIdList
@@ -113,10 +96,6 @@ class DeviceCompatibilityChecker(private val context: Context) {
         }
     }
 
-    /**
-     * Check if device supports concurrent 4K video + RAW capture
-     * This is the main capability check for Samsung S22
-     */
     fun supportsConcurrent4KAndRaw(): Boolean {
         if (!isSamsungS22()) {
             XLog.w(TAG, "Device is not Samsung S22 series, concurrent capture may not be optimized")
@@ -130,7 +109,7 @@ class DeviceCompatibilityChecker(private val context: Context) {
                 val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
                 
                 if (facing == CameraCharacteristics.LENS_FACING_BACK) {
-                    // Check if camera supports multiple streams
+
                     val maxInputStreams = characteristics.get(CameraCharacteristics.REQUEST_MAX_NUM_INPUT_STREAMS) ?: 0
                     val maxOutputStreams = characteristics.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_STREAMS_RAW) ?: 0
                     
@@ -153,9 +132,6 @@ class DeviceCompatibilityChecker(private val context: Context) {
         }
     }
 
-    /**
-     * Get maximum concurrent streams supported by device
-     */
     fun getMaxConcurrentStreams(): Int {
         return try {
             val cameraIds = cameraManager.cameraIdList
@@ -172,32 +148,29 @@ class DeviceCompatibilityChecker(private val context: Context) {
                     return maxStreams
                 }
             }
-            1 // Default fallback
+            1
         } catch (e: Exception) {
             XLog.e(TAG, "Error getting max concurrent streams: ${e.message}", e)
             1
         }
     }
 
-    /**
-     * Get Samsung S22 specific optimization parameters
-     */
     fun getSamsungS22OptimizationParams(): S22OptimizationParams {
         return if (isSamsungS22()) {
             S22OptimizationParams(
                 maxConcurrentStreams = S22_MAX_CONCURRENT_STREAMS,
                 maxRawBufferSize = S22_MAX_RAW_BUFFER_SIZE,
-                recommended4KBitrate = 20_000_000, // 20 Mbps for S22 4K
+                recommended4KBitrate = 20_000_000,
                 recommendedRawFormat = ImageFormat.RAW_SENSOR,
                 enableHardwareAcceleration = true,
                 enableZeroCopyBuffer = true
             )
         } else {
-            // Conservative defaults for non-S22 devices
+
             S22OptimizationParams(
                 maxConcurrentStreams = 2,
                 maxRawBufferSize = 4,
-                recommended4KBitrate = 15_000_000, // 15 Mbps default
+                recommended4KBitrate = 15_000_000,
                 recommendedRawFormat = ImageFormat.RAW_SENSOR,
                 enableHardwareAcceleration = false,
                 enableZeroCopyBuffer = false
@@ -205,9 +178,6 @@ class DeviceCompatibilityChecker(private val context: Context) {
         }
     }
 
-    /**
-     * Validate if a concurrent capture configuration is supported
-     */
     fun validateConcurrentConfiguration(
         enable4K: Boolean,
         enableRaw: Boolean,
@@ -246,9 +216,6 @@ class DeviceCompatibilityChecker(private val context: Context) {
     }
 }
 
-/**
- * Samsung S22 specific optimization parameters
- */
 data class S22OptimizationParams(
     val maxConcurrentStreams: Int,
     val maxRawBufferSize: Int,
@@ -258,9 +225,6 @@ data class S22OptimizationParams(
     val enableZeroCopyBuffer: Boolean
 )
 
-/**
- * Result of capture compatibility validation
- */
 data class CaptureCompatibilityResult(
     val isSupported: Boolean,
     val issues: List<String>,

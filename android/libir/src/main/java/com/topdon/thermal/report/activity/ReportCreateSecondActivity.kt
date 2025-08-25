@@ -21,69 +21,19 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-/**
- * Professional Thermal Report Creation Activity (Step 2 of 2) with Industry-Standard Documentation and ViewBinding
- *
- * This professional thermal imaging report creation activity provides comprehensive report generation capabilities
- * for clinical and research environments with advanced temperature analysis and documentation features.
- *
- * **Required Parameters:**
- * - [ExtraKeyConfig.IS_TC007]: Device type flag (true for TC007, false for other plugin devices)
- * - [ExtraKeyConfig.FILE_ABSOLUTE_PATH]: Current edited image absolute path for report inclusion
- * - [ExtraKeyConfig.IMAGE_TEMP_BEAN]: Temperature measurement data (points, lines, rectangles, full image)
- * - [ExtraKeyConfig.REPORT_INFO]: Report metadata and identification information
- *
- * **Optional Parameters:**
- * - [ExtraKeyConfig.REPORT_CONDITION]: Detection conditions and environmental parameters
- * - [ExtraKeyConfig.REPORT_IR_LIST]: Previously confirmed image information list for multi-image reports
- *
- * **Professional Features:**
- * - Comprehensive temperature measurement data visualization with point, line, rectangle, and full-image analysis
- * - Industry-standard report preview with professional documentation formatting
- * - Multi-image report support with up to 9 thermal images per report
- * - Professional image scaling and aspect ratio management for optimal presentation
- * - Research-grade temperature data preservation with unit conversion support
- *
- * **Clinical Applications:**
- * - Medical thermal imaging report generation with detailed temperature analysis
- * - Building inspection documentation with comprehensive thermal data
- * - Industrial equipment monitoring reports with professional presentation
- * - Research documentation with academic-standard formatting
- *
- * @author Professional Thermal Imaging Team
- * @since 1.0.0
- */
 @Route(path = RouterConfig.REPORT_CREATE_SECOND)
 class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
 
-    /**
-     * ViewBinding instance for type-safe view access and lifecycle management
-     */
     private lateinit var binding: ActivityReportCreateSecondBinding
 
-    /**
-     * Current added thermal image information list for comprehensive report generation
-     */
     private var reportIRList: ArrayList<ReportIRBean> = ArrayList(0)
 
-    /**
-     * Current edited thermal image absolute file path from previous activity
-     */
     private var currentFilePath: String = ""
 
-    /**
-     * Temperature measurement data for current thermal image including points, lines, rectangles, and full image analysis
-     */
     private var imageTempBean: ImageTempBean? = null
 
     override fun initContentView() = R.layout.activity_report_create_second
 
-    /**
-     * Initialize ViewBinding and professional thermal report creation interface
-     *
-     * Configures comprehensive temperature data visualization, image preview, and report generation controls
-     * with industry-standard presentation and professional navigation capabilities.
-     */
     override fun initView() {
         binding = ActivityReportCreateSecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -99,33 +49,14 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         binding.tvPreview.setOnClickListener(this)
     }
 
-    /**
-     * Initialize thermal report data processing
-     *
-     * Prepares comprehensive temperature analysis data and report generation parameters
-     * for professional documentation and clinical applications.
-     */
     override fun initData() {
     }
 
-    /**
-     * Handle report creation completion events
-     *
-     * @param event Report creation completion event for activity lifecycle management
-     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onReportCreate(event: ReportCreateEvent) {
         finish()
     }
 
-    /**
-     * Refresh thermal image display with professional scaling and presentation
-     *
-     * Loads and displays thermal image with automatic aspect ratio calculation and professional
-     * scaling for optimal report presentation in both landscape and portrait orientations.
-     *
-     * @param absolutePath Thermal image absolute file path for display processing
-     */
     private fun refreshImg(absolutePath: String?) {
         lifecycleScope.launch {
             val drawable = GlideLoader.getDrawable(this@ReportCreateSecondActivity, absolutePath)
@@ -139,22 +70,12 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Refresh comprehensive temperature measurement data visualization
-     *
-     * Updates professional temperature analysis views for points, lines, rectangles, and full image
-     * measurements with industry-standard presentation and research-grade data organization.
-     *
-     * @param imageTempBean Temperature measurement data bean containing all measurement types
-     */
     private fun refreshData(imageTempBean: ImageTempBean?) {
         binding.scrollView.scrollTo(0, 0)
 
-        // Full image temperature analysis
         binding.reportTempViewFull.isVisible = imageTempBean?.full != null
         binding.reportTempViewFull.refreshData(imageTempBean?.full)
 
-        // Point temperature measurements (up to 5 points)
         binding.reportTempViewPoint1.isVisible = (imageTempBean?.pointList?.size ?: 0) > 0
         if ((imageTempBean?.pointList?.size ?: 0) > 0) {
             binding.reportTempViewPoint1.refreshData(imageTempBean?.pointList?.get(0))
@@ -176,7 +97,6 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
             binding.reportTempViewPoint5.refreshData(imageTempBean?.pointList?.get(4))
         }
 
-        // Line temperature measurements (up to 5 lines)
         binding.reportTempViewLine1.isVisible = (imageTempBean?.lineList?.size ?: 0) > 0
         if ((imageTempBean?.lineList?.size ?: 0) > 0) {
             binding.reportTempViewLine1.refreshData(imageTempBean?.lineList?.get(0))
@@ -198,7 +118,6 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
             binding.reportTempViewLine5.refreshData(imageTempBean?.lineList?.get(4))
         }
 
-        // Rectangle area temperature measurements (up to 5 rectangles)
         binding.reportTempViewRect1.isVisible = (imageTempBean?.rectList?.size ?: 0) > 0
         if ((imageTempBean?.rectList?.size ?: 0) > 0) {
             binding.reportTempViewRect1.refreshData(imageTempBean?.rectList?.get(0))
@@ -221,18 +140,10 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Handle professional thermal report creation navigation and actions
-     *
-     * Processes add image and preview requests with comprehensive validation and professional
-     * navigation to thermal image selection and report preview activities.
-     *
-     * @param v Clicked view for action identification and processing
-     */
     override fun onClick(v: View?) {
         when (v) {
             binding.tvAddImage -> {
-                // Add additional thermal image to report (maximum 9 images)
+
                 if (reportIRList.size >= 9) {
                     ToastUtils.showShort(R.string.album_report_max_image_tips)
                     return
@@ -248,7 +159,7 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
                     .navigation(this)
             }
             binding.tvPreview -> {
-                // Generate professional thermal report preview
+
                 val appLanguage = SharedManager.getLanguage(this)
                 val sdkVersion = "1.2.8_23050619"
                 val reportInfoBean: ReportInfoBean? = intent.getParcelableExtra(ExtraKeyConfig.REPORT_INFO)
@@ -264,15 +175,6 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Build comprehensive thermal IR report data bean with professional temperature measurements
-     *
-     * Constructs complete thermal imaging report data including full image analysis, point measurements,
-     * line analysis, and rectangular area measurements with industry-standard formatting and unit conversion.
-     *
-     * @param filePath Thermal image file path for report inclusion
-     * @return ReportIRBean Complete thermal report data with professional formatting
-     */
     private fun buildReportIr(filePath: String): ReportIRBean {
         val full: ReportTempBean? = if (imageTempBean?.full != null) {
             ReportTempBean(
@@ -293,15 +195,6 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         return ReportIRBean("", filePath, full, pointList, lienList, rectList)
     }
 
-    /**
-     * Build professional temperature measurement data lists for report generation
-     *
-     * Constructs comprehensive temperature measurement bean lists for different measurement types
-     * with industry-standard data formatting and professional temperature unit conversion.
-     *
-     * @param type Measurement type identifier (1=points, 2=lines, 3=rectangles)
-     * @return ArrayList<ReportTempBean> Professional temperature measurement data list
-     */
     private fun buildReportTempBeanList(type: Int): ArrayList<ReportTempBean> {
         val size = when (type) {
             1 -> imageTempBean?.pointList?.size ?: 0
@@ -311,7 +204,7 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         val resultList = ArrayList<ReportTempBean>(size)
         for (i in 0 until size) {
             val reportTempView = when (type) {
-                1 -> { // Point measurements
+                1 -> {
                     when (i) {
                         0 -> binding.reportTempViewPoint1
                         1 -> binding.reportTempViewPoint2
@@ -320,7 +213,7 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
                         else -> binding.reportTempViewPoint5
                     }
                 }
-                2 -> { // Line measurements
+                2 -> {
                     when (i) {
                         0 -> binding.reportTempViewLine1
                         1 -> binding.reportTempViewLine2
@@ -329,7 +222,7 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
                         else -> binding.reportTempViewLine5
                     }
                 }
-                else -> { // Rectangle measurements
+                else -> {
                     when (i) {
                         0 -> binding.reportTempViewRect1
                         1 -> binding.reportTempViewRect2
@@ -338,7 +231,7 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
                 }
             }
             val reportTempBean = if (type == 1) {
-                // Point temperature data formatting (different structure)
+
                 ReportTempBean(
                     if (reportTempView.getMaxInput().isNotEmpty()) reportTempView.getMaxInput() + UnitTools.showUnit() else "",
                     if (reportTempView.isSwitchMaxCheck() && reportTempView.getMaxInput().isNotEmpty()) 1 else 0,
@@ -346,7 +239,7 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
                     if (reportTempView.isSwitchExplainCheck() && reportTempView.getExplainInput().isNotEmpty()) 1 else 0
                 )
             } else {
-                // Line and rectangle temperature data formatting
+
                 ReportTempBean(
                     if (reportTempView.getMaxInput().isNotEmpty()) reportTempView.getMaxInput() + UnitTools.showUnit() else "",
                     if (reportTempView.isSwitchMaxCheck() && reportTempView.getMaxInput().isNotEmpty()) 1 else 0,
@@ -362,4 +255,3 @@ class ReportCreateSecondActivity: BaseActivity(), View.OnClickListener {
         }
         return resultList
     }
-

@@ -29,21 +29,14 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-/**
- * AppVersionUtil
- * APP版本检测工具类
- *
- * @author chuanfeng.bi
- * @date 2022/2/10 19:48
- */
 class AppVersionUtil(
     private val context: Context,
     private val dotIsShowListener: DotIsShowListener?
 ) {
     private var completeReceiver: DownloadCompleteReceiver? = null
     private var downloadManager: DownloadManager? = null
-    private var fileName = "" // 文件名称
-    private var downloadId = 0L // 下载id
+    private var fileName = ""
+    private var downloadId = 0L
 
     interface DotIsShowListener {
         fun isShow(show: Boolean)
@@ -94,16 +87,10 @@ class AppVersionUtil(
         }
     }
 
-    /**
-     * 获取处理过的本地版本code
-     */
     private fun getDealVersionCode(): Float {
         return AppUtil.getVersionCode(context) / 10f
     }
 
-    /**
-     * 弹出新版本信息提示框
-     */
     private fun showNewVersionDialog(bean: AppInfoBean) {
         var information = ""
         bean.softConfigOtherTypeVOList?.forEach { updateDescription ->
@@ -117,7 +104,7 @@ class AppVersionUtil(
             .setTitleMessage(context.getString(R.string.updata_new_version_update))
 
         if (bean.forcedUpgradeFlag.toInt() == 1) {
-            // 强制更新
+
             dialogBuilder.setPositiveListener(R.string.app_confirm) {
                 handleDownloadClick(bean.downloadPackageUrl)
             }.create().show()
@@ -166,9 +153,6 @@ class AppVersionUtil(
         }
     }
 
-    /**
-     * 下载完成的广播接收器
-     */
     private inner class DownloadCompleteReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
@@ -177,9 +161,6 @@ class AppVersionUtil(
         }
     }
 
-    /**
-     * 安装应用程序
-     */
     fun installApk() {
         downloadId = 0L
         VersionTools.setMDownloadId(0L)
@@ -216,7 +197,7 @@ class AppVersionUtil(
         val params = RequestParams()
         
         try {
-            // 解决 xutils 会把url转义造成签名不对的问题
+
             val splitUrl = url.split("?")
             val urlParams = splitUrl[1].split("&")
             val params1 = urlParams[0].split("=")
@@ -282,9 +263,6 @@ class AppVersionUtil(
         })
     }
 
-    /**
-     * 安装应用程序
-     */
     fun installApkNew() {
         try {
             val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath, fileName)

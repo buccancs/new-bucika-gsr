@@ -23,20 +23,6 @@ import com.topdon.thermal.databinding.ActivityThermalIrNightBinding
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
-/**
- * Thermal UI State Management Component
- * 
- * Extracted from IRThermalNightActivity to handle all UI state management
- * with improved separation of concerns and reduced complexity.
- * 
- * Responsibilities:
- * - UI component state management
- * - Screen orientation handling
- * - RecyclerView setup and management
- * - Loading state management
- * - UI visibility and layout updates
- * - Screen rotation and configuration changes
- */
 class ThermalUIStateManager(
     activity: Activity,
     private val binding: ActivityThermalIrNightBinding,
@@ -45,20 +31,15 @@ class ThermalUIStateManager(
     private val activityRef = WeakReference(activity)
     private val context: Context get() = activityRef.get() ?: throw IllegalStateException("Activity reference lost")
     
-    // UI State
     private var isFullScreen: Boolean = false
     private var currentOrientation: Int = Configuration.ORIENTATION_PORTRAIT
     private var isRecording: Boolean = false
     private var isAmplifyEnabled: Boolean = false
     
-    // RecyclerView adapters
     private var cameraItemAdapter: CameraItemAdapter? = null
     private var measureItemAdapter: MeasureItemAdapter? = null
     private var targetItemAdapter: TargetItemAdapter? = null
     
-    /**
-     * Initialize UI components and states
-     */
     fun initializeUI() {
         lifecycleOwner.lifecycleScope.launch {
             try {
@@ -72,18 +53,12 @@ class ThermalUIStateManager(
         }
     }
     
-    /**
-     * Set up RecyclerView components
-     */
     private fun setupRecyclerViews() {
         setupCameraRecyclerView()
         setupMeasureRecyclerView()
         setupTargetRecyclerView()
     }
     
-    /**
-     * Set up camera items RecyclerView
-     */
     private fun setupCameraRecyclerView() {
         binding.thermalRecyclerNight.apply {
             layoutManager = GridLayoutManager(context, 3)
@@ -94,9 +69,6 @@ class ThermalUIStateManager(
         }
     }
     
-    /**
-     * Set up measure items RecyclerView
-     */
     private fun setupMeasureRecyclerView() {
         binding.measureRecycler?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -107,9 +79,6 @@ class ThermalUIStateManager(
         }
     }
     
-    /**
-     * Set up target items RecyclerView
-     */
     private fun setupTargetRecyclerView() {
         binding.targetRecycler?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -120,31 +89,19 @@ class ThermalUIStateManager(
         }
     }
     
-    /**
-     * Set up UI event listeners
-     */
     private fun setupUIListeners() {
-        // Temperature seekbar listeners will be set up here
-        // Button click listeners
-        // Touch listeners for custom views
+
     }
     
-    /**
-     * Configure initial UI states
-     */
     private fun configureInitialStates() {
-        // Set initial visibility states
+
         updateLoadingState(false)
         updateRecordingState(false)
         updateAmplifyState(false)
         
-        // Set initial orientation
         handleOrientationChange(context.resources.configuration.orientation)
     }
     
-    /**
-     * Handle screen orientation changes
-     */
     fun handleOrientationChange(orientation: Int) {
         if (currentOrientation == orientation) return
         
@@ -170,70 +127,49 @@ class ThermalUIStateManager(
         }
     }
     
-    /**
-     * Configure portrait layout
-     */
     private fun configurePortraitLayout() {
         activityRef.get()?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         
-        // Adjust UI components for portrait mode
         binding.thermalRecyclerNight.apply {
             layoutManager = GridLayoutManager(context, 3)
         }
         
-        // Adjust other UI elements for portrait
-        updateUIForOrientation(false) // false = portrait
+        updateUIForOrientation(false)
     }
     
-    /**
-     * Configure landscape layout
-     */
     private fun configureLandscapeLayout() {
         activityRef.get()?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         
-        // Adjust UI components for landscape mode
         binding.thermalRecyclerNight.apply {
             layoutManager = GridLayoutManager(context, 5)
         }
         
-        // Adjust other UI elements for landscape
-        updateUIForOrientation(true) // true = landscape
+        updateUIForOrientation(true)
     }
     
-    /**
-     * Update RecyclerView layouts based on orientation
-     */
     private fun updateRecyclerViewLayouts() {
         val isLandscape = currentOrientation == Configuration.ORIENTATION_LANDSCAPE
         
-        // Update grid span count based on orientation
         (binding.thermalRecyclerNight.layoutManager as? GridLayoutManager)?.spanCount = 
             if (isLandscape) 5 else 3
             
-        // Refresh adapters
         cameraItemAdapter?.notifyDataSetChanged()
         measureItemAdapter?.notifyDataSetChanged()
         targetItemAdapter?.notifyDataSetChanged()
     }
     
-    /**
-     * Update UI elements based on orientation
-     */
     private fun updateUIForOrientation(isLandscape: Boolean) {
-        // Adjust component visibility and positioning for orientation
+
         binding.apply {
-            // Example adjustments (actual implementation depends on specific UI needs)
+
             if (isLandscape) {
-                // Landscape-specific UI adjustments
+
             } else {
-                // Portrait-specific UI adjustments
+
             }
         }
     }
     
-    /**
-     * Toggle full screen mode
-     */
     fun toggleFullScreen() {
         isFullScreen = !isFullScreen
         
@@ -254,87 +190,57 @@ class ThermalUIStateManager(
         Log.d(TAG, "Full screen mode: $isFullScreen")
     }
     
-    /**
-     * Update loading state
-     */
     fun updateLoadingState(isLoading: Boolean) {
         binding.loadingIndicator?.isVisible = isLoading
         
-        // Disable/enable UI components during loading
         binding.thermalRecyclerNight.isEnabled = !isLoading
         binding.temperatureSeekbar?.isEnabled = !isLoading
         
         Log.d(TAG, "Loading state: $isLoading")
     }
     
-    /**
-     * Update recording state
-     */
     fun updateRecordingState(recording: Boolean) {
         isRecording = recording
         
-        // Update recording UI indicators
         binding.recordingIndicator?.isVisible = recording
         binding.recordButton?.isSelected = recording
         
         Log.d(TAG, "Recording state: $recording")
     }
     
-    /**
-     * Update amplify state
-     */
     fun updateAmplifyState(enabled: Boolean) {
         isAmplifyEnabled = enabled
         
-        // Update amplify UI indicators
         binding.amplifyButton?.isSelected = enabled
         binding.amplifyIndicator?.isVisible = enabled
         
         Log.d(TAG, "Amplify state: $enabled")
     }
     
-    /**
-     * Handle camera item clicks
-     */
     private fun handleCameraItemClick(cameraItem: Any) {
-        // Handle camera item selection
+
         Log.d(TAG, "Camera item clicked: $cameraItem")
-        // This will delegate to the main activity or use callback
+
     }
     
-    /**
-     * Handle measure item clicks
-     */
     private fun handleMeasureItemClick(measureItem: Any) {
-        // Handle measure item selection
+
         Log.d(TAG, "Measure item clicked: $measureItem")
     }
     
-    /**
-     * Handle target item clicks
-     */
     private fun handleTargetItemClick(targetItem: Any) {
-        // Handle target item selection
+
         Log.d(TAG, "Target item clicked: $targetItem")
     }
     
-    /**
-     * Update temperature display
-     */
     fun updateTemperatureDisplay(temperature: String) {
         binding.temperatureText?.text = temperature
     }
     
-    /**
-     * Update status information
-     */
     fun updateStatusInfo(status: String) {
         binding.statusText?.text = status
     }
     
-    /**
-     * Show/hide UI components
-     */
     fun setComponentVisibility(componentId: UIComponent, visible: Boolean) {
         when (componentId) {
             UIComponent.TEMPERATURE_SEEKBAR -> binding.temperatureSeekbar?.isVisible = visible
@@ -345,9 +251,6 @@ class ThermalUIStateManager(
         }
     }
     
-    /**
-     * Get current UI state
-     */
     fun getCurrentState(): UIState {
         return UIState(
             isFullScreen = isFullScreen,

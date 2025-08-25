@@ -1,9 +1,5 @@
 package com.topdon.ble
 
-/**
- * date: 2021/8/12 12:08
- * author: bichuanfeng
- */
 class EasyBLEException : RuntimeException {
     constructor(message: String) : super(message)
     

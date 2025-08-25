@@ -15,38 +15,19 @@ import com.topdon.thermal.report.bean.ImageTempBean
 import com.topdon.thermal.databinding.ViewReportIrInputBinding
 import com.topdon.thermal.databinding.ItemReportIrInputBinding
 
-/**
- * Professional thermal imaging report input view component for clinical and research applications.
- *
- * Provides comprehensive temperature measurement input interface supporting:
- * - Full-screen thermal analysis input with min/max temperature configuration
- * - Multi-point temperature measurement input (up to 5 points)
- * - Linear temperature profile input (up to 5 lines)
- * - Rectangular region temperature input (up to 5 areas)
- * - Professional measurement comment and explanation input
- *
- * This component implements industry-standard thermal measurement input patterns
- * suitable for research documentation and clinical thermal imaging workflows.
- *
- * @constructor Creates thermal IR input view with professional measurement capabilities
- * @param context The application context for resource access
- * @param attrs Optional XML attributes for type and index configuration
- * @param defStyleAttr Optional default style attributes
- */
 class ReportIRInputView: LinearLayout {
 
     companion object {
-        /** Temperature measurement type: Full screen thermal analysis */
+        
         private const val TYPE_FULL = 0
-        /** Temperature measurement type: Point measurement */
+        
         private const val TYPE_POINT = 1
-        /** Temperature measurement type: Linear temperature profile */
+        
         private const val TYPE_LINE = 2
-        /** Temperature measurement type: Rectangular region analysis */
+        
         private const val TYPE_RECT = 3
     }
 
-    /** ViewBinding for the main report IR input layout */
     private val binding: ViewReportIrInputBinding
 
     constructor(context: Context) : this(context, null)
@@ -59,14 +40,12 @@ class ReportIRInputView: LinearLayout {
             android.view.LayoutInflater.from(context), this, true
         )
 
-        // Configure explanation text input with professional limits
         val explainBinding = ItemReportIrInputBinding.bind(binding.clExplain)
         with(explainBinding) {
             etItem.inputType = InputType.TYPE_CLASS_TEXT
             etItem.filters = arrayOf(LengthFilter(150))
         }
 
-        // Set up professional switch listeners for all measurement types
         with(binding) {
             val maxBinding = ItemReportIrInputBinding.bind(clMax)
             val minBinding = ItemReportIrInputBinding.bind(clMin)
@@ -78,13 +57,11 @@ class ReportIRInputView: LinearLayout {
             setSwitchListener(explainBinding.switchItem, explainBinding.etItem)
         }
 
-        // Parse custom attributes for measurement type and index
         val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ReportIRInputView)
         val type = typeArray.getInt(R.styleable.ReportIRInputView_type, TYPE_FULL)
         val index = typeArray.getInt(R.styleable.ReportIRInputView_index, 0)
         typeArray.recycle()
 
-        // Configure title visibility and separator lines
         with(binding) {
             clTitle.isVisible = index == 0
             viewLine.isVisible = index > 0
@@ -93,12 +70,6 @@ class ReportIRInputView: LinearLayout {
         }
     }
 
-    /**
-     * Configures professional measurement type interface based on thermal analysis type.
-     *
-     * @param type The measurement type (full screen, point, line, rectangle)
-     * @param index The measurement index within the type
-     */
     private fun setupMeasurementType(type: Int, index: Int) {
         val maxBinding = ItemReportIrInputBinding.bind(binding.clMax)
         val minBinding = ItemReportIrInputBinding.bind(binding.clMin)
@@ -142,86 +113,46 @@ class ReportIRInputView: LinearLayout {
         }
     }
 
-    /**
-     * Checks if the maximum temperature switch is enabled.
-     * @return true if maximum temperature input is enabled
-     */
     fun isSwitchMaxCheck(): Boolean {
         val maxBinding = ItemReportIrInputBinding.bind(binding.clMax)
         return maxBinding.switchItem.isChecked
     }
 
-    /**
-     * Checks if the minimum temperature switch is enabled.
-     * @return true if minimum temperature input is enabled
-     */
     fun isSwitchMinCheck(): Boolean {
         val minBinding = ItemReportIrInputBinding.bind(binding.clMin)
         return minBinding.switchItem.isChecked
     }
 
-    /**
-     * Checks if the average temperature switch is enabled.
-     * @return true if average temperature input is enabled
-     */
     fun isSwitchAverageCheck(): Boolean {
         val averageBinding = ItemReportIrInputBinding.bind(binding.clAverage)
         return averageBinding.switchItem.isChecked
     }
 
-    /**
-     * Checks if the explanation switch is enabled.
-     * @return true if explanation input is enabled
-     */
     fun isSwitchExplainCheck(): Boolean {
         val explainBinding = ItemReportIrInputBinding.bind(binding.clExplain)
         return explainBinding.switchItem.isChecked
     }
 
-    /**
-     * Gets the maximum temperature input value.
-     * @return The entered maximum temperature as string
-     */
     fun getMaxInput(): String {
         val maxBinding = ItemReportIrInputBinding.bind(binding.clMax)
         return maxBinding.etItem.text.toString()
     }
 
-    /**
-     * Gets the minimum temperature input value.
-     * @return The entered minimum temperature as string
-     */
     fun getMinInput(): String {
         val minBinding = ItemReportIrInputBinding.bind(binding.clMin)
         return minBinding.etItem.text.toString()
     }
 
-    /**
-     * Gets the average temperature input value.
-     * @return The entered average temperature as string
-     */
     fun getAverageInput(): String {
         val averageBinding = ItemReportIrInputBinding.bind(binding.clAverage)
         return averageBinding.etItem.text.toString()
     }
 
-    /**
-     * Gets the explanation input value.
-     * @return The entered explanation text as string
-     */
     fun getExplainInput(): String {
         val explainBinding = ItemReportIrInputBinding.bind(binding.clExplain)
         return explainBinding.etItem.text.toString()
     }
 
-    /**
-     * Refreshes professional temperature measurement data display.
-     *
-     * Updates all temperature input fields with unit-converted values suitable
-     * for clinical and research documentation standards.
-     *
-     * @param tempBean The temperature measurement data to display
-     */
     fun refreshData(tempBean: ImageTempBean.TempBean?) {
         val maxBinding = ItemReportIrInputBinding.bind(binding.clMax)
         val minBinding = ItemReportIrInputBinding.bind(binding.clMin)
@@ -240,12 +171,6 @@ class ReportIRInputView: LinearLayout {
         explainBinding.etItem.setText("")
     }
 
-    /**
-     * Sets up professional switch listener for temperature input enabling/disabling.
-     *
-     * @param switchCompat The switch control for enabling input
-     * @param editText The corresponding temperature input field
-     */
     private fun setSwitchListener(switchCompat: SwitchCompat, editText: EditText) {
         switchCompat.setOnCheckedChangeListener { _, isChecked ->
             editText.isVisible = isChecked

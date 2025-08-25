@@ -19,19 +19,6 @@ import com.topdon.lib.ui.databinding.DialogTipGuideBinding
 import com.topdon.lib.ui.widget.IndicateView
 import kotlin.collections.ArrayList
 
-/**
- * Professional tip guide dialog for thermal imaging systems
- * 
- * Provides comprehensive user guidance including:
- * - Multi-page guide with FragmentPager integration
- * - Professional visual indicators and image-based instructions
- * - Three-step guided instruction system
- * - Industry-standard dialog presentation with proper lifecycle management
- * - Type-safe view access with ViewBinding
- * 
- * @property closeEvent Callback for dialog close events
- */
-
 class TipGuideDialog : DialogFragment() {
 
     private lateinit var titleList: ArrayList<String>
@@ -99,7 +86,6 @@ class TipGuideDialog : DialogFragment() {
 
         })
     }
-
 
     fun updateIndex(position: Int) {
         if (index == position) {

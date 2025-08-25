@@ -33,85 +33,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-/**
- * Professional Thermal Imaging PDF Report Management Activity with Industry-Standard Documentation and ViewBinding
- *
- * This professional thermal imaging PDF report management activity provides comprehensive document
- * management capabilities for clinical and research environments with advanced report viewing,
- * downloading, synchronization, and multi-language support.
- *
- * **Required Parameters:**
- * - [ExtraKeyConfig.IS_TC007]: Device type flag (true for TC007, false for other plugin devices)
- *
- * **Professional Features:**
- * - Comprehensive PDF report viewing with professional document presentation
- * - Advanced report downloading with progress tracking and error handling
- * - Cloud synchronization with real-time data updates and offline support
- * - Multi-language support for international research collaboration
- * - Professional report deletion with confirmation dialogs and data validation
- * - Industry-standard pagination with pull-to-refresh and load-more functionality
- * - Network management with automatic switching for optimal connectivity
- *
- * **Clinical Applications:**
- * - Medical thermal imaging report archival and retrieval systems
- * - Building inspection documentation management with comprehensive search capabilities
- * - Industrial equipment monitoring report organization and analysis
- * - Research documentation with academic-standard formatting and export capabilities
- *
- * @author Professional Thermal Imaging Team  
- * @since 1.0.0
- */
 @Route(path = RouterConfig.REPORT_LIST)
 class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
 
-    /**
-     * ViewBinding instance for type-safe view access and lifecycle management
-     */
     private lateinit var binding: ActivityPdfListBinding
 
-    /**
-     * Current device type flag for professional thermal camera model identification
-     * true = TC007 device, false = other plugin thermal devices
-     */
     private var isTC007 = false
 
-    /**
-     * Current pagination page number for professional report loading
-     */
     var page = 1
 
-    /**
-     * ViewModel provider class for professional PDF data management
-     */
     override fun providerVMClass() = PdfViewModel::class.java
 
-    /**
-     * Professional PDF report adapter with comprehensive document presentation
-     */
     var reportAdapter = PDFAdapter(R.layout.item_pdf)
 
-    /**
-     * Initialize professional PDF list layout with ViewBinding support
-     *
-     * @return Layout resource ID for professional PDF management interface
-     */
     override fun initContentView(): Int {
         return R.layout.activity_pdf_list
     }
 
-    /**
-     * Initialize ViewBinding and professional PDF report management interface
-     *
-     * Configures comprehensive document management system with advanced networking,
-     * professional data observation, and industry-standard user interface elements.
-     */
     override fun initView() {
         binding = ActivityPdfListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
         isTC007 = intent.getBooleanExtra(ExtraKeyConfig.IS_TC007, false)
 
-        // Professional PDF data observation with comprehensive error handling
         viewModel.listData.observe(this) {
             dismissLoadingDialog()
             if (!reportAdapter.hasEmptyView()){
@@ -126,7 +70,7 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
             }
             it?.let {data->
                 if (page == 1) {
-                    // Professional data refresh with comprehensive validation
+
                     if (data.code == LMS.SUCCESS){
                         reportAdapter.loadMoreModule.isEnableLoadMore = !data.data?.records.isNullOrEmpty()
                         binding.fragmentPdfRecyclerLay.finishRefresh()
@@ -135,7 +79,7 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
                     }
                     reportAdapter.setNewInstance(data.data?.records)
                 } else {
-                    // Professional pagination with industry-standard load management
+
                     data.data?.records?.let { it1 -> reportAdapter.addData(it1) }
                     if (data.code == LMS.SUCCESS){
                         if (data.data?.records.isNullOrEmpty()){
@@ -150,7 +94,6 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
             }
         }
         
-        // Professional network management for optimal connectivity
         if (WebSocketProxy.getInstance().isConnected()) {
             NetWorkUtils.switchNetwork(false)
         }else{
@@ -159,26 +102,12 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
         initRecycler()
     }
 
-    /**
-     * Initialize professional PDF report data processing
-     *
-     * Prepares comprehensive document management system for professional
-     * thermal imaging report viewing and analysis.
-     */
     override fun initData() {
     }
 
-    /**
-     * Initialize professional PDF report RecyclerView with comprehensive functionality
-     *
-     * Configures advanced document management interface with professional pagination,
-     * comprehensive navigation, and industry-standard report operations including
-     * viewing, downloading, and deletion with confirmation dialogs.
-     */
     private fun initRecycler() {
         binding.fragmentPdfRecycler.layoutManager = LinearLayoutManager(this)
         
-        // Professional refresh functionality with comprehensive data validation
         binding.fragmentPdfRecyclerLay.setOnRefreshListener {
             page = 1
             viewModel.getReportData(isTC007, page)
@@ -188,12 +117,10 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
         reportAdapter.loadMoreModule.loadMoreView = CommLoadMoreView()
         binding.fragmentPdfRecyclerLay.autoRefresh()
         
-        // Professional pagination with industry-standard load management
         reportAdapter.loadMoreModule.setOnLoadMoreListener {
             viewModel.getReportData(isTC007, ++page)
         }
         
-        // Professional report detail navigation with comprehensive data passing
         reportAdapter.jumpDetailListener = {item, position ->
             ARouter.getInstance().build(RouterConfig.REPORT_DETAIL)
                 .withParcelable(ExtraKeyConfig.REPORT_BEAN,reportAdapter.data[position]?.reportContent)
@@ -202,7 +129,6 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
         
         reportAdapter.isUseEmpty = true
         
-        // Professional report deletion with comprehensive validation and confirmation
         reportAdapter.delListener = {item, position ->
             val reportBean = item.reportContent
             TipDialog.Builder(this)
@@ -213,8 +139,8 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
                         withContext(Dispatchers.IO){
                             val url = UrlConstant.BASE_URL + "api/v1/outProduce/testReport/delTestReport"
                             val params = RequestParams()
-                            // Professional device model identification for deletion API
-                            params.addBodyParameter("modelId", if (isTC007) 1783 else 950) // TC001-950, TC002-951, TC003-952 TC007-1783
+
+                            params.addBodyParameter("modelId", if (isTC007) 1783 else 950)
                             params.addBodyParameter("testReportIds", arrayOf(item.testReportId))
                             params.addBodyParameter("status", 1)
                             params.addBodyParameter("languageId",  LanguageUtil.getLanguageId(Utils.getApp()))
@@ -231,7 +157,7 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
                                 }
 
                                 override fun onFail(exception: Exception?) {
-                                    // Professional error handling for network failures
+
                                 }
 
                                 override fun onFail(failMsg: String?, errorCode: String) {
@@ -251,7 +177,6 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
                         }
                         dismissLoadingDialog()
                         
-                        // Professional UI update after successful deletion
                         if (item.isShowTitleTime){
                             reportAdapter.remove(item)
                             reportAdapter.setNewInstance(reportAdapter.data)
@@ -263,7 +188,7 @@ class PDFListActivity : BaseViewModelActivity<PdfViewModel>() {
                     }
                 }
                 .setCancelListener(R.string.app_cancel) {
-                    // Professional cancellation handling
+
                 }
                 .create().show()
         }

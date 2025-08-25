@@ -18,10 +18,6 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
-/**
- * Local implementation of ShimmerBluetooth from official SDK
- * Handles Bluetooth communication with Shimmer devices
- */
 class ShimmerBluetooth(
     private val context: Context,
     handler: Handler,
@@ -48,7 +44,6 @@ class ShimmerBluetooth(
         
         const val EXTRA_DEVICE_NAME = "device_name"
         
-        // Shimmer3 Bluetooth service UUID
         private val SHIMMER_SERVICE_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     }
     
@@ -69,7 +64,6 @@ class ShimmerBluetooth(
         messageHandler = handler
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         
-        // Extract device name from address if available
         try {
             bluetoothDevice = bluetoothAdapter?.getRemoteDevice(bluetoothAddress)
             deviceName = bluetoothDevice?.name ?: "Shimmer3 Device"
@@ -118,12 +112,10 @@ class ShimmerBluetooth(
             inputStream = bluetoothSocket?.inputStream
             outputStream = bluetoothSocket?.outputStream
             
-            // Connection successful
             isConnected = true
             connectionInProgress.set(false)
             updateConnectionState(STATE_CONNECTED)
             
-            // Send device name message
             val nameMessage = messageHandler?.obtainMessage(MSG_DEVICE_NAME)
             nameMessage?.data?.putString(EXTRA_DEVICE_NAME, deviceName)
             messageHandler?.sendMessage(nameMessage ?: return)
@@ -188,7 +180,6 @@ class ShimmerBluetooth(
             streamingInProgress.set(true)
             isStreaming = true
             
-            // Start data reading thread
             dataStreamingThread = Thread({
                 streamData()
             }, "ShimmerDataStream").apply {
@@ -218,7 +209,6 @@ class ShimmerBluetooth(
             dataStreamingThread?.interrupt()
             dataStreamingThread = null
             
-            // Send stop streaming complete message
             val stopMessage = messageHandler?.obtainMessage(MSG_STOP_STREAMING_COMPLETE)
             messageHandler?.sendMessage(stopMessage ?: return)
             
@@ -234,15 +224,13 @@ class ShimmerBluetooth(
         
         try {
             while (isStreaming && !Thread.currentThread().isInterrupted) {
-                // Generate realistic GSR data packet
+
                 val objectCluster = generateGSRDataPacket()
                 
-                // Send data to message handler
                 val dataMessage = messageHandler?.obtainMessage(MESSAGE_READ)
                 dataMessage?.obj = objectCluster
                 messageHandler?.sendMessage(dataMessage ?: continue)
                 
-                // Sleep to maintain sampling rate (128 Hz = ~7.8ms interval)
                 Thread.sleep((1000.0 / samplingRate).toLong())
             }
         } catch (e: InterruptedException) {
@@ -257,7 +245,6 @@ class ShimmerBluetooth(
     private fun generateGSRDataPacket(): ObjectCluster {
         val objectCluster = ObjectCluster()
         
-        // Generate realistic GSR conductance value (microsiemens)
         val timeMs = System.currentTimeMillis()
         val baseGSR = 5.0
         val breathingPattern = 0.5 * kotlin.math.sin(timeMs * 0.001 * 2 * kotlin.math.PI / 4.0)
@@ -267,13 +254,11 @@ class ShimmerBluetooth(
         
         val gsrValue = kotlin.math.max(0.1, baseGSR + breathingPattern + heartRatePattern + noiseComponent + trendComponent)
         
-        // Generate realistic skin temperature (Celsius)
         val baseTemp = 32.5
         val thermalDrift = 0.0001 * timeMs % 10000 / 10000.0
         val tempNoise = Random.nextDouble(-0.1, 0.1)
         val skinTemp = baseTemp + thermalDrift + tempNoise
         
-        // Add GSR data to object cluster
         objectCluster.addData(
             Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE,
             Configuration.CALIBRATED,
@@ -281,7 +266,6 @@ class ShimmerBluetooth(
             "μS"
         )
         
-        // Add temperature data to object cluster
         objectCluster.addData(
             Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE,
             Configuration.CALIBRATED,

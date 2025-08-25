@@ -15,34 +15,6 @@ import com.topdon.thermal.R
 import com.topdon.thermal.databinding.ItemIrConfigEmissivityBinding
 import com.topdon.thermal.utils.IRConfigData
 
-/**
- * Professional Emissivity Configuration Adapter for Thermal Temperature Correction
- * 
- * This adapter provides a comprehensive interface for managing emissivity values
- * in thermal imaging applications, essential for accurate temperature measurements
- * in research and clinical environments.
- * 
- * **Emissivity Management Features:**
- * - Professional ViewBinding implementation replacing deprecated Kotlin synthetics
- * - Comprehensive emissivity database with material-specific values for research accuracy
- * - Professional table-style display with custom drawable borders for clear visualization
- * - Research-grade data organization for thermal analysis and temperature correction
- * 
- * **Research Application Benefits:**
- * - Accurate temperature correction for various materials in thermal imaging studies
- * - Professional emissivity value selection for enhanced measurement precision
- * - User-friendly interface for quick emissivity adjustments during research workflows
- * - Integration with thermal imaging calibration and temperature analysis systems
- * 
- * **Visual Design:**
- * - Custom drawable implementation for professional table borders and visual separation
- * - Responsive layout design optimized for research application interfaces
- * - Professional color scheme and typography for clinical and research environments
- * 
- * @author BucikaGSR Development Team
- * @since 2024.1.0
- * @see IRConfigData For comprehensive emissivity database and material properties
- */
 class ConfigEmAdapter(val context: Context) : RecyclerView.Adapter<ConfigEmAdapter.ViewHolder>() {
     private val dataList: ArrayList<IRConfigData> = IRConfigData.irConfigData(context)
 
@@ -59,10 +31,6 @@ class ConfigEmAdapter(val context: Context) : RecyclerView.Adapter<ConfigEmAdapt
 
     override fun getItemCount(): Int = dataList.size
 
-    /**
-     * Professional ViewHolder with ViewBinding for emissivity configuration items
-     * Provides type-safe access to UI components for research-grade interface
-     */
     class ViewHolder(val binding: ItemIrConfigEmissivityBinding) : RecyclerView.ViewHolder(binding.root)
 
     private class EmBgDrawable(val drawRight: Boolean, val drawBottom: Boolean) : Drawable() {

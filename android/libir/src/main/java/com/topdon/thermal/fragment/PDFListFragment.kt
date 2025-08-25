@@ -45,24 +45,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-/**
- * Professional thermal imaging PDF report management fragment providing comprehensive
- * report viewing and management capabilities for research and clinical applications.
- * 
- * Provides advanced functionality for:
- * - Professional thermal imaging PDF report list management
- * - Industry-standard thermal report download and synchronization
- * - Research-grade PDF document viewing and analysis
- * - Professional thermal report archival and organization
- * - Clinical-grade report sharing and export capabilities
- * - Comprehensive multi-language thermal report support
- * 
- * @author: CaiSongL
- * @date: 2023/5/12 11:34
- */
 class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
 
-    /** ViewBinding instance for type-safe view access */
     private var _binding: FragmentPdfListBinding? = null
     private val binding get() = _binding!!
 
@@ -76,21 +60,12 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
         _binding = null
     }
 
-    /**
-     * Device type flag indicating whether current device is TC007 or other plugin-style device.
-     * true=TC007, false=other plugin devices
-     */
     private var isTC007 = false
 
-    /** Current page number for professional PDF report pagination */
     private var page = 1
     
-    /** Professional PDF report adapter with comprehensive management features */
     private var reportAdapter = PDFAdapter(R.layout.item_pdf)
 
-    /**
-     * LMS login and logout broadcast receiver for session management.
-     */
     private val loginBroadcastReceiver = LoginBroadcastReceiver()
 
     override fun providerVMClass() = PdfViewModel::class.java
@@ -126,7 +101,7 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
                 tvEmpty?.setText(if (page == 1 && data.code != LMS.SUCCESS) R.string.request_fail else R.string.tip_no_more_data)
 
                 if (page == 1) {
-                    //刷新
+
                     if (data.code == LMS.SUCCESS){
                         reportAdapter.loadMoreModule.isEnableLoadMore = !data.data?.records.isNullOrEmpty()
                         binding.fragmentPdfRecyclerLay.finishRefresh()
@@ -163,9 +138,6 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
         })
     }
 
-    /**
-     * 是否已调用过加载初始数据
-     */
     private var hasLoadData = false
 
     override fun initData() {
@@ -189,16 +161,6 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
         }
     }
 
-    /**
-     * Initialize professional PDF report RecyclerView with comprehensive management capabilities.
-     * 
-     * Provides advanced functionality for:
-     * - Research-grade PDF report list display and navigation
-     * - Professional report deletion with confirmation workflows
-     * - Industry-standard report detail viewing and analysis
-     * - Clinical-grade pagination and load more functionality
-     * - Comprehensive report synchronization and refresh capabilities
-     */
     private fun initRecycler() {
         reportAdapter.isUseEmpty = true
         reportAdapter.delListener = {item, position ->
@@ -211,7 +173,7 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
                         withContext(Dispatchers.IO){
                             val url = UrlConstant.BASE_URL + "api/v1/outProduce/testReport/delTestReport"
                             val params = RequestParams()
-                            params.addBodyParameter("modelId", if (isTC007) 1783 else 950) //TC001-950, TC002-951, TC003-952 TC007-1783
+                            params.addBodyParameter("modelId", if (isTC007) 1783 else 950)
                             params.addBodyParameter("testReportIds", arrayOf(item.testReportId))
                             params.addBodyParameter("status", 1)
                             params.addBodyParameter("languageId",  LanguageUtil.getLanguageId(Utils.getApp()))
@@ -270,14 +232,14 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
         }
         reportAdapter.loadMoreModule.loadMoreView = CommLoadMoreView()
         reportAdapter.loadMoreModule.setOnLoadMoreListener {
-            //加载更多
+
             viewModel.getReportData(isTC007, ++page)
         }
 
         binding.fragmentPdfRecycler.adapter = reportAdapter
         binding.fragmentPdfRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.fragmentPdfRecyclerLay.setOnRefreshListener {
-            //刷新
+
             page = 1
             viewModel.getReportData(isTC007, page)
         }

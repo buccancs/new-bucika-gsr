@@ -19,21 +19,6 @@ import com.topdon.lib.core.common.SaveSettingUtil
 import com.topdon.lib.core.tools.ToastTools
 import com.topdon.libcom.databinding.DialogTempAlarmSetBinding
 
-/**
- * Professional temperature alarm setting dialog for thermal imaging systems
- * 
- * Provides comprehensive temperature alarm configuration including:
- * - Temperature threshold setting with professional validation
- * - Alarm sound selection and preview capabilities
- * - Switch control integration for alarm features
- * - Professional MediaPlayer integration for sound testing
- * - Type-safe view access with ViewBinding
- * 
- * @param isEdit Whether the dialog is in edit mode for existing alarms
- * @property onSaveListener Callback for alarm configuration save events
- * @property alarmBean Current alarm configuration bean
- */
-
 class TempAlarmSetDialog(
     context: Context,
     private val isEdit: Boolean,
@@ -44,18 +29,11 @@ class TempAlarmSetDialog(
             field = value.copy()
         }
 
-    /**
-     * 保存点击事件监听.
-     */
     var onSaveListener: ((alarmBean: AlarmBean) -> Unit)? = null
 
-    /**
-     * 用于播放报警铃声.
-     */
     private var mediaPlayer: MediaPlayer? = null
 
     public var hideAlarmMark = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -240,22 +218,22 @@ class TempAlarmSetDialog(
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView?.id) {
-            R.id.switch_alarm_high -> {//高温报警
+            R.id.switch_alarm_high -> {
                 et_alarm_high.isEnabled = isChecked
                 alarmBean.isHighOpen = isChecked
             }
 
-            R.id.switch_alarm_low -> {//低温报警
+            R.id.switch_alarm_low -> {
                 et_alarm_low.isEnabled = isChecked
                 alarmBean.isLowOpen = isChecked
             }
 
-            R.id.switch_alarm_mark -> {//区域标记
+            R.id.switch_alarm_mark -> {
                 cl_alarm_mark.isVisible = isChecked
                 alarmBean.isMarkOpen = isChecked
             }
 
-            R.id.switch_alarm_ringtone -> {//报警铃声
+            R.id.switch_alarm_ringtone -> {
                 cl_ringtone_select.isVisible = isChecked
                 if (isChecked) {
                     selectRingtone(alarmBean.ringtoneType)
@@ -266,9 +244,6 @@ class TempAlarmSetDialog(
         }
     }
 
-    /**
-     * 设置当前选中的铃声，null 表示关闭.
-     */
     private fun selectRingtone(position: Int?) {
         try {
             if (mediaPlayer != null) {

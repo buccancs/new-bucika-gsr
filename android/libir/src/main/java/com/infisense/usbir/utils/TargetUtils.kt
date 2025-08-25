@@ -35,7 +35,7 @@ object TargetUtils {
                 }
             }
             ObserveBean.TYPE_MEASURE_DOG, ObserveBean.TYPE_MEASURE_BIRD -> {
-                // Dog and Bird use sheep drawables as fallback
+
                 when (targetType) {
                     ObserveBean.TYPE_TARGET_HORIZONTAL -> R.drawable.ic_target_horizontal_sheep_green
                     ObserveBean.TYPE_TARGET_VERTICAL -> R.drawable.ic_target_vertical_sheep_green
@@ -169,10 +169,10 @@ object TargetUtils {
 
     fun getMeasureSize(targetMeasureMode: Int): Float {
         return when (targetMeasureMode) {
-            ObserveBean.TYPE_MEASURE_PERSON -> 180f  // 人
-            ObserveBean.TYPE_MEASURE_SHEEP -> 100f   // 羊
-            ObserveBean.TYPE_MEASURE_DOG -> 50f      // 狗
-            ObserveBean.TYPE_MEASURE_BIRD -> 20f     // 鸟
+            ObserveBean.TYPE_MEASURE_PERSON -> 180f
+            ObserveBean.TYPE_MEASURE_SHEEP -> 100f
+            ObserveBean.TYPE_MEASURE_DOG -> 50f
+            ObserveBean.TYPE_MEASURE_BIRD -> 20f
             else -> 180f
         }
     }

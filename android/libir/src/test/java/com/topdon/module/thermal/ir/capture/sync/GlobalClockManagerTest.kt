@@ -11,11 +11,6 @@ import org.robolectric.annotation.Config
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-/**
- * Comprehensive test suite for GlobalClockManager
- * Tests nanosecond precision timing, synchronization accuracy, and multi-component coordination
- * Critical for quality improvement - this is one of the high complexity components (CC: 22+)
- */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29])
 class GlobalClockManagerTest {
@@ -29,19 +24,19 @@ class GlobalClockManagerTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        // Reset singleton state before each test
+
         GlobalClockManager.reset()
     }
 
     @After
     fun tearDown() {
-        // Clean up after each test
+
         GlobalClockManager.shutdown()
     }
 
     @Test
     fun testSingletonInitialization() {
-        // Test singleton initialization
+
         val result = GlobalClockManager.initialize(mockContext)
         
         Assert.assertTrue("GlobalClockManager should initialize successfully", result)
@@ -50,7 +45,7 @@ class GlobalClockManagerTest {
 
     @Test
     fun testDoubleInitializationPrevention() {
-        // Test that double initialization is handled gracefully
+
         GlobalClockManager.initialize(mockContext)
         val secondResult = GlobalClockManager.initialize(mockContext)
         
@@ -62,22 +57,20 @@ class GlobalClockManagerTest {
     fun testNanosecondPrecisionTiming() {
         GlobalClockManager.initialize(mockContext)
         
-        // Test nanosecond precision timestamp generation
         val timestamp1 = GlobalClockManager.getCurrentTimeNanos()
-        Thread.sleep(1) // Small delay
+        Thread.sleep(1)
         val timestamp2 = GlobalClockManager.getCurrentTimeNanos()
         
         Assert.assertTrue("Nanosecond timestamps should be sequential", timestamp2 > timestamp1)
         
         val diff = timestamp2 - timestamp1
-        Assert.assertTrue("Timestamp difference should be in nanosecond range", diff < 10_000_000L) // Less than 10ms
+        Assert.assertTrue("Timestamp difference should be in nanosecond range", diff < 10_000_000L)
     }
 
     @Test
     fun testComponentRegistration() {
         GlobalClockManager.initialize(mockContext)
         
-        // Test component registration for synchronization
         val componentId = "thermal_camera"
         val result = GlobalClockManager.registerComponent(componentId, "Thermal Camera Module")
         
@@ -89,7 +82,6 @@ class GlobalClockManagerTest {
     fun testMultipleComponentRegistration() {
         GlobalClockManager.initialize(mockContext)
         
-        // Test registration of multiple components
         val components = listOf(
             "thermal_camera" to "Thermal Camera",
             "gsr_sensor" to "GSR Sensor", 
@@ -111,7 +103,6 @@ class GlobalClockManagerTest {
         GlobalClockManager.initialize(mockContext)
         GlobalClockManager.startSynchronization()
         
-        // Test synchronization accuracy across components
         val component1 = "thermal_camera"
         val component2 = "gsr_sensor"
         
@@ -122,7 +113,7 @@ class GlobalClockManagerTest {
         val sync2 = GlobalClockManager.synchronizeComponent(component2)
         
         val skew = kotlin.math.abs(sync1.syncTime - sync2.syncTime)
-        Assert.assertTrue("Component synchronization skew should be minimal", skew < 5_000_000L) // Less than 5ms
+        Assert.assertTrue("Component synchronization skew should be minimal", skew < 5_000_000L)
     }
 
     @Test
@@ -130,18 +121,16 @@ class GlobalClockManagerTest {
         GlobalClockManager.initialize(mockContext)
         GlobalClockManager.startSynchronization()
         
-        // Test clock drift detection and correction
         val componentId = "test_component"
         GlobalClockManager.registerComponent(componentId, "Test Component")
         
-        // Simulate some operations
         Thread.sleep(10)
         
         val driftInfo = GlobalClockManager.getClockDriftInfo(componentId)
         
         Assert.assertNotNull("Clock drift info should be available", driftInfo)
         Assert.assertTrue("Drift should be within acceptable range", 
-            kotlin.math.abs(driftInfo.driftNanos) < 50_000_000L) // Less than 50ms
+            kotlin.math.abs(driftInfo.driftNanos) < 50_000_000L)
     }
 
     @Test
@@ -152,7 +141,6 @@ class GlobalClockManagerTest {
         val latch = CountDownLatch(3)
         val results = mutableListOf<Long>()
         
-        // Test concurrent synchronization from multiple threads
         repeat(3) { index ->
             Thread {
                 val componentId = "component_$index"
@@ -169,12 +157,11 @@ class GlobalClockManagerTest {
         Assert.assertTrue("Concurrent synchronization should complete", completed)
         Assert.assertEquals("Should have 3 synchronization results", 3, results.size)
         
-        // Check that all results are reasonably close
         val maxTime = results.maxOrNull()!!
         val minTime = results.minOrNull()!!
         val maxSkew = maxTime - minTime
         
-        Assert.assertTrue("Maximum skew should be within tolerance", maxSkew < 10_000_000L) // Less than 10ms
+        Assert.assertTrue("Maximum skew should be within tolerance", maxSkew < 10_000_000L)
     }
 
     @Test
@@ -185,7 +172,6 @@ class GlobalClockManagerTest {
         val componentId = "perf_test_component"
         GlobalClockManager.registerComponent(componentId, "Performance Test")
         
-        // Perform multiple synchronizations to test performance tracking
         repeat(10) {
             GlobalClockManager.synchronizeComponent(componentId)
         }
@@ -194,28 +180,26 @@ class GlobalClockManagerTest {
         
         Assert.assertNotNull("Performance metrics should be available", metrics)
         Assert.assertTrue("Should track sync operations", metrics.syncOperationCount >= 10)
-        Assert.assertTrue("Average sync time should be reasonable", metrics.averageSyncTimeNanos < 1_000_000L) // Less than 1ms
+        Assert.assertTrue("Average sync time should be reasonable", metrics.averageSyncTimeNanos < 1_000_000L)
     }
 
     @Test
     fun testMasterClockStability() {
         GlobalClockManager.initialize(mockContext)
         
-        // Test master clock stability over time
         val initialTime = GlobalClockManager.getMasterClockTime()
         Thread.sleep(100)
         val laterTime = GlobalClockManager.getMasterClockTime()
         
         val elapsed = laterTime - initialTime
         Assert.assertTrue("Master clock should advance monotonically", elapsed > 0)
-        Assert.assertTrue("Clock advancement should be reasonable", elapsed < 200_000_000L) // Less than 200ms
+        Assert.assertTrue("Clock advancement should be reasonable", elapsed < 200_000_000L)
     }
 
     @Test
     fun testSynchronizationStartStop() {
         GlobalClockManager.initialize(mockContext)
         
-        // Test synchronization lifecycle
         val startResult = GlobalClockManager.startSynchronization()
         Assert.assertTrue("Synchronization should start successfully", startResult)
         Assert.assertTrue("Should be actively synchronizing", GlobalClockManager.isSynchronizationActive())
@@ -240,7 +224,7 @@ class GlobalClockManagerTest {
 
     @Test
     fun testErrorHandling() {
-        // Test error handling without initialization
+
         val result = GlobalClockManager.registerComponent("test", "Test")
         Assert.assertFalse("Should fail to register without initialization", result)
         
@@ -256,7 +240,6 @@ class GlobalClockManagerTest {
         val componentId = "shutdown_test"
         GlobalClockManager.registerComponent(componentId, "Shutdown Test")
         
-        // Test graceful shutdown
         GlobalClockManager.shutdown()
         
         Assert.assertFalse("Should not be initialized after shutdown", GlobalClockManager.isInitialized())
@@ -269,12 +252,10 @@ class GlobalClockManagerTest {
         
         val timestamps = mutableListOf<Long>()
         
-        // Collect multiple timestamps rapidly
         repeat(100) {
             timestamps.add(GlobalClockManager.getCurrentTimeNanos())
         }
         
-        // Verify timestamps are monotonically increasing
         for (i in 1 until timestamps.size) {
             Assert.assertTrue("Timestamps should be monotonically increasing", 
                 timestamps[i] >= timestamps[i-1])
@@ -285,7 +266,6 @@ class GlobalClockManagerTest {
     fun testSynchronizationConfiguration() {
         GlobalClockManager.initialize(mockContext)
         
-        // Test configuration options
         val config = GlobalClockManager.SyncConfiguration(
             updateIntervalMs = 50L,
             driftThresholdNanos = 500_000L,
@@ -309,7 +289,6 @@ class GlobalClockManagerTest {
         
         val startTime = System.nanoTime()
         
-        // Perform high frequency synchronization operations
         repeat(1000) {
             GlobalClockManager.synchronizeComponent(componentId)
         }
@@ -318,9 +297,8 @@ class GlobalClockManagerTest {
         val totalTime = endTime - startTime
         val averageTime = totalTime / 1000
         
-        // Should complete high frequency operations efficiently
         Assert.assertTrue("High frequency operations should be efficient", 
-            averageTime < 100_000L) // Less than 100 microseconds per operation
+            averageTime < 100_000L)
     }
 
     @Test
@@ -329,7 +307,6 @@ class GlobalClockManagerTest {
         
         val initialMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         
-        // Register many components to test memory usage
         repeat(100) { index ->
             GlobalClockManager.registerComponent("component_$index", "Component $index")
         }
@@ -337,6 +314,5 @@ class GlobalClockManagerTest {
         val afterRegistration = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         val memoryGrowth = afterRegistration - initialMemory
         
-        // Memory growth should be reasonable
-        Assert.assertTrue("Memory growth should be reasonable", memoryGrowth < 10_000_000L) // Less than 10MB
+        Assert.assertTrue("Memory growth should be reasonable", memoryGrowth < 10_000_000L)
     }

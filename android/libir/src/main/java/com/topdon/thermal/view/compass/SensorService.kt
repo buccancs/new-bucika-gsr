@@ -6,10 +6,6 @@ import com.kylecorry.andromeda.sense.Sensors
 import com.kylecorry.andromeda.sense.compass.ICompass
 import com.topdon.thermal.view.compass.CompassProvider
 
-// Maybe use the concept of a use case
-// Ex. SensorPurpose.Background, SensorPurpose.Calibration, SensorPurpose.Diagnostics
-// Using those, it can adjust settings to be more appropriate for the use case
-
 class SensorService(ctx: Context) {
 
     private var context = ctx.applicationContext
@@ -26,4 +22,3 @@ class SensorService(ctx: Context) {
         const val MOTION_SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME
         const val ENVIRONMENT_SENSOR_DELAY = SensorManager.SENSOR_DELAY_NORMAL
     }
-

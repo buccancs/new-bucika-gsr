@@ -5,8 +5,7 @@ import com.topdon.lib.core.so.algorithm
 object JNITest {
     init {
         System.loadLibrary("opencv_java4")
-//        System.loadLibrary("SRImage")
-//        System.loadLibrary("minMaxTemperatureDetect")
+
     }
 
     fun maxTempL(imgBytes: ByteArray, tempByte: ByteArray, width: Int, height: Int): ByteArray {

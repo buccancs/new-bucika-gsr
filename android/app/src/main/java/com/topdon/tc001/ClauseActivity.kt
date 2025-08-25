@@ -24,51 +24,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
-/**
- * Clause Agreement Activity
- * 
- * This activity displays the terms of service, privacy policy, and third-party component agreements
- * for the BucikaGSR application. It provides a comprehensive legal framework for user consent
- * before allowing access to the main application functionality.
- * 
- * Key Features:
- * - Terms of service display and navigation
- * - Privacy policy acknowledgment
- * - Third-party component licensing information
- * - User consent management with agree/disagree options
- * - App initialization process after consent
- * - Network connectivity validation for policy viewing
- * - Localization support for domestic and international users
- * 
- * ViewBinding Integration:
- * - Modern type-safe view access using ActivityClauseBinding
- * - Eliminates synthetic view imports for better compile-time safety
- * - Follows Android development best practices
- * 
- * @author BucikaGSR Development Team
- * @since 1.0.0
- * @see PolicyActivity for detailed policy viewing
- * @see MainActivity for main application entry point
- */
 @Route(path = RouterConfig.CLAUSE)
 class ClauseActivity : AppCompatActivity() {
 
-    /**
-     * ViewBinding instance for type-safe view access
-     * Provides compile-time verified access to all views in activity_clause.xml
-     */
     private lateinit var binding: ActivityClauseBinding
 
-    /**
-     * Progress dialog for displaying loading state during app initialization
-     * Shows user feedback while background initialization processes complete
-     */
     private lateinit var dialog: TipProgressDialog
-    /**
-     * Initializes the activity and sets up the clause agreement interface
-     * 
-     * @param savedInstanceState Previously saved instance state, or null for first creation
-     */
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityClauseBinding.inflate(layoutInflater)
@@ -76,17 +38,6 @@ class ClauseActivity : AppCompatActivity() {
         initView()
     }
 
-    /**
-     * Initializes all view components and sets up user interaction handlers
-     * 
-     * Sets up:
-     * - Progress dialog for loading states
-     * - Copyright year display
-     * - Agree/disagree button click handlers
-     * - Policy navigation links
-     * - App name and version display
-     * - Localization-specific content
-     */
     private fun initView() {
         dialog = TipProgressDialog.Builder(this)
             .setMessage(com.topdon.lib.core.R.string.tip_loading)
@@ -101,7 +52,7 @@ class ClauseActivity : AppCompatActivity() {
         }
         
         binding.clauseDisagreeBtn.setOnClickListener {
-            //再次弹框确认是否退出
+
             TipDialog.Builder(this)
                 .setMessage(getString(R.string.privacy_tips))
                 .setPositiveListener(R.string.privacy_confirm) {
@@ -120,7 +71,7 @@ class ClauseActivity : AppCompatActivity() {
             if (!NetworkUtil.isConnected(this)) {
                 TToast.shortToast(this, R.string.lms_setting_http_error)
             } else {
-                //服务条款
+
                 ARouter.getInstance()
                     .build(RouterConfig.POLICY)
                     .withInt(PolicyActivity.KEY_THEME_TYPE, 1)
@@ -133,7 +84,7 @@ class ClauseActivity : AppCompatActivity() {
             if (!NetworkUtil.isConnected(this)) {
                 TToast.shortToast(this, R.string.lms_setting_http_error)
             } else {
-                //隐私条款
+
                 ARouter.getInstance()
                     .build(RouterConfig.POLICY)
                     .withInt(PolicyActivity.KEY_THEME_TYPE, 2)
@@ -143,7 +94,7 @@ class ClauseActivity : AppCompatActivity() {
         }
         
         binding.clauseItem3.setOnClickListener {
-            //第三方
+
             if (!NetworkUtil.isConnected(this)) {
                 TToast.shortToast(this, R.string.lms_setting_http_error)
             } else {
@@ -166,28 +117,13 @@ class ClauseActivity : AppCompatActivity() {
         binding.clauseName.text = CommUtils.getAppName()
     }
 
-    /**
-     * Handles user confirmation to initialize the application
-     * 
-     * Performs background initialization and navigates to main activity upon completion.
-     * Shows loading dialog during the process and manages shared preferences to track
-     * clause acceptance.
-     * 
-     * Process:
-     * 1. Show loading dialog
-     * 2. Initialize App with delayed initialization
-     * 3. Wait for initialization completion (1000ms)
-     * 4. Navigate to main activity
-     * 5. Mark clause as shown in preferences
-     * 6. Dismiss loading dialog and finish activity
-     */
     private fun confirmInitApp() {
         lifecycleScope.launch {
             showLoading()
-            //初始化
+
             App.delayInit()
             async(Dispatchers.IO) {
-                //等待1000ms 初始化结束
+
                 delay(1000)
                 return@async
             }.await().let {
@@ -199,18 +135,10 @@ class ClauseActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Shows the loading progress dialog
-     * Provides user feedback during app initialization process
-     */
     private fun showLoading() {
         dialog.show()
     }
 
-    /**
-     * Dismisses the loading progress dialog
-     * Called when initialization process completes
-     */
     private fun dismissLoading() {
         dialog.dismiss()
     }

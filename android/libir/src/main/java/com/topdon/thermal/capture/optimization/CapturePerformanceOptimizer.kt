@@ -11,10 +11,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicInteger
 
-/**
- * Ultra-High Performance Capture Optimization Manager
- * Ensures zero frame drops through advanced thread management and resource optimization
- */
 class CapturePerformanceOptimizer(
     private val context: Context
 ) {
@@ -22,50 +18,40 @@ class CapturePerformanceOptimizer(
     companion object {
         private const val TAG = "CapturePerformanceOptimizer"
         
-        // Performance constants
-        private const val HIGH_PRIORITY_THREAD_COUNT = 3 // Video, DNG, GSR
-        private const val BACKGROUND_THREAD_COUNT = 2 // Cleanup, monitoring
-        private const val FRAME_BUFFER_SIZE = 1024 // Large buffer for burst handling
+        private const val HIGH_PRIORITY_THREAD_COUNT = 3
+        private const val BACKGROUND_THREAD_COUNT = 2
+        private const val FRAME_BUFFER_SIZE = 1024
         private const val MEMORY_PRESSURE_THRESHOLD_MB = 100
         private const val CPU_USAGE_THRESHOLD_PERCENT = 80
         private const val THERMAL_THROTTLING_TEMP_CELSIUS = 45
         
-        // Thread priority optimization
         private const val ULTRA_HIGH_PRIORITY = Thread.MAX_PRIORITY
         private const val HIGH_PRIORITY = Thread.MAX_PRIORITY - 1
         private const val NORMAL_PRIORITY = Thread.NORM_PRIORITY
         private const val LOW_PRIORITY = Thread.NORM_PRIORITY - 1
     }
     
-    // High-performance thread pools with priority optimization
     private var videoProcessingExecutor: ThreadPoolExecutor? = null
     private var dngProcessingExecutor: ThreadPoolExecutor? = null
     private var gsrProcessingExecutor: ScheduledExecutorService? = null
     private var backgroundExecutor: ScheduledExecutorService? = null
     
-    // Zero-copy frame buffers
     private val videoFrameBuffer = LockFreeRingBuffer<VideoFrameData>(FRAME_BUFFER_SIZE)
-    private val dngFrameBuffer = LockFreeRingBuffer<DNGFrameData>(FRAME_BUFFER_SIZE / 2) // DNG frames are larger
-    private val gsrSampleBuffer = LockFreeRingBuffer<GSRSampleData>(FRAME_BUFFER_SIZE * 4) // Higher sample rate
+    private val dngFrameBuffer = LockFreeRingBuffer<DNGFrameData>(FRAME_BUFFER_SIZE / 2)
+    private val gsrSampleBuffer = LockFreeRingBuffer<GSRSampleData>(FRAME_BUFFER_SIZE * 4)
     
-    // Performance monitoring
     private val frameDropCounter = AtomicInteger(0)
-    private val memoryPressureLevel = AtomicInteger(0) // 0=normal, 1=moderate, 2=high
+    private val memoryPressureLevel = AtomicInteger(0)
     private val cpuUsagePercent = AtomicInteger(0)
-    private val thermalState = AtomicInteger(0) // 0=cool, 1=warm, 2=hot, 3=throttling
+    private val thermalState = AtomicInteger(0)
     
-    // Optimization state
     private val isOptimizationActive = AtomicBoolean(false)
     private val isPerformanceMonitoringActive = AtomicBoolean(false)
     
-    // Performance statistics
     private val totalFramesProcessed = AtomicLong(0)
     private val totalProcessingTimeNs = AtomicLong(0)
     private val lastOptimizationTime = AtomicLong(0)
     
-    /**
-     * Initialize ultra-high performance optimization
-     */
     fun initialize(): Boolean {
         return try {
             XLog.i(TAG, "Initializing ultra-high performance capture optimization...")
@@ -85,24 +71,20 @@ class CapturePerformanceOptimizer(
         }
     }
     
-    /**
-     * Create optimized thread pools for each capture component
-     */
     private fun createOptimizedThreadPools() {
-        // Ultra-high priority video processing thread pool
+
         videoProcessingExecutor = ThreadPoolExecutor(
-            1, // Single thread for sequential processing
+            1,
             1,
             0L, TimeUnit.MILLISECONDS,
             LinkedBlockingQueue(),
             CustomThreadFactory("VideoProcessor", ULTRA_HIGH_PRIORITY)
         ).apply {
-            allowCoreThreadTimeOut(false) // Keep core threads alive
+            allowCoreThreadTimeOut(false)
         }
         
-        // High priority DNG processing thread pool
         dngProcessingExecutor = ThreadPoolExecutor(
-            1, // Single thread for memory-intensive DNG processing
+            1,
             1,
             0L, TimeUnit.MILLISECONDS,
             LinkedBlockingQueue(),
@@ -111,12 +93,10 @@ class CapturePerformanceOptimizer(
             allowCoreThreadTimeOut(false)
         }
         
-        // Ultra-high priority GSR sampling thread
         gsrProcessingExecutor = Executors.newSingleThreadScheduledExecutor(
             CustomThreadFactory("GSRProcessor", ULTRA_HIGH_PRIORITY)
         )
         
-        // Background processing thread pool
         backgroundExecutor = Executors.newScheduledThreadPool(
             BACKGROUND_THREAD_COUNT,
             CustomThreadFactory("Background", LOW_PRIORITY)
@@ -125,9 +105,6 @@ class CapturePerformanceOptimizer(
         XLog.i(TAG, "Optimized thread pools created with priority scheduling")
     }
     
-    /**
-     * Initialize zero-copy ring buffers for frame data
-     */
     private fun initializeZeroCopyBuffers() {
         videoFrameBuffer.clear()
         dngFrameBuffer.clear()
@@ -136,18 +113,11 @@ class CapturePerformanceOptimizer(
         XLog.i(TAG, "Zero-copy ring buffers initialized: video=${FRAME_BUFFER_SIZE}, dng=${FRAME_BUFFER_SIZE/2}, gsr=${FRAME_BUFFER_SIZE*4}")
     }
     
-    /**
-     * Apply system-level optimizations for capture performance
-     */
     private fun applySystemOptimizations() {
         try {
-            // Request high performance mode if available
-            // TODO: Implement device-specific optimizations for Samsung S22
+
+            System.gc()
             
-            // Optimize garbage collection
-            System.gc() // Initial cleanup
-            
-            // Configure buffer sizes for optimal performance
             configureOptimalBufferSizes()
             
             XLog.i(TAG, "System-level optimizations applied")
@@ -157,9 +127,6 @@ class CapturePerformanceOptimizer(
         }
     }
     
-    /**
-     * Configure optimal buffer sizes based on device capabilities
-     */
     private fun configureOptimalBufferSizes() {
         val runtime = Runtime.getRuntime()
         val maxMemory = runtime.maxMemory()
@@ -167,39 +134,32 @@ class CapturePerformanceOptimizer(
         
         XLog.i(TAG, "Memory status: max=${maxMemory / (1024*1024)}MB, available=${availableMemory / (1024*1024)}MB")
         
-        // Adjust buffer sizes based on available memory
-        if (availableMemory < 200 * 1024 * 1024) { // < 200MB
-            memoryPressureLevel.set(2) // High pressure
+        if (availableMemory < 200 * 1024 * 1024) {
+            memoryPressureLevel.set(2)
             XLog.w(TAG, "High memory pressure detected - reducing buffer sizes")
-        } else if (availableMemory < 400 * 1024 * 1024) { // < 400MB
-            memoryPressureLevel.set(1) // Moderate pressure
+        } else if (availableMemory < 400 * 1024 * 1024) {
+            memoryPressureLevel.set(1)
         } else {
-            memoryPressureLevel.set(0) // Normal
+            memoryPressureLevel.set(0)
         }
     }
     
-    /**
-     * Start comprehensive performance monitoring
-     */
     private fun startPerformanceMonitoring() {
         backgroundExecutor?.scheduleAtFixedRate({
             monitorSystemPerformance()
-        }, 0, 500, TimeUnit.MILLISECONDS) // Monitor every 500ms
+        }, 0, 500, TimeUnit.MILLISECONDS)
         
         backgroundExecutor?.scheduleAtFixedRate({
             optimizeBasedOnPerformance()
-        }, 2000, 2000, TimeUnit.MILLISECONDS) // Optimize every 2 seconds
+        }, 2000, 2000, TimeUnit.MILLISECONDS)
         
         isPerformanceMonitoringActive.set(true)
         XLog.i(TAG, "Performance monitoring started")
     }
     
-    /**
-     * Monitor system performance metrics
-     */
     private fun monitorSystemPerformance() {
         try {
-            // Monitor memory usage
+
             val runtime = Runtime.getRuntime()
             val usedMemory = runtime.totalMemory() - runtime.freeMemory()
             val memoryUsageMB = usedMemory / (1024 * 1024)
@@ -210,7 +170,6 @@ class CapturePerformanceOptimizer(
                 memoryPressureLevel.set(0)
             }
             
-            // Monitor frame buffer usage
             val videoBufferUsage = videoFrameBuffer.size() * 100 / FRAME_BUFFER_SIZE
             val dngBufferUsage = dngFrameBuffer.size() * 100 / (FRAME_BUFFER_SIZE / 2)
             val gsrBufferUsage = gsrSampleBuffer.size() * 100 / (FRAME_BUFFER_SIZE * 4)
@@ -218,13 +177,11 @@ class CapturePerformanceOptimizer(
             if (videoBufferUsage > 80 || dngBufferUsage > 80 || gsrBufferUsage > 80) {
                 XLog.w(TAG, "High buffer usage: video=$videoBufferUsage%, dng=$dngBufferUsage%, gsr=$gsrBufferUsage%")
                 
-                // Emergency buffer cleanup
                 triggerEmergencyBufferCleanup()
             }
             
-            // Log performance status periodically
             val monitorCount = totalFramesProcessed.get() / 1000
-            if (monitorCount % 10 == 0L && monitorCount > 0) { // Every 10,000 frames
+            if (monitorCount % 10 == 0L && monitorCount > 0) {
                 logPerformanceStatus(memoryUsageMB, videoBufferUsage, dngBufferUsage, gsrBufferUsage)
             }
             
@@ -233,13 +190,10 @@ class CapturePerformanceOptimizer(
         }
     }
     
-    /**
-     * Get current performance metrics
-     */
     fun getPerformanceMetrics(): CapturePerformanceMetrics {
         val totalFrames = totalFramesProcessed.get()
         val averageProcessingTime = if (totalFrames > 0) {
-            totalProcessingTimeNs.get().toDouble() / totalFrames / 1_000_000.0 // Convert to ms
+            totalProcessingTimeNs.get().toDouble() / totalFrames / 1_000_000.0
         } else 0.0
         
         return CapturePerformanceMetrics(
@@ -258,12 +212,12 @@ class CapturePerformanceOptimizer(
     }
     
     private fun optimizeBasedOnPerformance() {
-        // Optimization logic implementation
+
         XLog.d(TAG, "Performance optimization cycle executed")
     }
     
     private fun triggerEmergencyBufferCleanup() {
-        // Emergency cleanup implementation
+
         XLog.w(TAG, "Emergency buffer cleanup triggered")
     }
     
@@ -271,9 +225,6 @@ class CapturePerformanceOptimizer(
         XLog.i(TAG, "Performance: Memory=${memoryUsageMB}MB, Buffers: V=$videoBufferUsage%, D=$dngBufferUsage%, G=$gsrBufferUsage%")
     }
     
-    /**
-     * Cleanup all resources
-     */
     fun cleanup() {
         try {
             isOptimizationActive.set(false)
@@ -296,9 +247,6 @@ class CapturePerformanceOptimizer(
     }
 }
 
-/**
- * Custom thread factory for optimized thread creation
- */
 private class CustomThreadFactory(
     private val namePrefix: String,
     private val priority: Int
@@ -313,9 +261,6 @@ private class CustomThreadFactory(
     }
 }
 
-/**
- * Lock-free ring buffer optimized for high-throughput data
- */
 private class LockFreeRingBuffer<T>(private val capacity: Int) {
     private val buffer = Array<Any?>(capacity) { null }
     private val head = AtomicInteger(0)
@@ -368,27 +313,18 @@ private class LockFreeRingBuffer<T>(private val capacity: Int) {
     }
 }
 
-/**
- * Video frame data container
- */
 data class VideoFrameData(
     val timestamp: Long,
     val frameIndex: Int,
-    val data: ByteArray? = null // Placeholder for actual frame data
+    val data: ByteArray? = null
 )
 
-/**
- * DNG frame data container
- */
 data class DNGFrameData(
     val timestamp: Long,
     val frameIndex: Int,
-    val data: ByteArray? = null // Placeholder for actual RAW data
+    val data: ByteArray? = null
 )
 
-/**
- * GSR sample data container
- */
 data class GSRSampleData(
     val timestamp: Long,
     val gsrValue: Double,
@@ -396,9 +332,6 @@ data class GSRSampleData(
     val sampleIndex: Long
 )
 
-/**
- * Performance metrics for capture optimization
- */
 data class CapturePerformanceMetrics(
     val isOptimizationActive: Boolean,
     val totalFramesProcessed: Long,

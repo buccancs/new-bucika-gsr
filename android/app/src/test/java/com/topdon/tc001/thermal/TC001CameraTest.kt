@@ -52,43 +52,37 @@ class TC001CameraTest {
     
     @Test
     fun `should connect to USB device with valid parameters`() {
-        // Arrange
+
         val mockDevice = createMockTC001Device()
         whenever(mockUSBManager.hasPermission(mockDevice)).thenReturn(true)
         
-        // Act
         val result = thermalCamera.connectUSBDevice(mockDevice)
         
-        // Assert
         assertTrue(result, "Connection should be initiated successfully")
     }
     
     @Test
     fun `should calculate temperature correctly from raw data`() {
-        // Arrange
+
         val expectedTemp = 25.0f
         val temperatureData = generateTestTemperatureData(expectedTemp)
         
-        // Act
         val temperature = calculateTemperatureFromData(temperatureData, 128, 96)
         
-        // Assert
         assertEquals(expectedTemp, temperature, 0.5f, "Temperature should be approximately 25°C")
     }
     
     @Test
     fun `should find maximum temperature point correctly`() {
-        // Arrange
+
         val hotTemp = 50.0f
         val baseTemp = 25.0f
         val hotX = 100
         val hotY = 75
         val temperatureData = generateTestTemperatureDataWithHotSpot(baseTemp, hotTemp, hotX, hotY)
         
-        // Act
         val maxPoint = findMaxTemperaturePoint(temperatureData)
         
-        // Assert
         assertNotNull(maxPoint, "Max temperature point should be found")
         assertEquals(hotX, maxPoint.x, "Max point X should be correct")
         assertEquals(hotY, maxPoint.y, "Max point Y should be correct")
@@ -97,26 +91,23 @@ class TC001CameraTest {
     
     @Test
     fun `should calculate average temperature in region correctly`() {
-        // Arrange
+
         val uniformTemp = 30.0f
         val temperatureData = generateTestTemperatureData(uniformTemp)
         val region = Rect(50, 50, 150, 100)
         
-        // Act
         val avgTemp = calculateAverageTemperatureInRegion(temperatureData, region)
         
-        // Assert
         assertEquals(uniformTemp, avgTemp, 0.1f, "Average temperature should match uniform temperature")
     }
     
     @Test
     fun `should validate thermal parameters`() {
-        // Test invalid emissivity values
+
         assertFalse(isValidEmissivity(0.05f), "Should reject emissivity < 0.1")
         assertFalse(isValidEmissivity(1.5f), "Should reject emissivity > 1.0")
         assertTrue(isValidEmissivity(0.95f), "Should accept valid emissivity")
         
-        // Test distance validation
         assertFalse(isValidDistance(0f), "Should reject zero distance")
         assertFalse(isValidDistance(-1f), "Should reject negative distance")
         assertTrue(isValidDistance(1.0f), "Should accept valid distance")
@@ -126,14 +117,12 @@ class TC001CameraTest {
     fun `should handle temperature measurement bounds correctly`() {
         val temperatureData = generateTestTemperatureData(25.0f)
         
-        // Valid coordinates should work
-        val temp1 = calculateTemperatureFromData(temperatureData, 0, 0) // Top-left corner
-        val temp2 = calculateTemperatureFromData(temperatureData, 255, 191) // Bottom-right corner
+        val temp1 = calculateTemperatureFromData(temperatureData, 0, 0)
+        val temp2 = calculateTemperatureFromData(temperatureData, 255, 191)
         
         assertTrue(temp1 > 0f && temp1 < 200f, "Top-left temperature should be reasonable")
         assertTrue(temp2 > 0f && temp2 < 200f, "Bottom-right temperature should be reasonable")
         
-        // Invalid coordinates should be handled
         assertFailsWith<IllegalArgumentException>("Should reject negative X coordinate") {
             calculateTemperatureFromData(temperatureData, -1, 96)
         }
@@ -145,23 +134,20 @@ class TC001CameraTest {
     
     @Test
     fun `should support multiple simultaneous temperature areas`() {
-        // Setup thermal data with gradient
+
         val temperatureData = generateGradientTemperatureData(20.0f, 40.0f)
         
-        // Define multiple areas
-        val area1 = Rect(0, 0, 85, 64)      // Left third (cooler)
-        val area2 = Rect(85, 0, 170, 64)    // Middle third
-        val area3 = Rect(170, 0, 256, 64)   // Right third (warmer)
+        val area1 = Rect(0, 0, 85, 64)
+        val area2 = Rect(85, 0, 170, 64)
+        val area3 = Rect(170, 0, 256, 64)
         
         val temp1 = calculateAverageTemperatureInRegion(temperatureData, area1)
         val temp2 = calculateAverageTemperatureInRegion(temperatureData, area2)
         val temp3 = calculateAverageTemperatureInRegion(temperatureData, area3)
         
-        // Verify gradient (left should be cooler than right)
         assertTrue(temp1 < temp2, "Left area should be cooler than middle")
         assertTrue(temp2 < temp3, "Middle area should be cooler than right")
         
-        // All should return reasonable values
         assertTrue(temp1 > 0f && temp1 < 100f, "Temperature 1 should be reasonable")
         assertTrue(temp2 > 0f && temp2 < 100f, "Temperature 2 should be reasonable")
         assertTrue(temp3 > 0f && temp3 < 100f, "Temperature 3 should be reasonable")
@@ -169,15 +155,13 @@ class TC001CameraTest {
     
     @Test
     fun `should handle corrupted temperature data gracefully`() {
-        // Test with partially corrupted data
+
         val corruptedData = generatePartiallyCorruptedTemperatureData()
         
-        // Should not crash and should return reasonable values for non-corrupted areas
         val temperature = calculateTemperatureFromData(corruptedData, 10, 10)
         assertTrue(temperature > -50f && temperature < 200f, "Should return reasonable temperature despite corruption")
         
-        // Test with completely invalid data
-        val invalidData = ByteArray(100) // Wrong size
+        val invalidData = ByteArray(100)
         assertFailsWith<IllegalArgumentException>("Should reject data with wrong size") {
             calculateTemperatureFromData(invalidData, 10, 10)
         }
@@ -185,10 +169,9 @@ class TC001CameraTest {
     
     @Test
     fun `should calculate temperature line profile correctly`() {
-        // Create data with temperature gradient
+
         val temperatureData = generateGradientTemperatureData(20.0f, 40.0f)
         
-        // Define line from left to right
         val startPoint = Point(0, 96)
         val endPoint = Point(255, 96)
         
@@ -197,13 +180,11 @@ class TC001CameraTest {
         assertTrue(lineProfile.isNotEmpty(), "Line profile should contain temperature points")
         assertTrue(lineProfile.size >= 10, "Line profile should have reasonable number of points")
         
-        // Verify gradient along line (temperatures should generally increase)
         val firstTemp = lineProfile.first()
         val lastTemp = lineProfile.last()
         assertTrue(lastTemp > firstTemp, "Temperature should increase along gradient line")
     }
     
-    // Helper methods for testing thermal functionality
     private fun createMockTC001Device(): UsbDevice {
         val mockDevice = mock<UsbDevice>()
         whenever(mockDevice.vendorId).thenReturn(TC001_VENDOR_ID)
@@ -234,7 +215,6 @@ class TC001CameraTest {
         val data = generateTestTemperatureData(baseTemp)
         val hotRawValue = ((hotTemp + 273.15f) * 64.0f).toInt()
         
-        // Set hot spot temperature
         val index = (hotY * 256 + hotX) * 2
         if (index + 1 < data.size) {
             data[index] = (hotRawValue and 0xFF).toByte()
@@ -250,7 +230,7 @@ class TC001CameraTest {
         
         for (y in 0 until 192) {
             for (x in 0 until 256) {
-                // Create horizontal gradient
+
                 val gradientFactor = x.toFloat() / 255f
                 val temperature = minTemp + (tempRange * gradientFactor)
                 val rawValue = ((temperature + 273.15f) * 64.0f).toInt()
@@ -267,10 +247,9 @@ class TC001CameraTest {
     private fun generatePartiallyCorruptedTemperatureData(): ByteArray {
         val data = generateTestTemperatureData(25.0f)
         
-        // Corrupt some pixels with extreme values
         for (i in 1000 until 1100 step 2) {
             data[i] = 0xFF.toByte()
-            data[i + 1] = 0xFF.toByte() // Very high raw value
+            data[i + 1] = 0xFF.toByte()
         }
         
         return data

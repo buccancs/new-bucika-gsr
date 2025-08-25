@@ -31,93 +31,22 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
-/**
- * Professional thermal imaging report image selection and management activity.
- * 
- * Provides comprehensive image selection functionality for thermal imaging report generation
- * with advanced gallery management and professional device-specific workflow support.
- * 
- * Core Features:
- * - Professional thermal imaging gallery with device-specific directory navigation
- * - Industry-standard image selection for report generation workflow
- * - Advanced thermal image management with comprehensive metadata preservation
- * - Professional device-specific integration (TC007 and plugin-style devices)
- * - Comprehensive image validation and quality verification
- * - Advanced report data binding with thermal imaging metadata
- * 
- * Technical Implementation:
- * - Type-safe ViewBinding for efficient UI management and memory optimization
- * - Professional ViewModel architecture with lifecycle-aware data management
- * - Advanced RecyclerView adapter with GridLayoutManager for optimal image display
- * - Thread-safe database operations with comprehensive error handling
- * - Professional EventBus integration for real-time UI updates
- * - Comprehensive file system integration with media scanner notifications
- * 
- * Professional Workflow:
- * - Device-specific directory navigation based on thermal imaging hardware
- * - Industry-standard image selection with professional validation
- * - Advanced report data integration with comprehensive thermal metadata
- * - Professional image quality verification and format validation
- * - Comprehensive error handling with user-friendly feedback systems
- * 
- * @param ExtraKeyConfig.IS_TC007 Boolean: Device type flag for directory navigation
- * @param ExtraKeyConfig.REPORT_INFO Object: Report information for data binding
- * @param ExtraKeyConfig.REPORT_CONDITION Object: Detection conditions and parameters
- * @param ExtraKeyConfig.REPORT_IR_LIST List: Currently added thermal image data
- * 
- * @see IRGalleryViewModel for thermal image data management
- * @see GalleryAdapter for professional image display and selection
- * @see GalleryRepository for comprehensive gallery data operations
- */
 @Route(path = RouterConfig.REPORT_PICK_IMG)
 class ReportPickImgActivity : BaseActivity(), View.OnClickListener {
 
-    /**
-     * ViewBinding instance for type-safe access to layout views.
-     * Provides efficient and null-safe view access with compile-time verification.
-     */
     private lateinit var binding: ActivityReportPickImgBinding
 
-    /**
-     * 从上一界面传递过来的，当前是否为 TC007 设备类型.
-     * true-TC007 false-其他插件式设备
-     */
     private var isTC007 = false
 
     private val viewModel: IRGalleryViewModel by viewModels()
 
     private val adapter = GalleryAdapter()
 
-    /**
-     * Initializes the professional thermal image selection interface layout.
-     * Configures ViewBinding for comprehensive gallery management and image selection.
-     * 
-     * @return Layout resource identifier for report image selection interface
-     */
     override fun initContentView() = R.layout.activity_report_pick_img.also {
         binding = ActivityReportPickImgBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 
-    /**
-     * Initializes the comprehensive thermal image selection interface.
-     * 
-     * Sets up professional gallery management functionality including:
-     * - Device-specific directory navigation for thermal imaging hardware
-     * - Advanced image selection with professional validation
-     * - Industry-standard gallery adapter with comprehensive metadata display
-     * - Professional editing mode with batch operations and validation
-     * - Advanced lifecycle management with ViewModel architecture
-     * 
-     * Technical Implementation:
-     * - ViewBinding for type-safe UI access and memory optimization
-     * - Professional ViewModel architecture with lifecycle-aware data management
-     * - Advanced RecyclerView configuration with GridLayoutManager optimization
-     * - Thread-safe data operations with comprehensive error handling
-     * - Professional EventBus integration for real-time UI updates
-     * 
-     * @throws IllegalStateException if ViewBinding initialization fails
-     */
     override fun initView() {
         isTC007 = intent.getBooleanExtra(ExtraKeyConfig.IS_TC007, false)
 
@@ -191,11 +120,6 @@ class ReportPickImgActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Handles professional user interaction events for image selection and management.
-     * 
-     * @param v The view that triggered the interaction event
-     */
     override fun onClick(v: View?) {
         with(binding) {
             when (v) {
@@ -209,16 +133,10 @@ class ReportPickImgActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Initializes professional RecyclerView configuration for thermal image gallery.
-     * 
-     * Configures advanced GridLayoutManager with dynamic span sizing for optimal
-     * thermal image display and professional gallery navigation experience.
-     */
     private fun initRecycler() {
         val spanCount = 3
         val gridLayoutManager = GridLayoutManager(this, spanCount)
-        //动态设置span
+
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (adapter.dataList[position] is GalleryTitle) spanCount else 1
@@ -228,7 +146,7 @@ class ReportPickImgActivity : BaseActivity(), View.OnClickListener {
         binding.irGalleryRecycler.layoutManager = gridLayoutManager
 
         adapter.onLongEditListener = {
-            // adapter 里面的切换编辑太乱了，先这么顶着
+
             binding.groupBottom.isVisible = true
             binding.titleView.setTitleText(getString(R.string.chosen_item, adapter.selectList.size))
             title_view.setLeftDrawable(R.drawable.svg_x_cc)
@@ -314,4 +232,3 @@ class ReportPickImgActivity : BaseActivity(), View.OnClickListener {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.battery_share)))
     }
 }
-

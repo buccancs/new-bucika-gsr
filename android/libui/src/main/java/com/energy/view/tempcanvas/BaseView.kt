@@ -3,18 +3,15 @@ package com.energy.view.tempcanvas
 import android.graphics.Bitmap
 import android.graphics.Matrix
 
-/**
- * Created by fengjibo on 2023/6/28.
- */
 abstract class BaseView {
     protected var mId: String = ""
     protected var mPointSize = 0
     
-    var label: String = "" // 标记内容
-    var note: String = "" // 备注
-    var maxTemp: Double = 0.0 // 最大温度
-    var minTemp: Double = 0.0 // 最小温度
-    var avgTemp: Double = 0.0 // 平均温度
+    var label: String = ""
+    var note: String = ""
+    var maxTemp: Double = 0.0
+    var minTemp: Double = 0.0
+    var avgTemp: Double = 0.0
 
     fun getId(): String = mId
     fun setId(id: String) {

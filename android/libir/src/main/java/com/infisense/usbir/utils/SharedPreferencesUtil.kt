@@ -4,20 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 
-/**
- * Created by fengjibo on 2023/4/12.
- */
 object SharedPreferencesUtil {
 
     private const val FILE_NAME = "usb_ir"
 
-    /**
-     * 保存数据到文件
-     *
-     * @param context
-     * @param key
-     * @param data
-     */
     fun saveData(context: Context, key: String, data: Any) {
         val sharedPreferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -32,14 +22,6 @@ object SharedPreferencesUtil {
         editor.commit()
     }
 
-    /**
-     * 从文件里读取数据
-     *
-     * @param context
-     * @param key
-     * @param defValue
-     * @return
-     */
     fun getData(context: Context, key: String, defValue: Any): Any? {
         val sharedPreferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
 
@@ -53,12 +35,6 @@ object SharedPreferencesUtil {
         }
     }
 
-    /**
-     *
-     * @param context
-     * @param key
-     * @param data
-     */
     fun saveByteData(context: Context, key: String, data: ByteArray) {
         val sharedPreferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -69,12 +45,6 @@ object SharedPreferencesUtil {
         editor.commit()
     }
 
-    /**
-     *
-     * @param context
-     * @param key
-     * @return
-     */
     fun getByteData(context: Context, key: String): ByteArray {
         val sharedPreferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
 

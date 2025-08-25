@@ -39,76 +39,21 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-/**
- * Professional TS004 Gallery Detail Activity for Thermal Image Management
- * 
- * This activity provides comprehensive thermal image detail viewing and management
- * capabilities for both local and remote TS004 device images. Essential for research
- * workflows requiring detailed image analysis and professional gallery management.
- * 
- * **Gallery Management Features:**
- * - Professional ViewPager2 integration for smooth image browsing with research-grade performance
- * - Support for both local device storage and remote TS004 device image access
- * - Comprehensive image metadata display including EXIF data and thermal parameters
- * - Professional download management with progress indication for research archival
- * - Advanced sharing capabilities for research collaboration and data distribution
- * 
- * **Research Application Features:**
- * - High-resolution thermal image display with professional zoom and pan capabilities
- * - Detailed file information including size, date, resolution, and storage location
- * - Professional deletion workflow with local/remote synchronization options
- * - Integrated gallery navigation with position tracking for research efficiency
- * - Real-time download status monitoring with visual feedback indicators
- * 
- * **Device Integration:**
- * - TS004 remote device connectivity with secure image streaming and download
- * - Local gallery management with system media scanner integration
- * - Professional loading states and error handling for research application reliability
- * - Cross-platform file sharing with appropriate MIME type handling
- * 
- * **Professional UI Features:**
- * - Fragment-based gallery viewer with optimized memory management for large datasets
- * - Dynamic title updates showing current position in image sequence
- * - Context-sensitive action buttons (local vs remote) for streamlined workflows
- * - Professional confirmation dialogs for destructive operations
- * 
- * @author BucikaGSR Development Team
- * @since 2024.1.0
- * @see GalleryFragment For individual image display and interaction handling
- * @see TS004Repository For remote device communication and file management
- */
 @Route(path = RouterConfig.IR_GALLERY_DETAIL_04)
 class IRGalleryDetail04Activity : BaseActivity() {
 
-    /**
-     * ViewBinding instance for type-safe view access
-     * Replaces deprecated Kotlin synthetics with modern binding pattern
-     */
     private lateinit var binding: ActivityIrGalleryDetail04Binding
 
-    /**
-     * Flag indicating whether this gallery is viewing remote TS004 device images
-     * - true: Remote TS004 device images (requires download for offline access)
-     * - false: Local device storage images (immediate access available)
-     */
     private var isRemote = false
     
-    /**
-     * Current image position in the gallery sequence
-     * Used for professional navigation and title display
-     */
     private var position = 0
     
-    /**
-     * Complete list of thermal images for gallery browsing
-     * Contains metadata for both local and remote images
-     */
     private lateinit var dataList: ArrayList<GalleryBean>
 
     override fun initContentView(): Int {
         binding = ActivityIrGalleryDetail04Binding.inflate(layoutInflater)
         setContentView(binding.root)
-        return 0 // ViewBinding handles layout inflation
+        return 0
     }
 
     @SuppressLint("SetTextI18n")
@@ -119,7 +64,7 @@ class IRGalleryDetail04Activity : BaseActivity() {
 
         binding.titleView.setTitleText("${position + 1}/${dataList.size}")
 
-        binding.clBottom.isVisible = isRemote //查看远端时底部才有3个按钮
+        binding.clBottom.isVisible = isRemote
 
         if (!isRemote) {
             binding.titleView.setRightDrawable(R.drawable.ic_toolbar_info_svg)
@@ -256,7 +201,6 @@ class IRGalleryDetail04Activity : BaseActivity() {
         }
     }
 
-
     private fun actionDownload(isToShare: Boolean) {
         val data = dataList[position]
         if (data.hasDownload) {
@@ -310,4 +254,3 @@ class IRGalleryDetail04Activity : BaseActivity() {
 
     }
 }
-

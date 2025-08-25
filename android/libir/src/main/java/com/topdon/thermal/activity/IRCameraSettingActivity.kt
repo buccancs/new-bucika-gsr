@@ -35,23 +35,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-/**
- * Professional thermal camera configuration activity for research-grade imaging parameters.
- * 
- * Provides comprehensive camera settings management including:
- * - Automatic capture modes with customizable intervals (1-30 second range)
- * - Watermark configuration for professional documentation and traceability
- * - GPS location embedding for field research applications
- * - Device-specific optimization for TC007 and other thermal imaging devices
- * - Professional image naming and metadata management
- * - Clinical-grade image quality and compression settings
- * 
- * Essential for maintaining research standards in thermal imaging workflows
- * and ensuring proper documentation for clinical applications.
- *
- * @author CaiSongL
- * @since 2023/4/3
- */
 @Route(path = RouterConfig.IR_CAMERA_SETTING)
 class IRCameraSettingActivity : BaseActivity() {
 
@@ -59,7 +42,6 @@ class IRCameraSettingActivity : BaseActivity() {
         const val KEY_PRODUCT_TYPE = "key_product_type"
     }
 
-    /** ViewBinding instance for type-safe view access */
     private lateinit var binding: ActivityIrCameraSettingBinding
     
     private var locationManager: LocationManager? = null
@@ -82,7 +64,7 @@ class IRCameraSettingActivity : BaseActivity() {
         
         productName = intent.getStringExtra(KEY_PRODUCT_TYPE) ?: ""
         if (isTC007()) {
-            watermarkBean = SharedManager.wifiWatermarkBean // TC007 only supports watermark
+            watermarkBean = SharedManager.wifiWatermarkBean
             continuousBean = SharedManager.continuousBean
         } else {
             watermarkBean = SharedManager.watermarkBean
@@ -103,7 +85,6 @@ class IRCameraSettingActivity : BaseActivity() {
             continuousBean.count = progress
             SharedManager.continuousBean = continuousBean
         }
-
 
         binding.switchTime.isChecked = watermarkBean.isAddTime
         binding.switchWatermark.isChecked = watermarkBean.isOpen
@@ -188,30 +169,24 @@ class IRCameraSettingActivity : BaseActivity() {
                 checkStoragePermission()
             }
         })
-        // TC007 devices don't need delayed capture
+
         binding.lyAuto.visibility = if (isTC007()) View.GONE else View.VISIBLE
     }
 
-    /**
-     * Checks if current device is TC007 model.
-     *
-     * @return true if device is TC007, false otherwise
-     */
     fun isTC007(): Boolean {
         return productName.contains("TC007")
     }
     @SuppressLint("MissingPermission")
     private fun getLocation() : String? {
-        //1.获取位置管理器
+
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
 
-        //2.获取位置提供器，GPS或是NetWork
         val providers = locationManager?.getProviders(true)
         locationProvider = if (providers!!.contains(LocationManager.GPS_PROVIDER)) {
-            //如果是GPS
+
             LocationManager.GPS_PROVIDER
         } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
-            //如果是Network
+
             LocationManager.NETWORK_PROVIDER
         } else {
             return null
@@ -229,14 +204,13 @@ class IRCameraSettingActivity : BaseActivity() {
     }
 
     var locationListener: LocationListener = object : LocationListener {
-        // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
             Toast.makeText(
                 this@IRCameraSettingActivity, provider, Toast.LENGTH_SHORT
             ).show()
         }
 
-        // Provider被enable时触发此函数，比如GPS被打开
         override fun onProviderEnabled(provider: String) {
             Toast.makeText(
                 this@IRCameraSettingActivity, "GPS打开", Toast.LENGTH_SHORT
@@ -244,17 +218,15 @@ class IRCameraSettingActivity : BaseActivity() {
             getLocation()
         }
 
-        // Provider被disable时触发此函数，比如GPS被关闭
         override fun onProviderDisabled(provider: String) {
             Toast.makeText(
                 this@IRCameraSettingActivity, "GPS关闭", Toast.LENGTH_SHORT
             ).show()
         }
 
-        //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
         override fun onLocationChanged(location: Location) {
             if (location != null) {
-                //如果位置发生变化，重新显示地理位置经纬度
+
                 Toast.makeText(
                     this@IRCameraSettingActivity, location.longitude.toString() + " " +
                             location.latitude + "", Toast.LENGTH_SHORT
@@ -270,14 +242,13 @@ class IRCameraSettingActivity : BaseActivity() {
         for (provider in providers) {
             val l: Location = locationManager!!.getLastKnownLocation(provider) ?: continue
             if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
-                // Found best last known location: %s", l);
+
                 bestLocation = l
             }
         }
         return bestLocation
     }
 
-    //获取地址信息:城市、街道等信息
     private fun getAddress(location: Location?): String {
         var result: List<Address?>? = null
         try {
@@ -318,8 +289,6 @@ class IRCameraSettingActivity : BaseActivity() {
         }
     }
 
-
-
     override fun onPause() {
         super.onPause()
         if (isTC007()){
@@ -333,10 +302,8 @@ class IRCameraSettingActivity : BaseActivity() {
         super.onDestroy()
     }
 
-
     override fun initData() {
     }
-
 
     private fun initLocationPermission() {
         XXPermissions.with(this@IRCameraSettingActivity)
@@ -367,7 +334,7 @@ class IRCameraSettingActivity : BaseActivity() {
                 }
                 override fun onDenied(permissions: MutableList<String>, never: Boolean) {
                     if (never) {
-                        // 如果是被永久拒绝就跳转到应用权限系统设置页面
+
                         if (BaseApplication.instance.isDomestic()){
                             ToastUtils.showShort(getString(R.string.app_location_content))
                         }else{

@@ -14,47 +14,18 @@ import com.topdon.thermal.R
 import com.topdon.thermal.databinding.DialogIrConfigInputBinding
 import java.lang.NumberFormatException
 
-/**
- * Professional thermal imaging configuration input dialog for clinical and research applications.
- *
- * Provides comprehensive parameter input interface for thermal measurement correction including:
- * - Environmental temperature configuration with device-specific ranges (TC007: -10°C to 50°C, others: -10°C to 55°C)
- * - Test distance configuration with precision ranging (TC007: 0.2m to 4m, others: 0.2m to 5m)
- * - Material emissivity configuration with research-grade accuracy (TC007: 0.1 to 1.0, others: 0.01 to 1.0)
- *
- * This dialog implements professional thermal parameter input validation suitable for
- * research documentation and clinical thermal imaging measurement correction workflows.
- *
- * @constructor Creates thermal configuration input dialog
- * @param context The application context for resource access
- * @param type The configuration parameter type (TEMP, DIS, EM)
- * @param isTC007 Whether this is for TC007 device with specific parameter ranges
- */
 class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean) : Dialog(context, R.style.TextInputDialog) {
 
-    /** ViewBinding for the dialog layout */
     private lateinit var binding: DialogIrConfigInputBinding
     
     private var value: Float? = null
     private var onConfirmListener: ((value: Float) -> Unit)? = null
 
-    /**
-     * Sets professional default input value for thermal parameter configuration.
-     *
-     * @param value The default parameter value for initialization
-     * @return This dialog instance for method chaining
-     */
     fun setInput(value: Float?): IRConfigInputDialog {
         this.value = value
         return this
     }
     
-    /**
-     * Sets professional confirmation listener for thermal parameter validation.
-     *
-     * @param l The listener callback invoked with validated parameter value
-     * @return This dialog instance for method chaining
-     */
     fun setConfirmListener(l: (value: Float) -> Unit): IRConfigInputDialog {
         this.onConfirmListener = l
         return this
@@ -75,9 +46,6 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         configureDialogWindow()
     }
 
-    /**
-     * Configures professional parameter type-specific UI elements.
-     */
     private fun setupParameterType() {
         with(binding) {
             when (type) {
@@ -100,9 +68,6 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         }
     }
 
-    /**
-     * Configures professional input field with default value and focus.
-     */
     private fun setupInputField() {
         with(binding.etInput) {
             setText(if (value == null) "" else value.toString())
@@ -111,9 +76,6 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         }
     }
 
-    /**
-     * Sets up professional event listeners for dialog interaction.
-     */
     private fun setupEventListeners() {
         with(binding) {
             tvCancel.setOnClickListener { dismiss() }
@@ -121,9 +83,6 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         }
     }
 
-    /**
-     * Handles professional parameter validation and confirmation.
-     */
     private fun handleConfirmClick() {
         try {
             val input: Float = binding.etInput.text.toString().toFloat()
@@ -143,9 +102,6 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         }
     }
 
-    /**
-     * Configures professional dialog window dimensions for optimal usability.
-     */
     private fun configureDialogWindow() {
         window?.let {
             val isPortrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -156,16 +112,11 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
         }
     }
 
-    /**
-     * Professional thermal parameter configuration types for clinical and research applications.
-     */
     enum class Type {
-        /** Environmental temperature configuration for thermal measurement correction */
+        
         TEMP,
 
-        /** Test distance configuration for accurate thermal analysis */
         DIS,
 
-        /** Material emissivity configuration for research-grade thermal measurement */
         EM,
     }

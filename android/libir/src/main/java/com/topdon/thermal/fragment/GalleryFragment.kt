@@ -13,20 +13,6 @@ import com.topdon.thermal.R
 import com.topdon.thermal.databinding.FragmentGalleryBinding
 import kotlinx.coroutines.launch
 
-/**
- * Gallery fragment for thermal image display with ViewBinding implementation.
- * 
- * Provides professional image viewing interface with zoom/pan capabilities
- * for thermal imaging gallery functionality in research applications.
- * 
- * Features include:
- * - PhotoView integration for advanced image manipulation
- * - Glide-based efficient image loading
- * - Professional error handling and lifecycle management
- * 
- * @author Topdon Thermal Imaging Team
- * @since 2024-01-01
- */
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
@@ -50,9 +36,6 @@ class GalleryFragment : Fragment() {
         loadGalleryImage()
     }
 
-    /**
-     * Load thermal image into PhotoView with professional error handling.
-     */
     private fun loadGalleryImage() {
         Glide.with(this)
             .load(path)

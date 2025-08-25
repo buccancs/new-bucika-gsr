@@ -10,10 +10,6 @@ import com.shimmerresearch.driver.Configuration
 import com.elvishew.xlog.XLog
 import com.topdon.tc001.R
 
-/**
- * Comprehensive Shimmer Sensor Configuration Panel
- * Provides UI controls for all Shimmer sensor settings with Settings API connectivity
- */
 class ShimmerSensorPanel @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -24,7 +20,6 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         private const val TAG = "ShimmerSensorPanel"
         private const val PREFS_NAME = "shimmer_sensor_settings"
         
-        // Setting keys
         private const val KEY_SAMPLING_RATE = "sampling_rate"
         private const val KEY_GSR_ENABLED = "gsr_enabled"
         private const val KEY_TEMPERATURE_ENABLED = "temperature_enabled"
@@ -35,7 +30,6 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         private const val KEY_CALIBRATION_ENABLED = "calibration_enabled"
     }
 
-    // UI components
     private lateinit var spinnerSamplingRate: Spinner
     private lateinit var switchGSR: Switch
     private lateinit var switchTemperature: Switch
@@ -48,10 +42,8 @@ class ShimmerSensorPanel @JvmOverloads constructor(
     private lateinit var btnResetDefaults: Button
     private lateinit var tvCurrentConfig: TextView
     
-    // Settings storage
     private lateinit var sharedPrefs: SharedPreferences
     
-    // Configuration listener
     private var configurationListener: ShimmerConfigurationListener? = null
     
     interface ShimmerConfigurationListener {
@@ -83,7 +75,6 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.view_shimmer_sensor_panel, this, true)
         
-        // Initialize UI components
         spinnerSamplingRate = view.findViewById(R.id.spinner_sampling_rate)
         switchGSR = view.findViewById(R.id.switch_gsr)
         switchTemperature = view.findViewById(R.id.switch_temperature)
@@ -113,7 +104,7 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, samplingRates)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSamplingRate.adapter = adapter
-        spinnerSamplingRate.setSelection(4) // Default to 128 Hz
+        spinnerSamplingRate.setSelection(4)
     }
 
     private fun setupGSRRangeSpinner() {
@@ -121,11 +112,11 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, gsrRanges)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGSRRange.adapter = adapter
-        spinnerGSRRange.setSelection(1) // Default to medium range
+        spinnerGSRRange.setSelection(1)
     }
 
     private fun setupListeners() {
-        // Real-time configuration change listeners
+
         val configChangeListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
                 notifyConfigurationChanged()
@@ -217,13 +208,13 @@ class ShimmerSensorPanel @JvmOverloads constructor(
     }
 
     private fun resetToDefaults() {
-        // Set default values
-        spinnerSamplingRate.setSelection(4) // 128 Hz
+
+        spinnerSamplingRate.setSelection(4)
         switchGSR.isChecked = true
         switchTemperature.isChecked = true
         switchPPG.isChecked = false
         switchAccelerometer.isChecked = false
-        spinnerGSRRange.setSelection(1) // Medium range
+        spinnerGSRRange.setSelection(1)
         switchFilter.isChecked = true
         switchCalibration.isChecked = true
         
@@ -301,23 +292,14 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         }
     }
 
-    /**
-     * Set configuration change listener
-     */
     fun setConfigurationListener(listener: ShimmerConfigurationListener) {
         this.configurationListener = listener
     }
 
-    /**
-     * Get current configuration
-     */
     fun getConfiguration(): ShimmerConfiguration {
         return getCurrentConfiguration()
     }
 
-    /**
-     * Set configuration programmatically
-     */
     fun setConfiguration(config: ShimmerConfiguration) {
         spinnerSamplingRate.setSelection(getSamplingRatePosition(config.samplingRate))
         switchGSR.isChecked = config.gsrEnabled
@@ -331,9 +313,6 @@ class ShimmerSensorPanel @JvmOverloads constructor(
         updateCurrentConfigDisplay()
     }
 
-    /**
-     * Get sensor bitmap value for Shimmer configuration
-     */
     fun getEnabledSensorsBitmap(): Long {
         var sensorBitmap = 0L
         

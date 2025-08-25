@@ -19,10 +19,6 @@ import com.topdon.tc001.gsr.GSRManager
 import com.topdon.tc001.recording.EnhancedRecordingActivity
 import kotlinx.coroutines.*
 
-/**
- * Foreground service that manages connection to PC orchestrator
- * and coordinates recording sessions
- */
 class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     
     companion object {
@@ -30,14 +26,12 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         private const val NOTIFICATION_ID = 2000
         private const val CHANNEL_ID = "orchestrator_service_channel"
         private const val SERVICE_TYPE = "_bucika-gsr._tcp"
-        private const val DISCOVERY_TIMEOUT = 30000L // 30 seconds
+        private const val DISCOVERY_TIMEOUT = 30000L
         
-        // Intent actions
         const val ACTION_CONNECT = "com.topdon.tc001.orchestrator.CONNECT"
         const val ACTION_DISCONNECT = "com.topdon.tc001.orchestrator.DISCONNECT"
         const val ACTION_MANUAL_CONNECT = "com.topdon.tc001.orchestrator.MANUAL_CONNECT"
         
-        // Intent extras
         const val EXTRA_SERVER_URL = "server_url"
     }
 
@@ -46,12 +40,10 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val binder = OrchestratorBinder()
     
-    // Discovery components
     private var nsdManager: NsdManager? = null
     private var discoveryListener: NsdManager.DiscoveryListener? = null
     private val discoveredServices = mutableSetOf<NsdServiceInfo>()
     
-    // Service state
     private var isConnectedToOrchestrator = false
     private var currentServerUrl: String? = null
     private var serviceListener: ServiceListener? = null
@@ -67,7 +59,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         gsrManager = GSRManager.getInstance(this)
         nsdManager = getSystemService(Context.NSD_SERVICE) as NsdManager
         
-        // Set up GSR data listener to stream data to orchestrator
         setupGSRDataStreaming()
     }
 
@@ -91,7 +82,7 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
             }
         }
         
-        return START_STICKY // Restart if killed by system
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder = binder
@@ -106,9 +97,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         super.onDestroy()
     }
 
-    /**
-     * Start mDNS discovery for orchestrator services
-     */
     private fun startDiscovery() {
         if (discoveryListener != null) {
             Log.w(TAG, "Discovery already in progress")
@@ -155,7 +143,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         try {
             nsdManager?.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener!!)
             
-            // Stop discovery after timeout
             serviceScope.launch {
                 delay(DISCOVERY_TIMEOUT)
                 if (discoveredServices.isEmpty() && !isConnectedToOrchestrator) {
@@ -171,9 +158,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         }
     }
 
-    /**
-     * Resolve discovered service to get connection details
-     */
     private fun resolveService(serviceInfo: NsdServiceInfo) {
         Log.i(TAG, "Resolving service: ${serviceInfo.serviceName}")
         
@@ -200,9 +184,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         }
     }
 
-    /**
-     * Stop mDNS discovery
-     */
     private fun stopDiscovery() {
         discoveryListener?.let { listener ->
             try {
@@ -215,20 +196,14 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         }
     }
 
-    /**
-     * Connect to orchestrator at specified URL
-     */
     private fun connectToOrchestrator(serverUrl: String) {
         currentServerUrl = serverUrl
         Log.i(TAG, "Connecting to orchestrator at $serverUrl")
         
-        stopDiscovery() // Stop discovery once we're connecting
+        stopDiscovery()
         orchestratorClient.connect(serverUrl)
     }
 
-    /**
-     * Disconnect from orchestrator
-     */
     private fun disconnectFromOrchestrator() {
         Log.i(TAG, "Disconnecting from orchestrator")
         
@@ -239,12 +214,9 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         updateNotification("Disconnected")
         serviceListener?.onDisconnected()
         
-        // Stop foreground service
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
-
-    // OrchestratorClient.OrchestratorListener implementation
 
     override fun onConnected() {
         Log.i(TAG, "Connected to orchestrator")
@@ -259,9 +231,8 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         updateNotification("Connection lost")
         serviceListener?.onDisconnected()
         
-        // Attempt to reconnect or restart discovery
         serviceScope.launch {
-            delay(5000) // Wait 5 seconds
+            delay(5000)
             if (currentServerUrl != null) {
                 connectToOrchestrator(currentServerUrl!!)
             } else {
@@ -287,7 +258,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         updateNotification("Recording session active")
         serviceListener?.onStartSession(sessionId, config)
         
-        // Launch recording activity
         val intent = Intent(this, EnhancedRecordingActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra("sessionId", sessionId)
@@ -312,9 +282,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         serviceListener?.onError(errorCode, message, details)
     }
 
-    /**
-     * Create notification channel for Android O+
-     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -331,9 +298,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         }
     }
 
-    /**
-     * Create service notification
-     */
     private fun createNotification(status: String): Notification {
         val intent = Intent(this, EnhancedRecordingActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
@@ -344,35 +308,28 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Bucika GSR Orchestrator")
             .setContentText(status)
-            .setSmallIcon(R.drawable.ic_recording_active) // Assume this icon exists
+            .setSmallIcon(R.drawable.ic_recording_active)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
     }
 
-    /**
-     * Update existing notification
-     */
     private fun updateNotification(status: String) {
         val notification = createNotification(status)
         val manager = getSystemService(NotificationManager::class.java)
         manager.notify(NOTIFICATION_ID, notification)
     }
 
-    /**
-     * Set up GSR data streaming to orchestrator during active sessions
-     */
     private fun setupGSRDataStreaming() {
         gsrManager.setGSRDataListener(object : GSRManager.GSRDataListener {
             override fun onGSRDataReceived(timestamp: Long, gsrValue: Double, skinTemperature: Double) {
-                // Only stream data during active orchestrator sessions
+
                 if (isSessionActive && isConnectedToOrchestrator) {
                     orchestratorClient.sendGSRData(gsrValue, skinTemperature, timestamp)
                     dataPointsCollected++
                     
-                    // Send periodic status updates
-                    if (dataPointsCollected % 128 == 0) { // Every second at 128Hz
+                    if (dataPointsCollected % 128 == 0) {
                         orchestratorClient.sendSessionStatus(true, 0, dataPointsCollected)
                     }
                 }
@@ -393,7 +350,6 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         updateNotification("Recording session active")
         serviceListener?.onSessionStarted(sessionId, config)
         
-        // Start GSR recording if device is connected
         if (gsrManager.isConnected()) {
             gsrManager.startRecording()
         }
@@ -406,19 +362,14 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         updateNotification("Session ended")
         serviceListener?.onSessionStopped()
         
-        // Stop GSR recording
         gsrManager.stopRecording()
         
-        // Upload recorded files automatically
         uploadSessionFiles()
     }
     
-    /**
-     * Upload all recorded files from the current session
-     */
     private fun uploadSessionFiles() {
         try {
-            // Get GSR data files
+
             val gsrFiles = findGSRDataFiles()
             Log.i(TAG, "Found ${gsrFiles.size} GSR files to upload")
             
@@ -449,22 +400,16 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
                 }
             }
             
-            // TODO: Upload video files if available
-            // TODO: Upload thermal data if available
-            
         } catch (e: Exception) {
             Log.e(TAG, "Error uploading session files", e)
         }
     }
     
-    /**
-     * Find GSR data files from current recording session
-     */
     private fun findGSRDataFiles(): List<java.io.File> {
         val files = mutableListOf<java.io.File>()
         
         try {
-            // Check common GSR data storage locations
+
             val externalDir = android.os.Environment.getExternalStorageDirectory()
             val gsrDataDirs = listOf(
                 java.io.File(externalDir, "BucikaGSR/gsr_data"),
@@ -493,24 +438,15 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         return files
     }
     
-    /**
-     * Check if file was created recently (within last hour)
-     */
     private fun isRecentFile(file: java.io.File): Boolean {
         val oneHourAgo = System.currentTimeMillis() - (60 * 60 * 1000)
         return file.lastModified() > oneHourAgo
     }
 
-    /**
-     * Service binder for activity communication
-     */
     inner class OrchestratorBinder : Binder() {
         fun getService(): OrchestratorService = this@OrchestratorService
     }
 
-    /**
-     * Interface for service events
-     */
     interface ServiceListener {
         fun onConnected()
         fun onDisconnected()
@@ -522,30 +458,17 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         fun onSyncMark(markerId: String, referenceTime: Long)
         fun onError(errorCode: String, message: String, details: Map<String, Any>)
         
-        // GSR integration events
         fun onGSRConnectionChanged(isConnected: Boolean, deviceName: String?)
         fun onSessionStarted(sessionId: String, config: Map<String, Any>)
         fun onSessionStopped()
     }
 
-    /**
-     * Set listener for service events
-     */
     fun setServiceListener(listener: ServiceListener?) {
         this.serviceListener = listener
     }
 
-    /**
-     * Get connection status
-     */
     fun isConnected(): Boolean = isConnectedToOrchestrator
 
-    /**
-     * Get current server URL
-     */
     fun getServerUrl(): String? = currentServerUrl
 
-    /**
-     * Get discovered services
-     */
     fun getDiscoveredServices(): Set<NsdServiceInfo> = discoveredServices.toSet()

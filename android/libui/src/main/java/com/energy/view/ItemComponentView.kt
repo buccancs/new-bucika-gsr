@@ -10,9 +10,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.topdon.lib.ui.R
 
-/**
- * Created by fengjibo on 2023/5/29.
- */
 class ItemComponentView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null

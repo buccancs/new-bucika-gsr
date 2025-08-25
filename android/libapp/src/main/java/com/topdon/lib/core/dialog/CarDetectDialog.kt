@@ -23,17 +23,6 @@ import com.topdon.lib.core.databinding.DialogCarDetectBinding
 import com.topdon.lib.core.databinding.ItemCarDetectChildLayoutBinding
 import com.topdon.lib.core.databinding.ItemCarDetectLayoutBinding
 
-/**
- * Car detection type selection dialog with ViewBinding implementation.
- * 
- * Provides a modern interface for selecting automotive diagnostic parameters with
- * comprehensive temperature range specifications for research-grade thermal imaging.
- * 
- * @param context Activity context for dialog presentation
- * @param listener Callback function invoked when user selects detection parameters
- * @author Topdon Thermal Imaging Team
- * @since 2024-01-01
- */
 class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean) -> Unit)) :
     Dialog(context, R.style.DefaultDialog) {
     
@@ -218,12 +207,6 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
         }
     }
 
-    /**
-     * RecyclerView adapter for car detection categories with ViewBinding patterns.
-     * 
-     * Implements professional list management for automotive diagnostic categories
-     * with comprehensive temperature range specifications and visual feedback.
-     */
     inner class CarDetectAdapter(val act: Context, private var carDetects: List<CarDetectBean>) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         
@@ -274,19 +257,9 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
             return carDetects.size
         }
 
-        /**
-         * ViewHolder with ViewBinding for car detection category items.
-         */
         inner class ItemView(val binding: ItemCarDetectLayoutBinding) : RecyclerView.ViewHolder(binding.root)
     }
 
-
-    /**
-     * Child adapter for individual car detection items with ViewBinding implementation.
-     * 
-     * Manages selection state and visual feedback for specific diagnostic parameters
-     * with temperature range display for professional thermal imaging applications.
-     */
     class CarDetectChildAdapter(
         val context: Context,
         private var carChildDetects: List<CarDetectChildBean>
@@ -321,8 +294,5 @@ class CarDetectDialog(context: Context, val listener: ((bean: CarDetectChildBean
             return carChildDetects.size
         }
 
-        /**
-         * ViewHolder with ViewBinding for car detection child items.
-         */
         inner class ItemView(val binding: ItemCarDetectChildLayoutBinding) : RecyclerView.ViewHolder(binding.root)
     }

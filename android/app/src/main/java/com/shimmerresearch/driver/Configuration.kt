@@ -1,19 +1,14 @@
 package com.shimmerresearch.driver
 
-/**
- * Local implementation of Shimmer Configuration API
- * Matches the structure of the official Shimmer Android SDK
- */
 object Configuration {
     const val CALIBRATED = "CAL"
     const val UNCALIBRATED = "RAW"
     
-    // Data formats
     const val DATA_FORMAT_RAW = "RAW"
     const val DATA_FORMAT_CALIBRATED = "CAL"
     
     object Shimmer3 {
-        // Sampling rates
+
         const val SAMPLING_RATE_1HZ = 1.0
         const val SAMPLING_RATE_10HZ = 10.24
         const val SAMPLING_RATE_51HZ = 51.2
@@ -25,22 +20,19 @@ object Configuration {
         const val SAMPLING_RATE_1024HZ = 1024.0
         
         object ObjectClusterSensorName {
-            // GSR sensor channels
+
             const val GSR_CONDUCTANCE = "GSR_CONDUCTANCE"
             const val GSR_RESISTANCE = "GSR_RESISTANCE" 
             const val GSR_RAW = "GSR_RAW"
             
-            // Temperature sensor channels
             const val SKIN_TEMPERATURE = "SKIN_TEMPERATURE"
             const val TEMPERATURE = "TEMPERATURE"
             const val TEMPERATURE_RAW = "TEMPERATURE_RAW"
             
-            // PPG sensor channels
             const val PPG_RAW = "PPG_RAW"
             const val PPG = "PPG"
             const val HEART_RATE = "HEART_RATE"
             
-            // Accelerometer channels
             const val ACCEL_X = "ACCEL_X"
             const val ACCEL_Y = "ACCEL_Y" 
             const val ACCEL_Z = "ACCEL_Z"
@@ -48,20 +40,15 @@ object Configuration {
             const val ACCEL_Y_RAW = "ACCEL_Y_RAW"
             const val ACCEL_Z_RAW = "ACCEL_Z_RAW"
             
-            // Gyroscope channels
             const val GYRO_X = "GYRO_X"
             const val GYRO_Y = "GYRO_Y"
             const val GYRO_Z = "GYRO_Z"
             
-            // Magnetometer channels
             const val MAG_X = "MAG_X"
             const val MAG_Y = "MAG_Y"
             const val MAG_Z = "MAG_Z"
         }
         
-        /**
-         * Sensor bitmap values for enabling/disabling sensors
-         */
         enum class SensorMap(val mValue: Long) {
             GSR(0x04),
             TEMPERATURE(0x08),
@@ -73,27 +60,18 @@ object Configuration {
             TIMESTAMP(0x1000)
         }
         
-        /**
-         * GSR range configurations
-         */
         object GSRRange {
-            const val GSR_RANGE_40K = 0  // 40kΩ (High sensitivity)
-            const val GSR_RANGE_287K = 1 // 287kΩ (Medium sensitivity)
-            const val GSR_RANGE_1M = 2   // 1MΩ (Low sensitivity)
-            const val GSR_RANGE_3M3 = 3  // 3.3MΩ (Very low sensitivity)
+            const val GSR_RANGE_40K = 0
+            const val GSR_RANGE_287K = 1
+            const val GSR_RANGE_1M = 2
+            const val GSR_RANGE_3M3 = 3
         }
         
-        /**
-         * PPG range configurations
-         */
         object PPGRange {
             const val PPG_RANGE_LOW = 0
             const val PPG_RANGE_HIGH = 1
         }
         
-        /**
-         * Accelerometer range configurations
-         */
         object AccelRange {
             const val ACCEL_RANGE_1_5G = 0
             const val ACCEL_RANGE_2G = 1
@@ -101,16 +79,12 @@ object Configuration {
             const val ACCEL_RANGE_6G = 3
         }
         
-        /**
-         * Digital filter configurations
-         */
         object FilterConfig {
             const val FILTER_NONE = 0
             const val FILTER_LOW_PASS = 1
             const val FILTER_HIGH_PASS = 2
             const val FILTER_BAND_PASS = 3
             
-            // Gyroscope channels
             const val GYRO_X = "GYRO_X"
             const val GYRO_Y = "GYRO_Y"
             const val GYRO_Z = "GYRO_Z"
@@ -118,7 +92,6 @@ object Configuration {
             const val GYRO_Y_RAW = "GYRO_Y_RAW"
             const val GYRO_Z_RAW = "GYRO_Z_RAW"
             
-            // Magnetometer channels
             const val MAG_X = "MAG_X"
             const val MAG_Y = "MAG_Y"
             const val MAG_Z = "MAG_Z"
@@ -126,7 +99,6 @@ object Configuration {
             const val MAG_Y_RAW = "MAG_Y_RAW"
             const val MAG_Z_RAW = "MAG_Z_RAW"
             
-            // Timestamp and system channels
             const val TIMESTAMP = "TIMESTAMP"
             const val SYSTEM_TIMESTAMP = "SYSTEM_TIMESTAMP"
             const val PACKET_RECEPTION_RATE = "PACKET_RECEPTION_RATE"
@@ -175,7 +147,7 @@ object Configuration {
         }
         
         object SensorRange {
-            // GSR ranges  
+
             const val GSR_RANGE_40uS_2540uS = 0
             const val GSR_RANGE_10uS_56uS = 1
             const val GSR_RANGE_56uS_220uS = 2
@@ -183,13 +155,11 @@ object Configuration {
             const val GSR_RANGE_680uS_4700uS = 4
             const val GSR_RANGE_AUTO = 5
             
-            // Accelerometer ranges
             const val ACCEL_RANGE_1_5G = 0
             const val ACCEL_RANGE_2G = 1
             const val ACCEL_RANGE_4G = 2
             const val ACCEL_RANGE_6G = 3
             
-            // Gyroscope ranges  
             const val GYRO_RANGE_250 = 0
             const val GYRO_RANGE_500 = 1
             const val GYRO_RANGE_1000 = 2
@@ -209,12 +179,11 @@ object Configuration {
         }
         
         object CalibrationParameters {
-            // GSR calibration constants
+
             const val GSR_UNCAL_LIMIT_RANGE_40uS_2540uS = 4095.0
             const val GSR_CAL_OFFSET_RANGE_40uS_2540uS = 0.0
             const val GSR_CAL_GAIN_RANGE_40uS_2540uS = 2.5 / 4095.0
             
-            // Temperature calibration constants  
             const val TEMP_UNCAL_LIMIT = 4095.0
             const val TEMP_CAL_OFFSET = -273.15
             const val TEMP_CAL_GAIN = 0.01

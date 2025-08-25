@@ -15,18 +15,6 @@ import com.topdon.lib.core.view.MyTextView
 import com.topdon.thermal.R
 import com.topdon.thermal.databinding.PopupOptionPickBinding
 
-/**
- * Option selection PopupWindow with ViewBinding implementation.
- * 
- * Provides modern dropdown interface for thermal imaging parameter selection
- * with support for custom icons and dynamic sizing based on content.
- * 
- * @param context Application context for popup display
- * @param strArray Array of option strings to display
- * @param resIdArray Optional array of drawable resource IDs for option icons
- * @author Topdon Thermal Imaging Team
- * @since 2024-01-05
- */
 class OptionPickPopup(
     private val context: Context, 
     private val strArray: Array<String>, 
@@ -34,13 +22,9 @@ class OptionPickPopup(
 ) : PopupWindow() {
 
     companion object {
-        /**
-         * Option text size in sp units.
-         */
+        
         private const val TEXT_SIZE_SP: Float = 14f
-        /**
-         * Text top/bottom padding in dp units.
-         */
+        
         private const val TEXT_PADDING: Float = 7f
     }
 
@@ -48,12 +32,6 @@ class OptionPickPopup(
         LayoutInflater.from(context)
     )
 
-    /**
-     * Selection event listener for option changes.
-     * 
-     * @param position Selected option position in array
-     * @param str Selected option text content
-     */
     var onPickListener: ((position: Int, str: String) -> Unit)? = null
 
     init {
@@ -61,9 +39,6 @@ class OptionPickPopup(
         setupRecyclerView()
     }
 
-    /**
-     * Calculate and configure popup dimensions based on content.
-     */
     private fun setupDimensions() {
         val textView = TextView(context)
         textView.textSize = TEXT_SIZE_SP
@@ -80,9 +55,6 @@ class OptionPickPopup(
         isOutsideTouchable = true
     }
 
-    /**
-     * Configure RecyclerView with adapter for option display.
-     */
     private fun setupRecyclerView() {
         val adapter = OptionAdapter()
         adapter.onItemClickListener = { position ->
@@ -96,11 +68,6 @@ class OptionPickPopup(
         }
     }
 
-    /**
-     * Display popup with intelligent positioning relative to anchor view.
-     * 
-     * @param anchor Reference view for popup positioning
-     */
     fun show(anchor: View) {
         val locationArray = IntArray(2)
         anchor.getLocationInWindow(locationArray)
@@ -108,24 +75,18 @@ class OptionPickPopup(
         val x = locationArray[0] + anchor.width - width + SizeUtils.dp2px(5f)
 
         val yPosition = if (context.resources.displayMetrics.heightPixels - locationArray[1] - anchor.height > height - SizeUtils.dp2px(5f)) {
-            // Show below anchor if space available
+
             locationArray[1] + anchor.height - SizeUtils.dp2px(5f)
         } else {
-            // Show above anchor if insufficient space below
+
             (locationArray[1] - height + SizeUtils.dp2px(5f)).coerceAtLeast(0)
         }
         
         showAtLocation(anchor, Gravity.NO_GRAVITY, x, yPosition)
     }
 
-    /**
-     * RecyclerView adapter for option items with ViewBinding patterns.
-     */
     private inner class OptionAdapter : RecyclerView.Adapter<OptionAdapter.ViewHolder>() {
         
-        /**
-         * Item click event listener.
-         */
         var onItemClickListener: ((position: Int) -> Unit)? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -156,9 +117,6 @@ class OptionPickPopup(
 
         override fun getItemCount(): Int = strArray.size
 
-        /**
-         * ViewHolder for option items with click handling.
-         */
         inner class ViewHolder(val textView: MyTextView) : RecyclerView.ViewHolder(textView) {
             init {
                 textView.setOnClickListener {

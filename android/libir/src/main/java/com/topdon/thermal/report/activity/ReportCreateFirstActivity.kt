@@ -47,27 +47,9 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Professional thermal imaging report creation activity (Step 1 of 2) providing comprehensive
- * report generation capabilities for research and clinical applications.
- * 
- * Provides advanced functionality for:
- * - Professional thermal report metadata input and validation
- * - Industry-standard environmental condition recording (temperature, humidity, distance)
- * - Research-grade location and GPS coordinate capture
- * - Clinical-grade date/time selection with professional accuracy
- * - Comprehensive report condition parameter configuration
- * - Professional thermal imaging report workflow management
- * 
- * Required parameters:
- * - Device type flag: [ExtraKeyConfig.IS_TC007] (affects environmental parameters)
- * - Image absolute path: [ExtraKeyConfig.FILE_ABSOLUTE_PATH] (passed through)
- * - Temperature data: [ExtraKeyConfig.IMAGE_TEMP_BEAN] (passed through)
- */
 @Route(path = RouterConfig.REPORT_CREATE_FIRST)
 class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
 
-    /** ViewBinding instance for type-safe view access */
     private lateinit var binding: ActivityReportCreateFirstBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,21 +58,14 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
         setContentView(binding.root)
     }
 
-    /**
-     * Device type flag indicating whether current device is TC007 or other plugin-style device.
-     * true=TC007, false=other plugin devices (affects environmental parameters)
-     */
     private var isTC007 = false
     
-    /** Location manager for professional GPS coordinate capture */
     private var locationManager: LocationManager? = null
     
-    /** Location provider for research-grade position accuracy */
     private var locationProvider: String? = null
 
     override fun initContentView() = R.layout.activity_report_create_first
 
-    /** Required permissions for professional location services */
     private val permissionList = listOf(
         Permission.ACCESS_FINE_LOCATION,
         Permission.ACCESS_COARSE_LOCATION
@@ -163,9 +138,9 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun readConfig() {
-        var environment = 30f //环境温度
-        var distance = 0.25f  //测试距离
-        var radiation = 0.95f //发射率
+        var environment = 30f
+        var distance = 0.25f
+        var radiation = 0.95f
         val config = ConfigRepository.readConfig(isTC007)
         distance = config.distance
         radiation = config.radiation
@@ -185,10 +160,10 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
-            tv_report_date -> {//报告日期
+            tv_report_date -> {
                 selectTime()
             }
-            tv_preview -> {//预览
+            tv_preview -> {
                 val reportInfoBean = buildReportInfo()
                 val reportConditionBean = buildReportCondition()
                 ARouter.getInstance().build(RouterConfig.REPORT_PREVIEW_FIRST)
@@ -196,7 +171,7 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
                     .withParcelable(ExtraKeyConfig.REPORT_CONDITION, reportConditionBean)
                     .navigation(this)
             }
-            tv_next -> {//下一步
+            tv_next -> {
                 val reportInfoBean = buildReportInfo()
                 val reportConditionBean = buildReportCondition()
                 val imageTempBean: ImageTempBean? = intent.getParcelableExtra(ExtraKeyConfig.IMAGE_TEMP_BEAN)
@@ -216,16 +191,15 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
 
     @SuppressLint("MissingPermission")
     private fun getLocation() : String? {
-        //1.获取位置管理器
+
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
 
-        //2.获取位置提供器，GPS或是NetWork
         val providers = locationManager?.getProviders(true)
         locationProvider = if (providers!!.contains(LocationManager.GPS_PROVIDER)) {
-            //如果是GPS
+
             LocationManager.GPS_PROVIDER
         } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
-            //如果是Network
+
             LocationManager.NETWORK_PROVIDER
         } else {
             return null
@@ -242,7 +216,6 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
         }
     }
 
-    //获取地址信息:城市、街道等信息
     private fun getAddress(location: Location?): String {
         var result: List<Address?>? = null
         try {
@@ -313,15 +286,8 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
         )
     }
 
-
-
-    /**
-     * 当前设置的报告日期时间戳.
-     */
     private var startTime = 0L
-    /**
-     * 显示时间拾取弹窗 - 使用Android原生日期时间选择器
-     */
+    
     private fun selectTime() {
         val calendar = Calendar.getInstance()
         if (startTime != 0L) {
@@ -334,11 +300,10 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        // 先选择日期
         val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-            // 日期选择完成后，选择时间
+
             val timePickerDialog = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
-                // 更新选中的日期时间
+
                 val selectedCalendar = Calendar.getInstance()
                 selectedCalendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute, 0)
                 startTime = selectedCalendar.timeInMillis
@@ -369,7 +334,7 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
     }
 
     private fun initLocationPermission() {
-        //定位
+
         XXPermissions.with(this@ReportCreateFirstActivity)
             .permission(
                 permissionList
@@ -399,7 +364,7 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
                 }
                 override fun onDenied(permissions: MutableList<String>, never: Boolean) {
                     if (never) {
-                        // 如果是被永久拒绝就跳转到应用权限系统设置页面
+
                         if (BaseApplication.instance.isDomestic()){
                             ToastUtils.showShort(getString(R.string.app_location_content))
                             return

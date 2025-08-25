@@ -3,56 +3,43 @@ package com.shimmerresearch.driver
 import com.elvishew.xlog.XLog
 import kotlin.math.*
 
-/**
- * Shimmer Data Processor for advanced GSR signal processing
- * Implements signal processing algorithms from the official Shimmer SDK
- */
 class ShimmerDataProcessor {
     
     companion object {
         private const val TAG = "ShimmerDataProcessor"
         
-        // Digital filter constants for GSR signal processing
         private const val LOW_PASS_CUTOFF_HZ = 5.0
         private const val HIGH_PASS_CUTOFF_HZ = 0.05
-        private const val NOTCH_FILTER_FREQ_HZ = 50.0 // Power line frequency
+        private const val NOTCH_FILTER_FREQ_HZ = 50.0
         
-        // Signal quality thresholds
-        private const val GSR_MIN_VALID_VALUE = 0.1 // µS
-        private const val GSR_MAX_VALID_VALUE = 100.0 // µS
-        private const val TEMP_MIN_VALID_VALUE = 20.0 // °C
-        private const val TEMP_MAX_VALID_VALUE = 45.0 // °C
+        private const val GSR_MIN_VALID_VALUE = 0.1
+        private const val GSR_MAX_VALID_VALUE = 100.0
+        private const val TEMP_MIN_VALID_VALUE = 20.0
+        private const val TEMP_MAX_VALID_VALUE = 45.0
         
-        // Artifact detection parameters
-        private const val GSR_MAX_CHANGE_RATE = 5.0 // µS/s
-        private const val TEMP_MAX_CHANGE_RATE = 2.0 // °C/s
+        private const val GSR_MAX_CHANGE_RATE = 5.0
+        private const val TEMP_MAX_CHANGE_RATE = 2.0
     }
     
     private val gsrBuffer = mutableListOf<Double>()
     private val temperatureBuffer = mutableListOf<Double>()
     private val timestampBuffer = mutableListOf<Long>()
     
-    private val maxBufferSize = 1280 // 10 seconds at 128 Hz
+    private val maxBufferSize = 1280
     
-    // Filter states
     private var previousGSR = 0.0
     private var previousTemp = 0.0
     private var lastValidGSR = 5.0
     private var lastValidTemp = 32.5
     
-    // Statistics
     private var totalSamples = 0L
     private var validSamples = 0L
     private var artifactSamples = 0L
     
-    /**
-     * Process raw GSR and temperature data from ObjectCluster
-     */
     fun processGSRData(objectCluster: ObjectCluster, samplingRate: Double): ProcessedGSRData {
         try {
             val timestamp = System.currentTimeMillis()
             
-            // Extract raw values
             val rawGSR = objectCluster.getValue(
                 Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE,
                 Configuration.CALIBRATED
@@ -65,11 +52,9 @@ class ShimmerDataProcessor {
             
             totalSamples++
             
-            // Validate data ranges
             val isValidGSR = isValidGSRValue(rawGSR)
             val isValidTemp = isValidTemperatureValue(rawTemp)
             
-            // Detect artifacts
             val gsrArtifact = detectGSRArtifact(rawGSR, samplingRate)
             val tempArtifact = detectTemperatureArtifact(rawTemp, samplingRate)
             
@@ -78,7 +63,6 @@ class ShimmerDataProcessor {
                 artifactSamples++
             }
             
-            // Use last valid values if current ones are invalid
             val processedGSR = if (isValidGSR && !gsrArtifact) {
                 lastValidGSR = rawGSR
                 rawGSR
@@ -93,10 +77,8 @@ class ShimmerDataProcessor {
                 lastValidTemp
             }
             
-            // Update buffers
             updateBuffers(processedGSR, processedTemp, timestamp)
             
-            // Apply digital filtering
             val filteredGSR = applyGSRFiltering(processedGSR, samplingRate)
             val filteredTemp = applyTemperatureFiltering(processedTemp, samplingRate)
             
@@ -104,12 +86,10 @@ class ShimmerDataProcessor {
                 validSamples++
             }
             
-            // Calculate derived metrics
             val gsrDerivative = calculateGSRDerivative(samplingRate)
             val gsrVariability = calculateGSRVariability()
             val tempVariability = calculateTemperatureVariability()
             
-            // Calculate signal quality metrics
             val signalQuality = calculateSignalQuality()
             
             return ProcessedGSRData(
@@ -133,23 +113,14 @@ class ShimmerDataProcessor {
         }
     }
     
-    /**
-     * Check if GSR value is within valid physiological range
-     */
     private fun isValidGSRValue(gsrValue: Double): Boolean {
         return gsrValue in GSR_MIN_VALID_VALUE..GSR_MAX_VALID_VALUE && gsrValue.isFinite()
     }
     
-    /**
-     * Check if temperature value is within valid physiological range
-     */
     private fun isValidTemperatureValue(tempValue: Double): Boolean {
         return tempValue in TEMP_MIN_VALID_VALUE..TEMP_MAX_VALID_VALUE && tempValue.isFinite()
     }
     
-    /**
-     * Detect GSR artifacts based on rapid changes
-     */
     private fun detectGSRArtifact(currentGSR: Double, samplingRate: Double): Boolean {
         if (previousGSR == 0.0) {
             previousGSR = currentGSR
@@ -163,9 +134,6 @@ class ShimmerDataProcessor {
         return isArtifact
     }
     
-    /**
-     * Detect temperature artifacts based on rapid changes
-     */
     private fun detectTemperatureArtifact(currentTemp: Double, samplingRate: Double): Boolean {
         if (previousTemp == 0.0) {
             previousTemp = currentTemp
@@ -179,15 +147,11 @@ class ShimmerDataProcessor {
         return isArtifact
     }
     
-    /**
-     * Update circular buffers with new data
-     */
     private fun updateBuffers(gsr: Double, temp: Double, timestamp: Long) {
         gsrBuffer.add(gsr)
         temperatureBuffer.add(temp)
         timestampBuffer.add(timestamp)
         
-        // Maintain buffer size
         if (gsrBuffer.size > maxBufferSize) {
             gsrBuffer.removeAt(0)
             temperatureBuffer.removeAt(0)
@@ -195,11 +159,8 @@ class ShimmerDataProcessor {
         }
     }
     
-    /**
-     * Apply low-pass filtering to GSR signal
-     */
     private fun applyGSRFiltering(gsr: Double, samplingRate: Double): Double {
-        // Simple low-pass filter implementation
+
         val alpha = 2.0 * PI * LOW_PASS_CUTOFF_HZ / samplingRate
         val filterConstant = alpha / (alpha + 1.0)
         
@@ -211,12 +172,9 @@ class ShimmerDataProcessor {
         }
     }
     
-    /**
-     * Apply filtering to temperature signal
-     */
     private fun applyTemperatureFiltering(temp: Double, samplingRate: Double): Double {
-        // Temperature changes slowly, use stronger filtering
-        val alpha = 2.0 * PI * 0.1 / samplingRate // 0.1 Hz cutoff
+
+        val alpha = 2.0 * PI * 0.1 / samplingRate
         val filterConstant = alpha / (alpha + 1.0)
         
         return if (temperatureBuffer.size > 1) {
@@ -227,9 +185,6 @@ class ShimmerDataProcessor {
         }
     }
     
-    /**
-     * Calculate GSR derivative (rate of change)
-     */
     private fun calculateGSRDerivative(samplingRate: Double): Double {
         return if (gsrBuffer.size >= 2) {
             val current = gsrBuffer[gsrBuffer.size - 1]
@@ -240,11 +195,8 @@ class ShimmerDataProcessor {
         }
     }
     
-    /**
-     * Calculate GSR variability (standard deviation over recent window)
-     */
     private fun calculateGSRVariability(): Double {
-        val windowSize = min(gsrBuffer.size, 128) // 1 second window at 128 Hz
+        val windowSize = min(gsrBuffer.size, 128)
         if (windowSize < 2) return 0.0
         
         val recentData = gsrBuffer.takeLast(windowSize)
@@ -254,11 +206,8 @@ class ShimmerDataProcessor {
         return sqrt(variance)
     }
     
-    /**
-     * Calculate temperature variability
-     */
     private fun calculateTemperatureVariability(): Double {
-        val windowSize = min(temperatureBuffer.size, 128) // 1 second window
+        val windowSize = min(temperatureBuffer.size, 128)
         if (windowSize < 2) return 0.0
         
         val recentData = temperatureBuffer.takeLast(windowSize)
@@ -268,24 +217,17 @@ class ShimmerDataProcessor {
         return sqrt(variance)
     }
     
-    /**
-     * Calculate overall signal quality score (0-100)
-     */
     private fun calculateSignalQuality(): Double {
         if (totalSamples == 0L) return 0.0
         
         val validRatio = validSamples.toDouble() / totalSamples
         val artifactRatio = artifactSamples.toDouble() / totalSamples
         
-        // Quality score based on valid data ratio and artifact ratio
         val qualityScore = (validRatio * 100.0) - (artifactRatio * 50.0)
         
         return max(0.0, min(100.0, qualityScore))
     }
     
-    /**
-     * Create invalid data response
-     */
     private fun createInvalidData(timestamp: Long): ProcessedGSRData {
         return ProcessedGSRData(
             timestamp = timestamp,
@@ -303,9 +245,6 @@ class ShimmerDataProcessor {
         )
     }
     
-    /**
-     * Get processing statistics
-     */
     fun getStatistics(): ProcessingStatistics {
         val validRatio = if (totalSamples > 0) validSamples.toDouble() / totalSamples else 0.0
         val artifactRatio = if (totalSamples > 0) artifactSamples.toDouble() / totalSamples else 0.0
@@ -321,9 +260,6 @@ class ShimmerDataProcessor {
         )
     }
     
-    /**
-     * Reset processor state
-     */
     fun reset() {
         gsrBuffer.clear()
         temperatureBuffer.clear()
@@ -338,9 +274,6 @@ class ShimmerDataProcessor {
     }
 }
 
-/**
- * Processed GSR data with derived metrics
- */
 data class ProcessedGSRData(
     val timestamp: Long,
     val rawGSR: Double,
@@ -356,9 +289,6 @@ data class ProcessedGSRData(
     val sampleIndex: Long
 )
 
-/**
- * Processing statistics
- */
 data class ProcessingStatistics(
     val totalSamples: Long,
     val validSamples: Long,

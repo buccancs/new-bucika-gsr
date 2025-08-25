@@ -8,10 +8,6 @@ import com.chad.library.adapter.base.util.getItemView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.topdon.libcom.R
 
-/**
- * @author: CaiSongL
- * @date: 2023/5/15 9:58
- */
 class CommLoadMoreView : BaseLoadMoreView() {
     override fun getRootView(parent: ViewGroup): View =
         parent.getItemView(R.layout.layout_load_more_view)
@@ -27,4 +23,3 @@ class CommLoadMoreView : BaseLoadMoreView() {
 
     override fun getLoadFailView(holder: BaseViewHolder): View =
         holder.getView(R.id.load_more_load_fail_view)
-
