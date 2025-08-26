@@ -175,7 +175,7 @@ abstract class BaseIRPlushActivity : IRThermalNightActivity(), OnUSBConnectListe
 
     private fun restartDualCamera() {
         if (isrun) {
-            USBMonitorManager.getInstance().isReStart = true
+            USBMonitorManager.getInstance().setReStart(true)
             dualStop()
             SystemClock.sleep(200)
             dualStart()
@@ -205,17 +205,22 @@ abstract class BaseIRPlushActivity : IRThermalNightActivity(), OnUSBConnectListe
             return
         }
         val dualRotate: Int = if (saveSetBean.rotateAngle == 270) 0 else (saveSetBean.rotateAngle + 90)
-        dualView = DualViewWithExternalCameraCommonApi(
-            getSurfaceView(),
-            USBMonitorManager.getInstance().uvcCamera, defaultDataFlowMode,
-            imageHeight, imageWidth,
-            vlCameraWidth, vlCameraHeight,
-            dualCameraWidth, dualCameraHeight,
-            isUseIRISP,dualRotate,this
-        )
-        dualView?.addFrameCallback(getTemperatureDualView())
+        val uvcCamera = USBMonitorManager.getInstance().uvcCamera
+        if (uvcCamera != null) {
+            dualView = DualViewWithExternalCameraCommonApi(
+                getSurfaceView(),
+                uvcCamera, defaultDataFlowMode,
+                imageHeight, imageWidth,
+                vlCameraWidth, vlCameraHeight,
+                dualCameraWidth, dualCameraHeight,
+                isUseIRISP,dualRotate,this
+            )
+            dualView?.addFrameCallback(getTemperatureDualView())
 
-        getTemperatureDualView().setDualUVCCamera(dualView!!.getDualUVCCamera())
+            dualView?.getDualUVCCamera()?.let { dualUVCCamera ->
+                getTemperatureDualView().setDualUVCCamera(dualUVCCamera)
+            }
+        }
         initPseudoColor()
         initAmplify(true)
 
@@ -236,7 +241,7 @@ abstract class BaseIRPlushActivity : IRThermalNightActivity(), OnUSBConnectListe
 
             }
             psedocolor!![0][length] = 0
-            dualView!!.getDualUVCCamera().loadPseudocolor(
+            dualView?.getDualUVCCamera()?.loadPseudocolor(
                 CommonParams.PseudoColorUsbDualType.WHITE_HOT_MODE,
                 psedocolor!![0]
             )
@@ -403,8 +408,9 @@ abstract class BaseIRPlushActivity : IRThermalNightActivity(), OnUSBConnectListe
             if (!SupHelp.getInstance().loadOpenclSuccess){
                 return@launch
             }
-            isOpenAmplify = !isOpenAmplify
-            dualView?.isOpenAmplify = isOpenAmplify
+            val currentAmplify = dualView?.isOpenAmplify() ?: false
+            val newAmplify = !currentAmplify
+            dualView?.setOpenAmplify(newAmplify)
 
             binding.titleView.setRight2Drawable(if (isOpenAmplify) R.drawable.svg_tisr_on else R.drawable.svg_tisr_off)
             SaveSettingUtil.isOpenAmplify = isOpenAmplify

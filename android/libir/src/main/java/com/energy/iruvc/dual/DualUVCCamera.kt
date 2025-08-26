@@ -87,4 +87,40 @@ class DualUVCCamera {
     fun startManualAlign() {
         // Stub implementation for manual alignment
     }
+    
+    /**
+     * Load parameters for thermal processing
+     */
+    fun loadParameters(parameters: ByteArray, typeLoadParameters: Any): ByteArray? {
+        // Stub implementation for parameter loading
+        return parameters
+    }
+    
+    /**
+     * Set display configuration
+     */
+    fun setDisp(dispValue: Int) {
+        // Stub implementation for display configuration
+    }
+    
+    /**
+     * Load pseudocolor configuration
+     */
+    fun loadPseudocolor(colorType: Any, colorData: ByteArray) {
+        // Stub implementation for pseudocolor loading
+    }
+    
+    /**
+     * Update frame data
+     */
+    fun updateFrame(format: Int, data: ByteArray, width: Int, height: Int) {
+        // Stub implementation for frame update
+    }
+    
+    /**
+     * Pause preview
+     */
+    fun onPausePreview() {
+        // Stub implementation for pause preview
+    }
 }

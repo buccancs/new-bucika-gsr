@@ -50,7 +50,7 @@ class AlgorithmImageActivity : AppCompatActivity() {
         tvTime.text = "耗时：" + (System.currentTimeMillis() - time) + "/"
         imageView.setImageBitmap(
             ImageColorTools.adjustPhotoRotation(
-                ImageColorTools.testImage(
+                ImageColorTools.testImageTe(
                     buffer
                 ), 90
             )
@@ -74,16 +74,19 @@ class AlgorithmImageActivity : AppCompatActivity() {
         }
         imageView2.setImageBitmap(
             ImageColorTools.adjustPhotoRotation(
-                ImageColorTools.testImage(
+                ImageColorTools.testImageTe(
                     bufferB
                 ), 90
             )
         )
-        val mat = JNITool.diff2firstFrameU1(buffer, bufferB)
+        val imageDst = ByteArray(192 * 256 * 4) // ARGB output buffer
+        val mat = JNITool.diff2firstFrameU1(256, 192, buffer, bufferB, imageDst)
         val im = Mat(192, 256, CvType.CV_8UC3)
         im.put(0, 0, mat)
         val bitmap = ImageColorTools.matToBitmap(im)
-        imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bitmap, 90))
+        bitmap?.let { bmp ->
+            imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bmp, 90))
+        }
         findViewById<View>(R.id.btn).setOnClickListener {
             val baseTemperatureBytes = ByteArray(192*256*2)
             val nextTemperatureBytes = ByteArray(192*256*2)
@@ -107,7 +110,9 @@ class AlgorithmImageActivity : AppCompatActivity() {
             im.put(0, 0, matByteArray)
             val bitmap = ImageColorTools.matToBitmap(im)
             Log.e("测试耗时：","diff2firstFrameByTemp ： ${System.currentTimeMillis() - startTime}")
-            imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bitmap, 90))
+            bitmap?.let { bmp ->
+                imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bmp, 90))
+            }
         }
         findViewById<View>(R.id.btn_u4).setOnClickListener {
             val baseImageBytes = ByteArray(192*256*2)
@@ -132,11 +137,16 @@ class AlgorithmImageActivity : AppCompatActivity() {
             Imgproc.cvtColor(baseImage, baseImage, Imgproc.COLOR_BGR2RGBA)
 
             val startTime = System.currentTimeMillis()
-            val matByteArray = JNITool.diff2firstFrameU4(ImageColorTools.matToByteArrayBy4(baseImage), ImageColorTools.matToByteArrayBy4(nextImage))
+            val baseImageArray = ImageColorTools.matToByteArrayBy4(baseImage)
+            val nextImageArray = ImageColorTools.matToByteArrayBy4(nextImage)
+            val outputImage = ByteArray(192 * 256 * 4) // Output buffer
+            val matByteArray = JNITool.diff2firstFrameU4(256, 192, baseImageArray, nextImageArray, outputImage)
             val im = Mat(192, 256, CvType.CV_8UC3)
             im.put(0, 0, matByteArray)
             val bitmap = ImageColorTools.matToBitmap(im)
-            imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bitmap, 90))
+            bitmap?.let { bmp ->
+                imgARGB.setImageBitmap(ImageColorTools.adjustPhotoRotation(bmp, 90))
+            }
         }
     }
 }

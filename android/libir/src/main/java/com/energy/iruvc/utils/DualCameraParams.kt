@@ -51,17 +51,30 @@ object DualCameraParams {
     /**
      * Type load parameters for rotation and image processing
      */
-    object TypeLoadParameters {
-        const val ROTATE_0 = 0
-        const val ROTATE_90 = 1
-        const val ROTATE_180 = 2
-        const val ROTATE_270 = 3
+    enum class TypeLoadParameters {
+        ROTATE_0,
+        ROTATE_90,
+        ROTATE_180,
+        ROTATE_270,
+        FLIP_HORIZONTAL,
+        FLIP_VERTICAL,
+        FLIP_BOTH,
+        NO_TRANSFORM;
         
-        // Image processing types
-        const val FLIP_HORIZONTAL = 4
-        const val FLIP_VERTICAL = 5
-        const val FLIP_BOTH = 6
-        const val NO_TRANSFORM = 0
+        companion object {
+            fun fromInt(value: Int): TypeLoadParameters {
+                return when (value) {
+                    0 -> ROTATE_0
+                    1 -> ROTATE_90
+                    2 -> ROTATE_180
+                    3 -> ROTATE_270
+                    4 -> FLIP_HORIZONTAL
+                    5 -> FLIP_VERTICAL
+                    6 -> FLIP_BOTH
+                    else -> NO_TRANSFORM
+                }
+            }
+        }
     }
     
     // Camera configuration constants

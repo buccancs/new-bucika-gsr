@@ -71,6 +71,12 @@ object USBMonitorManager {
         isReStart = reStart
     }
     
+    /**
+     * Get the current UVC camera instance
+     */
+    val uvcCamera: UVCCamera?
+        get() = mUvcCamera
+    
     fun init(pid: Int, isUseIRISP: Boolean, defaultDataFlowMode: CommonParams.DataFlowMode) {
         this.isUseIRISP = isUseIRISP
         mDefaultDataFlowMode = defaultDataFlowMode
@@ -306,5 +312,21 @@ object USBMonitorManager {
     
     fun onResumeUvcPreview() {
         mUvcCamera?.onResumePreview()
+    }
+    
+    /**
+     * Register USB device monitoring
+     */
+    fun registerUSB() {
+        // Stub implementation for USB registration
+        Log.i(TAG, "registerUSB called")
+    }
+    
+    /**
+     * Unregister USB device monitoring
+     */
+    fun unregisterUSB() {
+        // Stub implementation for USB unregistration
+        Log.i(TAG, "unregisterUSB called")
     }
 }
