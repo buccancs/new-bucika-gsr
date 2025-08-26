@@ -14,10 +14,6 @@ import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Comprehensive test suite for GSRDataWriter
- * Tests file system integration, CSV writing, data export, and file management
- */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29])
 class GSRDataWriterTest {
@@ -34,7 +30,6 @@ class GSRDataWriterTest {
         MockitoAnnotations.openMocks(this)
         realContext = ApplicationProvider.getApplicationContext()
         
-        // Create test data directory
         testDataDir = File(realContext.cacheDir, "gsr_test_data")
         testDataDir.mkdirs()
         
@@ -43,10 +38,9 @@ class GSRDataWriterTest {
 
     @After
     fun tearDown() {
-        // Clean up test files
+
         testDataDir.deleteRecursively()
         
-        // Clear singleton instance
         val instanceField = GSRDataWriter::class.java.getDeclaredField("INSTANCE")
         instanceField.isAccessible = true
         instanceField.set(null, null)
@@ -54,7 +48,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testSingletonInstance() {
-        // Test singleton pattern implementation
+
         val instance1 = GSRDataWriter.getInstance(realContext)
         val instance2 = GSRDataWriter.getInstance(realContext)
         
@@ -63,7 +57,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testFileCreation() {
-        // Test CSV file creation
+
         val timestamp = System.currentTimeMillis()
         val filename = gsrDataWriter.createCSVFile("test_session", timestamp)
         
@@ -73,13 +67,12 @@ class GSRDataWriterTest {
 
     @Test
     fun testCSVHeaderWriting() {
-        // Test CSV header creation
+
         val filename = gsrDataWriter.createCSVFile("header_test", System.currentTimeMillis())
         val file = File(gsrDataWriter.getDataDirectory(), filename)
         
         Assert.assertTrue("CSV file should exist", file.exists())
         
-        // Read and verify header
         val content = file.readText()
         Assert.assertTrue("Should contain timestamp header", content.contains("Timestamp"))
         Assert.assertTrue("Should contain GSR header", content.contains("GSR_Value"))
@@ -88,7 +81,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testSingleDataPointWriting() {
-        // Test writing single GSR data point
+
         val filename = gsrDataWriter.createCSVFile("single_point", System.currentTimeMillis())
         
         val testData = createTestGSRDataPoint()
@@ -96,7 +89,6 @@ class GSRDataWriterTest {
         
         Assert.assertTrue("Data point should be written successfully", result)
         
-        // Verify file content
         val file = File(gsrDataWriter.getDataDirectory(), filename)
         val content = file.readText()
         Assert.assertTrue("File should contain GSR value", content.contains(testData.gsrValue.toString()))
@@ -104,7 +96,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testBatchDataWriting() {
-        // Test writing multiple data points
+
         val filename = gsrDataWriter.createCSVFile("batch_test", System.currentTimeMillis())
         
         val testDataList = createTestGSRDataBatch(100)
@@ -112,7 +104,6 @@ class GSRDataWriterTest {
         
         Assert.assertTrue("Batch data should be written successfully", result)
         
-        // Verify file content
         val file = File(gsrDataWriter.getDataDirectory(), filename)
         val lines = file.readLines()
         Assert.assertEquals("Should have header + 100 data lines", 101, lines.size)
@@ -120,11 +111,10 @@ class GSRDataWriterTest {
 
     @Test
     fun testRealTimeDataQueuing() {
-        // Test real-time data queuing mechanism
+
         val filename = gsrDataWriter.createCSVFile("realtime_test", System.currentTimeMillis())
         gsrDataWriter.startRealTimeRecording(filename)
         
-        // Queue multiple data points
         repeat(50) { i ->
             val dataPoint = createTestGSRDataPoint().copy(
                 timestamp = System.currentTimeMillis() + i * 10,
@@ -133,10 +123,9 @@ class GSRDataWriterTest {
             gsrDataWriter.queueDataPoint(dataPoint)
         }
         
-        Thread.sleep(1000) // Allow background processing
+        Thread.sleep(1000)
         gsrDataWriter.stopRealTimeRecording()
         
-        // Verify data was written
         val file = File(gsrDataWriter.getDataDirectory(), filename)
         val lines = file.readLines()
         Assert.assertTrue("Should have queued data written", lines.size > 10)
@@ -144,7 +133,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testDataExport() {
-        // Test comprehensive data export functionality
+
         val sessionData = createTestSessionData()
         val exportPath = gsrDataWriter.exportGSRDataToFile(sessionData, includeAnalysis = true)
         
@@ -159,7 +148,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testFileManagementUtilities() {
-        // Test file management capabilities
+
         val dirSize = gsrDataWriter.getDataDirectorySize()
         Assert.assertTrue("Directory size should be calculable", dirSize >= 0)
         
@@ -169,14 +158,13 @@ class GSRDataWriterTest {
 
     @Test
     fun testDataCleanup() {
-        // Create test files older than retention period
+
         val oldFile1 = File(testDataDir, "old_session_1.csv")
         val oldFile2 = File(testDataDir, "old_session_2.csv")
         
         oldFile1.createNewFile()
         oldFile2.createNewFile()
         
-        // Set old timestamps (30 days ago)
         val oldTimestamp = System.currentTimeMillis() - (30 * 24 * 60 * 60 * 1000L)
         oldFile1.setLastModified(oldTimestamp)
         oldFile2.setLastModified(oldTimestamp)
@@ -187,7 +175,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testDataIntegrityValidation() {
-        // Test data integrity validation
+
         val filename = gsrDataWriter.createCSVFile("integrity_test", System.currentTimeMillis())
         val testData = createTestGSRDataBatch(50)
         
@@ -199,9 +187,9 @@ class GSRDataWriterTest {
 
     @Test
     fun testCompressionUtility() {
-        // Test file compression functionality
+
         val filename = gsrDataWriter.createCSVFile("compression_test", System.currentTimeMillis())
-        val testData = createTestGSRDataBatch(1000) // Larger dataset
+        val testData = createTestGSRDataBatch(1000)
         
         gsrDataWriter.writeBatchGSRData(filename, testData)
         
@@ -214,7 +202,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testMetadataWriting() {
-        // Test session metadata writing
+
         val sessionInfo = createTestSessionMetadata()
         val metadataPath = gsrDataWriter.writeSessionMetadata("metadata_test", sessionInfo)
         
@@ -230,7 +218,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testErrorHandling() {
-        // Test error handling with invalid parameters
+
         val result = gsrDataWriter.writeGSRDataPoint("", null)
         Assert.assertFalse("Should handle null data gracefully", result)
         
@@ -240,21 +228,20 @@ class GSRDataWriterTest {
 
     @Test
     fun testBackgroundWritingPerformance() {
-        // Test background writing performance with high data rates
+
         val filename = gsrDataWriter.createCSVFile("performance_test", System.currentTimeMillis())
         gsrDataWriter.startRealTimeRecording(filename)
         
         val startTime = System.currentTimeMillis()
         
-        // Simulate 128 Hz data rate for 5 seconds
         repeat(640) { i ->
             val dataPoint = createTestGSRDataPoint().copy(
-                timestamp = startTime + i * 8 // ~125 Hz
+                timestamp = startTime + i * 8
             )
             gsrDataWriter.queueDataPoint(dataPoint)
         }
         
-        Thread.sleep(2000) // Allow processing
+        Thread.sleep(2000)
         gsrDataWriter.stopRealTimeRecording()
         
         val file = File(gsrDataWriter.getDataDirectory(), filename)
@@ -264,7 +251,7 @@ class GSRDataWriterTest {
 
     @Test
     fun testDataFormatValidation() {
-        // Test different data format validations
+
         val csvFilename = gsrDataWriter.createCSVFile("format_csv", System.currentTimeMillis())
         val jsonFilename = gsrDataWriter.createJSONFile("format_json", System.currentTimeMillis())
         
@@ -272,7 +259,6 @@ class GSRDataWriterTest {
         Assert.assertTrue("JSON filename should have .json extension", jsonFilename.endsWith(".json"))
     }
 
-    // Helper methods for creating test data
     private fun createTestGSRDataPoint(): GSRDataPoint {
         return GSRDataPoint(
             timestamp = System.currentTimeMillis(),
@@ -298,7 +284,7 @@ class GSRDataWriterTest {
     private fun createTestSessionData(): SessionData {
         return SessionData(
             sessionName = "test_session",
-            startTime = System.currentTimeMillis() - 300000, // 5 minutes ago
+            startTime = System.currentTimeMillis() - 300000,
             endTime = System.currentTimeMillis(),
             dataPoints = createTestGSRDataBatch(300),
             participantId = "TEST_001",
@@ -321,7 +307,6 @@ class GSRDataWriterTest {
         )
     }
 
-    // Test data classes
     data class GSRDataPoint(
         val timestamp: Long,
         val gsrValue: Double,
@@ -347,4 +332,3 @@ class GSRDataWriterTest {
         val startTime: Long,
         val sensorConfiguration: Map<String, Any>
     )
-}

@@ -671,18 +671,12 @@
     <string name="main_professional_test">Professional Testing</string>
     <string name="main_temperature_test">Temperature Testing</string>
     <string name="main_thermal_tips">Professional Thermal Imaging Testing</string>
-    <string name="house_detection">House Detection</string>
     <string name="car_detection">Vehicle Detection</string>
     <string name="app_detection">Test</string>
     <string name="add_report">Add Report</string>
     <string name="add_detection_report">Add Detection Report</string>
-    <string name="house_detection_report">House Detection Report</string>
     <string name="inspector_name">Inspector Name</string>
     <string name="inspector_name_input_hint">Enter the inspector\'s name.</string>
-    <string name="house_detail_address">Detailed Address of House</string>
-    <string name="house_detail_address_input_hint">Enter the house\'s detailed address.</string>
-    <string name="house_image">House Image</string>
-    <string name="house_image_input_hint">Choose a house image.</string>
     <string name="year_built">Year of Building</string>
     <string name="year_input_hint">Choose a year.</string>
     <string name="year">Year</string>
@@ -700,9 +694,6 @@
     <string name="monitor_report_export">Export Report</string>
     <string name="edit_directory">Edit Directory</string>
     <string name="edit_item">Edit Item</string>
-    <string name="house_item_state1">Good</string>
-    <string name="house_item_state2">Repair</string>
-    <string name="house_item_state3">Replace</string>
     <string name="upload_image_count_tips">%d images can be uploaded.</string>
     <string name="detect_item1">General</string>
     <string name="detect_dir1_root">Exterior</string>
@@ -777,10 +768,7 @@
     <string name="abnormal_describe">Description</string>
     <string name="detect_time">Time of Inspection</string>
     <string name="please_select_detect_time">Please select the time of inspection.</string>
-    <string name="house_build_time">Time of House Construction</string>
-    <string name="house_space">House Space</string>
     <string name="inspector_signature">Inspector Signature</string>
-    <string name="house_owner_signature">House Owner Signature</string>
     <string name="finalize_and_save">Finalize and Save</string>
     <string name="report_no_problem">No problem</string>
     <string name="report_minor_problem">Minor problem</string>
@@ -840,7 +828,6 @@
     <string name="vehicle_function">Function</string>
     <string name="ability_find">find</string>
     <string name="ability_monitory">Real time viewing of object temperature to generate data</string>
-    <string name="ability_house">Detect issues such as water leakage, insulation, and abnormal thermal conductivity</string>
     <string name="ability_car">Detecting the heat sources of various automotive components</string>
     <string name="no_detect">No detection currently available</string>
     <string name="no_report">No reports available at the moment</string>
@@ -848,9 +835,6 @@
     <string name="area">area</string>
     <string name="diagnosis_unit">Unit</string>
     <string name="not_selected">not selected</string>
-    <string name="house_state_good">good</string>
-    <string name="house_state_repair">repair</string>
-    <string name="house_state_replace">replace</string>
     <string name="common_phrases">Common phrases</string>
     <string name="device_disconnect">The device is not connected, please connect the device</string>
     <string name="upload_img_limit">Maximum support for selecting 4 images, please delete the images and try again</string>
@@ -860,7 +844,6 @@
     <string name="pdf_saved_tips">Report saved</string>
     <string name="pdf_sign_tips">Please sign and save the report</string>
     <string name="pdf_project_item">project</string>
-    <string name="house_sign_finish_tips">Please complete the electronic signature</string>
 
     <!-- 4.50 -->
     <string name="thermal_trend">Trend Chart</string>

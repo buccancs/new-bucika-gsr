@@ -13,19 +13,6 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import com.topdon.lib.ui.databinding.UiSettingViewBinding
 
-/**
- * Professional settings night view component for thermal imaging systems
- * 
- * Provides comprehensive settings interface including:
- * - Configurable icon and text display
- * - Switch control integration for settings options
- * - Professional visual styling with night mode support
- * - Customizable end text and arrow visibility
- * - Type-safe view access with ViewBinding
- * 
- * @property isRightArrowVisible Controls visibility of the end arrow indicator
- */
-
 class SettingNightView : LinearLayout {
 
     var isRightArrowVisible: Boolean
@@ -41,8 +28,6 @@ class SettingNightView : LinearLayout {
             tvEnd.setText(resId)
         }
     }
-
-
 
     private var iconRes: Int = 0
     private var contentStr: String = ""
@@ -105,4 +90,3 @@ class SettingNightView : LinearLayout {
         }
         item_setting_line.visibility = if (lineShow) View.VISIBLE else View.GONE
     }
-}

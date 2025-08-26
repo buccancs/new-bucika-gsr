@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">BleModule</string>
+    
+    <!-- Missing strings -->
+    <string name="version_code">Version Code</string>
+    <string name="splash_title_1">Welcome to Thermal Camera</string>
+    <string name="splash_title_2">Advanced Thermal Imaging Solution</string>
+    <string name="house_owner_signature">House Owner Signature</string>
+    <string name="house_detection">House Detection</string>
+    <string name="ability_house">House Ability</string>
+    
+    <!-- Language names -->
+    <string name="china">简体中文</string>
+    <string name="china_tw">繁体中文</string>
+    <string name="english">English</string>
+    <string name="russian">Русский</string>
+    <string name="espanol">Español</string>
+    <string name="deutsch">Deutsch</string>
+    <string name="japanese">日本語</string>
+    <string name="portugues">Português</string>
+    <string name="french">Français</string>
+    <string name="italian">Italiano</string>
+    <string name="polish">Polski</string>
+    <string name="czech">Čeština</string>
+    <string name="ukrainian">Українська</string>
+    <string name="dutch">Nederlands</string>
+    
+    <!-- Missing UI strings -->
+    <string name="top_infrared_up_case">THERMAL</string>
 </resources>

@@ -17,24 +17,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Industry-standard Local File Browser Activity for BucikaGSR research application.
- * 
- * Provides comprehensive file management capabilities for recorded GSR data, enhanced recordings,
- * and research session files with modern ViewBinding patterns and professional error handling.
- * 
- * Features:
- * - Professional file browsing with type-specific icons
- * - Research-quality file operations (open, share, delete, properties)
- * - Comprehensive file format support (MP4, CSV, JSON, TXT)
- * - Enhanced recording management
- * - GSR data file access and management
- * 
- * @author BucikaGSR Team  
- * @since 2024.1.0
- * @see BaseActivity
- * @see EnhancedRecordingActivity
- */
 class LocalFileBrowserActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLocalFileBrowserBinding
@@ -49,15 +31,10 @@ class LocalFileBrowserActivity : BaseActivity() {
     
     override fun initContentView(): Int = R.layout.activity_local_file_browser
 
-    /**
-     * Initialize ViewBinding and configure professional file browser interface.
-     * Sets up RecyclerView with comprehensive file management capabilities.
-     */
     override fun initView() {
         binding = ActivityLocalFileBrowserBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        // Configure title bar with professional styling
         binding.titleView.setTitle("Local File Browser")
         binding.titleView.setLeftClickListener { finish() }
         
@@ -66,12 +43,9 @@ class LocalFileBrowserActivity : BaseActivity() {
     }
 
     override fun initData() {
-        // Data initialization handled in initView()
+
     }
 
-    /**
-     * Configure RecyclerView with professional file adapter and click handling.
-     */
     private fun setupRecyclerView() {
         fileAdapter = FileAdapter { file ->
             openFile(file)
@@ -83,15 +57,11 @@ class LocalFileBrowserActivity : BaseActivity() {
         }
     }
 
-    /**
-     * Load and display files from research data directories.
-     * Scans multiple directories for different file types and presents organized view.
-     */
     private fun loadFiles() {
         val recordingDirs = listOf(
-            File(FileConfig.lineGalleryDir), // Main gallery directory
-            File(FileConfig.lineGalleryDir, "enhanced_recordings"), // Enhanced recordings
-            File(FileConfig.lineGalleryDir, "gsr_data") // GSR data files
+            File(FileConfig.lineGalleryDir),
+            File(FileConfig.lineGalleryDir, "enhanced_recordings"),
+            File(FileConfig.lineGalleryDir, "gsr_data")
         )
         
         val allFiles = mutableListOf<FileItem>()
@@ -107,12 +77,10 @@ class LocalFileBrowserActivity : BaseActivity() {
             }
         }
         
-        // Sort by modification date (newest first) for research chronology
         allFiles.sortByDescending { it.file.lastModified() }
         
         fileAdapter.submitList(allFiles)
         
-        // Update UI based on file count with professional messaging
         if (allFiles.isEmpty()) {
             binding.tvEmptyState.visibility = View.VISIBLE
             binding.recyclerFiles.visibility = View.GONE
@@ -124,12 +92,6 @@ class LocalFileBrowserActivity : BaseActivity() {
         binding.tvFileCount.text = "Found ${allFiles.size} files"
     }
 
-    /**
-     * Determine file type based on extension for proper categorization.
-     * 
-     * @param file File to categorize
-     * @return FileType enum value for UI display
-     */
     private fun getFileType(file: File): FileType {
         return when (file.extension.lowercase()) {
             in SUPPORTED_VIDEO_EXTENSIONS -> FileType.VIDEO
@@ -139,12 +101,6 @@ class LocalFileBrowserActivity : BaseActivity() {
         }
     }
 
-    /**
-     * Open file with appropriate application using Android's file provider system.
-     * Handles comprehensive error scenarios and provides user feedback.
-     * 
-     * @param file File to open
-     */
     private fun openFile(file: File) {
         try {
             val uri = FileProvider.getUriForFile(
@@ -154,49 +110,18 @@ class LocalFileBrowserActivity : BaseActivity() {
             )
             
             val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-                ?: "*/*"
-            
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, mimeType)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            
-            val chooser = Intent.createChooser(intent, "Open with...")
-            if (intent.resolveActivity(packageManager) != null) {
-                startActivity(chooser)
-            } else {
-                android.widget.Toast.makeText(
-                    this,
-                    "No app found to open ${file.name}",
-                    android.widget.Toast.LENGTH_SHORT
-                ).show()
-            }
-        } catch (e: Exception) {
-            android.widget.Toast.makeText(
-                this,
-                "Error opening file: ${e.message}",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    /**
-     * File type enumeration for professional categorization and icon display.
-     */
+                ?: "*
     enum class FileType {
-        /** Video recordings (MP4, AVI, MOV) */
+        
         VIDEO, 
-        /** Research data files (CSV, TXT) */
+        
         DATA, 
-        /** JSON configuration/metadata files */
+        
         JSON, 
-        /** Other supported file types */
+        
         OTHER
     }
 
-    /**
-     * Professional data class representing file items with type metadata.
-     */
     data class FileItem(
         val file: File,
         val type: FileType
@@ -239,7 +164,6 @@ class LocalFileBrowserActivity : BaseActivity() {
             tvFileSize.text = formatFileSize(file.length())
             tvFileDate.text = dateFormat.format(Date(file.lastModified()))
             
-            // Set file type icon
             val iconRes = when (fileItem.type) {
                 FileType.VIDEO -> R.drawable.ic_video_white_svg
                 FileType.DATA -> android.R.drawable.ic_menu_agenda
@@ -252,7 +176,6 @@ class LocalFileBrowserActivity : BaseActivity() {
                 onFileClick(file)
             }
             
-            // Add long click for file operations
             itemView.setOnLongClickListener {
                 showFileOptions(file)
                 true
@@ -280,10 +203,10 @@ class LocalFileBrowserActivity : BaseActivity() {
             .setTitle(file.name)
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> openFile(file) // Open
-                    1 -> shareFile(file) // Share
-                    2 -> deleteFile(file) // Delete
-                    3 -> showFileProperties(file) // Properties
+                    0 -> openFile(file)
+                    1 -> shareFile(file)
+                    2 -> deleteFile(file)
+                    3 -> showFileProperties(file)
                 }
             }
             .show()
@@ -320,7 +243,7 @@ class LocalFileBrowserActivity : BaseActivity() {
             .setPositiveButton("Delete") { _, _ ->
                 if (file.delete()) {
                     android.widget.Toast.makeText(this, "File deleted", android.widget.Toast.LENGTH_SHORT).show()
-                    loadFiles() // Refresh the list
+                    loadFiles()
                 } else {
                     android.widget.Toast.makeText(this, "Failed to delete file", android.widget.Toast.LENGTH_SHORT).show()
                 }
@@ -344,4 +267,3 @@ class LocalFileBrowserActivity : BaseActivity() {
             .setPositiveButton("OK", null)
             .show()
     }
-}

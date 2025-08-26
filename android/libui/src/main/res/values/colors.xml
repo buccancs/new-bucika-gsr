@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Material Design primary colors -->
+    <color name="colorPrimary">#FF6200EE</color>
+    <color name="colorPrimaryDark">#FF3700B3</color>
+    <color name="colorAccent">#FF03DAC5</color>
+
     <color name="purple_500">#FF6200EE</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="black">#FF000000</color>
@@ -17,4 +22,9 @@
     <color name="rsbColorThumbBorder">#FFD7D7D7</color>
 
     <color name="normal_text_color">#000000</color>
+    
+    <!-- Additional missing colors -->
+    <color name="color_23202E">#FF23202E</color>
+    <color name="ui_main_custom_color">#FF4CAF50</color>
+    
 </resources>

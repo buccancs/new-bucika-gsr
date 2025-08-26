@@ -30,4 +30,5 @@
 
     <!--    main-->
     <dimen name="dp_24">24dp</dimen>
+    <dimen name="_65dp">65dp</dimen>
 </resources>

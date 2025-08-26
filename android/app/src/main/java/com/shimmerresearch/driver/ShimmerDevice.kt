@@ -1,9 +1,5 @@
 package com.shimmerresearch.driver
 
-/**
- * Local implementation of ShimmerDevice interface from official SDK
- * Base interface for all Shimmer devices
- */
 interface ShimmerDevice {
     fun connect()
     fun disconnect()
@@ -13,4 +9,3 @@ interface ShimmerDevice {
     fun setEnabledSensors(sensorMask: Int)
     fun isConnected(): Boolean
     fun isStreaming(): Boolean
-}

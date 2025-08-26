@@ -5,10 +5,6 @@ import androidx.annotation.IntDef
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
-/**
- * @author: CaiSongL
- * @date: 2023/4/1 14:18
- */
 class Pivot(
     @get:Axis
     @param:Axis val axis: Int, private val pivotPoint: Int
@@ -80,4 +76,3 @@ class Pivot(
         private const val PIVOT_CENTER = -1
         private const val PIVOT_MAX = -2
     }
-}

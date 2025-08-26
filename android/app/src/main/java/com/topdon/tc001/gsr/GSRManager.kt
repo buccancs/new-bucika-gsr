@@ -15,11 +15,6 @@ import com.topdon.tc001.gsr.quality.QualityAssessment
 import com.topdon.tc001.performance.PerformanceMonitor
 import java.util.concurrent.atomic.AtomicBoolean
 
-/**
- * Enhanced GSR Manager for comprehensive Shimmer3 GSR+ device integration
- * Provides advanced signal processing and data quality monitoring
- * Integrates ShimmerAndroidAPI with professional-grade data analysis
- */
 class GSRManager private constructor(private val context: Context) {
     
     companion object {
@@ -36,45 +31,31 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    // Shimmer device components
     private var shimmerDevice: ShimmerBluetooth? = null
     private var bluetoothAddress: String? = null
     private var connectedDeviceName: String? = null
     
-    // Advanced data processing
     private val dataProcessor = ShimmerDataProcessor()
     
-    // Data writer for local storage
     private val dataWriter: GSRDataWriter = GSRDataWriter.getInstance(context)
     
-    // Quality monitor for data validation
     private val qualityMonitor = GSRDataQualityMonitor()
     
-    // Performance monitor for system resource tracking
     private val performanceMonitor = PerformanceMonitor(context)
     
-    // State management
     private val isConnected = AtomicBoolean(false)
     private val isRecording = AtomicBoolean(false)
     
-    // Data listeners
     private var gsrDataListener: GSRDataListener? = null
     private var advancedDataListener: AdvancedGSRDataListener? = null
     
-    // Handler for UI updates
     private val mainHandler = Handler(Looper.getMainLooper())
     
-    /**
-     * Basic interface for GSR data callbacks
-     */
     interface GSRDataListener {
         fun onGSRDataReceived(timestamp: Long, gsrValue: Double, skinTemperature: Double)
         fun onConnectionStatusChanged(isConnected: Boolean, deviceName: String?)
     }
     
-    /**
-     * Advanced interface for processed GSR data with quality metrics
-     */
     interface AdvancedGSRDataListener {
         fun onProcessedGSRDataReceived(processedData: ProcessedGSRData)
         fun onSignalQualityChanged(signalQuality: Double, validDataRatio: Double)
@@ -82,32 +63,20 @@ class GSRManager private constructor(private val context: Context) {
         fun onQualityAssessmentUpdated(assessment: QualityAssessment)
     }
     
-    /**
-     * Set basic GSR data listener
-     */
     fun setGSRDataListener(listener: GSRDataListener) {
         this.gsrDataListener = listener
         XLog.i(TAG, "Basic GSR data listener set")
     }
     
-    /**
-     * Set advanced GSR data listener with processing capabilities
-     */
     fun setAdvancedGSRDataListener(listener: AdvancedGSRDataListener) {
         this.advancedDataListener = listener
         XLog.i(TAG, "Advanced GSR data listener set")
     }
     
-    /**
-     * Initialize Shimmer device
-     */
     fun initializeShimmer() {
         XLog.i(TAG, "Enhanced Shimmer GSR Manager initialized with data processing")
     }
     
-    /**
-     * Connect to Shimmer device via Bluetooth
-     */
     fun connectToShimmer(bluetoothAddress: String) {
         if (isConnected.get()) {
             XLog.w(TAG, "Already connected to Shimmer device")
@@ -118,10 +87,8 @@ class GSRManager private constructor(private val context: Context) {
             this.bluetoothAddress = bluetoothAddress
             XLog.i(TAG, "Connecting to Shimmer device: $bluetoothAddress")
             
-            // Reset data processor
             dataProcessor.reset()
             
-            // Create Shimmer device instance
             shimmerDevice = ShimmerBluetooth(
                 context = context,
                 handler = createShimmerMessageHandler(),
@@ -130,10 +97,8 @@ class GSRManager private constructor(private val context: Context) {
                 shimmerUserAssignedName = false
             )
             
-            // Configure Shimmer for GSR
             configureShimmerForGSR()
             
-            // Initiate connection
             shimmerDevice?.connect()
             
         } catch (e: Exception) {
@@ -142,9 +107,6 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Configure Shimmer device for GSR data collection
-     */
     private fun configureShimmerForGSR() {
         shimmerDevice?.let { device ->
             device.setSamplingRateShimmer(DEFAULT_SAMPLING_RATE)
@@ -153,9 +115,6 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Create message handler for Shimmer SDK callbacks
-     */
     private fun createShimmerMessageHandler(): Handler {
         return object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: android.os.Message) {
@@ -182,9 +141,6 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Handle connection state changes
-     */
     private fun handleConnectionStateChange(newState: Int) {
         when (newState) {
             ShimmerBluetooth.STATE_CONNECTED -> {
@@ -206,22 +162,16 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Process GSR data and deliver to listeners
-     */
     private fun processAndDeliverGSRData(objectCluster: ObjectCluster) {
         try {
-            // Process data with advanced algorithms
+
             val processedData = dataProcessor.processGSRData(objectCluster, DEFAULT_SAMPLING_RATE)
             
-            // Record performance metrics
             performanceMonitor.recordGSRSampleProcessed()
             
-            // Validate data quality if recording
             if (isRecording.get()) {
                 val validationResult = qualityMonitor.processDataSample(processedData)
                 
-                // Only save high-quality data to local file
                 if (validationResult.isValid) {
                     dataWriter.addGSRData(processedData)
                     performanceMonitor.recordFileOperation()
@@ -230,17 +180,14 @@ class GSRManager private constructor(private val context: Context) {
                 }
             }
             
-            // Deliver processed data to advanced listener
             advancedDataListener?.let { listener ->
                 mainHandler.post {
                     listener.onProcessedGSRDataReceived(processedData)
                     
-                    // Update signal quality periodically
-                    if (processedData.sampleIndex % 64 == 0L) { // Every 0.5 seconds at 128 Hz
+                    if (processedData.sampleIndex % 64 == 0L) {
                         val stats = dataProcessor.getStatistics()
                         listener.onSignalQualityChanged(stats.currentSignalQuality, stats.validDataRatio)
                         
-                        // Update quality assessment every 2 seconds
                         if (processedData.sampleIndex % 256 == 0L && isRecording.get()) {
                             val qualityAssessment = qualityMonitor.getCurrentQualityAssessment()
                             listener.onQualityAssessmentUpdated(qualityAssessment)
@@ -249,7 +196,6 @@ class GSRManager private constructor(private val context: Context) {
                 }
             }
             
-            // Deliver basic data to simple listener
             gsrDataListener?.let { listener ->
                 mainHandler.post {
                     listener.onGSRDataReceived(
@@ -265,21 +211,16 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Disconnect from Shimmer device
-     */
     fun disconnectShimmer() {
         try {
-            // Stop recording if active
+
             if (isRecording.get()) {
                 stopRecording()
             }
             
-            // Disconnect device
             shimmerDevice?.disconnect()
             shimmerDevice = null
             
-            // Reset state
             isConnected.set(false)
             bluetoothAddress = null
             connectedDeviceName = null
@@ -296,33 +237,27 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Start GSR data recording
-     */
     fun startRecording(): Boolean {
         return if (isConnected.get() && !isRecording.get()) {
             try {
-                // Start local file recording
+
                 val recordingStarted = dataWriter.startRecording()
                 if (!recordingStarted) {
                     XLog.e(TAG, "Failed to start local data recording")
                     return false
                 }
                 
-                // Reset quality monitor for new recording
                 qualityMonitor.reset()
                 
-                // Start performance monitoring
                 performanceMonitor.startMonitoring()
                 
-                // Start device streaming
                 shimmerDevice?.startStreaming()
                 isRecording.set(true)
                 XLog.i(TAG, "GSR recording started with advanced processing, local storage, quality monitoring, and performance tracking")
                 true
             } catch (e: Exception) {
                 XLog.e(TAG, "Failed to start GSR recording: ${e.message}", e)
-                // Cleanup if streaming started but recording failed
+
                 if (dataWriter.isRecording()) {
                     dataWriter.stopRecording()
                 }
@@ -334,23 +269,17 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Stop GSR data recording
-     */
     fun stopRecording(): Boolean {
         return if (isRecording.get()) {
             try {
-                // Stop device streaming first
+
                 shimmerDevice?.stopStreaming()
                 isRecording.set(false)
                 
-                // Stop local file recording
                 val recordingStopped = dataWriter.stopRecording()
                 
-                // Stop performance monitoring
                 performanceMonitor.stopMonitoring()
                 
-                // Log final statistics
                 val stats = dataProcessor.getStatistics()
                 val recordingInfo = if (recordingStopped) dataWriter.getCurrentRecordingInfo() else null
                 val finalQualityAssessment = qualityMonitor.getCurrentQualityAssessment()
@@ -363,7 +292,6 @@ class GSRManager private constructor(private val context: Context) {
                 XLog.i(TAG, "Final quality assessment: ${finalQualityAssessment.grade} (${finalQualityAssessment.qualityScore.toInt()}%)")
                 XLog.i(TAG, "Performance summary: Overall score ${performanceSummary.overallScore.toInt()}%, Memory ${performanceSummary.memoryUsageMB}MB, Battery ${performanceSummary.batteryLevel}%")
                 
-                // Notify listener of final quality assessment
                 advancedDataListener?.let { listener ->
                     mainHandler.post {
                         listener.onQualityAssessmentUpdated(finalQualityAssessment)
@@ -381,29 +309,14 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Check if device is connected
-     */
     fun isConnected(): Boolean = isConnected.get()
     
-    /**
-     * Check if recording is active
-     */
     fun isRecording(): Boolean = isRecording.get()
     
-    /**
-     * Get connected device name
-     */
     fun getConnectedDeviceName(): String? = if (isConnected.get()) connectedDeviceName else null
     
-    /**
-     * Get current processing statistics
-     */
     fun getProcessingStatistics() = dataProcessor.getStatistics()
     
-    /**
-     * Handle connection error
-     */
     private fun handleConnectionError() {
         isConnected.set(false)
         mainHandler.post {
@@ -412,9 +325,6 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Handle disconnection
-     */
     private fun handleDisconnection() {
         isConnected.set(false)
         if (isRecording.get()) {
@@ -429,9 +339,6 @@ class GSRManager private constructor(private val context: Context) {
         XLog.i(TAG, "Shimmer device disconnected")
     }
     
-    /**
-     * Cleanup resources
-     */
     fun cleanup() {
         try {
             if (isRecording.get()) {
@@ -452,37 +359,18 @@ class GSRManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Get recorded GSR files
-     */
     fun getRecordedFiles() = dataWriter.getRecordedFiles()
     
-    /**
-     * Get current recording information
-     */
     fun getCurrentRecordingInfo() = dataWriter.getCurrentRecordingInfo()
     
-    /**
-     * Get current quality assessment
-     */
     fun getCurrentQualityAssessment() = qualityMonitor.getCurrentQualityAssessment()
     
-    /**
-     * Get current performance summary
-     */
     fun getPerformanceSummary() = performanceMonitor.getPerformanceSummary()
     
-    /**
-     * Get quality metrics flow for reactive UI updates
-     */
     fun getQualityMetricsFlow() = qualityMonitor.qualityMetrics
     
-    /**
-     * Export GSR data to file
-     */
     suspend fun exportGSRDataToFile(
         gsrData: List<ProcessedGSRData>,
         fileName: String? = null,
         includeAnalysis: Boolean = true
     ) = dataWriter.exportGSRDataToFile(gsrData, fileName, includeAnalysis)
-}

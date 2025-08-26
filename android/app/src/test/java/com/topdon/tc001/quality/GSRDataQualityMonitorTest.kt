@@ -9,15 +9,6 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
 
-/**
- * Comprehensive test suite for GSR data quality monitoring system
- * 
- * Tests the quality monitor's ability to:
- * - Detect various types of data artifacts
- * - Provide accurate quality assessments
- * - Generate appropriate recommendations
- * - Handle edge cases and boundary conditions
- */
 class GSRDataQualityMonitorTest {
     
     private lateinit var qualityMonitor: GSRDataQualityMonitor
@@ -29,7 +20,7 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should detect high quality data correctly`() = runTest {
-        // Generate high-quality synthetic GSR data
+
         val highQualityData = generateCleanGSRData(samples = 100)
         
         var totalQuality = 0.0
@@ -51,12 +42,10 @@ class GSRDataQualityMonitorTest {
     fun `should detect GSR spikes accurately`() = runTest {
         val normalData = generateCleanGSRData(samples = 50)
         
-        // Process normal data first
         normalData.forEach { qualityMonitor.processDataSample(it) }
         
-        // Inject a spike
         val spikeData = normalData.last().copy(
-            filteredGSR = normalData.last().filteredGSR + 10.0, // Large spike
+            filteredGSR = normalData.last().filteredGSR + 10.0,
             sampleIndex = normalData.last().sampleIndex + 1
         )
         
@@ -71,9 +60,8 @@ class GSRDataQualityMonitorTest {
     fun `should detect missing samples`() = runTest {
         val baseTime = System.currentTimeMillis()
         
-        // Create samples with gap in sequence numbers
         val sample1 = createGSRSample(timestamp = baseTime, sampleIndex = 100)
-        val sample2 = createGSRSample(timestamp = baseTime + 100, sampleIndex = 105) // Missing 4 samples
+        val sample2 = createGSRSample(timestamp = baseTime + 100, sampleIndex = 105)
         
         qualityMonitor.processDataSample(sample1)
         val result = qualityMonitor.processDataSample(sample2)
@@ -84,15 +72,14 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should detect out of range values`() = runTest {
-        // Test extremely high GSR value
-        val highGSRSample = createGSRSample(gsr = 100.0) // Way above normal range
+
+        val highGSRSample = createGSRSample(gsr = 100.0)
         val result1 = qualityMonitor.processDataSample(highGSRSample)
         
         assertTrue("Out of range GSR should be detected",
             result1.issues.contains(QualityIssue.OUT_OF_RANGE_GSR))
         
-        // Test extremely low temperature
-        val lowTempSample = createGSRSample(temperature = 10.0) // Below normal body temp
+        val lowTempSample = createGSRSample(temperature = 10.0)
         val result2 = qualityMonitor.processDataSample(lowTempSample)
         
         assertTrue("Out of range temperature should be detected",
@@ -101,7 +88,7 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should detect signal saturation`() = runTest {
-        val saturatedSample = createGSRSample(gsr = 49.0) // Near maximum sensor range
+        val saturatedSample = createGSRSample(gsr = 49.0)
         val result = qualityMonitor.processDataSample(saturatedSample)
         
         assertTrue("Signal saturation should be detected",
@@ -110,7 +97,7 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should detect flatline signals`() = runTest {
-        // Generate 1 second of identical values (flatline)
+
         val flatlineValue = 2.5
         val flatlineData = (1..128).map { i ->
             createGSRSample(
@@ -133,7 +120,7 @@ class GSRDataQualityMonitorTest {
         val sample2 = createGSRSample(
             timestamp = sample1.timestamp + 8,
             sampleIndex = sample1.sampleIndex + 1,
-            gsr = 10.0 // Extremely rapid change
+            gsr = 10.0
         )
         
         qualityMonitor.processDataSample(sample1)
@@ -148,7 +135,7 @@ class GSRDataQualityMonitorTest {
         val baseTime = System.currentTimeMillis()
         val sample1 = createGSRSample(timestamp = baseTime, sampleIndex = 1)
         val sample2 = createGSRSample(
-            timestamp = baseTime + 100, // Way too long for 128Hz
+            timestamp = baseTime + 100,
             sampleIndex = 2
         )
         
@@ -161,7 +148,7 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should provide accurate quality metrics`() = runTest {
-        // Generate mixed quality data
+
         val goodSamples = generateCleanGSRData(samples = 80)
         val poorSamples = generateNoisyGSRData(samples = 20)
         
@@ -178,7 +165,7 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should generate appropriate recommendations`() = runTest {
-        // Generate poor quality data
+
         val poorData = generateNoisyGSRData(samples = 100)
         poorData.forEach { qualityMonitor.processDataSample(it) }
         
@@ -194,7 +181,7 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should handle reset correctly`() = runTest {
-        // Process some data
+
         generateCleanGSRData(samples = 50).forEach { 
             qualityMonitor.processDataSample(it) 
         }
@@ -202,7 +189,6 @@ class GSRDataQualityMonitorTest {
         val metricsBefore = qualityMonitor.qualityMetrics.first()
         assertTrue("Should have processed samples", metricsBefore.totalSamples > 0)
         
-        // Reset monitor
         qualityMonitor.reset()
         
         val metricsAfter = qualityMonitor.qualityMetrics.first()
@@ -213,29 +199,26 @@ class GSRDataQualityMonitorTest {
     
     @Test
     fun `should handle edge cases gracefully`() = runTest {
-        // Test with single sample
+
         val singleSample = createGSRSample()
         val result = qualityMonitor.processDataSample(singleSample)
         
         assertNotNull("Should handle single sample", result)
         assertTrue("Single clean sample should be valid", result.isValid)
         
-        // Test with identical timestamps (should be handled gracefully)
         val duplicate = singleSample.copy(sampleIndex = singleSample.sampleIndex + 1)
         val result2 = qualityMonitor.processDataSample(duplicate)
         
         assertNotNull("Should handle duplicate timestamp", result2)
     }
     
-    // Helper methods for generating test data
-    
     private fun generateCleanGSRData(samples: Int, baseTime: Long = System.currentTimeMillis()): List<ProcessedGSRData> {
         return (1..samples).map { i ->
             createGSRSample(
-                timestamp = baseTime + i * 8, // 128Hz = ~8ms intervals
+                timestamp = baseTime + i * 8,
                 sampleIndex = i.toLong(),
-                gsr = 2.5 + Random.nextDouble() * 0.2, // Stable GSR around 2.5µS
-                temperature = 32.0 + Random.nextDouble() * 0.5 // Stable temperature
+                gsr = 2.5 + Random.nextDouble() * 0.2,
+                temperature = 32.0 + Random.nextDouble() * 0.5
             )
         }
     }
@@ -243,10 +226,10 @@ class GSRDataQualityMonitorTest {
     private fun generateNoisyGSRData(samples: Int, baseTime: Long = System.currentTimeMillis()): List<ProcessedGSRData> {
         return (1..samples).map { i ->
             createGSRSample(
-                timestamp = baseTime + i * 8 + Random.nextLong(-3, 3), // Timing jitter
+                timestamp = baseTime + i * 8 + Random.nextLong(-3, 3),
                 sampleIndex = i.toLong(),
-                gsr = 2.5 + Random.nextDouble() * 2.0 - 1.0, // Noisy GSR
-                temperature = 32.0 + Random.nextDouble() * 2.0 - 1.0 // Noisy temperature
+                gsr = 2.5 + Random.nextDouble() * 2.0 - 1.0,
+                temperature = 32.0 + Random.nextDouble() * 2.0 - 1.0
             )
         }
     }
@@ -272,4 +255,3 @@ class GSRDataQualityMonitorTest {
             sampleIndex = sampleIndex
         )
     }
-}

@@ -11,16 +11,11 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import com.elvishew.xlog.XLog
 
-/**
- * Shimmer device discovery utility
- * Scans for and manages Shimmer3 GSR+ devices via Bluetooth
- */
 class ShimmerDeviceDiscovery(private val context: Context) {
     
     companion object {
         private const val TAG = "ShimmerDeviceDiscovery"
         
-        // Known Shimmer device name patterns
         private val SHIMMER_NAME_PATTERNS = arrayOf(
             "Shimmer",
             "Shimmer3",
@@ -29,10 +24,9 @@ class ShimmerDeviceDiscovery(private val context: Context) {
             "GSR"
         )
         
-        // Known Shimmer device MAC address prefixes
         private val SHIMMER_MAC_PREFIXES = arrayOf(
-            "00:06:66", // Shimmer Research MAC prefix
-            "00:0C:F6"  // Alternative Shimmer MAC prefix
+            "00:06:66",
+            "00:0C:F6"
         )
     }
     
@@ -41,9 +35,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
     private var discoveryListener: ShimmerDiscoveryListener? = null
     private var isScanning = false
     
-    /**
-     * Interface for discovery results
-     */
     interface ShimmerDiscoveryListener {
         fun onShimmerDeviceFound(device: ShimmerDeviceInfo)
         fun onDiscoveryStarted()
@@ -51,9 +42,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         fun onDiscoveryFailed(error: String)
     }
     
-    /**
-     * Shimmer device information
-     */
     data class ShimmerDeviceInfo(
         val name: String,
         val address: String,
@@ -63,9 +51,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         val isConnectable: Boolean = true
     )
     
-    /**
-     * Shimmer device types
-     */
     enum class ShimmerDeviceType {
         SHIMMER3_GSR_PLUS,
         SHIMMER3_IMU,
@@ -75,9 +60,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         UNKNOWN
     }
     
-    /**
-     * Broadcast receiver for device discovery
-     */
     private val discoveryReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
@@ -100,16 +82,10 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Set discovery listener
-     */
     fun setDiscoveryListener(listener: ShimmerDiscoveryListener) {
         this.discoveryListener = listener
     }
     
-    /**
-     * Start scanning for Shimmer devices
-     */
     fun startDiscovery(): Boolean {
         if (bluetoothAdapter == null) {
             discoveryListener?.onDiscoveryFailed("Bluetooth not available")
@@ -132,10 +108,9 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
         
         try {
-            // Clear previous results
+
             discoveredDevices.clear()
             
-            // Register receiver
             val filter = IntentFilter().apply {
                 addAction(BluetoothDevice.ACTION_FOUND)
                 addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
@@ -143,10 +118,8 @@ class ShimmerDeviceDiscovery(private val context: Context) {
             }
             context.registerReceiver(discoveryReceiver, filter)
             
-            // Add paired devices first
             addPairedShimmerDevices()
             
-            // Start discovery
             isScanning = true
             val started = bluetoothAdapter.startDiscovery()
             
@@ -166,9 +139,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Stop device discovery
-     */
     fun stopDiscovery() {
         try {
             if (isScanning && bluetoothAdapter?.isDiscovering == true) {
@@ -178,7 +148,7 @@ class ShimmerDeviceDiscovery(private val context: Context) {
             try {
                 context.unregisterReceiver(discoveryReceiver)
             } catch (e: IllegalArgumentException) {
-                // Receiver not registered
+
             }
             
             isScanning = false
@@ -189,15 +159,11 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Handle found Bluetooth device
-     */
     private fun handleDeviceFound(device: BluetoothDevice, rssi: Short) {
         try {
             val deviceName = device.name ?: "Unknown"
             val deviceAddress = device.address
             
-            // Check if this is a Shimmer device
             if (isShimmerDevice(deviceName, deviceAddress)) {
                 val shimmerDevice = ShimmerDeviceInfo(
                     name = deviceName,
@@ -208,14 +174,13 @@ class ShimmerDeviceDiscovery(private val context: Context) {
                     isConnectable = true
                 )
                 
-                // Add to discovered devices (avoid duplicates)
                 val existingDevice = discoveredDevices.find { it.address == deviceAddress }
                 if (existingDevice == null) {
                     discoveredDevices.add(shimmerDevice)
                     discoveryListener?.onShimmerDeviceFound(shimmerDevice)
                     XLog.i(TAG, "Found Shimmer device: $deviceName ($deviceAddress)")
                 } else {
-                    // Update RSSI if device already exists
+
                     discoveredDevices.remove(existingDevice)
                     discoveredDevices.add(shimmerDevice)
                 }
@@ -226,9 +191,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Add already paired Shimmer devices
-     */
     private fun addPairedShimmerDevices() {
         try {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -260,16 +222,12 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Check if device is a Shimmer device based on name and MAC address
-     */
     private fun isShimmerDevice(name: String, address: String): Boolean {
-        // Check device name patterns
+
         val nameMatch = SHIMMER_NAME_PATTERNS.any { pattern ->
             name.contains(pattern, ignoreCase = true)
         }
         
-        // Check MAC address prefixes
         val macMatch = SHIMMER_MAC_PREFIXES.any { prefix ->
             address.startsWith(prefix, ignoreCase = true)
         }
@@ -277,9 +235,6 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         return nameMatch || macMatch
     }
     
-    /**
-     * Determine Shimmer device type from device name
-     */
     private fun determineShimmerDeviceType(name: String): ShimmerDeviceType {
         val nameLower = name.lowercase()
         
@@ -294,16 +249,12 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Check if app has required Bluetooth permissions
-     */
     private fun hasBluetoothPermissions(): Boolean {
         val requiredPermissions = mutableListOf(
             Manifest.permission.BLUETOOTH,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
         
-        // Add Android 12+ permissions if needed
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             requiredPermissions.add(Manifest.permission.BLUETOOTH_SCAN)
             requiredPermissions.add(Manifest.permission.BLUETOOTH_CONNECT)
@@ -314,19 +265,10 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Get list of discovered devices
-     */
     fun getDiscoveredDevices(): List<ShimmerDeviceInfo> = discoveredDevices.toList()
     
-    /**
-     * Check if currently scanning
-     */
     fun isScanning(): Boolean = isScanning
     
-    /**
-     * Get device type description
-     */
     fun getDeviceTypeDescription(type: ShimmerDeviceType): String {
         return when (type) {
             ShimmerDeviceType.SHIMMER3_GSR_PLUS -> "Shimmer3 GSR+"
@@ -338,19 +280,12 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         }
     }
     
-    /**
-     * Clear discovery results
-     */
     fun clearResults() {
         discoveredDevices.clear()
     }
     
-    /**
-     * Cleanup resources
-     */
     fun cleanup() {
         stopDiscovery()
         clearResults()
         discoveryListener = null
     }
-}

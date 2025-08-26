@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- USB device filters for thermal imaging devices -->
+    <usb-device class="239" subclass="2" protocol="1" />
+    <usb-device vendor-id="1234" product-id="5678" />
+    <!-- Add more device filters as needed -->
+</resources>

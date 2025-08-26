@@ -8,25 +8,8 @@ import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import com.topdon.lib.ui.databinding.UiWifiSteeringWheelViewBinding
 
-/**
- * Professional WiFi steering wheel control component for thermal imaging systems
- * 
- * Provides five-directional calibration controls including:
- * - Five-point steering control (left, right, up, down, center)
- * - Rotation-aware UI with dynamic orientation support
- * - Professional parameter adjustment with comprehensive movement support
- * - Multi-directional interaction with callback support
- * 
- * @property listener Callback for steering wheel actions with X/Y movement parameters
- * @property moveX Current horizontal movement value
- * @property moveY Current vertical movement value
- * @property rotationIR IR rotation value affecting UI orientation (270/90 for rotated mode)
- */
 class WifiSteeringWheelView : LinearLayout, OnClickListener {
 
-    /**
-     * ViewBinding instance for type-safe view access
-     */
     private lateinit var binding: UiWifiSteeringWheelViewBinding
 
     var listener: ((action: Int, moveX: Int,moveY:Int) -> Unit)? = null
@@ -57,9 +40,6 @@ class WifiSteeringWheelView : LinearLayout, OnClickListener {
         defStyleAttr
     )
 
-    /**
-     * Initialize the WiFi steering wheel layout and binding
-     */
     private fun initView() {
         binding = UiWifiSteeringWheelViewBinding.inflate(LayoutInflater.from(context), this, true)
         binding.steeringWheelStartBtn.setOnClickListener(this)
@@ -80,24 +60,23 @@ class WifiSteeringWheelView : LinearLayout, OnClickListener {
     override fun onClick(v: View?) {
         when (v) {
             binding.steeringWheelStartBtn -> {
-//                moveY -= moveI
+
                 listener?.invoke(-1, moveX,moveY)
             }
             binding.steeringWheelCenterBtn -> {
                 listener?.invoke(0, moveX,moveY)
             }
             binding.steeringWheelTopBtn -> {
-//                moveX += moveI
+
                 listener?.invoke(2, moveX,moveY)
             }
             binding.steeringWheelBottomBtn ->{
-//                moveX -= moveI
+
                 listener?.invoke(3, moveX,moveY)
             }
             binding.steeringWheelEndBtn -> {
-//                moveY += moveI
+
                 listener?.invoke(1,moveX,moveY)
             }
         }
     }
-}

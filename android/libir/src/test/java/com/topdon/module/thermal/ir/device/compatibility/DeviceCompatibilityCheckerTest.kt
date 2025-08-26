@@ -1,4 +1,4 @@
-package com.topdon.module.thermal.ir.device.compatibility
+package com.topdon.thermal.device.compatibility
 
 import android.content.Context
 import android.os.Build
@@ -8,10 +8,6 @@ import org.junit.Assert.*
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-/**
- * Basic unit tests for DeviceCompatibilityChecker
- * Validates Samsung S22 detection and capability checking logic
- */
 class DeviceCompatibilityCheckerTest {
 
     @Mock
@@ -22,25 +18,22 @@ class DeviceCompatibilityCheckerTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        // Note: Real tests would need to mock CameraManager
-        // This is a basic structure for validation
+
     }
     
     @Test
     fun testS22ModelDetection() {
-        // Test Samsung S22 model identification
+
         val s22Models = setOf(
-            "SM-S901B", "SM-S901U", "SM-S901W", "SM-S901N", // S22 Base
-            "SM-S906B", "SM-S906U", "SM-S906W", "SM-S906N", // S22 Plus
-            "SM-S908B", "SM-S908U", "SM-S908W", "SM-S908N"  // S22 Ultra
+            "SM-S901B", "SM-S901U", "SM-S901W", "SM-S901N",
+            "SM-S906B", "SM-S906U", "SM-S906W", "SM-S906N",
+            "SM-S908B", "SM-S908U", "SM-S908W", "SM-S908N"
         )
         
-        // Verify all known S22 models are recognized
         s22Models.forEach { model ->
             assertTrue("Model $model should be recognized as Samsung S22", s22Models.contains(model))
         }
         
-        // Verify non-S22 models are not recognized
         val nonS22Models = setOf("SM-G991B", "SM-G996B", "Pixel 6", "iPhone 13")
         nonS22Models.forEach { model ->
             assertFalse("Model $model should not be recognized as Samsung S22", s22Models.contains(model))
@@ -49,7 +42,7 @@ class DeviceCompatibilityCheckerTest {
     
     @Test
     fun testOptimizationParameters() {
-        // Verify optimization parameters are reasonable
+
         val s22Params = S22OptimizationParams(
             maxConcurrentStreams = 3,
             maxRawBufferSize = 8,
@@ -68,7 +61,7 @@ class DeviceCompatibilityCheckerTest {
     
     @Test
     fun testCompatibilityResultStructure() {
-        // Test compatibility result data structure
+
         val issues = listOf("Test issue 1", "Test issue 2")
         val params = S22OptimizationParams(
             maxConcurrentStreams = 2,
@@ -93,11 +86,11 @@ class DeviceCompatibilityCheckerTest {
     
     @Test
     fun testParallelCaptureMetrics() {
-        // Test parallel capture metrics calculation
+
         val metrics = ParallelCaptureMetrics(
             isRecording = true,
-            durationMs = 30000, // 30 seconds
-            estimated4KFrames = 900, // 30 seconds * 30 fps
+            durationMs = 30000,
+            estimated4KFrames = 900,
             estimatedRawFrames = 900,
             maxConcurrentStreams = 3,
             actualBitrate = 20_000_000,
@@ -112,4 +105,3 @@ class DeviceCompatibilityCheckerTest {
         assertEquals("Bitrate should be 20 Mbps", 20_000_000, metrics.actualBitrate)
         assertTrue("Should be hardware accelerated", metrics.hardwareAccelerated)
     }
-}

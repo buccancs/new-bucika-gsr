@@ -16,20 +16,17 @@ import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
+import com.topdon.lib.core.R
 import com.topdon.lib.core.config.FileConfig
 import com.topdon.lib.core.utils.CommUtils
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-/**
- * @author: CaiSongL
- * @date: 2023/5/5 17:41
- */
 object PDFHelp {
 
     fun savePdfFileByListView(name: String, view: ScrollView, viewList: MutableList<View>, watermarkView: View): String {
-        val onePageHeight: Int = (view.width * 297f / 210f).toInt() // A4纸宽高比210:297
+        val onePageHeight: Int = (view.width * 297f / 210f).toInt()
 
         var onePageContentHeight = 0f
 
@@ -42,7 +39,7 @@ object PDFHelp {
 
         for (index in 0 until viewList.size) {
             val contentHeight = viewList[index].measuredHeight
-            if (onePageContentHeight + contentHeight > onePageHeight) {//超出内容，另起一页
+            if (onePageContentHeight + contentHeight > onePageHeight) {
                 onePageContentHeight = 0f
                 pdfDocument.finishPage(page)
                 page = null
@@ -78,7 +75,6 @@ object PDFHelp {
             }
         }
 
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             val pdfFile = File(FileConfig.getPdfDir(), "$name.pdf")
             val fos = FileOutputStream(pdfFile)
@@ -111,6 +107,4 @@ object PDFHelp {
             }
         }
     }
-
-
 }
