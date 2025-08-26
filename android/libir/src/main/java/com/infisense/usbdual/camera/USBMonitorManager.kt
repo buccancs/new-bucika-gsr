@@ -21,6 +21,10 @@ object USBMonitorManager {
     
     const val TAG = "USBMonitorManager"
     
+    // For compatibility with getInstance() calls
+    @JvmStatic
+    fun getInstance(): USBMonitorManager = this
+    
     private var mUSBMonitor: USBMonitor? = null
     private var mUvcCamera: UVCCamera? = null
     private var mIrcmd: IRCMD? = null
