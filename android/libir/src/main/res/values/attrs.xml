@@ -47,5 +47,15 @@
     <attr name="guide_text" format="string" />
     <attr name="guide_icon" format="reference" />
     <attr name="guide_icon_show" format="boolean" />
+    
+    <!-- Missing progress bar attributes -->
+    <attr name="progressTextSize" format="dimension" />
+    <attr name="progressText" format="string" />
+    <attr name="progressTextColor" format="color" />
+    <attr name="ringWidth" format="dimension" />
+    
+    <!-- Missing view attributes -->
+    <attr name="round_radius" format="dimension" />
+    <attr name="bgCorners" format="dimension" />
 
 </resources>
