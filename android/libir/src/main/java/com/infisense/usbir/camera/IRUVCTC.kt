@@ -231,8 +231,8 @@ class IRUVCTC(
 
                                     if (auto_over_portect) {
                                         temperatureSrc?.let { tempSrc ->
-                                            val low_gain_over_temp_data = ((550 + 273.15) * 16 * 4).toInt()
-                                            val high_gain_over_temp_data = ((150 + 273.15) * 16 * 4).toInt()
+                                            val low_gain_over_temp_data = ByteArray(320 * 240 * 2)
+                                            val high_gain_over_temp_data = ByteArray(320 * 240 * 2)
                                             val pixel_above_prop = 0.02f
                                             val switch_frame_cnt = 7 * 15
                                             val close_frame_cnt = 10 * 15
@@ -312,7 +312,7 @@ class IRUVCTC(
     private fun initIRCMD() {
         uvcCamera?.let { camera ->
             ircmd = ConcreteIRCMDBuilder()
-                .setIrcmdType(IRCMDType.USB_IR_256_384)
+                .setIRCMDType(IRCMDType.USB_IR_256_384)
                 .setIdCamera(camera.nativePtr)
                 .build()
 

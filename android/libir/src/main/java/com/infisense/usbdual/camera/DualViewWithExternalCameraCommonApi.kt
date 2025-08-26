@@ -167,8 +167,8 @@ class DualViewWithExternalCameraCommonApi(
         auto_gain_switch_info.switch_frame_cnt = 5 * 15
         auto_gain_switch_info.waiting_frame_cnt = 7 * 15
 
-        val low_gain_over_temp_data = ((550 + 273.15) * 16 * 4).toInt()
-        val high_gain_over_temp_data = ((110 + 273.15) * 16 * 4).toInt()
+        val low_gain_over_temp_data = ByteArray(irSize * 2)
+        val high_gain_over_temp_data = ByteArray(irSize * 2)
         val pixel_above_prop = 0.02f
         val switch_frame_cnt = 7 * 15
         val close_frame_cnt = 10 * 15

@@ -40,6 +40,16 @@ private class USBIRCMDImpl : IRCMD {
         // USB preview start with parameters stub
     }
     
+    override fun stopPreview(): Int {
+        // USB stop preview stub
+        return 0 // Return success code
+    }
+    
+    override fun stopPreview(previewPath: Any?): Int {
+        // USB stop preview with path stub
+        return 0 // Return success code
+    }
+    
     override fun setPropImageParams(param: Any?, value: Any?) {
         // Image parameters setting stub
     }
@@ -82,6 +92,8 @@ private class WifiIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {}
     override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {}
+    override fun stopPreview(): Int = 0
+    override fun stopPreview(previewPath: Any?): Int = 0
     override fun setPropImageParams(param: Any?, value: Any?) {}
     override fun setPropAutoShutterParameter(param: Any?, value: Any?) {}
     override fun autoGainSwitch(normalTempData: ByteArray, imageRes: Any?, info: Any?, param: Any?, callback: Any?) {}
@@ -93,6 +105,8 @@ private class BleIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {}
     override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {}
+    override fun stopPreview(): Int = 0
+    override fun stopPreview(previewPath: Any?): Int = 0
     override fun setPropImageParams(param: Any?, value: Any?) {}
     override fun setPropAutoShutterParameter(param: Any?, value: Any?) {}
     override fun autoGainSwitch(normalTempData: ByteArray, imageRes: Any?, info: Any?, param: Any?, callback: Any?) {}
