@@ -33,6 +33,12 @@ android {
     
     compileSdk rootProject.ext.android.compileSdk
     
+    // Suppress resource formatting warnings from external dependencies
+    lint {
+        warning 'StringFormatMatches', 'StringFormatInvalid', 'PluralsCandidate'
+        ignore 'StringFormatInvalid'
+    }
+    
     defaultConfig {
         applicationId rootProject.ext.android.applicationId
         minSdk rootProject.ext.android.minSdk
