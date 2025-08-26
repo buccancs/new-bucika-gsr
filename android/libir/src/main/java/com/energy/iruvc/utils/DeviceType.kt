@@ -5,5 +5,6 @@ enum class DeviceType {
     SINGLE_DEVICE,
     IR_DEVICE,
     VL_DEVICE,
-    WN_256
+    WN_256,
+    P2
 }

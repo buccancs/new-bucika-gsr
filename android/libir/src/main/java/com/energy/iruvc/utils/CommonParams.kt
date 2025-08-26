@@ -7,7 +7,19 @@ object CommonParams {
         IMAGE_ONLY,
         TEMP_ONLY,
         IMAGE_AND_TEMP_OUTPUT,
-        Y16_MODE
+        Y16_MODE,
+        IMAGE_OUTPUT,
+        TEMP_OUTPUT,
+        IR_OUTPUT,
+        KBC_OUTPUT,
+        HBC_DPC_OUTPUT,
+        VBC_OUTPUT,
+        TNR_OUTPUT,
+        SNR_OUTPUT,
+        AGC_OUTPUT,
+        DDE_OUTPUT,
+        GAMMA_OUTPUT,
+        MIRROR_OUTPUT
     }
     
     enum class PreviewPathChannel {
@@ -67,33 +79,44 @@ object CommonParams {
         }
     }
     
-    // Missing enums and classes identified from compilation errors
     enum class GainStatus {
-        LOW, HIGH, AUTO
+        LOW, HIGH, AUTO, HIGH_GAIN, LOW_GAIN
     }
     
     enum class GainMode {
-        MANUAL, AUTO, HIGH, LOW
+        MANUAL, AUTO, HIGH, LOW, GAIN_MODE_HIGH_LOW
     }
     
     enum class PreviewCameraStyle {
-        NORMAL, DUAL, THERMAL
+        NORMAL, DUAL, THERMAL, EXTERNAL_CAMERA, ALL_IN_ONE
     }
     
     enum class DeviceStyle {
-        SINGLE, DUAL, THERMAL
+        SINGLE, DUAL, THERMAL, ALL_IN_ONE
     }
     
     enum class FRAMEFORMATType {
-        YUYV, Y16, NV21, RGB, FRAME_FORMAT_YUYV, FRAME_FORMAT_Y16, FRAME_FORMAT_NV21
+        YUYV, Y16, NV21, RGB, FRAME_FORMAT_YUYV, FRAME_FORMAT_Y16, FRAME_FORMAT_NV21, FRAME_FORMAT_MJPEG
     }
     
     enum class Y16ModePreviewSrcType {
-        RAW, PROCESSED
+        RAW,
+        PROCESSED,
+        Y16_MODE_TEMPERATURE,
+        Y16_MODE_IR,
+        Y16_MODE_KBC,
+        Y16_MODE_HBC_DPC,
+        Y16_MODE_VBC,
+        Y16_MODE_TNR,
+        Y16_MODE_SNR,
+        Y16_MODE_AGC,
+        Y16_MODE_DDE,
+        Y16_MODE_GAMMA,
+        Y16_MODE_MIRROR
     }
     
     enum class IRPROCSRCFMTType {
-        Y16, YUV, RGB
+        Y16, YUV, RGB, IRPROC_SRC_FMT_Y14
     }
     
     object IMAGE_OUTPUT
@@ -102,6 +125,7 @@ object CommonParams {
     // Additional constants for P2 and other references
     object P2
     
-    // Support size list placeholder
+    // Support size list placeholder with getSupportSizeList method
+    fun getSupportSizeList(format: Any?): List<Any> = listOf("256x192", "640x480", "1024x768")
     val supportSizeList: List<String> = listOf("256x192", "640x480", "1024x768")
 }

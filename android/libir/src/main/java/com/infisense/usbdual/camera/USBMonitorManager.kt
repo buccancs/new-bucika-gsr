@@ -160,7 +160,7 @@ object USBMonitorManager {
                 setDefaultPreviewMaxFps(25)
                 openUVCCamera(controlBlock)
                 
-                val supportedSizeList = getSupportSizeList() ?: emptyList()
+                val supportedSizeList = mUvcCamera?.getSupportSizeList() ?: emptyList()
                 var cameraSize: CameraSize? = null
                 
                 for (size in supportedSizeList) {
@@ -258,8 +258,9 @@ object USBMonitorManager {
         if (isUseIRISP) {
             mIrcmd?.let { ircmd ->
                 if (ircmd.startY16ModePreview(
-                        CommonParams.PreviewPathChannel.PREVIEW_PATH0,
-                        CommonParams.Y16ModePreviewSrcType.Y16_MODE_TEMPERATURE
+                        CommonParams.Y16ModePreviewSrcType.Y16_MODE_TEMPERATURE,
+                        CommonParams.DataFlowMode.Y16_MODE,
+                        null
                     ) == 0
                 ) {
                     ircmd.setPropImageParams(

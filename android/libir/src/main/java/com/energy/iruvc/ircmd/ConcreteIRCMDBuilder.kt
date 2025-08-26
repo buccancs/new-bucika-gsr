@@ -32,12 +32,24 @@ private class USBIRCMDImpl : IRCMD {
         // USB IRCMD initialization stub
     }
     
-    override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {
+    override fun startPreview(dataFlowMode: Any?, frameCallback: Any?): Int {
         // USB preview start stub
+        return 0
     }
     
-    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {
+    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?): Int {
         // USB preview start with parameters stub
+        return 0
+    }
+    
+    override fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int {
+        // USB Y16 mode preview stub
+        return 0
+    }
+    
+    override fun isTempReplacedWithTNREnabled(param: Any?): Boolean {
+        // Temperature replacement with TNR status stub
+        return false
     }
     
     override fun stopPreview(): Int {
@@ -90,8 +102,10 @@ private class USBIRCMDImpl : IRCMD {
 
 private class WifiIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
-    override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {}
-    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {}
+    override fun startPreview(dataFlowMode: Any?, frameCallback: Any?): Int = 0
+    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?): Int = 0
+    override fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int = 0
+    override fun isTempReplacedWithTNREnabled(param: Any?): Boolean = false
     override fun stopPreview(): Int = 0
     override fun stopPreview(previewPath: Any?): Int = 0
     override fun setPropImageParams(param: Any?, value: Any?) {}
@@ -103,8 +117,10 @@ private class WifiIRCMDImpl : IRCMD {
 
 private class BleIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
-    override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {}
-    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {}
+    override fun startPreview(dataFlowMode: Any?, frameCallback: Any?): Int = 0
+    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?): Int = 0
+    override fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int = 0
+    override fun isTempReplacedWithTNREnabled(param: Any?): Boolean = false
     override fun stopPreview(): Int = 0
     override fun stopPreview(previewPath: Any?): Int = 0
     override fun setPropImageParams(param: Any?, value: Any?) {}

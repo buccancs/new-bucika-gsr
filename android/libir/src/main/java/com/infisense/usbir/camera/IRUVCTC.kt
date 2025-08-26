@@ -426,8 +426,9 @@ class IRUVCTC(
                     e.printStackTrace()
                 }
                 if (cmd.startY16ModePreview(
-                        CommonParams.PreviewPathChannel.PREVIEW_PATH0,
-                        FileUtil.getY16SrcTypeByDataFlowMode(defaultDataFlowMode)
+                        FileUtil.getY16SrcTypeByDataFlowMode(defaultDataFlowMode),
+                        defaultDataFlowMode,
+                        null
                     ) == 0) {
                     handleStartPreviewComplete()
                 } else {
