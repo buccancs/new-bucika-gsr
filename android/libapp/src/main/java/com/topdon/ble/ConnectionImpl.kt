@@ -915,11 +915,17 @@ internal class ConnectionImpl(
         }
     }
 
-    private fun toHex(bytes: ByteArray): String = StringUtils.toHex(bytes)
+    private fun toHex(bytes: ByteArray): String = StringUtils.toHex(bytes) ?: ""
 
-    private fun substringUuid(uuid: UUID?): String = uuid?.toString()?.let { str -> 
-        if (str.length >= 8) str.substring(0, 8) else str 
-    } ?: "null"
+    private fun substringUuid(uuid: UUID?): String {
+        if (uuid == null) return "null"
+        val str = uuid.toString()
+        return if (str.length >= 8) {
+            str.substring(0, 8)
+        } else {
+            str
+        }
+    }
 
     private fun handleCallbacks(callback: RequestCallback?, info: MethodInfo) {
         observer?.let { posterDispatcher.post(it, info) }

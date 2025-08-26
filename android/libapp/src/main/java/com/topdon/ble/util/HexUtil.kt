@@ -82,9 +82,9 @@ object HexUtil {
     }
 
     fun uniteBytes(src0: Byte, src1: Byte): Byte {
-        var b0 = Byte.decode("0x${String(byteArrayOf(src0))}").toByte()
+        var b0 = String(byteArrayOf(src0)).toInt(16).toByte()
         b0 = (b0.toInt() shl 4).toByte()
-        val b1 = Byte.decode("0x${String(byteArrayOf(src1))}").toByte()
+        val b1 = String(byteArrayOf(src1)).toInt(16).toByte()
         return (b0.toInt() xor b1.toInt()).toByte()
     }
 

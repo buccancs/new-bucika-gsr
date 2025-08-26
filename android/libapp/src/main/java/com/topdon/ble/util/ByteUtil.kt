@@ -90,7 +90,7 @@ object ByteUtil {
     
     @JvmStatic
     fun byteToFloat(vararg bytes: Byte): Float {
-        val resultByte = bytes.toByteArray()
+        val resultByte = bytes
         val value = HexUtil.bytesToHexString(resultByte).toInt(16)
         Log.e("bcf", "bytesToFloat bytes: ${HexUtil.bytesToHexString(resultByte)} float:$value")
         return value.toFloat()
