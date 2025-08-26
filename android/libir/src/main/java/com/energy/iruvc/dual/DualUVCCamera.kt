@@ -43,4 +43,48 @@ class DualUVCCamera {
         // Stub implementation
         return getMinTemperature()
     }
+    
+    fun setImageRotate(rotate: Any) {
+        // Stub implementation for image rotation
+    }
+    
+    fun addIrUVCCamera(irUVCCamera: Any?) {
+        // Stub implementation for adding IR UVC camera
+    }
+    
+    fun setFrameCallback(callback: Any?) {
+        // Stub implementation for frame callback
+    }
+    
+    fun onStartPreview() {
+        // Stub implementation for start preview
+    }
+    
+    fun onStopPreview() {
+        // Stub implementation for stop preview
+    }
+    
+    fun onDestroy() {
+        // Stub implementation for cleanup
+    }
+    
+    fun setIrDataPreHandleEnable(enabled: Boolean) {
+        // Stub implementation for IR data pre-handle
+    }
+    
+    fun setIrFrameCallback(callback: Any?) {
+        // Stub implementation for IR frame callback
+    }
+    
+    fun setFusion(enabled: Boolean) {
+        // Stub implementation for fusion mode
+    }
+    
+    fun setAlignCallback(callback: Any?) {
+        // Stub implementation for alignment callback
+    }
+    
+    fun startManualAlign() {
+        // Stub implementation for manual alignment
+    }
 }

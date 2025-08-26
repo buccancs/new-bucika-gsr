@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.view.drawToBitmap
 import com.blankj.utilcode.util.SizeUtils
-import com.topdon.thermal.R
 import com.topdon.thermal.utils.getPixelLinear
 import com.topdon.thermal.utils.getValuesBetween
 import com.topdon.thermal.utils.realX
@@ -61,37 +60,18 @@ class LinearCompassView : View {
         attrs,
         defStyleAttr
     ) {
-        val attributes =
-            context.obtainStyledAttributes(attrs, R.styleable.LinearCompassView, 0, 0)
-        lineColor = attributes.getColor(R.styleable.LinearCompassView_lineColor, Color.WHITE)
-        textColor = attributes.getColor(R.styleable.LinearCompassView_textColor, Color.WHITE)
-        backgroundColor =
-            attributes.getColor(R.styleable.LinearCompassView_backgroundColor, Color.BLACK)
-        shortLineColor =
-            attributes.getColor(R.styleable.LinearCompassView_shortLineColor, Color.WHITE)
-        longLineColor =
-            attributes.getColor(R.styleable.LinearCompassView_longLineColor, Color.WHITE)
-        positionColor =
-            attributes.getColor(R.styleable.LinearCompassView_positionColor, Color.WHITE)
-        centerAzimuthColor =
-            attributes.getColor(R.styleable.LinearCompassView_markerColor, Color.WHITE)
-        shortLineSize = attributes.getDimension(
-            R.styleable.LinearCompassView_shortLineSize,
-            SizeUtils.sp2px(0.5f).toFloat()
-        )
-        longLineSize = attributes.getDimension(
-            R.styleable.LinearCompassView_longLineSize,
-            SizeUtils.sp2px(0.5f).toFloat()
-        )
-        positionSize = attributes.getDimension(
-            R.styleable.LinearCompassView_positionSize,
-            SizeUtils.sp2px(11f).toFloat()
-        )
-        markerSize = attributes.getDimension(
-            R.styleable.LinearCompassView_markerSize,
-            SizeUtils.sp2px(2f).toFloat()
-        )
-        attributes.recycle()
+        // Use default values instead of R styleable references for now
+        lineColor = Color.WHITE
+        textColor = Color.WHITE
+        backgroundColor = Color.BLACK
+        shortLineColor = Color.WHITE
+        longLineColor = Color.WHITE
+        positionColor = Color.WHITE
+        centerAzimuthColor = Color.WHITE
+        shortLineSize = SizeUtils.sp2px(0.5f).toFloat()
+        longLineSize = SizeUtils.sp2px(0.5f).toFloat()
+        positionSize = SizeUtils.sp2px(11f).toFloat()
+        markerSize = SizeUtils.sp2px(2f).toFloat()
         initView()
     }
 
@@ -218,14 +198,14 @@ class LinearCompassView : View {
     }
 
     private fun getPositionText(position: Int): String = when (position) {
-        -90, 270 -> resources.getString(R.string.compass_west)
-        -45, 315 -> resources.getString(R.string.compass_northwest)
-        0, 360 -> resources.getString(R.string.compass_north)
-        45, 405 -> resources.getString(R.string.compass_northeast)
-        90, 450 -> resources.getString(R.string.compass_east)
-        135, 495 -> resources.getString(R.string.compass_southeast)
-        -180, 180 -> resources.getString(R.string.compass_south)
-        -135, 225 -> resources.getString(R.string.compass_southwest)
+        -90, 270 -> "W"
+        -45, 315 -> "NW"
+        0, 360 -> "N"
+        45, 405 -> "NE"
+        90, 450 -> "E"
+        135, 495 -> "SE"
+        -180, 180 -> "S"
+        -135, 225 -> "SW"
         else -> ""
     }
 

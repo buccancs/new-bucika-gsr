@@ -91,7 +91,7 @@ object OnlineMethod {
         }
 
         val tem = Mat(192, 256, CvType.CV_64FC1)
-        tem.put(0, 0, temp)
+        tem.put(0, 0, *temp)
         tem.convertTo(tem, CvType.CV_8UC1)
 
         val thresGray = Mat()

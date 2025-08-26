@@ -26,6 +26,10 @@ class TempDrawHelper {
             .coerceAtLeast(CIRCLE_RADIUS)
             .coerceAtMost(max - CIRCLE_RADIUS)
 
+        fun correct(value: Int, max: Int): Int = value
+            .coerceAtLeast(CIRCLE_RADIUS)
+            .coerceAtMost(max - CIRCLE_RADIUS)
+
         fun getRect(width: Int, height: Int): Rect = Rect(CIRCLE_RADIUS, CIRCLE_RADIUS, width - CIRCLE_RADIUS, height - CIRCLE_RADIUS)
     }
 

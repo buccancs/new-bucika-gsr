@@ -52,4 +52,17 @@ object TempUtil {
 
         return tempList
     }
+    
+    fun distanceFromPointToLine(px: Float, py: Float, x1: Float, y1: Float, x2: Float, y2: Float): Float {
+        val dx = x2 - x1
+        val dy = y2 - y1
+        val length = kotlin.math.sqrt(dx * dx + dy * dy)
+        if (length == 0f) return kotlin.math.sqrt((px - x1) * (px - x1) + (py - y1) * (py - y1))
+        
+        val t = ((px - x1) * dx + (py - y1) * dy) / (length * length)
+        val closestX = x1 + t * dx
+        val closestY = y1 + t * dy
+        
+        return kotlin.math.sqrt((px - closestX) * (px - closestX) + (py - closestY) * (py - closestY))
+    }
 }

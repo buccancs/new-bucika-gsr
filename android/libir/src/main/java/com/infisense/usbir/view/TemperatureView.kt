@@ -265,9 +265,9 @@ class TemperatureView @JvmOverloads constructor(
         irtemp = LibIRTemp(imageWidth, imageHeight)
         llTempData = ByteArray(imageHeight * imageWidth * 2)
         repeat(drawCount) {
-            pointResultList.add(irtemp!!.TemperatureSampleResult())
-            lineResultList.add(irtemp!!.TemperatureSampleResult())
-            rectangleResultList.add(irtemp!!.TemperatureSampleResult())
+            pointResultList.add(LibIRTemp.TemperatureSampleResult())
+            lineResultList.add(LibIRTemp.TemperatureSampleResult())
+            rectangleResultList.add(LibIRTemp.TemperatureSampleResult())
         }
     }
 
