@@ -14,10 +14,11 @@ object UnitUtils {
     @JvmStatic
     fun getUnitDBBeanList(unitType: Int): List<UnitDBBean> {
         return try {
+            val app = Topdon.getApp() ?: return emptyList()
             val jsonStr = if (unitType == 0) {
-                PreUtil.getInstance(Topdon.getApp()).get(SPKeyUtils.UNIT_METRIC)
+                PreUtil.getInstance(app).get(SPKeyUtils.UNIT_METRIC)
             } else {
-                PreUtil.getInstance(Topdon.getApp()).get(SPKeyUtils.UNIT_BRITISH)
+                PreUtil.getInstance(app).get(SPKeyUtils.UNIT_BRITISH)
             }
             LLog.w("bcf--jsonStr", jsonStr)
             if (TextUtils.isEmpty(jsonStr)) {
@@ -44,7 +45,7 @@ object UnitUtils {
         try {
             val unitDBBeanList = getUnitDBBeanList(unitType)
             for (unitDBBean in unitDBBeanList) {
-                hashMap[unitDBBean.preUnit.lowercase()] = unitDBBean
+                hashMap[unitDBBean.preUnit ?: ""?.lowercase() ?: ""] = unitDBBean
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -54,7 +55,8 @@ object UnitUtils {
     
     @JvmStatic
     fun getCalcResult(hashMap: HashMap<String, UnitDBBean>, preUnit: String, numericalValue: String): Array<String> {
-        val unit = SPUtils.getInstance(Topdon.getApp()).get("unit", "0") as String
+        val app = Topdon.getApp() ?: return arrayOf(numericalValue, preUnit)
+        val unit = SPUtils.getInstance(app).get("unit", "0") as String
         val unitType = if ("0" == unit) 0 else 1
         return getCalcResult(unitType, hashMap, preUnit, numericalValue)
     }
@@ -73,17 +75,17 @@ object UnitUtils {
             }
             
             if (unitType == 0) {
-                if (preUnit.equals(unitDBBean.afterUnit, ignoreCase = true)) {
-                    return arrayOf(numericalValue, unitDBBean.afterUnit)
+                if (preUnit.equals(unitDBBean.afterUnit ?: "", ignoreCase = true)) {
+                    return arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
                 }
                 
                 when {
                     preUnit.equals("K", ignoreCase = true) -> {
                         return try {
-                            arrayOf(getResult(numericalValue.toDouble() - 273.15).toString(), unitDBBean.afterUnit)
+                            arrayOf(getResult(numericalValue.toDouble() - 273.15).toString(), unitDBBean.afterUnit ?: "")
                         } catch (e: NumberFormatException) {
                             e.printStackTrace()
-                            arrayOf(numericalValue, unitDBBean.afterUnit)
+                            arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
                         }
                     }
                     preUnit == "deg.F" -> {
@@ -91,19 +93,19 @@ object UnitUtils {
                             arrayOf(getResult((numericalValue.toDouble() - 32) / 1.8).toString(), "°C")
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            arrayOf(numericalValue, unitDBBean.afterUnit)
+                            arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
                         }
                     }
                     else -> {
                         return arrayOf(
-                            getResult(numericalValue.toDouble() * unitDBBean.calcFactor.toDouble()).toString(),
-                            unitDBBean.afterUnit
+                            getResult(numericalValue.toDouble() * (unitDBBean.calcFactor?.toDoubleOrNull() ?: 1.0)).toString(),
+                            unitDBBean.afterUnit ?: ""
                         )
                     }
                 }
             } else {
-                if (preUnit.equals(unitDBBean.afterUnit, ignoreCase = true)) {
-                    return arrayOf(numericalValue, unitDBBean.afterUnit)
+                if (preUnit.equals(unitDBBean.afterUnit ?: "", ignoreCase = true)) {
+                    return arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
                 }
                 
                 when {
@@ -111,11 +113,11 @@ object UnitUtils {
                         return try {
                             arrayOf(
                                 getResult(32 + (numericalValue.toDouble() - 273.15) * 1.8).toString(),
-                                unitDBBean.afterUnit
+                                unitDBBean.afterUnit ?: ""
                             )
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            arrayOf(numericalValue, unitDBBean.afterUnit)
+                            arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
                         }
                     }
                     preUnit.equals("deg.C", ignoreCase = true) -> {
@@ -126,13 +128,13 @@ object UnitUtils {
                             )
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            arrayOf(numericalValue, unitDBBean.afterUnit)
+                            arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
                         }
                     }
                     else -> {
                         return arrayOf(
-                            getResult(numericalValue.toDouble() * unitDBBean.calcFactor.toDouble()).toString(),
-                            unitDBBean.afterUnit
+                            getResult(numericalValue.toDouble() * (unitDBBean.calcFactor?.toDoubleOrNull() ?: 1.0)).toString(),
+                            unitDBBean.afterUnit ?: ""
                         )
                     }
                 }
@@ -144,7 +146,7 @@ object UnitUtils {
         return if (unitDBBean == null) {
             arrayOf(numericalValue, preUnit)
         } else {
-            arrayOf(numericalValue, unitDBBean.afterUnit)
+            arrayOf(numericalValue, unitDBBean.afterUnit ?: "")
         }
     }
     

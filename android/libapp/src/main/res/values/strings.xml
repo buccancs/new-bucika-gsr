@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BleModule</string>
+    
+    <!-- Missing strings -->
+    <string name="version_code">Version Code</string>
+    <string name="splash_title_1">Welcome to Thermal Camera</string>
+    <string name="splash_title_2">Advanced Thermal Imaging Solution</string>
+    <string name="house_owner_signature">House Owner Signature</string>
 </resources>

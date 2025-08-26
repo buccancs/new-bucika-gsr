@@ -16,9 +16,7 @@ object MathUtils {
     @JvmStatic
     fun getPercents(scale: Int, @NonNull vararg values: Float): FloatArray {
         val total = values.sum()
-        val nonZeroIndices = values.mapIndexedNotNull { index, value -> 
-            if (value != 0f) index else null 
-        }
+        val nonZeroIndices = values.indices.filter { values[it] != 0f }
         
         if (total == 0f) {
             return FloatArray(values.size)
@@ -28,7 +26,7 @@ object MathUtils {
         val sc = 10.0.pow(scale + 2).toInt()
         var sum = 0f
         
-        nonZeroIndices.forEachIndexed { i, index ->
+        nonZeroIndices.forEachIndexed { i: Int, index: Int ->
             if (i == nonZeroIndices.size - 1) {
                 fs[index] = 1 - sum
             } else {

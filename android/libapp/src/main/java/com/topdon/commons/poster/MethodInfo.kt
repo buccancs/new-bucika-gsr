@@ -22,7 +22,7 @@ class MethodInfo {
     constructor(@NonNull name: String, @NonNull tag: String, @Nullable vararg parameters: Parameter) {
         this.name = name
         this.tag = tag
-        this.parameters = if (parameters.isNotEmpty()) parameters else null
+        this.parameters = if (parameters.isNotEmpty()) arrayOf(*parameters) else null
     }
     
     constructor(@NonNull name: String, @Nullable parameterTypes: Array<Class<*>>?) : this(name, name, parameterTypes)

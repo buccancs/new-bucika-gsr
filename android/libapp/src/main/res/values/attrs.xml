@@ -49,5 +49,12 @@
         <attr name="guide_icon_show" format="boolean"/>
     </declare-styleable>
 
+    <!-- Legacy RangeSeekBar attributes (for layout compatibility) -->
+    <declare-styleable name="RangeSeekBar">
+        <attr name="seekPercent" format="string|float"/>
+        <attr name="tipsPercent" format="string|float"/>
+        <attr name="minText" format="string"/>
+        <attr name="maxText" format="string"/>
+    </declare-styleable>
 
 </resources>

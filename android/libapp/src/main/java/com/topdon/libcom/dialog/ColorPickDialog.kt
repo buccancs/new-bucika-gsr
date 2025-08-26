@@ -10,7 +10,7 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
 import com.topdon.lib.core.utils.ScreenUtil
-import com.topdon.libcom.R
+import com.topdon.lib.core.R
 import com.topdon.libcom.util.ColorUtils
 import com.topdon.libcom.databinding.DialogColorPickBinding
 

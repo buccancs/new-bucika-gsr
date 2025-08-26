@@ -16,6 +16,7 @@ import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
+import com.topdon.lib.core.R
 import com.topdon.lib.core.config.FileConfig
 import com.topdon.lib.core.utils.CommUtils
 import java.io.BufferedOutputStream

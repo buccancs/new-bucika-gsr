@@ -29,7 +29,7 @@ import com.topdon.lib.core.repository.FileBean
 import com.topdon.lib.core.repository.TS004Repository
 import com.topdon.lib.core.socket.SocketCmdUtil
 import com.topdon.lib.core.socket.WebSocketProxy
-import com.topdon.lib.core.tools.AppLanguageUtils
+import com.topdon.lib.core.tools.LanguageTool
 import com.topdon.lib.core.utils.NetWorkUtils
 import com.topdon.lib.core.utils.WifiUtil
 import com.topdon.lib.core.utils.WsCmdConstants
@@ -40,6 +40,35 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import java.io.File
+import java.util.Locale
+
+// Temporary replacement for AppLanguageUtils
+object AppLanguageUtils {
+    @JvmStatic
+    fun getChineseSystemLanguage(): String {
+        return "zh-CN" // Default Chinese
+    }
+    
+    @JvmStatic
+    fun getSystemLanguage(): String {
+        return "en-US" // Default English
+    }
+    
+    @JvmStatic
+    fun getLocaleByLanguage(language: String?): Locale {
+        return when (language) {
+            "zh-CN" -> Locale.SIMPLIFIED_CHINESE
+            "zh-TW" -> Locale.TRADITIONAL_CHINESE
+            else -> Locale.ENGLISH
+        }
+    }
+    
+    @JvmStatic
+    fun attachBaseContext(context: Context?, language: String?): Context? {
+        // Simple implementation - just return the original context
+        return context
+    }
+}
 
 abstract class BaseApplication : Application() {
 

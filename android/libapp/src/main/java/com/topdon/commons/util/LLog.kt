@@ -2,7 +2,7 @@ package com.topdon.commons.util
 
 import android.util.Log
 import com.elvishew.xlog.XLog
-import com.topdon.ble.BuildConfig
+import com.topdon.lib.core.BuildConfig
 
 object LLog {
     private val isDebug = BuildConfig.DEBUG

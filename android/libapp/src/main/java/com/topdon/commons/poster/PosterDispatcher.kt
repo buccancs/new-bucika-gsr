@@ -100,6 +100,11 @@ class PosterDispatcher(
     }
 
     fun post(@NonNull owner: Any, @NonNull methodInfo: MethodInfo) {
-        post(owner, methodInfo.name, methodInfo.tag, *methodInfo.parameters)
+        val parameters = methodInfo.parameters
+        if (parameters != null) {
+            post(owner, methodInfo.name, methodInfo.tag, *parameters)
+        } else {
+            post(owner, methodInfo.name, methodInfo.tag)
+        }
     }
 }

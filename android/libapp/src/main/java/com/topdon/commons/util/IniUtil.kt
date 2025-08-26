@@ -162,7 +162,7 @@ object IniUtil {
             
             maintenanceFields.forEach { (key, defaultValue) ->
                 val value = versionSection[key]
-                hashMap[key] = if (!TextUtils.isEmpty(value)) value else defaultValue
+                hashMap[key] = if (!TextUtils.isEmpty(value ?: "")) value ?: defaultValue else defaultValue
             }
             
             hashMap
@@ -202,7 +202,7 @@ object IniUtil {
             
             systemFields.forEach { (key, defaultValue) ->
                 val value = versionSection[key]
-                hashMap[key] = if (!TextUtils.isEmpty(value)) value else defaultValue
+                hashMap[key] = if (!TextUtils.isEmpty(value ?: "")) value ?: defaultValue else defaultValue
             }
             
             hashMap

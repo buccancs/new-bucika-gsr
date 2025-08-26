@@ -25,10 +25,11 @@ object FolderUtil {
 
     @JvmStatic
     fun init() {
-        mUserId = PreUtil.getInstance(Topdon.getApp()).get("VCI_" + LMS.getInstance().loginName)
+        val app = Topdon.getApp() ?: return
+        mUserId = PreUtil.getInstance(app).get("VCI_" + LMS.getInstance().loginName)
         setUserId(mUserId)
         Log.e("bcf", "FolderUtil mUserId: $mUserId")
-        mPath = Topdon.getApp().getExternalFilesDir("")?.absolutePath ?: ""
+        mPath = app.getExternalFilesDir("")?.absolutePath ?: ""
         Log.e("bcf", "FolderUtil init: $mPath")
         initPath()
     }
@@ -36,7 +37,8 @@ object FolderUtil {
     @JvmStatic
     fun initTDarts(tdSn: String?) {
         tdartsSn = tdSn
-        val mPath = Topdon.getApp().getExternalFilesDir("")?.absolutePath ?: ""
+        val app = Topdon.getApp() ?: return
+        val mPath = app.getExternalFilesDir("")?.absolutePath ?: ""
         Log.e("bcf", "$fileName---FolderUtil initTDarts: $mPath")
         if (!TextUtils.isEmpty(tdSn)) {
             val rfidFile = File("$mPath$fileName$tdSn/RFID/")
@@ -49,7 +51,8 @@ object FolderUtil {
 
     @JvmStatic
     fun initFilePath() {
-        val basePath = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName"
+        val app = Topdon.getApp() ?: return
+        val basePath = "${app.getExternalFilesDir("")?.absolutePath}$fileName"
         val downPath = "${basePath}Download/"
         Log.e("bcf", "$fileName--下载路径初始化--$downPath")
         val file = File(downPath)
@@ -103,107 +106,107 @@ object FolderUtil {
     }
 
     @JvmStatic
-    fun getOtaPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}/s/"
+    fun getOtaPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}/s/"
 
     @JvmStatic
-    fun getDataBasePath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName"
+    fun getDataBasePath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName"
 
     @JvmStatic
-    fun getTDartsRootPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$tdartsSn/"
+    fun getTDartsRootPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$tdartsSn/"
 
     @JvmStatic
-    fun getRootPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/"
+    fun getRootPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/"
 
     @JvmStatic
-    fun getVehiclesPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/"
+    fun getVehiclesPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/"
 
     @JvmStatic
-    fun getImmoPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Immo/"
+    fun getImmoPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Immo/"
 
     @JvmStatic
-    fun getRfidTopScanPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$tdartsSn/RFID/"
+    fun getRfidTopScanPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$tdartsSn/RFID/"
 
     @JvmStatic
-    fun getRfidPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/RFID/"
+    fun getRfidPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/RFID/"
 
     @JvmStatic
-    fun getAsiaPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/Asia/"
+    fun getAsiaPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/Asia/"
 
     @JvmStatic
-    fun getAmericaPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/America/"
+    fun getAmericaPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/America/"
 
     @JvmStatic
-    fun getEuropePath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/Europe/"
+    fun getEuropePath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/Europe/"
 
     @JvmStatic
-    fun getVehiclePublicPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/Public/"
+    fun getVehiclePublicPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Diagnosis/Public/"
 
     @JvmStatic
-    fun getVehicleTopScanPublicPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName"
+    fun getVehicleTopScanPublicPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName"
 
     @JvmStatic
-    fun getShotPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Shot/"
+    fun getShotPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Shot/"
 
     @JvmStatic
-    fun getDataStreamPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Datastream/"
+    fun getDataStreamPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Datastream/"
 
     @JvmStatic
-    fun getPdfPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Pdf/"
+    fun getPdfPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Pdf/"
 
     @JvmStatic
-    fun getAppPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}App/"
+    fun getAppPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}App/"
 
     @JvmStatic
-    fun getFirmwarePath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}Firmware/"
+    fun getFirmwarePath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}Firmware/"
 
     @JvmStatic
-    fun getTdartsUpgradePath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}T-darts/"
+    fun getTdartsUpgradePath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}T-darts/"
 
     @JvmStatic
-    fun getDownloadPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Download/"
+    fun getDownloadPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Download/"
 
     @JvmStatic
-    fun getDiagHistoryPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/History/Diagnose/"
+    fun getDiagHistoryPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/History/Diagnose/"
 
     @JvmStatic
-    fun getServiceHistoryPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/History/Service/"
+    fun getServiceHistoryPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/History/Service/"
 
     @JvmStatic
-    fun getLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}Log/"
+    fun getLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}Log/"
 
     @JvmStatic
-    fun getSoLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}Log/SoLog/"
+    fun getSoLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}Log/SoLog/"
 
     @JvmStatic
-    fun getGalleryPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Gallery/"
+    fun getGalleryPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/Gallery/"
 
     @JvmStatic
-    fun getDataLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/DataLog/"
+    fun getDataLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/DataLog/"
 
     @JvmStatic
-    fun getDiagDataLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/DataLog/DIAG/"
+    fun getDiagDataLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/DataLog/DIAG/"
 
     @JvmStatic
-    fun getImmoDataLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/DataLog/IMMO/"
+    fun getImmoDataLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/DataLog/IMMO/"
 
     @JvmStatic
-    fun getFeedbackLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/FeedbackLog/"
+    fun getFeedbackLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/FeedbackLog/"
 
     @JvmStatic
-    fun getUserDataDiag(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}UserData/Diagnose/"
+    fun getUserDataDiag(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}UserData/Diagnose/"
 
     @JvmStatic
-    fun getUserDataImmo(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}UserData/Immo/"
+    fun getUserDataImmo(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}UserData/Immo/"
 
     @JvmStatic
-    fun getUserDataNewEnergy(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}UserData/NewEnergy/"
+    fun getUserDataNewEnergy(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}UserData/NewEnergy/"
 
     @JvmStatic
-    fun getUserDataRFID(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}UserData/RFID/"
+    fun getUserDataRFID(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}UserData/RFID/"
 
     @JvmStatic
-    fun getSoftDownPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}${fileName}Download/"
+    fun getSoftDownPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}${fileName}Download/"
 
     @JvmStatic
-    fun getAutoVinLogPath(): String = "${Topdon.getApp().getExternalFilesDir("")?.absolutePath}$fileName$mUserId/autovinLog/"
+    fun getAutoVinLogPath(): String = "${Topdon.getApp()?.getExternalFilesDir("")?.absolutePath}$fileName$mUserId/autovinLog/"
 }

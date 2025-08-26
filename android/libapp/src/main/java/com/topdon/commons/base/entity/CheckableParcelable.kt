@@ -4,20 +4,35 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
-class CheckableParcelable<T : Parcelable> : CheckableItem<T>, Parcelable {
-    constructor() : super()
+class CheckableParcelable<T : Parcelable> : Parcelable {
+    var data: T? = null
+    private var isChecked: Boolean = false
     
-    constructor(data: T) : super(data)
+    constructor() 
     
-    constructor(data: T, isChecked: Boolean) : super(data, isChecked)
+    constructor(data: T) {
+        this.data = data
+    }
+    
+    constructor(data: T, isChecked: Boolean) {
+        this.data = data
+        this.isChecked = isChecked
+    }
 
-    private constructor(parcel: Parcel) : super() {
+    private constructor(parcel: Parcel) {
         val bundle = parcel.readBundle(javaClass.classLoader)
         bundle?.let { 
             @Suppress("DEPRECATION")
-            setData(it.getParcelable("items"))
+            data = it.getParcelable<T>("items")
         }
-        setChecked(parcel.readByte() != 0.toByte())
+        isChecked = parcel.readByte() != 0.toByte()
+    }
+
+    fun isChecked(): Boolean = isChecked
+    
+    fun setChecked(isChecked: Boolean): CheckableParcelable<T> {
+        this.isChecked = isChecked
+        return this
     }
 
     override fun describeContents(): Int = 0

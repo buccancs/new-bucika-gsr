@@ -2,6 +2,7 @@ package com.topdon.libcom
 
 import android.content.Context
 import android.media.MediaPlayer
+import com.topdon.lib.core.R
 import com.topdon.lib.core.bean.AlarmBean
 import com.topdon.libcom.util.SingletonHolder
 import com.topdon.libcom.view.TempLayout

@@ -81,7 +81,8 @@ class Observable(
         @NonNull methodName: String,
         @Nullable vararg parameters: MethodInfo.Parameter?
     ) {
-        notifyObservers(MethodInfo(methodName, *parameters))
+        val nonNullParameters = parameters.filterNotNull().toTypedArray()
+        notifyObservers(MethodInfo(methodName, *nonNullParameters))
     }
     
     fun notifyObservers(@NonNull info: MethodInfo) {
@@ -89,7 +90,7 @@ class Observable(
         
         infos.forEach { oi ->
             oi.weakObserver.get()?.let { observer ->
-                val key = helper.generateKey(info.tag, info.name, info.parameterTypes)
+                val key = helper.generateKey(info.tag, info.name, info.getParameterTypes() ?: emptyArray())
                 oi.methodMap[key]?.let { method ->
                     val runnable = helper.generateRunnable(observer, method, info)
                     posterDispatcher.post(method, runnable)

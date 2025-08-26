@@ -22,6 +22,7 @@ import com.topdon.lib.core.dialog.LoadingDialog
 import com.topdon.lib.core.tools.*
 import com.topdon.lib.core.dialog.TipCameraProgressDialog
 import com.topdon.lib.core.dialog.TipProgressDialog
+import com.topdon.lib.core.BaseApplication.AppLanguageUtils
 import com.topdon.lms.sdk.LMS
 import com.topdon.lms.sdk.bean.CommonBean
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
