@@ -108,3 +108,4 @@ class CameraItemPopup(val context: Context, private val saveSetBean: SaveSetting
         anchor.getLocationInWindow(locationArray)
         showAtLocation(anchor, Gravity.NO_GRAVITY, 0, locationArray[1] - height)
     }
+}

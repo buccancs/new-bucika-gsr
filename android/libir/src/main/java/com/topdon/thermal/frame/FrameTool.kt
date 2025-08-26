@@ -257,3 +257,4 @@ class FrameTool {
         irTemp.setTempData(temperatureBytes)
         return irTemp.getTemperatureOfRect(Rect(0, 0, imageWidth, imageHeight))
     }
+}

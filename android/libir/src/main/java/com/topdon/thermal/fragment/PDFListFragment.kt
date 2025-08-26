@@ -246,3 +246,4 @@ class PDFListFragment : BaseViewModelFragment<PdfViewModel>() {
 
         binding.fragmentPdfRecyclerLay.setEnableLoadMore(false)
     }
+}

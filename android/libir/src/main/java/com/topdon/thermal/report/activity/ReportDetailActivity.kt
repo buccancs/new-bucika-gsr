@@ -120,3 +120,4 @@ class ReportDetailActivity: BaseActivity() {
         }
         return result
     }
+}

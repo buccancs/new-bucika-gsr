@@ -120,3 +120,4 @@ class IRConfigInputDialog(context: Context, val type: Type, val isTC007: Boolean
 
         EM,
     }
+}

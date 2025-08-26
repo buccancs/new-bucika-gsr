@@ -386,3 +386,4 @@ class ReportCreateFirstActivity: BaseActivity(), View.OnClickListener {
 
             })
     }
+}
