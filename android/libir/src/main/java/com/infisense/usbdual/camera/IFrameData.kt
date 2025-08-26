@@ -39,3 +39,4 @@ object IFrameData {
         System.arraycopy(frame, FUSION_LEN + ORIGINAL_LEN + ORIGINAL_LEN, data, 0, data.size)
         return data
     }
+}

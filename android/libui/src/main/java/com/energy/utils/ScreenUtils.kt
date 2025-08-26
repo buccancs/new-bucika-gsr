@@ -124,3 +124,4 @@ object ScreenUtils {
         }
         return normalDialog.show()
     }
+}

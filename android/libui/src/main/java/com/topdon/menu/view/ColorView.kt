@@ -11,7 +11,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
-import com.topdon.menu.R
+import com.topdon.ui.R
 
 class ColorView : View {
     
@@ -102,3 +102,4 @@ class ColorView : View {
         val top: Float = ((barHeight - normalBarHeight) / 2).toFloat()
         shaderSelectNot = LinearGradient(0f, top, 0f, top + normalBarHeight, colors, positions, Shader.TileMode.CLAMP)
     }
+}

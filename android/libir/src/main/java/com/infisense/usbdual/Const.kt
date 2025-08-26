@@ -64,3 +64,4 @@ object Const {
     const val SP_KEY_IS_HORIZONTAL = true
     const val SP_KEY_RATIO_THRESH = 0.9
     const val SP_KEY_ROT_THRESH = 1.5
+}

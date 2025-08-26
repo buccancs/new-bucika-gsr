@@ -24,4 +24,7 @@
     <string name="czech">Čeština</string>
     <string name="ukrainian">Українська</string>
     <string name="dutch">Nederlands</string>
+    
+    <!-- Missing UI strings -->
+    <string name="top_infrared_up_case">THERMAL</string>
 </resources>
