@@ -10,3 +10,4 @@ class IRGalleryTabViewModel : BaseViewModel() {
     val selectSizeLD: MutableLiveData<Int> = MutableLiveData(0)
 
     val selectAllIndex: MutableLiveData<Int> = MutableLiveData(0)
+}

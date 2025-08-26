@@ -19,3 +19,4 @@ object ColorUtils {
     fun to01(float: Float): String {
         return String.format(Locale.ENGLISH, "%.1f", float)
     }
+}

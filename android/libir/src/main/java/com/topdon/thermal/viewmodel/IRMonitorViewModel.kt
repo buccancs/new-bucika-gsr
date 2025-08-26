@@ -33,3 +33,5 @@ class IRMonitorViewModel : BaseViewModel() {
             AppDatabase.getInstance().thermalDao().delDetail(startTime)
         }
     }
+
+}

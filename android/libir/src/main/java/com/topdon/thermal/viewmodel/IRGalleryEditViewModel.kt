@@ -39,3 +39,4 @@ class IRGalleryEditViewModel : BaseViewModel() {
     }
 
     data class FrameBean(val capital: ByteArray, val frame: ByteArray)
+}

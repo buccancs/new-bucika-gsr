@@ -35,3 +35,4 @@ class ImagePickIRActivity : BasePickImgActivity() {
     override fun initData() {
 
     }
+}

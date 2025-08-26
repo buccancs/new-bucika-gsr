@@ -136,3 +136,4 @@ class IRCorrectionFourActivity : BaseActivity() {
         
         binding.timeDownView.downSecond(time, false)
     }
+}

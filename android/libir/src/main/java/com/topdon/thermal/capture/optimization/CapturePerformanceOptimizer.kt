@@ -352,3 +352,4 @@ data class CapturePerformanceMetrics(
     
     val overallBufferUsage: Double
         get() = (videoBufferUsage + dngBufferUsage + gsrBufferUsage) / 3.0
+}

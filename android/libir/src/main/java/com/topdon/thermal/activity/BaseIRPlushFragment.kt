@@ -624,3 +624,4 @@ abstract class BaseIRPlushFragment : BaseFragment(), OnUSBConnectListener,ITsTem
         )
         return preIrARGBData
     }
+}

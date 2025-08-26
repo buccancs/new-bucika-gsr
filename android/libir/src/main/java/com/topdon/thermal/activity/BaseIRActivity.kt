@@ -6,3 +6,4 @@ import com.topdon.libcom.bean.SaveSettingBean
 abstract class BaseIRActivity : BaseActivity() {
     
     protected val saveSetBean = SaveSettingBean()
+}

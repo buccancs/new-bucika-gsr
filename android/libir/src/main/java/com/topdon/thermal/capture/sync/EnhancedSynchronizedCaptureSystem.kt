@@ -443,3 +443,4 @@ data class EnhancedSynchronizationMetrics(
     val averageVideoProcessingTimeMs: Double,
     val averageDngProcessingTimeMs: Double,
     val averageGsrProcessingTimeMs: Double
+)

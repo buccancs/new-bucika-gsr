@@ -85,3 +85,4 @@ class IRCorrectionTwoActivity : BaseActivity() {
     fun finishCorrection(event: CorrectionFinishEvent) {
         finish()
     }
+}

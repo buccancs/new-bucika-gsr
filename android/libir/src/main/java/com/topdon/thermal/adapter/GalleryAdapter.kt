@@ -160,3 +160,4 @@ class GalleryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ItemHeadView(val binding: ItemGalleryHeadLayBinding) : RecyclerView.ViewHolder(binding.root)
 
     inner class ItemView(val binding: ItemGalleryLayBinding) : RecyclerView.ViewHolder(binding.root)
+}

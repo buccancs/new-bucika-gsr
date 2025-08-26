@@ -110,3 +110,5 @@ class IRGalleryViewModel : BaseViewModel() {
             }
         }
     }
+
+}

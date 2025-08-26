@@ -118,3 +118,5 @@ class IRConfigViewModel(application: Application) : AndroidViewModel(application
             configLiveData.postValue(modelBean)
         }
     }
+
+}

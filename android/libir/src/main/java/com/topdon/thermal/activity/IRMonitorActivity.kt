@@ -85,3 +85,4 @@ class IRMonitorActivity : BaseActivity(), View.OnClickListener {
         super.disConnected()
         finish()
     }
+}

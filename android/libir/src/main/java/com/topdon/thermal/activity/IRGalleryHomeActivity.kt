@@ -59,3 +59,4 @@ class IRGalleryHomeActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+}

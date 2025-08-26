@@ -497,3 +497,4 @@ class DNGCaptureManager(
         stopDNGCapture()
         stopBackgroundThread()
     }
+}

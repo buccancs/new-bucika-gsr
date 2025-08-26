@@ -170,3 +170,4 @@ object HexDump {
             numbyte[i] = (fbit shr (i * 8)).toByte()
         }
     }
+}

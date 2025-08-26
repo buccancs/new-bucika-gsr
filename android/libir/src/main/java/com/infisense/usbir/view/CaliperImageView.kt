@@ -118,3 +118,4 @@ class CaliperImageView : AppCompatImageView {
         }
         return false
     }
+}

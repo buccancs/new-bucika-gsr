@@ -43,3 +43,4 @@ class ManualStep1Activity : BaseActivity() {
     fun onManualFinishBean(manualFinishBean: ManualFinishBean) {
         finish()
     }
+}

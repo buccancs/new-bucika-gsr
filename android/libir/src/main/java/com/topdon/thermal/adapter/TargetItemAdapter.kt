@@ -69,3 +69,4 @@ class TargetItemAdapter(private val context: Context) : RecyclerView.Adapter<Rec
     override fun getItemCount(): Int = targetShapes.size
 
     inner class ItemView(val binding: ItmeTargetModeBinding) : RecyclerView.ViewHolder(binding.root)
+}

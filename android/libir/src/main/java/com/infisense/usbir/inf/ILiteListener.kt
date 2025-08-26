@@ -8,3 +8,4 @@ interface ILiteListener {
     fun getDeltaNucAndVTemp() : Float
 
     fun compensateTemp(temp : Float) : Float
+}

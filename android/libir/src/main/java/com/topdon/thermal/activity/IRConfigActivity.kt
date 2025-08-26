@@ -310,3 +310,4 @@ class IRConfigActivity : BaseActivity(), View.OnClickListener {
             }
         }
     }
+}

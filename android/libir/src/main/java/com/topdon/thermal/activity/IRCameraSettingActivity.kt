@@ -374,3 +374,4 @@ class IRCameraSettingActivity : BaseActivity() {
             initLocationPermission()
         }
     }
+}

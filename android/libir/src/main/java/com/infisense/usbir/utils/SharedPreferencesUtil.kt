@@ -51,3 +51,4 @@ object SharedPreferencesUtil {
         val string = sharedPreferences.getString(key, "") ?: ""
         return Base64.decode(string.toByteArray(), Base64.DEFAULT)
     }
+}
