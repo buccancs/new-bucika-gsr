@@ -74,6 +74,13 @@ class TemperatureView @JvmOverloads constructor(
     private var temperatureWidth = 0
     private var temperatureHeight = 0
 
+    // Missing properties that were referenced in the Java-to-Kotlin migration
+    private var temperatureArray: FloatArray? = null
+    private var maxTemperatureX: Int = 0
+    private var maxTemperatureY: Int = 0
+    private var minTemperatureX: Int = 0
+    private var minTemperatureY: Int = 0
+
     private val helper = TempDrawHelper()
 
     @RegionMode
@@ -397,6 +404,25 @@ class TemperatureView @JvmOverloads constructor(
         setBitmap()
     }
 
+    // Missing methods that were referenced in the Java-to-Kotlin migration
+    fun getDualIRWidthFromFrame(): Int = temperatureWidth
+    fun getDualIRHeightFromFrame(): Int = temperatureHeight
+    fun getTemperatureDataFromFrame(): FloatArray? = temperatureArray
+    fun updateTemperatureData(data: FloatArray) {
+        temperatureArray = data
+    }
+    fun getMaxTemperature(): Float = temperatureArray?.maxOrNull() ?: 0f
+    fun getMinTemperature(): Float = temperatureArray?.minOrNull() ?: 0f
+    fun getUserHighTemperature(): Float = getMaxTemperature()
+    fun getUserLowTemperature(): Float = getMinTemperature()
+    fun distanceFromPointToLine(px: Float, py: Float, x1: Float, y1: Float, x2: Float, y2: Float): Float {
+        // Calculate distance from point to line using mathematical formula
+        val A = y2 - y1
+        val B = x1 - x2
+        val C = x2 * y1 - x1 * y2
+        return Math.abs(A * px + B * py + C) / Math.sqrt((A * A + B * B).toDouble()).toFloat()
+    }
+
     // Enums for movement types
     private enum class LineMoveType { ALL, START, END }
     private enum class RectMoveType { ALL, EDGE, CORNER }
@@ -420,9 +446,9 @@ class TemperatureView @JvmOverloads constructor(
         holder.addCallback(this)
         setOnTouchListener(this)
 
-        val ta = context.obtainStyledAttributes(attrs, R.styleable.TemperatureView)
+        val ta = context.obtainStyledAttributes(attrs, R.styleable.TemperatureBaseView)
         try {
-            drawCount = ta.getInteger(R.styleable.TemperatureView_temperature_count, 3)
+            drawCount = ta.getInteger(R.styleable.TemperatureBaseView_maxCount, 3)
         } catch (e: Exception) {
             // Handle exception
         } finally {
@@ -914,7 +940,7 @@ class TemperatureView @JvmOverloads constructor(
     }
 
     private fun drawLine(canvas: Canvas, startX: Int, startY: Int, endX: Int, endY: Int, isTrend: Boolean) {
-        helper.drawLine(canvas, startX, startY, endX, endY, isTrend)
+        helper.drawLine(canvas, startX, startY, endX, endY)
     }
 
     private fun drawRect(canvas: Canvas, left: Int, top: Int, right: Int, bottom: Int) {

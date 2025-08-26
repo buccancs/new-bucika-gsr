@@ -25,3 +25,4 @@ data class ReportItemBean(
 
     var isFirst: Boolean = false
     var isTitle: Boolean = false
+}

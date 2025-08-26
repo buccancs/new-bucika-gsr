@@ -12,4 +12,5 @@ data class ReportConditionBean(
     val emissivity: String?,
     val is_emissivity: Int,
     val test_distance: String?,
-    val is_test_distance: Int,
+    val is_test_distance: Int
+) : Parcelable

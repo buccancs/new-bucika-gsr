@@ -125,3 +125,4 @@ class HikSurfaceView : SurfaceView {
         canvas.drawBitmap(bitmap, null, Rect(0, 0, width, height), null)
         holder.unlockCanvasAndPost(canvas)
     }
+}

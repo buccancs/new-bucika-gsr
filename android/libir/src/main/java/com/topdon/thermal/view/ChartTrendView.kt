@@ -43,3 +43,4 @@ class ChartTrendView : View {
 
         invalidate()
     }
+}

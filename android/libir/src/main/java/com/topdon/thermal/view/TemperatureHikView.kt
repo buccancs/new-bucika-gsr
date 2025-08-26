@@ -364,3 +364,4 @@ class TemperatureHikView : TemperatureBaseView {
         val lineResults: List<TemperatureSampleResult> = ArrayList(0),
         val rectResults: List<TemperatureSampleResult> = ArrayList(0),
     )
+}

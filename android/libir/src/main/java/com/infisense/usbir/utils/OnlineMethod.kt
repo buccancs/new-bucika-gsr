@@ -38,7 +38,7 @@ object OnlineMethod {
         applyColorMap(im, im, 15)
 
         val tem = Mat(192, 256, CvType.CV_64FC1)
-        tem.put(0, 0, temp)
+        tem.put(0, 0, *temp) // Spread the array
         tem.convertTo(tem, CvType.CV_8UC1)
 
         val thresGray = Mat()

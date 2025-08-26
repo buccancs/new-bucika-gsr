@@ -88,3 +88,4 @@ object ChartTools {
     fun getChartX(x: Long, startTime: Long, type: Int): Long {
         return (x - startTime) / scale(type)
     }
+}

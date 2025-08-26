@@ -48,3 +48,4 @@ class WatermarkView: View {
             }
         }
     }
+}

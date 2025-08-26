@@ -20,3 +20,4 @@ data class SoftwareInfo(
     val app_sn = ""
     val mobile_phone_model = Build.BRAND
     val system_version = Build.VERSION.RELEASE
+}

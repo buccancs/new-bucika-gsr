@@ -44,3 +44,4 @@ class ChartLogView : View {
 
         invalidate()
     }
+}

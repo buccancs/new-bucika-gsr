@@ -81,3 +81,4 @@ class TrendView : FrameLayout {
         val newHeightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
         super.onMeasure(newWidthSpec, newHeightSpec)
     }
+}

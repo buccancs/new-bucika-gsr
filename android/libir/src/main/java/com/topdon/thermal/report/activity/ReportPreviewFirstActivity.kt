@@ -46,3 +46,4 @@ class ReportPreviewFirstActivity: BaseActivity() {
     override fun initData() {
 
     }
+}

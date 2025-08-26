@@ -694,3 +694,4 @@ class VideoRecordFFmpeg(
             MediaScannerConnection.scanFile(Utils.getApp(), arrayOf(it.toString()), null, null)
         }
     }
+}

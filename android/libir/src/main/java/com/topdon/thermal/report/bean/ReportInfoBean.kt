@@ -21,3 +21,4 @@ data class ReportInfoBean(
     val report_type: Int = 1
     val report_version: String = "V1.00"
     val report_number: String = "${CommUtils.getAppName()}${System.currentTimeMillis()}"
+}

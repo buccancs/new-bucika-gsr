@@ -46,3 +46,4 @@ class Temperature07View : TemperatureBaseView {
         }
         return super.onTouchEvent(event)
     }
+}

@@ -76,3 +76,4 @@ class PdfViewModel : BaseViewModel() {
         }
         return result
     }
+}

@@ -202,3 +202,4 @@ class ReportPreviewSecondActivity: BaseViewModelActivity<UpReportViewModel>(), V
         }
         return result
     }
+}

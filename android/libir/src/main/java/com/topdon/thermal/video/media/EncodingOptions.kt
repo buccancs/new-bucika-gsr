@@ -12,3 +12,4 @@ data class EncodingOptions(
     override fun toString(): String {
         return "EncodingOptions : compLevel = $compressLevel"
     }
+}

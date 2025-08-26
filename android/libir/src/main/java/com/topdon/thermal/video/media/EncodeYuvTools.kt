@@ -153,3 +153,4 @@ object EncodeYuvTools {
             }
         }
     }
+}

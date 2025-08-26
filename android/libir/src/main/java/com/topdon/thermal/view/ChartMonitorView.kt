@@ -53,3 +53,4 @@ class ChartMonitorView : View {
     interface OnChartSlidingListener {
         fun onChartSliding()
     }
+}

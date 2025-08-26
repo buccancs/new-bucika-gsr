@@ -205,3 +205,4 @@ class TemperatureEditView : TemperatureBaseView {
         }
         return result
     }
+}

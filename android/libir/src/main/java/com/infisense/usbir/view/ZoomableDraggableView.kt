@@ -56,7 +56,7 @@ class ZoomableDraggableView @JvmOverloads constructor(
         gestureDetector = GestureDetector(context, GestureListener())
         
         originalBitmap = (ContextCompat.getDrawable(
-            resources, 
+            context, 
             R.drawable.svg_ic_target_horizontal_person_green
         ) as? BitmapDrawable)?.bitmap
         

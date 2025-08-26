@@ -39,3 +39,4 @@ object DualParamsUtil {
             else -> SaveSettingUtil.FusionTypeLPYFusion
         }
     }
+}

@@ -92,3 +92,4 @@ class DistanceMeasureView : View {
         }
         return true
     }
+}
