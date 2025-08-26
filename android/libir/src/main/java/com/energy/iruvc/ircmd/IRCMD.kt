@@ -10,8 +10,8 @@ interface IRCMD {
     fun stopPreview(): Int
     fun stopPreview(previewPath: Any?): Int
     
-    // Y16 mode preview methods
-    fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int
+    // Y16 mode preview methods  
+    fun startY16ModePreview(previewPath: Any?, srcType: Any?, frameCallback: Any? = null): Int
     
     // Temperature and TNR methods
     fun isTempReplacedWithTNREnabled(param: Any?): Boolean
@@ -37,5 +37,7 @@ interface IRCMD {
         closeFrameCnt: Int,
         callback: Any?
     )
+    
+    fun onDestroy()
     fun close()
 }

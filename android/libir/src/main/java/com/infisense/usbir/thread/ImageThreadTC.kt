@@ -13,7 +13,7 @@ import com.example.open3d.JNITool
 import com.example.suplib.wrapper.SupHelp
 import com.infisense.usbir.bean.ColorRGB
 import com.infisense.usbir.utils.IRImageHelp
-import com.infisense.usbir.utils.OpencvTools
+import com.infisense.usbir.tools.OpencvTools
 import com.infisense.usbir.utils.PseudocodeUtils
 import com.topdon.lib.core.bean.AlarmBean
 import org.opencv.core.CvType
@@ -204,7 +204,7 @@ class ImageThreadTC(
                 val currentWidth = if (rotateInt == 270 || rotateInt == 90) imageWidth else imageHeight
                 val currentHeight = if (rotateInt == 270 || rotateInt == 90) imageHeight else imageWidth
                 
-                imageDst = irImageHelp.contourDetection(alarmBean, imageDst, tempSrc, currentWidth, currentHeight)
+                imageDst = irImageHelp.contourDetection(alarmBean, imageDst, tempSrc, currentWidth, currentHeight) ?: imageDst
                 
                 // Apply AI processing based on type
                 when (typeAi) {
@@ -235,10 +235,12 @@ class ImageThreadTC(
                         } else {
                             if (OpencvTools.getStatus(firstFrame, imageDst)) {
                                 try {
-                                    val dataArray = JNITool.diff2firstFrameByTempWH(
-                                        currentWidth, currentHeight,
-                                        firstTemp, tempSrc, imageDst
-                                    )
+                                    val firstTempLocal = firstTemp
+                                    if (firstTempLocal != null) {
+                                        val dataArray = JNITool.diff2firstFrameByTempWH(
+                                            currentWidth, currentHeight,
+                                            firstTempLocal, tempSrc, imageDst
+                                        )
                                     val diffMat = Mat(192, 256, CvType.CV_8UC4).apply {
                                         put(0, 0, dataArray)
                                     }
@@ -246,6 +248,7 @@ class ImageThreadTC(
                                     val grayData = ByteArray(diffMat.cols() * diffMat.rows() * 4)
                                     diffMat.get(0, 0, grayData)
                                     imageDst = grayData
+                                    }
                                 } catch (e: Throwable) {
                                     Log.e("静态闯入异常：", e.message.orEmpty())
                                 }
@@ -277,6 +280,7 @@ class ImageThreadTC(
                     }
                     sync.valid = true
                     sync.viewLock.notify()
+                }
                 }
             }
             

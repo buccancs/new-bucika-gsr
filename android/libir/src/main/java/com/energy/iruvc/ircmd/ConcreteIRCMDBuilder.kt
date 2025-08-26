@@ -42,7 +42,7 @@ private class USBIRCMDImpl : IRCMD {
         return 0
     }
     
-    override fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int {
+    override fun startY16ModePreview(previewPath: Any?, srcType: Any?, frameCallback: Any?): Int {
         // USB Y16 mode preview stub
         return 0
     }
@@ -98,13 +98,17 @@ private class USBIRCMDImpl : IRCMD {
     override fun close() {
         // Close stub
     }
+    
+    override fun onDestroy() {
+        // Destroy stub
+    }
 }
 
 private class WifiIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?): Int = 0
     override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?): Int = 0
-    override fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int = 0
+    override fun startY16ModePreview(previewPath: Any?, srcType: Any?, frameCallback: Any?): Int = 0
     override fun isTempReplacedWithTNREnabled(param: Any?): Boolean = false
     override fun stopPreview(): Int = 0
     override fun stopPreview(previewPath: Any?): Int = 0
@@ -113,13 +117,14 @@ private class WifiIRCMDImpl : IRCMD {
     override fun autoGainSwitch(normalTempData: ByteArray, imageRes: Any?, info: Any?, param: Any?, callback: Any?) {}
     override fun avoidOverexposure(enable: Boolean, gainStatus: Any?, normalTempData: ByteArray, imageRes: Any?, lowGainTempData: ByteArray, highGainTempData: ByteArray, pixelAboveProp: Float, switchFrameCnt: Int, closeFrameCnt: Int, callback: Any?) {}
     override fun close() {}
+    override fun onDestroy() {}
 }
 
 private class BleIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?): Int = 0
     override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?): Int = 0
-    override fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int = 0
+    override fun startY16ModePreview(previewPath: Any?, srcType: Any?, frameCallback: Any?): Int = 0
     override fun isTempReplacedWithTNREnabled(param: Any?): Boolean = false
     override fun stopPreview(): Int = 0
     override fun stopPreview(previewPath: Any?): Int = 0
@@ -128,4 +133,5 @@ private class BleIRCMDImpl : IRCMD {
     override fun autoGainSwitch(normalTempData: ByteArray, imageRes: Any?, info: Any?, param: Any?, callback: Any?) {}
     override fun avoidOverexposure(enable: Boolean, gainStatus: Any?, normalTempData: ByteArray, imageRes: Any?, lowGainTempData: ByteArray, highGainTempData: ByteArray, pixelAboveProp: Float, switchFrameCnt: Int, closeFrameCnt: Int, callback: Any?) {}
     override fun close() {}
+    override fun onDestroy() {}
 }

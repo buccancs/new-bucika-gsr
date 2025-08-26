@@ -116,11 +116,41 @@ object CommonParams {
     }
     
     enum class IRPROCSRCFMTType {
-        Y16, YUV, RGB, IRPROC_SRC_FMT_Y14
+        Y16, YUV, RGB, IRPROC_SRC_FMT_Y14, IRPROC_SRC_FMT_ARGB8888
+    }
+    
+    enum class PseudoColorType {
+        WHITE_HOT,
+        BLACK_HOT,
+        IRON,
+        COOL,
+        RAINBOW,
+        LAVA,
+        GLOBOW,
+        GRADED_FIRE,
+        HOTTEST,
+        PSEUDO_1,
+        PSEUDO_2,
+        PSEUDO_3
+    }
+    
+    enum class PseudoColorUsbDualType {
+        WHITE_HOT,
+        BLACK_HOT,
+        IRON,
+        COOL,
+        RAINBOW,
+        LAVA,
+        GLOBOW,
+        GRADED_FIRE,
+        HOTTEST
     }
     
     object IMAGE_OUTPUT
     object TNR_OUTPUT
+    
+    // IRPROC constants
+    const val IRPROC_SRC_FMT_ARGB8888 = 4
     
     // Additional constants for P2 and other references
     object P2
@@ -128,4 +158,9 @@ object CommonParams {
     // Support size list placeholder with getSupportSizeList method
     fun getSupportSizeList(format: Any?): List<Any> = listOf("256x192", "640x480", "1024x768")
     val supportSizeList: List<String> = listOf("256x192", "640x480", "1024x768")
+    
+    // Type definitions for gain switching and image resolution
+    data class AutoGainSwitchInfo_t(val enabled: Boolean = false, val threshold: Float = 0.5f)
+    data class GainSwitchParam_t(val mode: GainMode = GainMode.AUTO, val sensitivity: Float = 1.0f)
+    data class ImageRes_t(val width: Int, val height: Int)
 }

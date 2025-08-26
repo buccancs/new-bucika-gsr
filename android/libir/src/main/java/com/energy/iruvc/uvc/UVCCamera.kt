@@ -11,6 +11,9 @@ open class UVCCamera {
     )
     var nativePtr: Long = 0
     
+    val supportedSize: String
+        get() = "${supportedSizeList.size} sizes available"
+    
     fun getSupportSizeList(format: Any? = null): List<CameraSize> {
         // Return common camera sizes for thermal imaging
         return supportedSizeList
@@ -24,8 +27,8 @@ open class UVCCamera {
         // Stub implementation  
     }
     
-    fun setDefaultBandwidth(bandwidth: Int) {
-        // Stub implementation
+    fun setDefaultBandwidth(bandwidth: Float) {
+        // Stub implementation - accept Float as expected by callers
     }
     
     fun setDefaultPreviewMode(mode: Any) {
@@ -36,13 +39,15 @@ open class UVCCamera {
         // Stub implementation
     }
     
-    fun setUSBPreviewSize(size: Any) {
+    fun setUSBPreviewSize(width: Int, height: Int): Int {
         // Stub implementation
+        return 0
     }
     
-    fun openUVCCamera(controlBlock: Any?) {
+    fun openUVCCamera(controlBlock: Any?): Int {
         // Stub implementation
         openStatus = true
+        return 0
     }
     
     fun onStartPreview() {
@@ -60,6 +65,14 @@ open class UVCCamera {
     fun close() {
         // Stub implementation
         openStatus = false
+    }
+    
+    fun onPausePreview() {
+        // Stub implementation
+    }
+    
+    fun onResumePreview() {
+        // Stub implementation
     }
     
     // Add other methods as needed

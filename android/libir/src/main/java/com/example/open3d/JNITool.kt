@@ -15,6 +15,15 @@ object JNITool {
     @JvmStatic
     external fun cleanup(): Unit
     
+    @JvmStatic
+    external fun maxTempL(imageDst: ByteArray, tempSrc: ByteArray, width: Int, height: Int, threshold: Int): ByteArray?
+    
+    @JvmStatic
+    external fun lowTemTrack(imageDst: ByteArray, tempSrc: ByteArray, width: Int, height: Int, threshold: Int): ByteArray?
+    
+    @JvmStatic
+    external fun diff2firstFrameByTempWH(width: Int, height: Int, firstTemp: ByteArray, tempSrc: ByteArray, imageDst: ByteArray): ByteArray?
+    
     // Initialize native library (if available)
     init {
         try {

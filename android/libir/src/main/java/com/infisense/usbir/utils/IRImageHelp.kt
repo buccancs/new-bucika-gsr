@@ -3,6 +3,7 @@ package com.infisense.usbir.utils
 import android.graphics.Bitmap
 import android.util.Log
 import com.example.open3d.JNITool
+import com.infisense.usbir.tools.OpencvTools
 import com.topdon.lib.core.bean.AlarmBean
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -13,7 +14,7 @@ import java.io.IOException
 class IRImageHelp {
 
     @Volatile
-    private var colorList: IntArray ?= null
+    var colorList: IntArray ?= null
 
     @Volatile
     private var places: FloatArray? = null
