@@ -33,6 +33,9 @@ object USBMonitorDualManager {
     
     private var mVlIFrameCallback: IFrameCallback? = null
     
+    val ircmd: IRCMD?
+        get() = mIrcmd
+    
     fun addOnUSBConnectListener(onUSBConnectListener: OnUSBConnectListener) {
         mOnUSBConnectListeners.add(onUSBConnectListener)
     }
@@ -101,6 +104,13 @@ object USBMonitorDualManager {
                     Const.isDeviceConnected = false
                     mOnUSBConnectListeners.forEach { listener ->
                         listener.onDisconnect(device, ctrlBlock)
+                    }
+                }
+                
+                override fun onCancel(device: UsbDevice) {
+                    Log.d(TAG, "USBMonitor-onCancel")
+                    mOnUSBConnectListeners.forEach { listener ->
+                        listener.onCancel(device)
                     }
                 }
             })
