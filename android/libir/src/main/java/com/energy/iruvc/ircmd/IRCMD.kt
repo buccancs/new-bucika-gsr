@@ -5,10 +5,16 @@ interface IRCMD {
     fun init(controlBlock: Any?)
     
     // Support both simple and complex startPreview signatures
-    fun startPreview(dataFlowMode: Any?, frameCallback: Any?)
-    fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?)
+    fun startPreview(dataFlowMode: Any?, frameCallback: Any?): Int
+    fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?): Int
     fun stopPreview(): Int
     fun stopPreview(previewPath: Any?): Int
+    
+    // Y16 mode preview methods
+    fun startY16ModePreview(srcType: Any?, dataFlowMode: Any?, frameCallback: Any?): Int
+    
+    // Temperature and TNR methods
+    fun isTempReplacedWithTNREnabled(param: Any?): Boolean
     
     fun setPropImageParams(param: Any?, value: Any?)
     fun setPropAutoShutterParameter(param: Any?, value: Any?)

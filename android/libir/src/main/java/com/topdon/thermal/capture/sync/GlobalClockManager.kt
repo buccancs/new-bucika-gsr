@@ -421,3 +421,4 @@ data class GlobalSyncStatistics(
             averageDriftCorrectedMs < 5.0 && maxDetectedSkewMs < 20.0 -> "ACCEPTABLE"
             else -> "POOR"
         }
+}

@@ -2,20 +2,19 @@ package com.topdon.thermal.view.compass
 
 import android.content.Context
 import android.hardware.SensorManager
-import com.kylecorry.andromeda.sense.Sensors
-import com.kylecorry.andromeda.sense.compass.ICompass
-import com.topdon.thermal.view.compass.CompassProvider
+import com.topdon.thermal.view.compass.stubs.Sensors
+import com.topdon.thermal.view.compass.stubs.ICompass
 
 class SensorService(ctx: Context) {
 
     private var context = ctx.applicationContext
 
     fun hasCompass(): Boolean {
-        return Sensors.hasCompass(context)
+        return Sensors.hasCompass()
     }
 
     fun getCompass(): ICompass {
-        return CompassProvider(context).get()
+        return Sensors.getCompass()
     }
 
     companion object {

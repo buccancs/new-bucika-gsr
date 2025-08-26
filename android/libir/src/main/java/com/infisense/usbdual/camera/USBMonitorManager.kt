@@ -160,7 +160,7 @@ object USBMonitorManager {
                 setDefaultPreviewMaxFps(25)
                 openUVCCamera(controlBlock)
                 
-                val supportedSizeList = supportSizeList
+                val supportedSizeList = getSupportSizeList() ?: emptyList()
                 var cameraSize: CameraSize? = null
                 
                 for (size in supportedSizeList) {

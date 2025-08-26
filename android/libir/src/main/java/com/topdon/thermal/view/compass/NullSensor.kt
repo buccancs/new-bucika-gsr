@@ -1,21 +1,22 @@
 package com.topdon.thermal.view.compass
 
-import com.kylecorry.andromeda.core.sensors.AbstractSensor
-import com.kylecorry.andromeda.core.time.CoroutineTimer
+import com.topdon.thermal.view.compass.stubs.AbstractSensor
+import com.topdon.thermal.view.compass.stubs.CoroutineTimer
 
 abstract class NullSensor(private val interval: Long = 0): AbstractSensor() {
     override val hasValidReading: Boolean = true
 
-    private val timer = CoroutineTimer {
+    private val timer = CoroutineTimer(interval) {
         notifyListeners()
     }
 
-    override fun startImpl() {
+    override fun startImpl(): Boolean {
         if (interval == 0L){
-            timer.once(0L)
+            timer.start()
         } else {
-            timer.interval(interval)
+            timer.start()
         }
+        return true
     }
 
     override fun stopImpl() {

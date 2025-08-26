@@ -81,7 +81,6 @@ class EnhancedVideoRecorder(
         
         private const val RAD_DNG_BITRATE = 8000000
     }
-    }
 
     init {
         cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -160,7 +159,6 @@ class EnhancedVideoRecorder(
             XLog.e(TAG, "Failed to start recording: ${e.message}", e)
             false
         }
-    }
     }
 
     private fun startSamsung4KRecording(): Boolean {
@@ -482,3 +480,4 @@ class EnhancedVideoRecorder(
             XLog.d(TAG, "Started video frame timestamp estimation at ${targetFps}fps")
         }
     }
+}

@@ -66,4 +66,42 @@ object CommonParams {
             ON, OFF
         }
     }
+    
+    // Missing enums and classes identified from compilation errors
+    enum class GainStatus {
+        LOW, HIGH, AUTO
+    }
+    
+    enum class GainMode {
+        MANUAL, AUTO, HIGH, LOW
+    }
+    
+    enum class PreviewCameraStyle {
+        NORMAL, DUAL, THERMAL
+    }
+    
+    enum class DeviceStyle {
+        SINGLE, DUAL, THERMAL
+    }
+    
+    enum class FRAMEFORMATType {
+        YUYV, Y16, NV21, RGB, FRAME_FORMAT_YUYV, FRAME_FORMAT_Y16, FRAME_FORMAT_NV21
+    }
+    
+    enum class Y16ModePreviewSrcType {
+        RAW, PROCESSED
+    }
+    
+    enum class IRPROCSRCFMTType {
+        Y16, YUV, RGB
+    }
+    
+    object IMAGE_OUTPUT
+    object TNR_OUTPUT
+    
+    // Additional constants for P2 and other references
+    object P2
+    
+    // Support size list placeholder
+    val supportSizeList: List<String> = listOf("256x192", "640x480", "1024x768")
 }

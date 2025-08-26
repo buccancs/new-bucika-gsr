@@ -229,3 +229,4 @@ data class CaptureCompatibilityResult(
     val isSupported: Boolean,
     val issues: List<String>,
     val optimizationParams: S22OptimizationParams
+)
