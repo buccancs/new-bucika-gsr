@@ -33,7 +33,11 @@
     <!-- Missing colors -->
     <color name="font_second_color">#FF666666</color>
     <color name="color_default_max">#FFFF0000</color>
+    <color name="color_default_min">#FF0000FF</color>
     <color name="color_B3FFFFFF">#B3FFFFFF</color>
     <color name="chart_line_min">#FF0000FF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="color_bg_min">#FF333333</color>
+    <color name="color_font">#FF000000</color>
 
 </resources>

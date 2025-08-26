@@ -6,4 +6,6 @@
     <string name="splash_title_1">Welcome to Thermal Camera</string>
     <string name="splash_title_2">Advanced Thermal Imaging Solution</string>
     <string name="house_owner_signature">House Owner Signature</string>
+    <string name="house_detection">House Detection</string>
+    <string name="ability_house">House Ability</string>
 </resources>

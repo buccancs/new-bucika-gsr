@@ -55,6 +55,7 @@
         <attr name="tipsPercent" format="string|float"/>
         <attr name="minText" format="string"/>
         <attr name="maxText" format="string"/>
+        <attr name="selectColor" format="color|reference"/>
     </declare-styleable>
 
 </resources>
