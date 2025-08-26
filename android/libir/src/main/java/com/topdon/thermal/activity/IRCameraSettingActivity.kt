@@ -29,7 +29,7 @@ import com.topdon.lib.ui.listener.SingleClickListener
 import com.topdon.lib.core.utils.CommUtils
 import com.topdon.thermal.BuildConfig
 import com.topdon.thermal.R
-import com.topdon.thermal.databinding.ActivityIrCameraSettingBinding
+// Data binding removed - using findViewById instead
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +42,7 @@ class IRCameraSettingActivity : BaseActivity() {
         const val KEY_PRODUCT_TYPE = "key_product_type"
     }
 
-    private lateinit var binding: ActivityIrCameraSettingBinding
+    // Data binding removed - replaced with findViewById calls
     
     private var locationManager: LocationManager? = null
     private var locationProvider: String? = null
@@ -59,9 +59,7 @@ class IRCameraSettingActivity : BaseActivity() {
     override fun initContentView(): Int = R.layout.activity_ir_camera_setting
 
     override fun initView() {
-        binding = ActivityIrCameraSettingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        
+        // TODO: Replace with proper findViewById calls
         productName = intent.getStringExtra(KEY_PRODUCT_TYPE) ?: ""
         if (isTC007()) {
             watermarkBean = SharedManager.wifiWatermarkBean

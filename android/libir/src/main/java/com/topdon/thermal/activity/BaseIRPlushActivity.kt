@@ -45,6 +45,10 @@ import java.io.InputStream
 
 abstract class BaseIRPlushActivity : IRThermalNightActivity(), OnUSBConnectListener, IIRFrameCallback {
 
+    companion object {
+        private const val TAG = "BaseIRPlushActivity"
+    }
+
     private var snStr = ""
 
     protected var dualView: DualViewWithExternalCameraCommonApi? = null

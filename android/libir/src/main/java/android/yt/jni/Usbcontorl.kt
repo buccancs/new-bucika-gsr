@@ -5,7 +5,7 @@ import java.io.File
 import java.io.FileReader
 import java.io.IOException
 
-class Usbcontorl : Usbjni() {
+object Usbcontorl {
     
     companion object {
         @JvmStatic

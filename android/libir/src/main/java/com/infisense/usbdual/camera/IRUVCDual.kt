@@ -27,8 +27,11 @@ import com.infisense.usbir.R
 class IRUVCDual {
     
     companion object {
-        private const val TAG = "IRUVC"
+        private const val LOG_TAG = "IRUVC"
     }
+    
+    // Mutable TAG property for external assignment
+    var TAG: String = LOG_TAG
     
     private val mContext: Context
     private var iFrameCallback: IFrameCallback? = null
@@ -93,7 +96,7 @@ class IRUVCDual {
         mUSBMonitor = USBMonitor(context, object : USBMonitor.OnDeviceConnectListener {
             override fun onAttach(device: UsbDevice) {
                 if (mPid != 0) return
-                Log.d(TAG, "onAttach")
+                Log.d(LOG_TAG, "onAttach")
                 if (!isRequest) {
                     isRequest = true
                     requestPermission(0)
@@ -103,11 +106,11 @@ class IRUVCDual {
             override fun onGranted(usbDevice: UsbDevice, granted: Boolean) {}
 
             override fun onConnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock, createNew: Boolean) {
-                Log.w(TAG, "onConnect")
+                Log.w(LOG_TAG, "onConnect")
                 if (createNew) {
                     mConnectCallback?.let { callback ->
                         uvcCamera?.let { camera ->
-                            Log.d(TAG, "onCameraOpened")
+                            Log.d(LOG_TAG, "onCameraOpened")
                             callback.onCameraOpened(camera)
                         }
                     }
@@ -117,12 +120,12 @@ class IRUVCDual {
             }
 
             override fun onDisconnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock) {
-                Log.w(TAG, "onDisconnect")
+                Log.w(LOG_TAG, "onDisconnect")
                 Const.isDeviceConnected = false
             }
 
             override fun onDettach(device: UsbDevice) {
-                Log.w(TAG, "onDettach$isRequest")
+                Log.w(LOG_TAG, "onDettach$isRequest")
                 Const.isDeviceConnected = false
                 if (isRequest) {
                     isRequest = false
@@ -159,7 +162,7 @@ class IRUVCDual {
 
         mUSBMonitor = USBMonitor(context, object : USBMonitor.OnDeviceConnectListener {
             override fun onAttach(device: UsbDevice) {
-                Log.w(TAG, "USBMonitor-onAttach mPid = $pid getProductId = ${device.productId}")
+                Log.w(LOG_TAG, "USBMonitor-onAttach mPid = $pid getProductId = ${device.productId}")
                 
                 if (device.productId != mPid) return
                 
@@ -169,11 +172,11 @@ class IRUVCDual {
             }
 
             override fun onGranted(usbDevice: UsbDevice, granted: Boolean) {
-                Log.w(TAG, "USBMonitor-onGranted")
+                Log.w(LOG_TAG, "USBMonitor-onGranted")
             }
 
             override fun onDettach(device: UsbDevice) {
-                Log.w(TAG, "USBMonitor-onDettach mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onDettach mPid = $pid")
                 Const.isDeviceConnected = false
                 if (uvcCamera?.openStatus == true) {
                     if (handler != null && status != 2) {
@@ -184,14 +187,14 @@ class IRUVCDual {
             }
 
             override fun onConnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock, createNew: Boolean) {
-                Log.w(TAG, "USBMonitor-onConnect mPid = $pid")
-                Log.w(TAG, "USBMonitor-onConnect createNew = $createNew")
+                Log.w(LOG_TAG, "USBMonitor-onConnect mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onConnect createNew = $createNew")
                 if (createNew && device.productId == pid) {
                     handler?.sendEmptyMessage(Const.SHOW_LOADING)
 
                     mConnectCallback?.let { callback ->
                         uvcCamera?.let { camera ->
-                            Log.w(TAG, "USBMonitor-onCameraOpened")
+                            Log.w(LOG_TAG, "USBMonitor-onCameraOpened")
                             callback.onCameraOpened(camera)
                         }
                     }
@@ -202,13 +205,13 @@ class IRUVCDual {
             }
 
             override fun onDisconnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock) {
-                Log.w(TAG, "USBMonitor-onDisconnect mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onDisconnect mPid = $pid")
                 Const.isDeviceConnected = false
                 status = 4
             }
 
             override fun onCancel(device: UsbDevice) {
-                Log.w(TAG, "USBMonitor-onCancel mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onCancel mPid = $pid")
                 Const.isDeviceConnected = false
             }
         })
@@ -235,7 +238,7 @@ class IRUVCDual {
 
         mUSBMonitor = USBMonitor(context, object : USBMonitor.OnDeviceConnectListener {
             override fun onAttach(device: UsbDevice) {
-                Log.w(TAG, "USBMonitor-onAttach mPid = $pid getProductId = ${device.productId}")
+                Log.w(LOG_TAG, "USBMonitor-onAttach mPid = $pid getProductId = ${device.productId}")
                 
                 if (device.productId != mPid) return
                 
@@ -245,11 +248,11 @@ class IRUVCDual {
             }
 
             override fun onGranted(usbDevice: UsbDevice, granted: Boolean) {
-                Log.w(TAG, "USBMonitor-onGranted")
+                Log.w(LOG_TAG, "USBMonitor-onGranted")
             }
 
             override fun onDettach(device: UsbDevice) {
-                Log.w(TAG, "USBMonitor-onDettach mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onDettach mPid = $pid")
                 Const.isDeviceConnected = false
                 if (uvcCamera?.openStatus == true) {
                     if (handler != null && status != 2) {
@@ -260,14 +263,14 @@ class IRUVCDual {
             }
 
             override fun onConnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock, createNew: Boolean) {
-                Log.w(TAG, "USBMonitor-onConnect mPid = $pid")
-                Log.w(TAG, "USBMonitor-onConnect createNew = $createNew")
+                Log.w(LOG_TAG, "USBMonitor-onConnect mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onConnect createNew = $createNew")
                 if (createNew && device.productId == pid) {
                     handler?.sendEmptyMessage(Const.SHOW_LOADING)
 
                     mConnectCallback?.let { callback ->
                         uvcCamera?.let { camera ->
-                            Log.w(TAG, "USBMonitor-onCameraOpened")
+                            Log.w(LOG_TAG, "USBMonitor-onCameraOpened")
                             callback.onCameraOpened(camera)
                         }
                     }
@@ -278,13 +281,13 @@ class IRUVCDual {
             }
 
             override fun onDisconnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock) {
-                Log.w(TAG, "USBMonitor-onDisconnect mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onDisconnect mPid = $pid")
                 Const.isDeviceConnected = false
                 status = 4
             }
 
             override fun onCancel(device: UsbDevice) {
-                Log.w(TAG, "USBMonitor-onCancel mPid = $pid")
+                Log.w(LOG_TAG, "USBMonitor-onCancel mPid = $pid")
                 Const.isDeviceConnected = false
             }
         })
@@ -311,10 +314,10 @@ class IRUVCDual {
 
         mUSBMonitor = USBMonitor(context, object : USBMonitor.OnDeviceConnectListener {
             override fun onAttach(device: UsbDevice) {
-                Log.w(TAG, "onAttach${device.productId}")
+                Log.w(LOG_TAG, "onAttach${device.productId}")
                 if (pid != 0) {
                     if (uvcCamera?.openStatus != true) {
-                        Log.w(TAG, "USBMonitor onAttach requestPermission $pid")
+                        Log.w(LOG_TAG, "USBMonitor onAttach requestPermission $pid")
                         mUSBMonitor?.requestPermission(device)
                     }
                 }
@@ -323,7 +326,7 @@ class IRUVCDual {
             override fun onGranted(usbDevice: UsbDevice, granted: Boolean) {}
 
             override fun onDettach(device: UsbDevice) {
-                Log.w(TAG, "onDettach")
+                Log.w(LOG_TAG, "onDettach")
                 if (pid != 0 && device != null) {
                     Const.isDeviceConnected = false
                     if (uvcCamera?.openStatus == true) {
@@ -333,14 +336,14 @@ class IRUVCDual {
             }
 
             override fun onConnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock, createNew: Boolean) {
-                Log.w(TAG, "onConnect")
+                Log.w(LOG_TAG, "onConnect")
                 if (pid != 0) {
                     if (createNew) {
                         handler?.sendEmptyMessage(Const.SHOW_LOADING)
 
                         mConnectCallback?.let { callback ->
                             uvcCamera?.let { camera ->
-                                Log.d(TAG, "onCameraOpened")
+                                Log.d(LOG_TAG, "onCameraOpened")
                                 callback.onCameraOpened(camera)
                             }
                         }
@@ -352,7 +355,7 @@ class IRUVCDual {
             }
 
             override fun onDisconnect(device: UsbDevice, ctrlBlock: USBMonitor.UsbControlBlock) {
-                Log.w(TAG, "onDisconnect")
+                Log.w(LOG_TAG, "onDisconnect")
                 if (pid != 0 && status != 4) {
                     Const.isDeviceConnected = false
                     status = 4
@@ -417,7 +420,7 @@ class IRUVCDual {
     }
 
     private fun initUVCCamera(cameraWidth: Int, cameraHeight: Int) {
-        Log.i(TAG, "initUVCCamera->cameraWidth = $cameraWidth cameraHeight = $cameraHeight")
+        Log.i(LOG_TAG, "initUVCCamera->cameraWidth = $cameraWidth cameraHeight = $cameraHeight")
 
         val concreateUVCBuilder = ConcreateUVCBuilder()
         uvcCamera = concreateUVCBuilder
@@ -430,12 +433,12 @@ class IRUVCDual {
     fun getIrcmd(): IRCMD? = ircmd
 
     fun registerUSB() {
-        Log.i(TAG, "registerUSB")
+        Log.i(LOG_TAG, "registerUSB")
         mUSBMonitor?.register()
     }
 
     fun unregisterUSB() {
-        Log.i(TAG, "unregisterUSB")
+        Log.i(LOG_TAG, "unregisterUSB")
         mUSBMonitor?.destroy()
     }
 
@@ -447,7 +450,7 @@ class IRUVCDual {
     }
 
     fun requestPermission(index: Int): Boolean {
-        Log.i(TAG, "requestPermission")
+        Log.i(LOG_TAG, "requestPermission")
         val devList = getUsbDeviceList()
         if (devList == null || devList.isEmpty()) return false
         
@@ -464,7 +467,7 @@ class IRUVCDual {
     }
 
     fun openUVCCamera(ctrlBlock: USBMonitor.UsbControlBlock) {
-        Log.i(TAG, "openUVCCamera")
+        Log.i(LOG_TAG, "openUVCCamera")
         if (ctrlBlock.productId == 0x3901) {
             syncimage?.type = 1
         }
@@ -476,7 +479,7 @@ class IRUVCDual {
     }
 
     fun startPreview() {
-        Log.w(TAG, "startPreview mPid = $mPid isUseIRISP = $isUseIRISP")
+        Log.w(LOG_TAG, "startPreview mPid = $mPid isUseIRISP = $isUseIRISP")
         uvcCamera?.openStatus = true
 
         iFrameCallback?.let { callback ->
@@ -502,7 +505,7 @@ class IRUVCDual {
     private fun getAllSupportedSize(): List<CameraSize> {
         val previewList = uvcCamera?.supportedSizeList ?: emptyList()
         previewList.forEach { size ->
-            Log.i(TAG, "SupportedSize : ${size.width} * ${size.height}")
+            Log.i(LOG_TAG, "SupportedSize : ${size.width} * ${size.height}")
         }
         return previewList
     }
@@ -516,7 +519,7 @@ class IRUVCDual {
                 .build()
 
             mConnectCallback?.let { callback ->
-                Log.d(TAG, "onIRCMDCreate")
+                Log.d(LOG_TAG, "onIRCMDCreate")
                 callback.onIRCMDCreate(ircmd!!)
             }
         }
@@ -524,13 +527,13 @@ class IRUVCDual {
 
     private fun setPreviewSize(cameraWidth: Int, cameraHeight: Int): Int {
         return uvcCamera?.let { camera ->
-            Log.d(TAG, "setUSBPreviewSize mPid = $mPid cameraWidth = $cameraWidth cameraHeight = $cameraHeight")
+            Log.d(LOG_TAG, "setUSBPreviewSize mPid = $mPid cameraWidth = $cameraWidth cameraHeight = $cameraHeight")
             camera.setUSBPreviewSize(cameraWidth, cameraHeight)
         } ?: -1
     }
 
     fun stopPreview() {
-        Log.i(TAG, "stopPreview")
+        Log.i(LOG_TAG, "stopPreview")
         uvcCamera?.let { camera ->
             if (camera.openStatus) {
                 camera.onStopPreview()
@@ -543,12 +546,12 @@ class IRUVCDual {
     }
 
     fun setConnectCallback(connectCallback: ConnectCallback?) {
-        Log.d(TAG, "setConnectCallback")
+        Log.d(LOG_TAG, "setConnectCallback")
         this.mConnectCallback = connectCallback
     }
 
     private fun handleUSBConnect(ctrlBlock: USBMonitor.UsbControlBlock) {
-        Log.d(TAG, "handleUSBConnect mPid = $mPid")
+        Log.d(LOG_TAG, "handleUSBConnect mPid = $mPid")
         openUVCCamera(ctrlBlock)
 
         val previewList = getAllSupportedSize()
@@ -562,7 +565,7 @@ class IRUVCDual {
                     camera.setDefaultPreviewMaxFps(mFps)
                 }
                 else -> {
-                    Log.d(TAG, "startVLCamera handleUSBConnect mPid = $mPid setDefaultPreviewMode")
+                    Log.d(LOG_TAG, "startVLCamera handleUSBConnect mPid = $mPid setDefaultPreviewMode")
                     camera.setDefaultPreviewMode(CommonParams.FRAMEFORMATType.FRAME_FORMAT_MJPEG)
                     camera.setDefaultBandwidth(0.6f)
                     camera.setDefaultPreviewMinFps(1)
@@ -573,10 +576,10 @@ class IRUVCDual {
 
         val result = setPreviewSize(cameraWidth, cameraHeight)
         if (result == 0) {
-            Log.d(TAG, "handleUSBConnect setPreviewSize success")
+            Log.d(LOG_TAG, "handleUSBConnect setPreviewSize success")
             startPreview()
         } else {
-            Log.d(TAG, "handleUSBConnect setPreviewSize fail")
+            Log.d(LOG_TAG, "handleUSBConnect setPreviewSize fail")
             stopPreview()
         }
     }
