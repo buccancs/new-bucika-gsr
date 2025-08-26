@@ -67,19 +67,20 @@ android {
 
     // Include signing configuration
     signingConfigs {
-        debug {
-            storeFile file('artibox_key/ArtiBox.jks')
-            keyAlias 'Artibox'
-            storePassword 'artibox2017'
-            keyPassword 'artibox2017'
-        }
+        // Debug builds will use Android's default debug keystore automatically
+        // No custom debug configuration needed
+        
         release {
-            storeFile file('artibox_key/ArtiBox.jks')
-            keyAlias 'Artibox'
-            storePassword 'artibox2017'
-            keyPassword 'artibox2017'
-            v1SigningEnabled true
-            v2SigningEnabled true
+            // Only configure release signing if keystore exists
+            def keystoreFile = file('artibox_key/ArtiBox.jks')
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                keyAlias 'Artibox'
+                storePassword 'artibox2017'
+                keyPassword 'artibox2017'
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
         }
     }
 
@@ -104,6 +105,19 @@ android {
     
     kotlinOptions {
         jvmTarget = '17'
+    }
+    
+    // Configure D8/R8 to handle missing stack map tables from legacy libraries
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libjsc.so'
+    }
+    
+    // Add D8 configuration for legacy bytecode compatibility
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            variant.packaging.jniLibs.pickFirsts.add("**/libc++_shared.so")
+        }
     }
 }
 

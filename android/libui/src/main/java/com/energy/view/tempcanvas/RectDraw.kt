@@ -41,7 +41,6 @@ class RectDraw(context: Context) : BaseDraw(context) {
     private val mBgColor = Color.parseColor("#CC1A1A1A")
     private var mTempRect: RectView? = null
     private var mOperateStatus = -1
-    override protected var mTouchIndex = -1
     
     var viewWidth: Int = 0
     var viewHeight: Int = 0
@@ -49,7 +48,7 @@ class RectDraw(context: Context) : BaseDraw(context) {
     val touchInclude: Int get() = mTouchIndex
     
     init {
-        lineStrokeWidth = ScreenUtils.dp2px(1)
+        lineStrokeWidth = ScreenUtils.dp2px(1f)
         
         mRectPaint = Paint().apply {
             color = Color.WHITE
@@ -61,14 +60,14 @@ class RectDraw(context: Context) : BaseDraw(context) {
         }
         
         mTextPaint = Paint().apply {
-            strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH).toFloat()
-            textSize = ScreenUtils.sp2px(TEXT_SIZE).toFloat()
+            strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH.toFloat()).toFloat()
+            textSize = ScreenUtils.sp2px(TEXT_SIZE.toFloat()).toFloat()
             color = Color.WHITE
             textAlign = Paint.Align.CENTER
         }
         
         mBgPaint = TextPaint().apply {
-            strokeWidth = ScreenUtils.dp2px(1).toFloat()
+            strokeWidth = ScreenUtils.dp2px(1f).toFloat()
         }
     }
     

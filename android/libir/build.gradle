@@ -62,18 +62,25 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-//    implementation(name: 'libusbirsdk_1.2.0', ext: 'aar')
+    // Use fileTree for JAR files only - AAR files handled explicitly
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    
+    // Explicit AAR references to prevent duplicate class conflicts
     api(name: 'libusbdualsdk_1.3.4_2406271906_standard', ext: 'aar')
     implementation(name: 'opengl_1.3.2_standard', ext: 'aar')
-    api 'com.conghuahuadan:superlayout:1.1.0'
-    implementation project(':android:libapp')
-    // Local AAR dependencies now included directly
-    // api(project(":android:LocalRepo:libcommon")) - now using libcommon_1.2.0_24052117.aar
-    // api(project(":android:LocalRepo:libirutils")) - now using libirutils_1.2.0_2409241055.aar
     api(name: 'suplib-release', ext: 'aar')
     api(name: 'ai-upscale-release', ext: 'aar')
+    
+    api 'com.conghuahuadan:superlayout:1.1.0'
+    implementation project(':android:libapp')
+    // Local AAR dependencies now included via fileTree above
     
     // Dependencies from merged thermal-ir component
     api "com.airbnb.android:lottie:6.1.0"

@@ -643,9 +643,9 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             if (count != 0 && count % 3 == 0) {
                 startIndex = 0
                 y += if (pointCount == 3 && count == 3) {
-                    ScreenUtils.dp2px(40)
+                    ScreenUtils.dp2px(40f)
                 } else {
-                    ScreenUtils.dp2px(80)
+                    ScreenUtils.dp2px(80f)
                 }
             }
             canvas.translate((x + interval * startIndex).toFloat(), y.toFloat())

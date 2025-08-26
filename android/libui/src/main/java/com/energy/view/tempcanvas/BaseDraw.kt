@@ -7,7 +7,7 @@ abstract class BaseDraw(protected val mContext: Context) {
     
     companion object {
         
-        protected const val MIN_SIZE_PIX_COUNT = 20
+        const val MIN_SIZE_PIX_COUNT = 20
     }
     
     protected var mScreenDegree = 0

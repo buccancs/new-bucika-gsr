@@ -5,7 +5,7 @@ import android.graphics.Matrix
 
 abstract class BaseView {
     protected var mId: String = ""
-    protected var mPointSize = 0
+    var mPointSize = 0
     
     var label: String = ""
     var note: String = ""
