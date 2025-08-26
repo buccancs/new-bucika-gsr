@@ -97,3 +97,4 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             monitorType = index
         }
     }
+}

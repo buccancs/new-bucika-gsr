@@ -58,3 +58,4 @@ class ProgressDialog(context: Context) : Dialog(context, R.style.InfoDialog) {
             this.progress = this@ProgressDialog.progress
         }
     }
+}
