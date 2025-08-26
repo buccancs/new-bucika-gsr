@@ -13,10 +13,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
- * Comprehensive UI tests for GSRSettingsActivity
- * Tests GSR configuration options, Shimmer SDK integration settings, and user preferences
- */
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class GSRSettingsActivityUITest {
@@ -26,19 +22,18 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testSettingsActivityLaunches() {
-        // Verify settings activity launches correctly
+
         onView(withId(R.id.settings_container))
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun testGSRSamplingRateConfiguration() {
-        // Test GSR sampling rate configuration
+
         onView(withText("Sampling Rate"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Verify sampling rate options
         onView(withText("128 Hz"))
             .check(matches(isDisplayed()))
         
@@ -46,24 +41,21 @@ class GSRSettingsActivityUITest {
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Verify selection is applied
         onView(withText("Sampling Rate: 256 Hz"))
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun testShimmerDeviceConfiguration() {
-        // Test Shimmer device configuration options
+
         onView(withText("Shimmer Device Settings"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Test device name configuration
         onView(withId(R.id.edit_device_name))
             .check(matches(isDisplayed()))
             .perform(clearText(), typeText("GSR_Device_01"))
         
-        // Test connection timeout setting
         onView(withText("Connection Timeout"))
             .check(matches(isDisplayed()))
             .perform(click())
@@ -74,12 +66,11 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testDataLoggingSettings() {
-        // Test data logging configuration
+
         onView(withText("Data Logging"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Test log file format selection
         onView(withText("Log Format"))
             .perform(click())
         
@@ -87,7 +78,6 @@ class GSRSettingsActivityUITest {
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Test automatic backup setting
         onView(withId(R.id.switch_auto_backup))
             .check(matches(isDisplayed()))
             .perform(click())
@@ -95,21 +85,18 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testCalibrationSettings() {
-        // Test GSR calibration settings
+
         onView(withText("Calibration"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Test baseline calibration
         onView(withId(R.id.btn_calibrate_baseline))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Verify calibration dialog
         onView(withText("Baseline Calibration"))
             .check(matches(isDisplayed()))
         
-        // Test sensitivity adjustment
         onView(withId(R.id.slider_sensitivity))
             .check(matches(isDisplayed()))
             .perform(swipeRight())
@@ -117,7 +104,7 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testNotificationSettings() {
-        // Test notification preferences
+
         onView(withText("Notifications"))
             .check(matches(isDisplayed()))
             .perform(click())
@@ -133,19 +120,17 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testExportSettings() {
-        // Test data export settings
+
         onView(withText("Export Settings"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Test export location
         onView(withText("Export Location"))
             .perform(click())
         
         onView(withText("Internal Storage"))
             .perform(click())
         
-        // Test export format
         onView(withText("Export Format"))
             .perform(click())
         
@@ -155,19 +140,17 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testAdvancedSettings() {
-        // Test advanced configuration options
+
         onView(withText("Advanced Settings"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Test buffer size configuration
         onView(withText("Buffer Size"))
             .perform(click())
         
         onView(withText("1024 samples"))
             .perform(click())
         
-        // Test thread priority setting
         onView(withId(R.id.switch_high_priority))
             .check(matches(isDisplayed()))
             .perform(click())
@@ -175,61 +158,55 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testSettingsPersistence() {
-        // Test that settings are saved and persist
+
         onView(withText("Sampling Rate"))
             .perform(click())
         
         onView(withText("512 Hz"))
             .perform(click())
         
-        // Navigate away and back
         pressBack()
         
-        // Reopen settings
         onView(withId(R.id.btn_open_settings))
             .perform(click())
         
-        // Verify setting persisted
         onView(withText("Sampling Rate: 512 Hz"))
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun testSettingsValidation() {
-        // Test settings validation and error handling
+
         onView(withId(R.id.edit_device_name))
             .perform(clearText(), typeText(""))
         
         onView(withId(R.id.btn_save_settings))
             .perform(click())
         
-        // Verify validation error
         onView(withText("Device name cannot be empty"))
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun testResetToDefaults() {
-        // Test reset to default settings
+
         onView(withText("Reset to Defaults"))
             .check(matches(isDisplayed()))
             .perform(click())
         
-        // Verify confirmation dialog
         onView(withText("Reset all settings to default values?"))
             .check(matches(isDisplayed()))
         
         onView(withText("Reset"))
             .perform(click())
         
-        // Verify settings are reset
         onView(withText("Sampling Rate: 128 Hz"))
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun testHelpAndInfo() {
-        // Test help and information sections
+
         onView(withText("Help"))
             .check(matches(isDisplayed()))
             .perform(click())
@@ -237,7 +214,6 @@ class GSRSettingsActivityUITest {
         onView(withText("GSR Configuration Guide"))
             .check(matches(isDisplayed()))
         
-        // Test about section
         onView(withText("About"))
             .perform(click())
         
@@ -247,7 +223,7 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testAccessibilityInSettings() {
-        // Test accessibility features in settings
+
         onView(withText("Sampling Rate"))
             .check(matches(hasContentDescription()))
         
@@ -257,7 +233,7 @@ class GSRSettingsActivityUITest {
 
     @Test
     fun testSettingsNavigation() {
-        // Test navigation within settings
+
         onView(withText("Data Logging"))
             .perform(click())
         
@@ -267,4 +243,3 @@ class GSRSettingsActivityUITest {
         onView(withText("GSR Settings"))
             .check(matches(isDisplayed()))
     }
-}

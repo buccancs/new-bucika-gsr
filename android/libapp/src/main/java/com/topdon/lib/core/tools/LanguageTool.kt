@@ -4,13 +4,9 @@ import android.content.Context
 import com.blankj.utilcode.util.Utils
 import com.topdon.lib.core.R
 import com.topdon.lib.core.common.SharedManager
-import com.topdon.lib.core.tools.ConstantLanguages
 
 object LanguageTool {
 
-    /**
-     * 获取显示各国语言
-     */
     fun showLanguage(context: Context): String {
         return when (SharedManager.getLanguage(context)) {
             ConstantLanguages.ZH_CN -> context.getString(R.string.china)
@@ -31,10 +27,6 @@ object LanguageTool {
         }
     }
 
-    /**
-     * 获取各国语言简称
-     * (用于服务端多语言的识别)
-     */
     fun useLanguage(context: Context): String {
         return when (SharedManager.getLanguage(context)) {
             ConstantLanguages.ZH_CN -> "zh-CN"
@@ -55,10 +47,6 @@ object LanguageTool {
         }
     }
 
-    /**
-     * 获取各国语言简称
-     * (用于声明接口)
-     */
     fun useStatementLanguage(): String {
         return when (SharedManager.getLanguage(Utils.getApp())) {
             ConstantLanguages.ZH_CN -> "CN"

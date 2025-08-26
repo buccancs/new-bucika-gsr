@@ -12,5 +12,3 @@ object VersionUtils {
         codeStr = if (BuildConfig.DEBUG) "${codeStr}_debug" else codeStr
         return codeStr
     }
-
-}

@@ -21,9 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityOrchestratorConfigBinding
 
-/**
- * Activity for configuring connection to PC orchestrator
- */
 class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.ServiceListener {
     
     companion object {
@@ -74,14 +71,12 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Setup discovered services list
         discoveredServicesAdapter = DiscoveredServicesAdapter(discoveredServices) { service ->
             connectToService(service)
         }
         binding.recyclerDiscovered.adapter = discoveredServicesAdapter
         binding.recyclerDiscovered.layoutManager = LinearLayoutManager(this)
 
-        // Setup manual connection
         binding.editServerUrl.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -102,7 +97,6 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
             disconnect()
         }
 
-        // Initially disable connection controls
         updateConnectButton()
     }
 
@@ -127,7 +121,6 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
             binding.layoutManualConnect.visibility = if (isConnected) View.GONE else View.VISIBLE
             binding.btnDisconnect.visibility = if (isConnected) View.VISIBLE else View.GONE
             
-            // Update discovered services
             discoveredServices.clear()
             discoveredServices.addAll(service.getDiscoveredServices())
             discoveredServicesAdapter.notifyDataSetChanged()
@@ -153,7 +146,6 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
         }
         startService(intent)
         
-        // Re-enable button after a delay
         binding.btnDiscover.postDelayed({
             binding.btnDiscover.isEnabled = true
             binding.progressDiscovery.visibility = View.GONE
@@ -211,8 +203,6 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
     private fun showSuccess(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
-    // OrchestratorService.ServiceListener implementation
 
     override fun onConnected() {
         runOnUiThread {
@@ -275,9 +265,6 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
         }
     }
 
-    /**
-     * Adapter for discovered orchestrator services
-     */
     private class DiscoveredServicesAdapter(
         private val services: List<NsdServiceInfo>,
         private val onServiceClick: (NsdServiceInfo) -> Unit
@@ -311,4 +298,3 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
             }
         }
     }
-}

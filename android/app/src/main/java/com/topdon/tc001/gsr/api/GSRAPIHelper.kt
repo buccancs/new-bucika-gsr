@@ -12,10 +12,6 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-/**
- * GSR API Helper - Comprehensive UI API functionalities for Shimmer integration
- * Provides high-level interfaces for GSR data management, device discovery, and analysis
- */
 class GSRAPIHelper private constructor(private val context: Context) {
     
     companion object {
@@ -31,22 +27,16 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    // Core components
     private val gsrManager = GSRManager.getInstance(context)
     private val deviceDiscovery = ShimmerDeviceDiscovery(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     
-    // Data analysis
     private val gsrDataBuffer = mutableListOf<ProcessedGSRData>()
-    private val maxBufferSize = 12800 // 100 seconds at 128 Hz
+    private val maxBufferSize = 12800
     
-    // Event listeners
     private var gsrEventListener: GSREventListener? = null
     private var deviceDiscoveryListener: DeviceDiscoveryEventListener? = null
     
-    /**
-     * Comprehensive GSR event listener interface
-     */
     interface GSREventListener {
         fun onGSRDataReceived(data: ProcessedGSRData, analysis: GSRAnalysis)
         fun onConnectionStatusChanged(isConnected: Boolean, deviceInfo: DeviceConnectionInfo?)
@@ -55,16 +45,12 @@ class GSRAPIHelper private constructor(private val context: Context) {
         fun onError(error: GSRError)
     }
     
-    /**
-     * Device discovery event listener
-     */
     interface DeviceDiscoveryEventListener {
         fun onDeviceFound(device: ShimmerDeviceDiscovery.ShimmerDeviceInfo)
         fun onDiscoveryCompleted(devices: List<ShimmerDeviceDiscovery.ShimmerDeviceInfo>)
         fun onDiscoveryError(error: String)
     }
     
-    // Data classes for API responses
     data class DeviceConnectionInfo(
         val deviceName: String,
         val deviceAddress: String,
@@ -126,13 +112,9 @@ class GSRAPIHelper private constructor(private val context: Context) {
         val recoveryTime: Double
     )
     
-    /**
-     * Set GSR event listener
-     */
     fun setGSREventListener(listener: GSREventListener) {
         this.gsrEventListener = listener
         
-        // Set up GSR manager listener
         gsrManager.setAdvancedGSRDataListener(object : GSRManager.AdvancedGSRDataListener {
             override fun onProcessedGSRDataReceived(processedData: ProcessedGSRData) {
                 handleGSRDataReceived(processedData)
@@ -142,7 +124,7 @@ class GSRAPIHelper private constructor(private val context: Context) {
                 val qualityInfo = SignalQualityInfo(
                     overallQuality = signalQuality,
                     gsrQuality = signalQuality,
-                    temperatureQuality = signalQuality * 0.9, // Simplified
+                    temperatureQuality = signalQuality * 0.9,
                     signalNoiseRatio = calculateSNR(),
                     artifactPercentage = (1.0 - validDataRatio) * 100.0
                 )
@@ -163,9 +145,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         })
     }
     
-    /**
-     * Set device discovery event listener
-     */
     fun setDeviceDiscoveryEventListener(listener: DeviceDiscoveryEventListener) {
         this.deviceDiscoveryListener = listener
         
@@ -175,7 +154,7 @@ class GSRAPIHelper private constructor(private val context: Context) {
             }
             
             override fun onDiscoveryStarted() {
-                // Optional callback
+
             }
             
             override fun onDiscoveryFinished(devicesFound: List<ShimmerDeviceDiscovery.ShimmerDeviceInfo>) {
@@ -188,9 +167,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         })
     }
     
-    /**
-     * Start device discovery
-     */
     fun startDeviceDiscovery() {
         coroutineScope.launch {
             try {
@@ -205,16 +181,10 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Stop device discovery
-     */
     fun stopDeviceDiscovery() {
         deviceDiscovery.stopDiscovery()
     }
     
-    /**
-     * Connect to Shimmer device
-     */
     fun connectToDevice(deviceAddress: String) {
         coroutineScope.launch {
             try {
@@ -228,16 +198,10 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Disconnect from Shimmer device
-     */
     fun disconnectFromDevice() {
         gsrManager.disconnectShimmer()
     }
     
-    /**
-     * Start GSR recording
-     */
     fun startRecording(): Boolean {
         val started = gsrManager.startRecording()
         if (started) {
@@ -246,9 +210,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         return started
     }
     
-    /**
-     * Stop GSR recording
-     */
     fun stopRecording(): Boolean {
         val stopped = gsrManager.stopRecording()
         if (stopped) {
@@ -257,26 +218,18 @@ class GSRAPIHelper private constructor(private val context: Context) {
         return stopped
     }
     
-    /**
-     * Handle received GSR data and perform analysis
-     */
     private fun handleGSRDataReceived(processedData: ProcessedGSRData) {
-        // Add to buffer
+
         gsrDataBuffer.add(processedData)
         if (gsrDataBuffer.size > maxBufferSize) {
             gsrDataBuffer.removeAt(0)
         }
         
-        // Perform analysis
         val analysis = performGSRAnalysis(processedData)
         
-        // Deliver to listener
         gsrEventListener?.onGSRDataReceived(processedData, analysis)
     }
     
-    /**
-     * Perform comprehensive GSR analysis
-     */
     private fun performGSRAnalysis(data: ProcessedGSRData): GSRAnalysis {
         return GSRAnalysis(
             timestamp = data.timestamp,
@@ -289,9 +242,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         )
     }
     
-    /**
-     * Determine GSR level category
-     */
     private fun determineGSRLevel(gsrValue: Double): GSRLevel {
         return when {
             gsrValue < 2.0 -> GSRLevel.LOW
@@ -301,9 +251,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Determine arousal state
-     */
     private fun determineArousalState(gsrValue: Double, variability: Double): ArousalState {
         val arousalScore = gsrValue * 0.7 + variability * 0.3
         return when {
@@ -314,9 +261,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Determine stress level
-     */
     private fun determineStressLevel(gsrValue: Double, derivative: Double): StressIndicator {
         val stressScore = gsrValue * 0.6 + kotlin.math.abs(derivative) * 0.4
         return when {
@@ -327,16 +271,12 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Calculate heart rate variability from GSR data
-     */
     private fun calculateHRV(): Double {
         if (gsrDataBuffer.size < 128) return 0.0
         
         val recentData = gsrDataBuffer.takeLast(128)
         val intervals = mutableListOf<Double>()
         
-        // Simplified HRV calculation based on GSR fluctuations
         for (i in 1 until recentData.size) {
             val interval = recentData[i].timestamp - recentData[i-1].timestamp
             intervals.add(interval.toDouble())
@@ -349,24 +289,18 @@ class GSRAPIHelper private constructor(private val context: Context) {
         return sqrt(variance)
     }
     
-    /**
-     * Analyze skin conductance response
-     */
     private fun analyzeSCR(data: ProcessedGSRData): SCRAnalysis {
-        val responseThreshold = 0.1 // µS threshold for SCR detection
+        val responseThreshold = 0.1
         val responseDetected = data.gsrDerivative > responseThreshold
         
         return SCRAnalysis(
             responseDetected = responseDetected,
             responseAmplitude = if (responseDetected) data.gsrDerivative else 0.0,
-            responseLatency = if (responseDetected) 1.5 else 0.0, // Simplified
-            recoveryTime = if (responseDetected) 3.0 else 0.0 // Simplified
+            responseLatency = if (responseDetected) 1.5 else 0.0,
+            recoveryTime = if (responseDetected) 3.0 else 0.0
         )
     }
     
-    /**
-     * Analyze temperature trend
-     */
     private fun analyzeTemperatureTrend(currentTemp: Double): TemperatureTrend {
         if (gsrDataBuffer.size < 10) return TemperatureTrend.STABLE
         
@@ -383,9 +317,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Calculate signal-to-noise ratio
-     */
     private fun calculateSNR(): Double {
         if (gsrDataBuffer.size < 64) return 0.0
         
@@ -396,40 +327,25 @@ class GSRAPIHelper private constructor(private val context: Context) {
         return if (noise > 0) 20 * kotlin.math.log10(signal / noise) else 60.0
     }
     
-    /**
-     * Create recording info
-     */
     private fun createRecordingInfo(): RecordingInfo {
         val stats = gsrManager.getProcessingStatistics()
         return RecordingInfo(
-            startTime = System.currentTimeMillis() - stats.totalSamples * 8, // Approximate
-            duration = stats.totalSamples * 8, // ~8ms per sample at 128Hz
+            startTime = System.currentTimeMillis() - stats.totalSamples * 8,
+            duration = stats.totalSamples * 8,
             samplesRecorded = stats.totalSamples,
-            averageSamplingRate = 128.0, // Target rate
+            averageSamplingRate = 128.0,
             dataQuality = stats.currentSignalQuality
         )
     }
     
-    /**
-     * Get current device connection status
-     */
     fun isConnected(): Boolean = gsrManager.isConnected()
     
-    /**
-     * Get current recording status
-     */
     fun isRecording(): Boolean = gsrManager.isRecording()
     
-    /**
-     * Get discovered devices
-     */
     fun getDiscoveredDevices(): List<ShimmerDeviceDiscovery.ShimmerDeviceInfo> {
         return deviceDiscovery.getDiscoveredDevices()
     }
     
-    /**
-     * Export GSR data to CSV format
-     */
     fun exportGSRDataToCSV(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
         val sb = StringBuilder()
@@ -450,9 +366,6 @@ class GSRAPIHelper private constructor(private val context: Context) {
         return sb.toString()
     }
     
-    /**
-     * Get GSR statistics summary
-     */
     fun getGSRStatistics(): GSRStatistics {
         if (gsrDataBuffer.isEmpty()) {
             return GSRStatistics(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
@@ -484,16 +397,10 @@ class GSRAPIHelper private constructor(private val context: Context) {
         val overallQuality: Double
     )
     
-    /**
-     * Clear all buffered GSR data
-     */
     fun clearGSRData() {
         gsrDataBuffer.clear()
     }
     
-    /**
-     * Cleanup resources
-     */
     fun cleanup() {
         stopDeviceDiscovery()
         gsrManager.cleanup()
@@ -503,4 +410,3 @@ class GSRAPIHelper private constructor(private val context: Context) {
         deviceDiscoveryListener = null
         gsrDataBuffer.clear()
     }
-}

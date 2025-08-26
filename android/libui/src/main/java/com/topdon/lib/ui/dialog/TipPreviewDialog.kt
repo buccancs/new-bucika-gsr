@@ -23,19 +23,6 @@ import io.reactivex.disposables.Disposable
 import java.util.Timer
 import kotlin.collections.ArrayList
 
-/**
- * Professional tip preview dialog for thermal imaging systems
- * 
- * Provides comprehensive user guidance including:
- * - Multi-page tip preview with FragmentPager integration
- * - Professional indication system with page navigation
- * - Checkbox state management for user preferences
- * - Industry-standard dialog presentation with proper lifecycle management
- * - Type-safe view access with ViewBinding
- * 
- * @property closeEvent Callback for dialog close events with checkbox state
- */
-
 class TipPreviewDialog : DialogFragment() {
 
     private lateinit var titleList: ArrayList<String>
@@ -112,7 +99,6 @@ class TipPreviewDialog : DialogFragment() {
         })
     }
 
-
     fun updateIndex(position : Int){
         if (index == position){
             return
@@ -172,4 +158,3 @@ class TipPreviewDialog : DialogFragment() {
             }
         }
     }
-}

@@ -16,10 +16,6 @@ import org.robolectric.annotation.Config
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-/**
- * Comprehensive test suite for GSRManager
- * Tests core functionality, device management, data processing, and listener interfaces
- */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29])
 class GSRManagerTest {
@@ -47,7 +43,7 @@ class GSRManagerTest {
 
     @After
     fun tearDown() {
-        // Clear singleton instance for clean test state
+
         val instanceField = GSRManager::class.java.getDeclaredField("INSTANCE")
         instanceField.isAccessible = true
         instanceField.set(null, null)
@@ -55,7 +51,7 @@ class GSRManagerTest {
 
     @Test
     fun testSingletonInstance() {
-        // Test singleton pattern implementation
+
         val instance1 = GSRManager.getInstance(mockContext)
         val instance2 = GSRManager.getInstance(mockContext)
         
@@ -64,7 +60,7 @@ class GSRManagerTest {
 
     @Test
     fun testInitialState() {
-        // Test initial state of GSRManager
+
         Assert.assertFalse("Initial state should be disconnected", gsrManager.isConnected())
         Assert.assertFalse("Initial state should not be recording", gsrManager.isRecording())
         Assert.assertNull("No device should be connected initially", gsrManager.getConnectedDeviceName())
@@ -72,19 +68,17 @@ class GSRManagerTest {
 
     @Test
     fun testSetGSRDataListener() {
-        // Test setting basic GSR data listener
+
         gsrManager.setGSRDataListener(mockDataListener)
         
-        // Verify listener is set (indirect test through functionality)
         Assert.assertTrue("Listener should be set successfully", true)
     }
 
     @Test
     fun testSetAdvancedDataListener() {
-        // Test setting advanced GSR data listener
+
         gsrManager.setAdvancedDataListener(mockAdvancedDataListener)
         
-        // Verify listener is set (indirect test through functionality)
         Assert.assertTrue("Advanced listener should be set successfully", true)
     }
 
@@ -93,7 +87,6 @@ class GSRManagerTest {
         val testAddress = "00:11:22:33:44:55"
         val testDeviceName = "Shimmer3-GSR+"
         
-        // Test connection attempt
         val result = gsrManager.connectToDevice(testAddress, testDeviceName)
         
         Assert.assertTrue("Connection should be initiated successfully", result)
@@ -103,7 +96,6 @@ class GSRManagerTest {
     fun testConnectToDeviceWithInvalidAddress() {
         val invalidAddress = "invalid_address"
         
-        // Test connection with invalid address
         val result = gsrManager.connectToDevice(invalidAddress, "TestDevice")
         
         Assert.assertFalse("Connection should fail with invalid address", result)
@@ -113,10 +105,8 @@ class GSRManagerTest {
     fun testDisconnectDevice() {
         val testAddress = "00:11:22:33:44:55"
         
-        // First connect
         gsrManager.connectToDevice(testAddress, "TestDevice")
         
-        // Then disconnect
         gsrManager.disconnectDevice()
         
         Assert.assertFalse("Device should be disconnected", gsrManager.isConnected())
@@ -124,7 +114,7 @@ class GSRManagerTest {
 
     @Test
     fun testStartRecording() {
-        // Test starting data recording
+
         val result = gsrManager.startRecording()
         
         Assert.assertTrue("Recording should start successfully", result)
@@ -132,10 +122,9 @@ class GSRManagerTest {
 
     @Test
     fun testStopRecording() {
-        // First start recording
+
         gsrManager.startRecording()
         
-        // Then stop recording
         gsrManager.stopRecording()
         
         Assert.assertFalse("Recording should be stopped", gsrManager.isRecording())
@@ -143,18 +132,17 @@ class GSRManagerTest {
 
     @Test
     fun testGetCurrentConfiguration() {
-        // Test configuration retrieval
+
         val config = gsrManager.getCurrentConfiguration()
         
         Assert.assertNotNull("Configuration should not be null", config)
-        Assert.assertTrue("Should have GSR sensor enabled", config.isSensorEnabled(0x04)) // GSR sensor
+        Assert.assertTrue("Should have GSR sensor enabled", config.isSensorEnabled(0x04))
     }
 
     @Test
     fun testApplyConfiguration() {
         val testConfig = createTestConfiguration()
         
-        // Test configuration application
         val result = gsrManager.applyConfiguration(testConfig)
         
         Assert.assertTrue("Configuration should be applied successfully", result)
@@ -165,11 +153,8 @@ class GSRManagerTest {
         gsrManager.setGSRDataListener(mockDataListener)
         val latch = CountDownLatch(1)
         
-        // Simulate data reception
         val testData = createTestGSRData()
         
-        // This would normally be triggered by actual device data
-        // For testing, we verify the listener interface
         Assert.assertNotNull("Data listener should be available", mockDataListener)
     }
 
@@ -178,16 +163,14 @@ class GSRManagerTest {
         gsrManager.setAdvancedDataListener(mockAdvancedDataListener)
         val latch = CountDownLatch(1)
         
-        // Simulate advanced data reception
         val testAdvancedData = createTestAdvancedGSRData()
         
-        // Verify advanced listener interface
         Assert.assertNotNull("Advanced data listener should be available", mockAdvancedDataListener)
     }
 
     @Test
     fun testDataQualityAssessment() {
-        // Test data quality assessment functionality
+
         val testData = createTestGSRData()
         val quality = gsrManager.assessDataQuality(testData.gsrValue, testData.skinTemperature)
         
@@ -196,16 +179,15 @@ class GSRManagerTest {
 
     @Test
     fun testBluetoothPermissions() {
-        // Test Bluetooth permission checking
+
         val hasPermissions = gsrManager.hasRequiredPermissions()
         
-        // In test environment, this should handle gracefully
         Assert.assertTrue("Permission check should complete without error", true)
     }
 
     @Test
     fun testDeviceDiscovery() {
-        // Test device discovery functionality
+
         val result = gsrManager.startDeviceDiscovery()
         
         Assert.assertTrue("Device discovery should be initiatable", result)
@@ -213,7 +195,7 @@ class GSRManagerTest {
 
     @Test
     fun testSensorCalibration() {
-        // Test sensor calibration functionality
+
         val calibrationResult = gsrManager.calibrateSensors()
         
         Assert.assertTrue("Sensor calibration should be initiatable", calibrationResult)
@@ -221,7 +203,7 @@ class GSRManagerTest {
 
     @Test
     fun testErrorHandling() {
-        // Test error handling with null parameters
+
         val result = gsrManager.connectToDevice(null, null)
         
         Assert.assertFalse("Should handle null parameters gracefully", result)
@@ -229,19 +211,18 @@ class GSRManagerTest {
 
     @Test
     fun testMemoryManagement() {
-        // Test memory cleanup
+
         gsrManager.cleanup()
         
         Assert.assertFalse("Should be disconnected after cleanup", gsrManager.isConnected())
         Assert.assertFalse("Should not be recording after cleanup", gsrManager.isRecording())
     }
 
-    // Helper methods for creating test data
     private fun createTestConfiguration(): com.shimmerresearch.driver.Configuration {
         return com.shimmerresearch.driver.Configuration().apply {
             setSamplingRateShimmer(128.0)
-            setSensorEnabledState(0x04, true) // GSR
-            setSensorEnabledState(0x80, true) // Temperature
+            setSensorEnabledState(0x04, true)
+            setSensorEnabledState(0x80, true)
         }
     }
 
@@ -267,7 +248,6 @@ class GSRManagerTest {
         )
     }
 
-    // Data classes for testing
     data class GSRData(
         val timestamp: Long,
         val gsrValue: Double,
@@ -282,4 +262,3 @@ class GSRManagerTest {
         val signalArtifacts: List<String>,
         val calibrationStatus: String
     )
-}

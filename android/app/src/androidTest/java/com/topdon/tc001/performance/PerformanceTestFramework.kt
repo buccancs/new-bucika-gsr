@@ -15,43 +15,22 @@ import kotlin.math.max
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-/**
- * Automated Performance Testing Framework for Bucika GSR Application
- * 
- * Provides comprehensive automated testing of system performance including:
- * - Memory usage validation under various loads
- * - CPU utilization benchmarking
- * - Battery consumption monitoring
- * - Performance regression detection
- * - Stress testing capabilities
- * - Long-duration stability testing
- * 
- * Test Categories:
- * - Unit Performance Tests: Individual component performance
- * - Integration Performance Tests: Multi-component interaction performance
- * - Stress Tests: System behavior under extreme conditions
- * - Endurance Tests: Long-duration stability and memory leak detection
- * - Regression Tests: Performance change detection
- */
 @RunWith(AndroidJUnit4::class)
 class PerformanceTestFramework {
     
     companion object {
         private const val TAG = "PerformanceTestFramework"
         
-        // Test thresholds
         private const val MEMORY_BASELINE_MB = 100
         private const val MEMORY_MAX_ALLOWED_MB = 400
         private const val CPU_MAX_ALLOWED_PERCENT = 75.0
         private const val BATTERY_DRAIN_MAX_PERCENT_PER_HOUR = 15.0
         
-        // Test durations
-        private const val SHORT_TEST_DURATION_MS = 30_000L // 30 seconds
-        private const val MEDIUM_TEST_DURATION_MS = 300_000L // 5 minutes
-        private const val LONG_TEST_DURATION_MS = 1_800_000L // 30 minutes
+        private const val SHORT_TEST_DURATION_MS = 30_000L
+        private const val MEDIUM_TEST_DURATION_MS = 300_000L
+        private const val LONG_TEST_DURATION_MS = 1_800_000L
         
-        // Performance sampling
-        private const val SAMPLE_INTERVAL_MS = 1000L // 1 second
+        private const val SAMPLE_INTERVAL_MS = 1000L
         private const val STRESS_TEST_ITERATIONS = 1000
     }
 
@@ -75,10 +54,8 @@ class PerformanceTestFramework {
         
         XLog.d(TAG, "Performance test framework initialized")
         
-        // Start performance monitoring
         performanceMonitor.startMonitoring()
         
-        // Wait for initial readings
         Thread.sleep(2000)
     }
 
@@ -89,19 +66,14 @@ class PerformanceTestFramework {
         XLog.d(TAG, "Performance test framework cleanup completed")
     }
 
-    // ===========================================
-    // MEMORY PERFORMANCE TESTS
-    // ===========================================
-
     @Test
     fun testBaselineMemoryUsage() = runBlocking {
         XLog.i(TAG, "Starting baseline memory usage test")
         
-        // Collect memory data for 30 seconds
         val memoryReadings = mutableListOf<Double>()
         
         performanceMonitor.memoryMetrics
-            .take(30) // 30 samples over 30 seconds
+            .take(30)
             .collect { metrics ->
                 memoryReadings.add(metrics.totalMemoryMB)
                 delay(SAMPLE_INTERVAL_MS)
@@ -112,7 +84,6 @@ class PerformanceTestFramework {
         
         XLog.i(TAG, "Baseline memory - Average: ${averageMemory}MB, Max: ${maxMemory}MB")
         
-        // Validate memory usage is within acceptable baseline
         assertTrue(
             averageMemory <= MEMORY_BASELINE_MB,
             "Baseline memory usage too high: ${averageMemory}MB (max allowed: ${MEMORY_BASELINE_MB}MB)"
@@ -131,19 +102,18 @@ class PerformanceTestFramework {
         val memoryReadings = mutableListOf<Double>()
         var testDuration = 0L
         
-        // Monitor memory for 5 minutes
         performanceMonitor.memoryMetrics.collect { metrics ->
             memoryReadings.add(metrics.totalMemoryMB)
             testDuration += SAMPLE_INTERVAL_MS
             
             if (testDuration >= MEDIUM_TEST_DURATION_MS) {
-                // Analyze memory trend
+
                 val memoryTrend = analyzeMemoryTrend(memoryReadings)
                 
                 XLog.i(TAG, "Memory leak test complete - Trend: ${memoryTrend}")
                 
                 assertTrue(
-                    memoryTrend <= 50.0, // Max 50MB increase over 5 minutes
+                    memoryTrend <= 50.0,
                     "Potential memory leak detected: ${memoryTrend}MB increase"
                 )
                 return@collect
@@ -159,32 +129,29 @@ class PerformanceTestFramework {
         
         val initialMemory = performanceMonitor.memoryMetrics.take(1).first().totalMemoryMB
         
-        // Simulate memory-intensive operations
         val stressJob = testScope.launch {
             repeat(STRESS_TEST_ITERATIONS) { iteration ->
-                // Simulate GSR data processing
-                val largeArray = ByteArray(1024 * 1024) // 1MB allocation
+
+                val largeArray = ByteArray(1024 * 1024)
                 largeArray.fill(iteration.toByte())
                 
                 if (iteration % 100 == 0) {
                     val currentMemory = performanceMonitor.memoryMetrics.take(1).first().totalMemoryMB
                     XLog.d(TAG, "Stress test iteration $iteration - Memory: ${currentMemory}MB")
                     
-                    // Ensure memory doesn't exceed critical threshold
                     assertTrue(
-                        currentMemory <= MEMORY_MAX_ALLOWED_MB * 1.2, // Allow 20% buffer for stress test
+                        currentMemory <= MEMORY_MAX_ALLOWED_MB * 1.2,
                         "Memory exceeded critical threshold during stress test: ${currentMemory}MB"
                     )
                 }
                 
-                delay(10) // Small delay to prevent overwhelming system
+                delay(10)
             }
         }
         
         stressJob.join()
         
-        // Check final memory state
-        delay(5000) // Allow garbage collection
+        delay(5000)
         val finalMemory = performanceMonitor.memoryMetrics.take(1).first().totalMemoryMB
         val memoryIncrease = finalMemory - initialMemory
         
@@ -196,29 +163,23 @@ class PerformanceTestFramework {
         )
     }
 
-    // ===========================================
-    // CPU PERFORMANCE TESTS
-    // ===========================================
-
     @Test
     fun testCPUUsageUnderLoad() = runBlocking {
         XLog.i(TAG, "Starting CPU usage under load test")
         
         val cpuReadings = mutableListOf<Double>()
         
-        // Start CPU-intensive task
         val cpuIntensiveJob = testScope.launch {
             var counter = 0L
             while (isActive) {
-                // Simulate GSR data processing load
+
                 counter += Math.sqrt(counter.toDouble()).toLong()
                 if (counter % 1000000 == 0L) {
-                    yield() // Allow other coroutines to run
+                    yield()
                 }
             }
         }
         
-        // Monitor CPU usage for 30 seconds
         performanceMonitor.systemMetrics
             .take(30)
             .collect { metrics ->
@@ -239,19 +200,14 @@ class PerformanceTestFramework {
         )
     }
 
-    // ===========================================
-    // BATTERY PERFORMANCE TESTS
-    // ===========================================
-
     @Test
     fun testBatteryConsumption() = runBlocking {
         XLog.i(TAG, "Starting battery consumption test")
         
         val batteryReadings = mutableListOf<Int>()
         
-        // Monitor battery level for short test duration
         performanceMonitor.batteryMetrics
-            .take(30) // 30 samples over 30 seconds
+            .take(30)
             .collect { metrics ->
                 batteryReadings.add(metrics.batteryLevel)
                 delay(SAMPLE_INTERVAL_MS)
@@ -262,7 +218,6 @@ class PerformanceTestFramework {
             val finalBattery = batteryReadings.last()
             val batteryDrop = initialBattery - finalBattery
             
-            // Extrapolate to hourly consumption
             val hourlyConsumption = (batteryDrop * 3600.0) / (SHORT_TEST_DURATION_MS / 1000.0)
             
             XLog.i(TAG, "Battery consumption test - Drop: ${batteryDrop}%, Hourly estimate: ${hourlyConsumption}%")
@@ -274,10 +229,6 @@ class PerformanceTestFramework {
         }
     }
 
-    // ===========================================
-    // INTEGRATION PERFORMANCE TESTS
-    // ===========================================
-
     @Test
     fun testGSRDataProcessingPerformance() = runBlocking {
         XLog.i(TAG, "Starting GSR data processing performance test")
@@ -285,21 +236,19 @@ class PerformanceTestFramework {
         val startTime = System.nanoTime()
         var samplesProcessed = 0
         
-        // Simulate GSR data processing for 1 minute
-        repeat(7680) { // 128 Hz * 60 seconds
-            // Simulate GSR sample processing
-            val gsrValue = Math.random() * 10.0 + 2.0 // Typical GSR range
+        repeat(7680) {
+
+            val gsrValue = Math.random() * 10.0 + 2.0
             val filteredValue = gsrValue * 0.9 + Math.random() * 0.2
             val temperature = 32.0 + Math.random() * 2.0
             
-            // Simulate quality checks
             val isSpike = Math.abs(filteredValue - gsrValue) > 0.5
             val isSaturated = gsrValue > 50.0 || gsrValue < 0.1
             
             samplesProcessed++
             
-            if (samplesProcessed % 1280 == 0) { // Every 10 seconds worth of samples
-                delay(10) // Brief pause to check system metrics
+            if (samplesProcessed % 1280 == 0) {
+                delay(10)
                 
                 val currentMemory = performanceMonitor.memoryMetrics.take(1).first()
                 assertTrue(
@@ -316,7 +265,7 @@ class PerformanceTestFramework {
         XLog.i(TAG, "GSR processing test complete - ${samplesProcessed} samples in ${processingTimeMs}ms (${samplesPerSecond} samples/sec)")
         
         assertTrue(
-            samplesPerSecond >= 128.0, // Must sustain at least 128 Hz processing
+            samplesPerSecond >= 128.0,
             "GSR processing too slow: ${samplesPerSecond} samples/sec (minimum required: 128)"
         )
     }
@@ -328,31 +277,27 @@ class PerformanceTestFramework {
         val startTime = System.currentTimeMillis()
         var testRunning = true
         
-        // Monitor system health during long-duration test
         val healthJob = testScope.launch {
             while (testRunning) {
                 val memory = performanceMonitor.memoryMetrics.take(1).first()
                 val system = performanceMonitor.systemMetrics.take(1).first()
                 
-                // Log periodic health status
                 XLog.d(TAG, "Endurance test status - Memory: ${memory.totalMemoryMB}MB, CPU: ${system.cpuUsagePercent}%")
                 
-                // Verify system stability
                 assertTrue(
                     memory.totalMemoryMB <= MEMORY_MAX_ALLOWED_MB,
                     "Memory exceeded limit during endurance test: ${memory.totalMemoryMB}MB"
                 )
                 
                 assertTrue(
-                    system.cpuUsagePercent <= CPU_MAX_ALLOWED_PERCENT + 10, // Allow extra margin for endurance test
+                    system.cpuUsagePercent <= CPU_MAX_ALLOWED_PERCENT + 10,
                     "CPU usage too high during endurance test: ${system.cpuUsagePercent}%"
                 )
                 
-                delay(60_000) // Check every minute
+                delay(60_000)
             }
         }
         
-        // Run for 30 minutes (reduced for testing, but demonstrates pattern)
         delay(LONG_TEST_DURATION_MS)
         testRunning = false
         healthJob.cancel()
@@ -360,17 +305,12 @@ class PerformanceTestFramework {
         val testDurationMinutes = (System.currentTimeMillis() - startTime) / 60_000
         XLog.i(TAG, "Endurance stability test completed after ${testDurationMinutes} minutes")
         
-        // Final system health check
         val finalMemory = performanceMonitor.memoryMetrics.take(1).first()
         assertTrue(
             finalMemory.totalMemoryMB <= MEMORY_MAX_ALLOWED_MB,
             "System not stable after endurance test - Memory: ${finalMemory.totalMemoryMB}MB"
         )
     }
-
-    // ===========================================
-    // HELPER METHODS
-    // ===========================================
 
     private fun analyzeMemoryTrend(readings: List<Double>): Double {
         if (readings.size < 2) return 0.0
@@ -395,4 +335,3 @@ class PerformanceTestFramework {
         
         return false
     }
-}

@@ -12,58 +12,34 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 
-/**
- * Advanced Memory Leak Detection and Prevention System for Bucika GSR Platform
- * 
- * Provides comprehensive memory management including:
- * - Real-time memory leak detection using trend analysis
- * - Automatic memory cleanup and garbage collection
- * - Object lifecycle tracking and leak prevention
- * - Memory usage optimization recommendations
- * - Proactive memory management during long recording sessions
- * 
- * Key Features:
- * - Automatic detection of memory leaks within 5 minutes
- * - Smart garbage collection triggering based on memory pressure
- * - Object reference tracking to identify leak sources
- * - Memory usage recommendations for optimal performance
- * - Integration with GSR recording sessions for memory-aware recording
- */
 class MemoryLeakDetector(private val context: Context) {
     
     companion object {
         private const val TAG = "MemoryLeakDetector"
         
-        // Memory monitoring parameters
-        private const val MONITORING_INTERVAL_MS = 30_000L // 30 seconds
-        private const val LEAK_DETECTION_WINDOW = 10 // Number of samples for trend analysis
-        private const val LEAK_THRESHOLD_MB = 20.0 // Memory increase threshold for leak detection
-        private const val MEMORY_PRESSURE_THRESHOLD = 0.75 // 75% of max heap
+        private const val MONITORING_INTERVAL_MS = 30_000L
+        private const val LEAK_DETECTION_WINDOW = 10
+        private const val LEAK_THRESHOLD_MB = 20.0
+        private const val MEMORY_PRESSURE_THRESHOLD = 0.75
         
-        // Cleanup thresholds
-        private const val AGGRESSIVE_GC_THRESHOLD = 0.80 // 80% of max heap
-        private const val EMERGENCY_CLEANUP_THRESHOLD = 0.90 // 90% of max heap
+        private const val AGGRESSIVE_GC_THRESHOLD = 0.80
+        private const val EMERGENCY_CLEANUP_THRESHOLD = 0.90
         
-        // Object tracking
         private const val MAX_TRACKED_OBJECTS = 10000
-        private const val OBJECT_CLEANUP_INTERVAL_MS = 300_000L // 5 minutes
+        private const val OBJECT_CLEANUP_INTERVAL_MS = 300_000L
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     
-    // Memory leak detection state
     private val _memoryState = MutableStateFlow(MemoryState())
     val memoryState: StateFlow<MemoryState> = _memoryState.asStateFlow()
     
-    // Memory history for trend analysis
     private val memoryHistory = mutableListOf<MemorySnapshot>()
     
-    // Object lifecycle tracking
     private val trackedObjects = ConcurrentHashMap<String, MutableList<WeakReference<Any>>>()
     private val objectCreationTimes = ConcurrentHashMap<Int, Long>()
     private val potentialLeaks = mutableSetOf<String>()
     
-    // Cleanup strategies
     private val cleanupStrategies = mutableListOf<CleanupStrategy>()
     
     init {
@@ -72,9 +48,6 @@ class MemoryLeakDetector(private val context: Context) {
         startObjectCleanup()
     }
 
-    /**
-     * Data class representing memory management state
-     */
     data class MemoryState(
         val isMonitoring: Boolean = false,
         val currentHeapMB: Double = 0.0,
@@ -90,31 +63,25 @@ class MemoryLeakDetector(private val context: Context) {
     )
     
     enum class MemoryPressureLevel {
-        LOW,        // < 50% heap usage
-        NORMAL,     // 50-75% heap usage
-        HIGH,       // 75-90% heap usage
-        CRITICAL    // > 90% heap usage
+        LOW,
+        NORMAL,
+        HIGH,
+        CRITICAL
     }
     
     enum class MemoryTrend {
-        DECREASING,     // Memory usage trending down
-        STABLE,         // Stable memory usage
-        INCREASING,     // Memory usage trending up
-        LEAK_SUSPECTED  // Potential memory leak detected
+        DECREASING,
+        STABLE,
+        INCREASING,
+        LEAK_SUSPECTED
     }
 
-    /**
-     * Start memory leak detection and prevention
-     */
     fun startMonitoring() {
         XLog.i(TAG, "Starting advanced memory leak detection and prevention")
         
         _memoryState.value = _memoryState.value.copy(isMonitoring = true)
     }
 
-    /**
-     * Stop memory monitoring
-     */
     fun stopMonitoring() {
         XLog.i(TAG, "Stopping memory leak detection")
         
@@ -122,21 +89,15 @@ class MemoryLeakDetector(private val context: Context) {
         _memoryState.value = MemoryState()
     }
 
-    /**
-     * Register an object for lifecycle tracking
-     */
     fun trackObject(obj: Any, category: String = "General") {
         try {
             val objectHash = System.identityHashCode(obj)
             
-            // Add to tracked objects
             trackedObjects.computeIfAbsent(category) { mutableListOf() }
                 .add(WeakReference(obj))
             
-            // Record creation time
             objectCreationTimes[objectHash] = System.currentTimeMillis()
             
-            // Limit tracked objects to prevent memory overhead
             if (trackedObjects.values.sumOf { it.size } > MAX_TRACKED_OBJECTS) {
                 cleanupStaleReferences()
             }
@@ -146,9 +107,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Force memory cleanup and garbage collection
-     */
     fun forceCleanup() {
         XLog.i(TAG, "Forcing memory cleanup")
         
@@ -157,9 +115,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Get memory usage recommendations
-     */
     fun getMemoryRecommendations(): List<String> {
         val recommendations = mutableListOf<String>()
         val currentState = _memoryState.value
@@ -191,9 +146,6 @@ class MemoryLeakDetector(private val context: Context) {
         return recommendations
     }
 
-    /**
-     * Start continuous memory monitoring
-     */
     private fun startMemoryMonitoring() {
         coroutineScope.launch {
             while (isActive) {
@@ -203,7 +155,6 @@ class MemoryLeakDetector(private val context: Context) {
                     analyzeMemoryTrends()
                     updateMemoryState(snapshot)
                     
-                    // Check for memory pressure
                     if (snapshot.heapUsagePercent >= MEMORY_PRESSURE_THRESHOLD) {
                         handleMemoryPressure(snapshot)
                     }
@@ -217,9 +168,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Start periodic object cleanup
-     */
     private fun startObjectCleanup() {
         coroutineScope.launch {
             while (isActive) {
@@ -236,9 +184,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Capture current memory snapshot
-     */
     private fun captureMemorySnapshot(): MemorySnapshot {
         val runtime = Runtime.getRuntime()
         val usedMemory = runtime.totalMemory() - runtime.freeMemory()
@@ -255,21 +200,14 @@ class MemoryLeakDetector(private val context: Context) {
         )
     }
 
-    /**
-     * Update memory history and maintain rolling window
-     */
     private fun updateMemoryHistory(snapshot: MemorySnapshot) {
         memoryHistory.add(snapshot)
         
-        // Maintain rolling window
         while (memoryHistory.size > LEAK_DETECTION_WINDOW * 2) {
             memoryHistory.removeAt(0)
         }
     }
 
-    /**
-     * Analyze memory trends for leak detection
-     */
     private fun analyzeMemoryTrends() {
         if (memoryHistory.size < LEAK_DETECTION_WINDOW) return
         
@@ -279,7 +217,7 @@ class MemoryLeakDetector(private val context: Context) {
         val recentAverage = recentSamples.map { it.heapUsedBytes }.average()
         val earlierAverage = earlierSamples.map { it.heapUsedBytes }.average()
         
-        val memoryIncrease = (recentAverage - earlierAverage) / (1024.0 * 1024.0) // Convert to MB
+        val memoryIncrease = (recentAverage - earlierAverage) / (1024.0 * 1024.0)
         
         val trend = when {
             memoryIncrease > LEAK_THRESHOLD_MB -> {
@@ -291,11 +229,9 @@ class MemoryLeakDetector(private val context: Context) {
             else -> MemoryTrend.STABLE
         }
         
-        // Update state with trend analysis
         val currentState = _memoryState.value
         _memoryState.value = currentState.copy(memoryTrend = trend)
         
-        // Trigger cleanup if leak suspected
         if (trend == MemoryTrend.LEAK_SUSPECTED) {
             coroutineScope.launch {
                 performAggressiveCleanup()
@@ -303,9 +239,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Update memory state with current snapshot
-     */
     private fun updateMemoryState(snapshot: MemorySnapshot) {
         val pressureLevel = when {
             snapshot.heapUsagePercent >= 90.0 -> MemoryPressureLevel.CRITICAL
@@ -326,9 +259,6 @@ class MemoryLeakDetector(private val context: Context) {
         )
     }
 
-    /**
-     * Handle memory pressure situations
-     */
     private suspend fun handleMemoryPressure(snapshot: MemorySnapshot) {
         XLog.w(TAG, "Memory pressure detected - usage: ${snapshot.heapUsagePercent}%")
         
@@ -347,9 +277,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Perform standard memory cleanup
-     */
     private suspend fun performStandardCleanup() {
         XLog.d(TAG, "Performing standard memory cleanup")
         
@@ -363,23 +290,18 @@ class MemoryLeakDetector(private val context: Context) {
         )
     }
 
-    /**
-     * Perform aggressive memory cleanup
-     */
     private suspend fun performAggressiveCleanup() {
         XLog.w(TAG, "Performing aggressive memory cleanup")
         
-        // Execute all cleanup strategies
         cleanupStrategies.forEach { strategy ->
             try {
                 strategy.execute()
-                delay(100) // Brief pause between strategies
+                delay(100)
             } catch (e: Exception) {
                 XLog.w(TAG, "Cleanup strategy failed: ${strategy.name}", e)
             }
         }
         
-        // Force garbage collection multiple times
         repeat(3) {
             System.gc()
             delay(100)
@@ -394,29 +316,20 @@ class MemoryLeakDetector(private val context: Context) {
         )
     }
 
-    /**
-     * Perform emergency memory cleanup
-     */
     private suspend fun performEmergencyCleanup() {
         XLog.e(TAG, "Performing emergency memory cleanup")
         
-        // Clear all non-essential caches
         clearImageCaches()
         clearDataBuffers()
         
-        // Aggressive cleanup
         performAggressiveCleanup()
         
-        // Clear tracked objects to reduce monitoring overhead
         trackedObjects.clear()
         objectCreationTimes.clear()
         
         XLog.e(TAG, "Emergency cleanup completed - consider application restart")
     }
 
-    /**
-     * Clean up stale object references
-     */
     private fun cleanupStaleReferences() {
         val beforeCount = trackedObjects.values.sumOf { it.size }
         
@@ -424,7 +337,6 @@ class MemoryLeakDetector(private val context: Context) {
             objectList.removeAll { ref -> ref.get() == null }
         }
         
-        // Remove empty categories
         trackedObjects.entries.removeAll { (_, objectList) -> objectList.isEmpty() }
         
         val afterCount = trackedObjects.values.sumOf { it.size }
@@ -435,12 +347,9 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Analyze object lifecycles for potential leaks
-     */
     private fun analyzeObjectLifecycles() {
         val currentTime = System.currentTimeMillis()
-        val longLivedThreshold = 10 * 60 * 1000L // 10 minutes
+        val longLivedThreshold = 10 * 60 * 1000L
         
         trackedObjects.forEach { (category, objects) ->
             val longLivedObjects = objects.count { ref ->
@@ -454,7 +363,7 @@ class MemoryLeakDetector(private val context: Context) {
             val totalObjects = objects.size
             val longLivedRatio = if (totalObjects > 0) longLivedObjects.toDouble() / totalObjects else 0.0
             
-            if (longLivedRatio > 0.8 && totalObjects > 100) { // 80% long-lived objects
+            if (longLivedRatio > 0.8 && totalObjects > 100) {
                 if (!potentialLeaks.contains(category)) {
                     XLog.w(TAG, "Potential leak detected in category: $category (${longLivedObjects}/${totalObjects} long-lived)")
                     potentialLeaks.add(category)
@@ -465,9 +374,6 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Initialize cleanup strategies
-     */
     private fun initializeCleanupStrategies() {
         cleanupStrategies.apply {
             add(CleanupStrategy("Image Cache") { clearImageCaches() })
@@ -477,41 +383,26 @@ class MemoryLeakDetector(private val context: Context) {
         }
     }
 
-    /**
-     * Clear image caches
-     */
     private fun clearImageCaches() {
-        // Implementation would clear Glide, Picasso, or other image caches
+
         XLog.d(TAG, "Clearing image caches")
     }
 
-    /**
-     * Clear data buffers
-     */
     private fun clearDataBuffers() {
-        // Implementation would clear GSR data buffers, video frames, etc.
+
         XLog.d(TAG, "Clearing data buffers")
     }
 
-    /**
-     * Clear temporary files
-     */
     private fun clearTempFiles() {
-        // Implementation would clear temporary recording files
+
         XLog.d(TAG, "Clearing temporary files")
     }
 
-    /**
-     * Clear network caches
-     */
     private fun clearNetworkCaches() {
-        // Implementation would clear HTTP caches, WebSocket buffers
+
         XLog.d(TAG, "Clearing network caches")
     }
 
-    /**
-     * Data class for memory snapshots
-     */
     private data class MemorySnapshot(
         val timestamp: Long,
         val heapUsedBytes: Long,
@@ -522,11 +413,7 @@ class MemoryLeakDetector(private val context: Context) {
         val nativeHeapFreeSize: Long
     )
 
-    /**
-     * Data class for cleanup strategies
-     */
     private data class CleanupStrategy(
         val name: String,
         val execute: suspend () -> Unit
     )
-}

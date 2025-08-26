@@ -85,7 +85,8 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            // Temporarily disable signing for debug builds
+            // signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

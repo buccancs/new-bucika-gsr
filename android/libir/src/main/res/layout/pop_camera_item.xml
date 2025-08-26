@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#80000000"
-            app:bgCorners="@{10}"
+            app:bgCorners="@dimen/corner_radius_10dp"
             app:layout_constraintWidth_percent="0.9"
             app:layout_constraintDimensionRatio="343:60"
             app:layout_constraintStart_toStartOf="parent"

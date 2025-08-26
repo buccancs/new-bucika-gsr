@@ -8,33 +8,13 @@ import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.lib.ui.R
 import com.topdon.lib.ui.databinding.DialogMonitorSelectBinding
 
-/**
- * Professional monitor selection dialog for thermal imaging systems
- * 
- * Provides comprehensive monitoring type selection including:
- * - Multi-step monitoring configuration (point/line/area)
- * - Professional selection interface with visual indicators
- * - Type-safe view access with ViewBinding
- * - Industry-standard dialog presentation
- * 
- * Supports three monitoring types:
- * - Type 1: Point monitoring for specific temperature points
- * - Type 2: Line monitoring for temperature profiles
- * - Type 3: Area monitoring for temperature regions
- */
 class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog) {
 
     class Builder(private val context: Context) {
-        /**
-         * 是否处于第 1 步.
-         */
+        
         private var isFirstStep = true
-        /**
-         * 当前选中的监控类型 1-点 2-线 3-面.
-         */
+        
         private var monitorType = 0
-
-
 
         private var positiveClickListener: ((select: Int) -> Unit)? = null
 
@@ -42,7 +22,6 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             this.positiveClickListener = listener
             return this
         }
-
 
         fun create(): MonitorSelectDialog {
             val dialog = MonitorSelectDialog(context)
@@ -52,12 +31,12 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             dialog.setContentView(view)
 
             val lp = dialog.window!!.attributes
-            lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt() //设置宽度
+            lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt()
             dialog.window!!.attributes = lp
 
             view.btn_confirm_or_back.setOnClickListener {
-                if (isFirstStep) {//步骤1->步骤2 逻辑为“确认”
-                    if (monitorType == 0) {//还没选取类型不允许点确认
+                if (isFirstStep) {
+                    if (monitorType == 0) {
                         return@setOnClickListener
                     }
                     isFirstStep = false
@@ -66,7 +45,7 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
                     view.cl_second_step.visibility = View.VISIBLE
                     view.tv_title.text = context.getString(R.string.select_monitor_type_step2)
                     view.btn_confirm_or_back.text = context.getString(R.string.select_monitor_return)
-                } else {//步骤2->步骤1 逻辑为“返回”
+                } else {
                     isFirstStep = true
                     view.btn_cancel.visibility = View.GONE
                     view.cl_first_step.visibility = View.VISIBLE
@@ -97,7 +76,6 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             return dialog
         }
 
-
         private fun updateUI(view: View, index: Int) {
             view.tv_point.isSelected = index == 1
             view.tv_line.isSelected = index == 2
@@ -105,4 +83,3 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             monitorType = index
         }
     }
-}

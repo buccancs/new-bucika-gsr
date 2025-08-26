@@ -7,32 +7,17 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.blankj.utilcode.util.Utils
-import com.topdon.lib.core.db.dao.HouseDetectDao
-import com.topdon.lib.core.db.dao.HouseReportDao
 import com.topdon.lib.core.db.dao.ThermalDao
 import com.topdon.lib.core.db.entity.*
 
 @Database(
     entities = [
         ThermalEntity::class,
-        HouseDetect::class,
-        HouseReport::class,
-        DirDetect::class,
-        DirReport::class,
-        ItemDetect::class,
-        ItemReport::class,
-    ], version = 5
+    ], version = 6
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun thermalDao(): ThermalDao
-
-    abstract fun houseDetectDao(): HouseDetectDao
-
-    abstract fun houseReportDao(): HouseReportDao
-
-
-
 
     companion object {
 
@@ -46,6 +31,22 @@ abstract class AppDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "TopInfrared.db")
+                .addMigrations(object : Migration(5, 6) {
+                    override fun migrate(database: SupportSQLiteDatabase) {
+
+                        database.execSQL("DROP TABLE IF EXISTS HouseDetect")
+                        database.execSQL("DROP TABLE IF EXISTS HouseReport")
+                        database.execSQL("DROP TABLE IF EXISTS DirDetect")
+                        database.execSQL("DROP TABLE IF EXISTS DirReport")
+                        database.execSQL("DROP TABLE IF EXISTS ItemDetect")
+                        database.execSQL("DROP TABLE IF EXISTS ItemReport")
+
+                        database.execSQL("DROP INDEX IF EXISTS index_DirDetect_parentId")
+                        database.execSQL("DROP INDEX IF EXISTS index_DirReport_parentId")
+                        database.execSQL("DROP INDEX IF EXISTS index_ItemDetect_parentId")
+                        database.execSQL("DROP INDEX IF EXISTS index_ItemReport_parentId")
+                    }
+                })
                 .addMigrations(object : Migration(4, 5) {
                     override fun migrate(database: SupportSQLiteDatabase) {
                         database.execSQL("DROP TABLE file")

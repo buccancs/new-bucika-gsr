@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material Design primary colors -->
+    <color name="colorPrimary">#FF6200EE</color>
+    <color name="colorPrimaryDark">#FF3700B3</color>
+    <color name="colorAccent">#FF03DAC5</color>
+
     <color name="color_select1">#FF000000</color>
     <color name="color_select2">#FFFFFFFF</color>
     <color name="color_select3">#FF2B79D8</color>
@@ -11,5 +16,33 @@
     
     <!-- Color merged from previous module definitions -->
     <color name="color_16131E">#FF16131E</color>
+    
+    <!-- Missing colors from github dependencies -->
+    <color name="toolbar_16131E">#FF16131E</color>
+    <color name="base_dialog">#FF16131E</color>
+    
+    <!-- Additional missing colors -->
+    <color name="color_green_point">#FF00FF00</color>
+    <color name="toolbar_5F16131E">#5F16131E</color>
+    <color name="color_img_calibration_right">#FFFFFFFF</color>
+    <color name="color_img_calibration_normal">#FFCCCCCC</color>
+    <color name="color_img_calibration_left">#FF888888</color>
+    <color name="color_img_calibration_button">#FF444444</color>
+    <color name="color_select_view">#FF0066CC</color>
+    
+    <!-- Missing colors -->
+    <color name="font_second_color">#FF666666</color>
+    <color name="color_default_max">#FFFF0000</color>
+    <color name="color_default_min">#FF0000FF</color>
+    <color name="color_B3FFFFFF">#B3FFFFFF</color>
+    <color name="chart_line_min">#FF0000FF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="color_bg_min">#FF333333</color>
+    <color name="color_font">#FF000000</color>
+
+    <!-- Additional missing colors -->
+    <color name="grey">#FF888888</color>
+    <color name="toastTextColor">#FFFFFFFF</color>
+    <color name="font_third_color">#FF999999</color>
 
 </resources>

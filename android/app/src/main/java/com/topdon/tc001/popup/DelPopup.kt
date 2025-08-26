@@ -12,11 +12,6 @@ import com.blankj.utilcode.util.SizeUtils
 import com.kylecorry.andromeda.core.ui.setCompoundDrawables
 import com.topdon.tc001.R
 
-/**
- * 首页-设备列表-删除设备确认 PopupWindow.
- *
- * Created by LCG on 2024/4/24.
- */
 class DelPopup(val context: Context) : PopupWindow() {
 
     var onDelListener: (() -> Unit)? = null
@@ -59,4 +54,3 @@ class DelPopup(val context: Context) : PopupWindow() {
         val y = locationArray[1] - SizeUtils.dp2px(12f)
         showAtLocation(anchor, Gravity.NO_GRAVITY, x, y)
     }
-}
