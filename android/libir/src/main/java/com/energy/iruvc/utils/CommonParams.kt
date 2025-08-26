@@ -37,6 +37,28 @@ object CommonParams {
         MIPI_MODE
     }
     
+    enum class PseudoColorUsbDualType {
+        WHITE_HOT,
+        BLACK_HOT,
+        IRON,
+        COOL,
+        RAINBOW,
+        LAVA,
+        GLOBOW,
+        GRADED_FIRE,
+        HOTTEST,
+        SEPIA,
+        WHITE_HOT_MODE,
+        BLACK_HOT_MODE,
+        IRONBOW_MODE,
+        RAINBOW_MODE,
+        AURORA_MODE,
+        MEDICAL_MODE,
+        RED_HOT_MODE,
+        JUNGLE_MODE,
+        NIGHT_MODE
+    }
+    
     enum class PseudoColorType {
         WHITE_HOT,
         BLACK_HOT,
@@ -50,23 +72,18 @@ object CommonParams {
         PSEUDO_1,
         PSEUDO_2,
         PSEUDO_3,
+        PSEUDO_4,
+        PSEUDO_5,
+        PSEUDO_6,
+        PSEUDO_7,
+        PSEUDO_8,
+        PSEUDO_9,
+        PSEUDO_10,
+        PSEUDO_11,
         GRAYSCALE,
         RED_HOT,
         BLUE_HOT,
         GREEN_HOT
-    }
-    
-    enum class PseudoColorUsbDualType {
-        WHITE_HOT,
-        BLACK_HOT,
-        IRON,
-        COOL,
-        RAINBOW,
-        LAVA,
-        GLOBOW,
-        GRADED_FIRE,
-        HOTTEST,
-        SEPIA
     }
     
     enum class IRPROCSRCFMTType {

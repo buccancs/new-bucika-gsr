@@ -55,7 +55,7 @@ class CameraView @JvmOverloads constructor(
                     synchronized(sync.viewLock) {
                         if (!sync.valid) {
                             try {
-                                sync.viewLock.wait()
+                                (sync.viewLock as Object).wait()
                             } catch (e: InterruptedException) {
                                 cameraThread?.interrupt()
                                 Log.e(TAG, "lock.wait(): catch an interrupted exception")
