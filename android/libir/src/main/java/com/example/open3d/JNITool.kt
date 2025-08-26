@@ -24,6 +24,22 @@ object JNITool {
     @JvmStatic
     external fun diff2firstFrameByTempWH(width: Int, height: Int, firstTemp: ByteArray, tempSrc: ByteArray, imageDst: ByteArray): ByteArray?
     
+    @JvmStatic
+    external fun draw_edge_from_temp_reigon_bitmap_argb_psd(
+        imageDst: ByteArray,
+        temperatureSrc: ByteArray, 
+        imageHeight: Int,
+        imageWidth: Int,
+        highTemp: Float,
+        lowTemp: Float,
+        highR: Int,
+        highG: Int, 
+        highB: Int,
+        lowR: Int,
+        lowG: Int,
+        lowB: Int
+    ): ByteArray?
+    
     // Initialize native library (if available)
     init {
         try {

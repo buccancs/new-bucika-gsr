@@ -279,7 +279,7 @@ class ImageThreadTC(
                         e.printStackTrace()
                     }
                     sync.valid = true
-                    sync.viewLock.notify()
+                    (sync.viewLock as Object).notify()
                 }
             }
             

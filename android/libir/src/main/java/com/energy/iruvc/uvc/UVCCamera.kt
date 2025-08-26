@@ -4,78 +4,148 @@ package com.energy.iruvc.uvc
 open class UVCCamera {
     
     var openStatus: Boolean = false
+        
     var supportedSizeList: List<CameraSize> = listOf(
         CameraSize(256, 192),
+        CameraSize(384, 288),
         CameraSize(640, 480), 
-        CameraSize(1024, 768)
+        CameraSize(1024, 768),
+        CameraSize(1280, 960)
     )
+        private set
+        
     var nativePtr: Long = 0
+        private set
+    
+    private var currentFps = 30
+    private var minFps = 1
+    private var maxFps = 60
+    private var bandwidth = 1.0f
+    private var previewMode: Any? = null
+    private var frameCallback: Any? = null
+    private var previewWidth = 640
+    private var previewHeight = 480
     
     val supportedSize: String
-        get() = "${supportedSizeList.size} sizes available"
+        get() = "${supportedSizeList.size} sizes available: ${supportedSizeList.joinToString { "${it.width}x${it.height}" }}"
     
     fun getSupportSizeList(format: Any? = null): List<CameraSize> {
-        // Return common camera sizes for thermal imaging
-        return supportedSizeList
+        // Return filtered sizes based on format if needed
+        return when (format?.toString()) {
+            "Y16" -> supportedSizeList.filter { it.width <= 640 }
+            "RGB" -> supportedSizeList
+            else -> supportedSizeList
+        }
     }
     
     fun setDefaultPreviewMaxFps(fps: Int) {
-        // Stub implementation
+        maxFps = fps.coerceIn(1, 120)
+        if (currentFps > maxFps) {
+            currentFps = maxFps
+        }
+        println("UVCCamera: Max FPS set to $maxFps")
     }
     
     fun setDefaultPreviewMinFps(fps: Int) {
-        // Stub implementation  
+        minFps = fps.coerceIn(1, 60)
+        if (currentFps < minFps) {
+            currentFps = minFps
+        }
+        println("UVCCamera: Min FPS set to $minFps")
     }
     
     fun setDefaultBandwidth(bandwidth: Float) {
-        // Stub implementation - accept Float as expected by callers
+        this.bandwidth = bandwidth.coerceIn(0.1f, 10.0f)
+        println("UVCCamera: Bandwidth set to ${this.bandwidth}")
     }
     
     fun setDefaultPreviewMode(mode: Any) {
-        // Stub implementation
+        previewMode = mode
+        println("UVCCamera: Preview mode set to $mode")
     }
     
     fun setFrameCallback(callback: Any?) {
-        // Stub implementation
+        frameCallback = callback
+        println("UVCCamera: Frame callback ${if (callback != null) "set" else "cleared"}")
     }
     
     fun setUSBPreviewSize(width: Int, height: Int): Int {
-        // Stub implementation
-        return 0
+        val supportedSize = supportedSizeList.find { it.width == width && it.height == height }
+        return if (supportedSize != null) {
+            previewWidth = width
+            previewHeight = height
+            println("UVCCamera: Preview size set to ${width}x${height}")
+            0 // Success
+        } else {
+            println("UVCCamera: Unsupported preview size ${width}x${height}")
+            -1 // Error
+        }
     }
     
     fun openUVCCamera(controlBlock: Any?): Int {
-        // Stub implementation
-        openStatus = true
-        return 0
+        return if (!openStatus) {
+            openStatus = true
+            nativePtr = System.currentTimeMillis() // Simulate native pointer
+            println("UVCCamera: Camera opened with control block $controlBlock")
+            0 // Success
+        } else {
+            println("UVCCamera: Camera already open")
+            -2 // Already open
+        }
     }
     
     fun onStartPreview() {
-        // Stub implementation
+        if (openStatus) {
+            println("UVCCamera: Preview started at ${previewWidth}x${previewHeight} @ ${currentFps}fps")
+            
+            // Simulate frame callback if set
+            frameCallback?.let {
+                println("UVCCamera: Frame callback active")
+            }
+        } else {
+            println("UVCCamera: Cannot start preview - camera not open")
+        }
     }
     
     fun onStopPreview() {
-        // Stub implementation
+        println("UVCCamera: Preview stopped")
     }
     
     fun onDestroyPreview() {
-        // Stub implementation
+        onStopPreview()
+        frameCallback = null
+        println("UVCCamera: Preview destroyed")
     }
     
     fun close() {
-        // Stub implementation
+        onDestroyPreview()
         openStatus = false
+        nativePtr = 0
+        println("UVCCamera: Camera closed")
     }
     
     fun onPausePreview() {
-        // Stub implementation
+        println("UVCCamera: Preview paused")
     }
     
     fun onResumePreview() {
-        // Stub implementation
+        if (openStatus) {
+            println("UVCCamera: Preview resumed")
+        }
     }
     
-    // Add other methods as needed
+    // Additional utility methods
+    fun getCurrentResolution(): CameraSize {
+        return CameraSize(previewWidth, previewHeight)
+    }
+    
+    fun getCurrentFps(): Int {
+        return currentFps
+    }
+    
+    fun setCurrentFps(fps: Int) {
+        currentFps = fps.coerceIn(minFps, maxFps)
+    }
 }
 
 data class CameraSize(val width: Int, val height: Int)

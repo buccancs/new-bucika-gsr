@@ -71,18 +71,17 @@ class IRImageHelp {
                             .toInt() and 0xff) * 256).toFloat()
                     temperature0 = (temperature0 / 64 - 273.15).toFloat()
                     if (temperature0 >= customMinTemp && temperature0 <= customMaxTemp) {
-                        val rgb = OpencvTools.getOneColorByTempUnif(
+                        val colorIndex = if (colorList?.isNotEmpty() == true) 0 else 1 // Use default color mapping
+                        val rgbColor = OpencvTools.getOneColorByTempUnif(
                             customMaxTemp,
                             customMinTemp,
                             temperature0,
-                            colorList,
-                            places
+                            colorIndex
                         )
-                        if (rgb != null) {
-                            imageDst[index] = rgb[0].toByte()
-                            imageDst[index + 1] = rgb[1].toByte()
-                            imageDst[index + 2] = rgb[2].toByte()
-                        }
+                        // Convert from packed ARGB to individual components
+                        imageDst[index] = ((rgbColor shr 16) and 0xFF).toByte()     // Red
+                        imageDst[index + 1] = ((rgbColor shr 8) and 0xFF).toByte()  // Green
+                        imageDst[index + 2] = (rgbColor and 0xFF).toByte()          // Blue
                     } else if (temperature0 > customMaxTemp) {
                         if (isUseGray) {
                         } else {
