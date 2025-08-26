@@ -8,4 +8,20 @@
     <string name="house_owner_signature">House Owner Signature</string>
     <string name="house_detection">House Detection</string>
     <string name="ability_house">House Ability</string>
+    
+    <!-- Language names -->
+    <string name="china">简体中文</string>
+    <string name="china_tw">繁体中文</string>
+    <string name="english">English</string>
+    <string name="russian">Русский</string>
+    <string name="espanol">Español</string>
+    <string name="deutsch">Deutsch</string>
+    <string name="japanese">日本語</string>
+    <string name="portugues">Português</string>
+    <string name="french">Français</string>
+    <string name="italian">Italiano</string>
+    <string name="polish">Polski</string>
+    <string name="czech">Čeština</string>
+    <string name="ukrainian">Українська</string>
+    <string name="dutch">Nederlands</string>
 </resources>

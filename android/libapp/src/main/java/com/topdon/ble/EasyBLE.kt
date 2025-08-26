@@ -31,15 +31,14 @@ class EasyBLE internal constructor(builder: EasyBLEBuilder) {
     
     companion object {
         @Volatile
-        var instance: EasyBLE? = null
-            internal set
+        private var _instance: EasyBLE? = null
         
         private val DEFAULT_BUILDER = EasyBLEBuilder()
 
         @JvmStatic
         fun getInstance(): EasyBLE {
-            return instance ?: synchronized(EasyBLE::class.java) {
-                instance ?: EasyBLE(DEFAULT_BUILDER).also { instance = it }
+            return _instance ?: synchronized(EasyBLE::class.java) {
+                _instance ?: EasyBLE(DEFAULT_BUILDER).also { _instance = it }
             }
         }
 
@@ -122,7 +121,7 @@ class EasyBLE internal constructor(builder: EasyBLEBuilder) {
 
     fun getScannerType(): ScannerType? = scannerType
 
-    fun isInitialized(): Boolean = isInitialized && application != null && instance != null
+    fun isInitialized(): Boolean = isInitialized && application != null && _instance != null
 
     fun isBluetoothOn(): Boolean = bluetoothAdapter?.isEnabled == true
 
@@ -196,7 +195,7 @@ class EasyBLE internal constructor(builder: EasyBLEBuilder) {
 
     @Synchronized
     private fun checkStatus(): Boolean {
-        Inspector.requireNonNull(instance, "EasyBLE instance has been destroyed!")
+        Inspector.requireNonNull(_instance, "EasyBLE instance has been destroyed!")
         return when {
             !isInitialized -> tryAutoInit()
             application == null -> tryAutoInit()
@@ -232,7 +231,7 @@ class EasyBLE internal constructor(builder: EasyBLEBuilder) {
     fun destroy() {
         release()
         synchronized(EasyBLE::class.java) {
-            instance = null
+            _instance = null
         }
     }
 

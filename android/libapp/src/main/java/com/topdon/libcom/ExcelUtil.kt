@@ -38,10 +38,10 @@ object ExcelUtil {
     fun exportExcel(@NonNull name: String, width: Int, height: Int, @NonNull norTempData: ByteArray, @Nullable callback: Callback?): String? {
         val workbook = XSSFWorkbook()
         val sheet = workbook.createSheet()
-        val isShowC = SharedManager.temperature == 1
+        val isShowC = SharedManager.getTemperature() == 1
         val cellStyle = workbook.createCellStyle().apply {
-            alignment = HorizontalAlignment.CENTER
-            verticalAlignment = VerticalAlignment.CENTER
+            setAlignment(HorizontalAlignment.CENTER)
+            setVerticalAlignment(VerticalAlignment.CENTER)
         }
 
         for (i in 0 until height) {
@@ -60,7 +60,7 @@ object ExcelUtil {
 
         return try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                val excel = File(FileConfig.getExcelDir(), "$name.xlsx")
+                val excel = File(FileConfig.excelDir, "$name.xlsx")
                 FileOutputStream(excel).use { fos ->
                     workbook.write(fos)
                     fos.flush()
@@ -70,7 +70,7 @@ object ExcelUtil {
                 val fileName = "$name.xlsx"
                 val values = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, FileConfig.getExcelDir())
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, FileConfig.excelDir)
                 }
                 val contentUri = MediaStore.Files.getContentUri("external")
                 val uri = Utils.getApp().contentResolver.insert(contentUri, values)
@@ -96,7 +96,7 @@ object ExcelUtil {
 
     @JvmStatic
     fun exportExcel(listData: ArrayList<ThermalEntity>, isPoint: Boolean): String? {
-        val isShowC = SharedManager.temperature == 1
+        val isShowC = SharedManager.getTemperature() == 1
         
         return try {
             val wb = XSSFWorkbook()
@@ -120,16 +120,16 @@ object ExcelUtil {
 
             val titleStyle = wb.createCellStyle().apply {
                 fillForegroundColor = IndexedColors.GREY_25_PERCENT.index
-                fillPattern = FillPatternType.SOLID_FOREGROUND
-                alignment = HorizontalAlignment.CENTER
-                verticalAlignment = VerticalAlignment.CENTER
+                setFillPattern(FillPatternType.SOLID_FOREGROUND)
+                setAlignment(HorizontalAlignment.CENTER)
+                setVerticalAlignment(VerticalAlignment.CENTER)
                 val font = wb.createFont().apply { bold = true }
                 setFont(font)
             }
 
             val contentStyle = wb.createCellStyle().apply {
-                alignment = HorizontalAlignment.CENTER
-                verticalAlignment = VerticalAlignment.CENTER
+                setAlignment(HorizontalAlignment.CENTER)
+                setVerticalAlignment(VerticalAlignment.CENTER)
             }
 
             for (i in 0 until colNum) {
@@ -148,22 +148,22 @@ object ExcelUtil {
                     
                     if (isPoint) {
                         when (j) {
-                            0 -> cell.setCellValue(bean.time)
+                            0 -> cell.setCellValue(bean.getTime())
                             1 -> {
                                 cell.cellStyle = contentStyle
-                                cell.setCellValue(UnitTools.showC(bean.minTemp))
+                                cell.setCellValue(UnitTools.showC(bean.getMinTemp()))
                             }
                         }
                     } else {
                         when (j) {
-                            0 -> cell.setCellValue(bean.time)
+                            0 -> cell.setCellValue(bean.getTime())
                             1 -> {
                                 cell.cellStyle = contentStyle
-                                cell.setCellValue(UnitTools.showC(bean.minTemp))
+                                cell.setCellValue(UnitTools.showC(bean.getMinTemp()))
                             }
                             2 -> {
                                 cell.cellStyle = contentStyle
-                                cell.setCellValue(UnitTools.showC(bean.maxTemp, isShowC))
+                                cell.setCellValue(UnitTools.showC(bean.getMaxTemp(), isShowC))
                             }
                         }
                     }
@@ -177,7 +177,7 @@ object ExcelUtil {
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                val excel = File(FileConfig.getExcelDir(), "TCView_$timeStr.xlsx")
+                val excel = File(FileConfig.excelDir, "TCView_$timeStr.xlsx")
                 FileOutputStream(excel).use { fos ->
                     wb.write(fos)
                     fos.flush()
@@ -187,7 +187,7 @@ object ExcelUtil {
                 val fileName = "TCView_$timeStr.xlsx"
                 val values = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, FileConfig.getExcelDir())
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, FileConfig.excelDir)
                 }
                 val contentUri = MediaStore.Files.getContentUri("external")
                 val uri = Utils.getApp().contentResolver.insert(contentUri, values)

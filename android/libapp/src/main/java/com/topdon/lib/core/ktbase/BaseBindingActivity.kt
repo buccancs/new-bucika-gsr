@@ -16,7 +16,7 @@ import com.topdon.lib.core.bean.event.SocketStateEvent
 import com.topdon.lib.core.bean.event.device.DeviceConnectEvent
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.dialog.LoadingDialog
-import com.topdon.lib.core.tools.AppLanguageUtils
+import com.topdon.lib.core.AppLanguageUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

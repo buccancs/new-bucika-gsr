@@ -188,7 +188,7 @@ internal class ConnectionImpl(
         }
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt, rssi: Int, status: Int) {
-            device.setRssi(rssi)
+            device.updateRssi(rssi)
             originCallback?.let { callback ->
                 easyBle.getExecutorService().execute { callback.onReadRemoteRssi(gatt, rssi, status) }
             }

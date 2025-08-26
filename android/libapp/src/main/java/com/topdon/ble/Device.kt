@@ -22,15 +22,15 @@ data class Device(
     var address: String = originDevice.address
     var rssi: Int = -120
 
-    fun setRssi(rssi: Int) {
+    fun updateRssi(rssi: Int) {
         this.rssi = rssi
     }
 
-    fun setName(name: String) {
+    fun updateName(name: String) {
         this.name = name
     }
 
-    fun getConnectionState(): ConnectionState {
+    fun getCurrentConnectionState(): ConnectionState {
         val connection = EasyBLE.getInstance().getConnection(this)
         return connection?.connectionState ?: connectionState
     }
@@ -46,15 +46,15 @@ data class Device(
         return null
     }
 
-    fun isConnected(): Boolean = getConnectionState() == ConnectionState.SERVICE_DISCOVERED
+    fun isConnected(): Boolean = getCurrentConnectionState() == ConnectionState.SERVICE_DISCOVERED
 
     fun isDisconnected(): Boolean {
-        val state = getConnectionState()
+        val state = getCurrentConnectionState()
         return state == ConnectionState.DISCONNECTED || state == ConnectionState.RELEASED
     }
 
     fun isConnecting(): Boolean {
-        val state = getConnectionState()
+        val state = getCurrentConnectionState()
         return state != ConnectionState.DISCONNECTED && 
                state != ConnectionState.SERVICE_DISCOVERED &&
                state != ConnectionState.RELEASED
