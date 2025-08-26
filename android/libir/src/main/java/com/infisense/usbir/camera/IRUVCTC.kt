@@ -162,8 +162,8 @@ class IRUVCTC(
         initGainSwitchParams()
 
         val imageRes = LibIRProcess.ImageRes_t().apply {
-            height = (if (dataFlowMode == CommonParams.DataFlowMode.IMAGE_AND_TEMP_OUTPUT) cameraHeight / 2 else cameraHeight).toChar()
-            width = cameraWidth.toChar()
+            height = if (dataFlowMode == CommonParams.DataFlowMode.IMAGE_AND_TEMP_OUTPUT) cameraHeight / 2 else cameraHeight
+            width = cameraWidth
         }
 
         iFrameCallback = object : IFrameCallback {

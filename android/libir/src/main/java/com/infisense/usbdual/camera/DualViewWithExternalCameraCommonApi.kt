@@ -174,8 +174,8 @@ class DualViewWithExternalCameraCommonApi(
         val close_frame_cnt = 10 * 15
 
         val imageRes = LibIRProcess.ImageRes_t().apply {
-            height = 192.toChar()
-            width = 256.toChar()
+            height = 192
+            width = 256
         }
 
         irRGBAData = ByteArray(irSize * 4)
@@ -310,7 +310,7 @@ class DualViewWithExternalCameraCommonApi(
 
     fun resetAutoGainInfo() {
         auto_gain_switch_info.apply {
-            switched_flag = 0
+            switched_flag = false
             cur_switched_cnt = 0
             cur_detected_low_cnt = 0
             cur_detected_high_cnt = 0

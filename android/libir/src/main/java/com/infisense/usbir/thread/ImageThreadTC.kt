@@ -160,8 +160,8 @@ class ImageThreadTC(
                     imageDst = when (rotateInt) {
                         270 -> {
                             val imageRes = LibIRProcess.ImageRes_t().apply {
-                                height = imageWidth.toChar()
-                                width = imageHeight.toChar()
+                                height = imageWidth
+                                width = imageHeight
                             }
                             val rotatedDst = ByteArray(imageARGB.size)
                             LibIRProcess.rotateRight90(
@@ -172,8 +172,8 @@ class ImageThreadTC(
                         }
                         90 -> {
                             val imageRes = LibIRProcess.ImageRes_t().apply {
-                                height = imageWidth.toChar()
-                                width = imageHeight.toChar()
+                                height = imageWidth
+                                width = imageHeight
                             }
                             val rotatedDst = ByteArray(imageARGB.size)
                             LibIRProcess.rotateLeft90(
@@ -184,8 +184,8 @@ class ImageThreadTC(
                         }
                         180 -> {
                             val imageRes = LibIRProcess.ImageRes_t().apply {
-                                width = imageHeight.toChar()
-                                height = imageWidth.toChar()
+                                width = imageHeight
+                                height = imageWidth
                             }
                             val rotatedDst = ByteArray(imageARGB.size)
                             LibIRProcess.rotate180(
@@ -280,7 +280,6 @@ class ImageThreadTC(
                     }
                     sync.valid = true
                     sync.viewLock.notify()
-                }
                 }
             }
             
