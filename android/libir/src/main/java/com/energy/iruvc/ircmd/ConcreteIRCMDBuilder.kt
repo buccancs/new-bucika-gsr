@@ -3,9 +3,15 @@ package com.energy.iruvc.ircmd
 // Minimal stub implementation
 class ConcreteIRCMDBuilder {
     private var ircmdType: IRCMDType? = null
+    private var cameraId: Long? = null
     
     fun setIRCMDType(type: IRCMDType): ConcreteIRCMDBuilder {
         this.ircmdType = type
+        return this
+    }
+    
+    fun setIdCamera(id: Long): ConcreteIRCMDBuilder {
+        this.cameraId = id
         return this
     }
     
@@ -14,6 +20,7 @@ class ConcreteIRCMDBuilder {
             IRCMDType.USB_IRCMD -> USBIRCMDImpl()
             IRCMDType.WIFI_IRCMD -> WifiIRCMDImpl()
             IRCMDType.BLE_IRCMD -> BleIRCMDImpl()
+            IRCMDType.USB_IR_256_384 -> USBIRCMDImpl()
             else -> USBIRCMDImpl()
         }
     }
@@ -27,6 +34,10 @@ private class USBIRCMDImpl : IRCMD {
     
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {
         // USB preview start stub
+    }
+    
+    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {
+        // USB preview start with parameters stub
     }
     
     override fun setPropImageParams(param: Any?, value: Any?) {
@@ -70,6 +81,7 @@ private class USBIRCMDImpl : IRCMD {
 private class WifiIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {}
+    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {}
     override fun setPropImageParams(param: Any?, value: Any?) {}
     override fun setPropAutoShutterParameter(param: Any?, value: Any?) {}
     override fun autoGainSwitch(normalTempData: ByteArray, imageRes: Any?, info: Any?, param: Any?, callback: Any?) {}
@@ -80,6 +92,7 @@ private class WifiIRCMDImpl : IRCMD {
 private class BleIRCMDImpl : IRCMD {
     override fun init(controlBlock: Any?) {}
     override fun startPreview(dataFlowMode: Any?, frameCallback: Any?) {}
+    override fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?) {}
     override fun setPropImageParams(param: Any?, value: Any?) {}
     override fun setPropAutoShutterParameter(param: Any?, value: Any?) {}
     override fun autoGainSwitch(normalTempData: ByteArray, imageRes: Any?, info: Any?, param: Any?, callback: Any?) {}

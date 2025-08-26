@@ -3,7 +3,11 @@ package com.energy.iruvc.ircmd
 // Minimal stub interface with simplified signatures
 interface IRCMD {
     fun init(controlBlock: Any?)
+    
+    // Support both simple and complex startPreview signatures
     fun startPreview(dataFlowMode: Any?, frameCallback: Any?)
+    fun startPreview(previewPath: Any?, startSource: Any?, fps: Int, previewMode: Any?, dataFlowMode: Any?)
+    
     fun setPropImageParams(param: Any?, value: Any?)
     fun setPropAutoShutterParameter(param: Any?, value: Any?)
     fun autoGainSwitch(

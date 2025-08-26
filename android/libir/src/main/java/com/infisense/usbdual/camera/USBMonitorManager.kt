@@ -28,6 +28,9 @@ object USBMonitorManager {
     private var mUSBMonitor: USBMonitor? = null
     private var mUvcCamera: UVCCamera? = null
     private var mIrcmd: IRCMD? = null
+    
+    val ircmd: IRCMD?
+        get() = mIrcmd
     private var mDefaultDataFlowMode = CommonParams.DataFlowMode.IMAGE_AND_TEMP_OUTPUT
     
     private var gainMode = CommonParams.GainMode.GAIN_MODE_HIGH_LOW
@@ -119,6 +122,13 @@ object USBMonitorManager {
                     Const.isDeviceConnected = false
                     mOnUSBConnectListeners.forEach { listener ->
                         listener.onDisconnect(device, ctrlBlock)
+                    }
+                }
+                
+                override fun onCancel(device: UsbDevice) {
+                    Log.d(TAG, "USBMonitor-onCancel")
+                    mOnUSBConnectListeners.forEach { listener ->
+                        listener.onCancel(device)
                     }
                 }
             })

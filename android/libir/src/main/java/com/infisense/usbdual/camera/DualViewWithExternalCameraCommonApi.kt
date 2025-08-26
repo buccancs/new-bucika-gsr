@@ -46,7 +46,7 @@ class DualViewWithExternalCameraCommonApi(
         const val MULTIPLE = 2
     }
 
-    private var dualUVCCamera: DualUVCCamera? = null
+    // dualUVCCamera is inherited from BaseDualView, no need to redeclare
     private val iFrameCallback: IFrameCallback
     var isRun = true
 
@@ -273,7 +273,7 @@ class DualViewWithExternalCameraCommonApi(
                     System.arraycopy(frame, fusionLength + irSize * 2, normalTempData, 0, irSize * 2)
                     
                     if (auto_gain_switch && auto_gain_switch_running) {
-                        USBMonitorManager.getInstance().ircmd.autoGainSwitch(
+                        USBMonitorManager.getInstance().ircmd?.autoGainSwitch(
                             normalTempData, imageRes,
                             auto_gain_switch_info, gain_switch_param,
                             object : AutoGainSwitchCallback {
@@ -292,7 +292,7 @@ class DualViewWithExternalCameraCommonApi(
                     }
 
                     if (auto_over_protect) {
-                        USBMonitorManager.getInstance().ircmd.avoidOverexposure(
+                        USBMonitorManager.getInstance().ircmd?.avoidOverexposure(
                             false, gainStatus,
                             normalTempData, imageRes, low_gain_over_temp_data, high_gain_over_temp_data,
                             pixel_above_prop, switch_frame_cnt, close_frame_cnt,

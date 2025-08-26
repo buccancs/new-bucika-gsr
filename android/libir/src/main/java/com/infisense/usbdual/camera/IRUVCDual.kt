@@ -514,7 +514,7 @@ class IRUVCDual {
         uvcCamera?.let { camera ->
             val concreteIRCMDBuilder = ConcreteIRCMDBuilder()
             ircmd = concreteIRCMDBuilder
-                .setIrcmdType(IRCMDType.USB_IR_256_384)
+                .setIRCMDType(IRCMDType.USB_IR_256_384)
                 .setIdCamera(camera.nativePtr)
                 .build()
 
