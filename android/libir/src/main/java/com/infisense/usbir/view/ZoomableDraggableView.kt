@@ -86,7 +86,7 @@ class ZoomableDraggableView @JvmOverloads constructor(
         showBitmapHeightWidth = pxBitmapHeight * originalBitmapWidth / originalBitmapHeight * xscale
         
         originalBitmap?.let { bitmap ->
-            showBitmap = BitmapUtils.scaleWithWH(bitmap, showBitmapHeightWidth, showBitmapHeight)
+            showBitmap = BitmapUtils.scaleWithWH(bitmap, showBitmapHeightWidth.toInt(), showBitmapHeight.toInt())
         }
     }
     

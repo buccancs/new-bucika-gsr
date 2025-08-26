@@ -527,8 +527,10 @@ class TemperatureView @JvmOverloads constructor(
                                     )
                                 )
                                 val temps = mutableListOf<Float>()
-                                for (i in 0 until tempResult.count) {
-                                    temps.add(getTSTemp(tempResult.temperatureArray!![i]))
+                                for (i in 0 until tempResult?.count ?: 0) {
+                                    tempResult?.temperatureArray?.get(i)?.let { temp ->
+                                        temps.add(getTSTemp(temp))
+                                    }
                                 }
                                 onTrendChangeListener?.onChange(temps)
                             }
