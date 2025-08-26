@@ -54,3 +54,4 @@ class IRPlushFragment : BaseIRPlushFragment() {
     }
 
     fun getBitmap(): Bitmap? = dualView?.scaledBitmap
+}

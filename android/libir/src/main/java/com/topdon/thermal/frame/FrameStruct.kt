@@ -178,3 +178,4 @@ class FrameStruct() {
     }
 
     fun isTC007(): Boolean = name == PRODUCT_NAME_TC007
+}

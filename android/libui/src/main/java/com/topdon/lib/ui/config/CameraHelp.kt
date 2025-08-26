@@ -30,3 +30,4 @@ object CameraHelp {
     val TYPE_SET_TARGET_COLOR= 33
     val TYPE_SET_TARGET_DELETE= 34
     val TYPE_SET_TARGET_HELP= 35
+}

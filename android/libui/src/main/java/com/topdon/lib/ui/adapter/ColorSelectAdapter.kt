@@ -59,3 +59,4 @@ class ColorSelectAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVi
     }
 
     inner class ItemView(val binding: UiItemColorSelectBinding) : RecyclerView.ViewHolder(binding.root)
+}
