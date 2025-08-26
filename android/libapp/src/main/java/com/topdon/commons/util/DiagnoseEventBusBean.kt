@@ -20,8 +20,4 @@ data class DiagnoseEventBusBean(
     fun setmDiagEntryType(mDiagEntryType: Long) {
         this.mDiagEntryType = mDiagEntryType
     }
-    
-    fun setDiagnose(diagnose: Boolean) {
-        isDiagnose = diagnose
-    }
 }

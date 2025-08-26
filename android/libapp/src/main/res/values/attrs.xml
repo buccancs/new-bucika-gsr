@@ -58,4 +58,7 @@
         <attr name="selectColor" format="color|reference"/>
     </declare-styleable>
 
+    <!-- Custom background corners attribute -->
+    <attr name="bgCorners" format="dimension"/>
+
 </resources>

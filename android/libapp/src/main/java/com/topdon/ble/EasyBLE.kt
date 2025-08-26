@@ -44,6 +44,11 @@ class EasyBLE internal constructor(builder: EasyBLEBuilder) {
 
         @JvmStatic
         fun getBuilder(): EasyBLEBuilder = EasyBLEBuilder()
+        
+        // Internal property for builder access
+        internal var instance: EasyBLE?
+            get() = _instance
+            set(value) { _instance = value }
     }
 
     private val executorService: ExecutorService

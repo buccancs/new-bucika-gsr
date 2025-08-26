@@ -40,4 +40,9 @@
     <color name="color_bg_min">#FF333333</color>
     <color name="color_font">#FF000000</color>
 
+    <!-- Additional missing colors -->
+    <color name="grey">#FF888888</color>
+    <color name="toastTextColor">#FFFFFFFF</color>
+    <color name="font_third_color">#FF999999</color>
+
 </resources>
