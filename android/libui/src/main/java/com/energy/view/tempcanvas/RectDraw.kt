@@ -33,7 +33,7 @@ class RectDraw(context: Context) : BaseDraw(context) {
     
     private val mRectList = LinkedList<RectView>()
     private val mRectPaint: Paint
-    private val lineStrokeWidth: Int
+    private val lineStrokeWidth: Int = ScreenUtils.dp2px(1)
     private val mBgPaint: Paint
     private var mFontMetrics: Paint.FontMetrics? = null
     private val mTextPaint: Paint
@@ -41,7 +41,7 @@ class RectDraw(context: Context) : BaseDraw(context) {
     private val mBgColor = Color.parseColor("#CC1A1A1A")
     private var mTempRect: RectView? = null
     private var mOperateStatus = -1
-    override protected var mTouchIndex = -1
+    // mTouchIndex is inherited from BaseDraw, no need to override
     
     var viewWidth: Int = 0
     var viewHeight: Int = 0
@@ -49,8 +49,6 @@ class RectDraw(context: Context) : BaseDraw(context) {
     val touchInclude: Int get() = mTouchIndex
     
     init {
-        lineStrokeWidth = ScreenUtils.dp2px(1)
-        
         mRectPaint = Paint().apply {
             color = Color.WHITE
             strokeWidth = lineStrokeWidth.toFloat()

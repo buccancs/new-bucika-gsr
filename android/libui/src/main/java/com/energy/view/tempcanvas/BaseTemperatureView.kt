@@ -642,11 +642,12 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             canvas.save()
             if (count != 0 && count % 3 == 0) {
                 startIndex = 0
-                y += if (pointCount == 3 && count == 3) {
-                    ScreenUtils.dp2px(40)
+                val increment = if (pointCount == 3 && count == 3) {
+                    ScreenUtils.dp2px(40).toFloat()
                 } else {
-                    ScreenUtils.dp2px(80)
+                    ScreenUtils.dp2px(80).toFloat()
                 }
+                y += increment.toInt()
             }
             canvas.translate((x + interval * startIndex).toFloat(), y.toFloat())
             canvas.rotate(screenDegree.toFloat())

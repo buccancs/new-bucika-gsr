@@ -12,3 +12,4 @@ class HeaderView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs, 0) {
         inflate(context, R.layout.ui_header_view, this)
     }
+}

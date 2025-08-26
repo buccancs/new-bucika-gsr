@@ -152,3 +152,4 @@ class TipGuideDialog : DialogFragment() {
             return PageFragment.newInstance(imgResList[position])
         }
     }
+}

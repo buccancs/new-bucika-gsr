@@ -21,8 +21,8 @@ class PointDraw(context: Context) : BaseDraw(context) {
         private const val TOUCH_EXTRA = 20f
     }
 
-    private val textPointMargin = ScreenUtils.dp2px(4)
-    private val labelPointMargin = ScreenUtils.dp2px(24)
+    private val textPointMargin = ScreenUtils.dp2px(4).toFloat()
+    private val labelPointMargin = ScreenUtils.dp2px(24).toFloat()
     private val pointList = LinkedList<PointView>()
     private var tempPoint: PointView? = null
     
@@ -41,7 +41,7 @@ class PointDraw(context: Context) : BaseDraw(context) {
     private val bgStrokeColor = Color.parseColor("#99000000")
     private val bgColor = Color.parseColor("#CC1A1A1A")
     private var operateStatus = -1
-    override protected var mTouchIndex = -1
+    // mTouchIndex is inherited from BaseDraw, no need to override
     
     var viewWidth: Int = 0
     var viewHeight: Int = 0
