@@ -1,0 +1,792 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/duyan/.gradle/wrapper/dists/gradle-8.10.2-bin/a04bxjujx95o3nb99gddekhwo/gradle-8.10.2/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 2 stopped Daemons could not be reused, use --status for details
+> Configure project :
+BucikaGSR shared setup loaded successfully
+BucikaGSR consolidated app setup loaded successfully
+✓ All required modules found and configured
+✓ Build optimizations configuration applied
+> Configure project :android:app
+WARNING: The option 'android.enableD8' is deprecated.
+The current default is 'true'.
+It was removed in version 7.0 of the Android Gradle plugin.
+For more details, see https://d.android.com/r/studio-ui/d8-overview.html.
+WARNING: The option 'android.enableD8.desugaring' is deprecated.
+The current default is 'true'.
+It was removed in version 7.0 of the Android Gradle plugin.
+D8 desugaring is used by default, when applicable.
+WARNING: The option setting 'android.suppressUnsupportedOptionWarnings=true' is experimental.
+> Task :android:app:checkDevDebugDuplicateClasses FAILED
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':android:app:checkDevDebugDuplicateClasses'.
+> A failure occurred while executing com.android.build.gradle.internal.tasks.CheckDuplicatesRunnable
+   > Duplicate class a.a found in modules suplib-release.aar -> jetified-suplib-
+release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class a.b found in modules suplib-release.aar -> jetified-suplib-
+release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class a.c found in modules suplib-release.aar -> jetified-suplib-
+release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class b.a found in modules suplib-release.aar -> jetified-suplib-
+release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.energy.iruvc.dual.ConcreateDualBuilder found in modules
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240
+6271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.dual.DualBuilder found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.dual.DualType found in modules libusbduals
+dk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stan
+dard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4
+_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.dual.DualUVCCamera found in modules libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906
+_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.dual.SPIDualCamera found in modules libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906
+_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.dual.USBDualCamera found in modules libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906
+_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.ConcreteIRCMDBuilder found in module
+s libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24
+06271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.IRCMD found in modules libusbdualsdk
+_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standa
+rd-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_2
+406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.IRCMD$1 found in modules libusbduals
+dk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stan
+dard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4
+_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.IRCMDBuilder found in modules libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906
+_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.IRCMDType found in modules libusbdua
+lsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_st
+andard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3
+.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.IRUtils found in modules libusbduals
+dk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stan
+dard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4
+_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.IrcmdResult found in modules libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_
+standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1
+.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.LibIRCMD found in modules libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_sta
+ndard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.
+4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.LibIRI2CCMD found in modules libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_
+standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1
+.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.LibIRWN640_384 found in modules libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062719
+06_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsd
+k_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.LibIRWN640_384_V2 found in modules l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062
+71906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdua
+lsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.ircmd.ResultCode found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRParse found in modules libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_
+standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1
+.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRParse$IrparseResult found in m
+odules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3
+.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess found in modules libus
+bdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240627190
+6_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk
+_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$AgcParam_t found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$AgcStretchParam_t foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$AutoGainSwitchInfo_t f
+ound in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standar
+d:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$DdeParam_t found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$GainSwitchParam_t foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$ImageRes_t found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$ImgEnhanceParam_t foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRProcess$IrporcResult found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$AlarmTypeResult found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$Area_t found in modules l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062
+71906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdua
+lsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$CaliFactor_t found in mod
+ules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4
+_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and lib
+usbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$CaliPoint_t found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$Circle_t found in modules
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240
+6271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$Dot_t found in modules li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240627
+1906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$EnvFactor_t found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$EnvParam_t found in modul
+es libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2
+406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libus
+bdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$EnvTemp_t found in module
+s libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24
+06271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$IrtempResult found in mod
+ules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4
+_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and lib
+usbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$KtInfo_t found in modules
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240
+6271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$Line_t found in modules l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062
+71906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdua
+lsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$NucFactor_t found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$ReCaliFactor_t found in m
+odules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3
+.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$SearchInfo_t found in mod
+ules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4
+_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and lib
+usbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$TempDataRes_t found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$TempInfo_t found in modul
+es libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2
+406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libus
+bdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$TempThreshold_t found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$TemperatureSampleResult f
+ound in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standar
+d:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$VTempSet_t found in modul
+es libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2
+406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libus
+bdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.sdkisp.LibIRTemp$VtempInfo_t found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.DeviceFilter found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor found in modules libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_sta
+ndard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.
+4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$1 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$2 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$2$1 found in modules libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906
+_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$3 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$4 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$5 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$6 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$OnDeviceConnectListener fou
+nd in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:
+) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$UsbControlBlock found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBMonitor$UsbDeviceInfo found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.usb.USBVendorId found in modules libusbdua
+lsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_st
+andard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3
+.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.AutoGainSwitchCallback found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.AvoidOverexposureCallback found in m
+odules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3
+.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.BuildCheck found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.Circle found in modules libusbdualsd
+k_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stand
+ard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_
+2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams found in modules libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906
+_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$BCParameterType found i
+n modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_
+1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) an
+d libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$BasicImageOutputFormats
+_e found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libu
+sbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_sta
+ndard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsd
+k_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$BasicInterfaceFormatTyp
+es_e found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-li
+busbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_s
+tandard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$BasicPreviewYuvTypes_e
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$BasicY16IspStreamSrcTyp
+es_e found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-li
+busbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_s
+tandard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$CustomInfoType found in
+ modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1
+.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$DataFlowMode found in m
+odules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3
+.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$DefaultConfigParams fou
+nd in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:
+) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$DefaultConfigType found
+ in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsd
+k_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$DeviceInfoType found in
+ modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1
+.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$DeviceStyle found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$DisplayPseudoColorType
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$EncryptInputType found
+in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk
+_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) a
+nd libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$FRAMEFORMATType found i
+n modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_
+1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) an
+d libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$GainMode found in modul
+es libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2
+406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libus
+bdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$GainStatus found in mod
+ules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4
+_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and lib
+usbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$GetOrSetType_e found in
+ modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1
+.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$IRPROCSRCFMTType found
+in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk
+_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) a
+nd libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PreviewCameraStyle foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PreviewMode found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PreviewPathChannel foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$ProductType found in mo
+dules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.
+4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropAutoShutterParamete
+r found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libus
+bdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_stan
+dard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropAutoShutterParamete
+rValue found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-
+libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906
+_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropAutoShutterParamete
+rValue$NumberType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -
+> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4
+_2406271906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetifi
+ed-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropAutoShutterParamete
+rValue$StatusSwith found in modules libusbdualsdk_1.3.4_2406271906_standard.aar
+-> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.
+4_2406271906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetif
+ied-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParams found i
+n modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_
+1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) an
+d libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue fo
+und in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard
+:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$AG
+CType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-l
+ibusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_
+standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$DD
+EType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-l
+ibusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_
+standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$Mi
+rrorFlipType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jet
+ified-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406
+271906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-li
+busbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$Nu
+mberType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetifie
+d-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_24062719
+06_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusb
+dualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$RO
+IType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-l
+ibusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_
+standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$SN
+RType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-l
+ibusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_
+standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$St
+atusSwith found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetifi
+ed-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271
+906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libus
+bdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropImageParamsValue$TN
+RType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-l
+ibusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_
+standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropOverexposureParams
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropOverexposureParamsV
+alue found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-li
+busbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_s
+tandard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropOverexposureParamsV
+alue$NumberType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar ->
+jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2
+406271906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified
+-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropOverexposureParamsV
+alue$StatusSwith found in modules libusbdualsdk_1.3.4_2406271906_standard.aar ->
+ jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_
+2406271906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetifie
+d-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropTPDParams found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropTPDParamsValue foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropTPDParamsValue$GAIN
+SELStatus found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetifi
+ed-libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271
+906_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libus
+bdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PropTPDParamsValue$Numb
+erType found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-
+libusbdualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906
+_standard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$ProtocolInterface found
+ in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsd
+k_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PseudoColorType found i
+n modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_
+1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) an
+d libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PseudoColorTypeM2 found
+ in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsd
+k_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PseudoColorTypeWN640 fo
+und in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard
+:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$PseudoColorUsbDualType
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$RMCoverAutoCalcType fou
+nd in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:
+) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$RMCoverStsSwitchStatus
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$ShutterManualSwitchType
+ found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusb
+dualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_stand
+ard:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$ShutterStatus found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$SpiConfigType found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$SpiMode found in module
+s libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24
+06271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$StartPreviewMode found
+in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk
+_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) a
+nd libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$StartPreviewSource foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$StatusSwitch found in m
+odules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3
+.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$TPDKtBtRecal2PointType
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$TPDKtBtRecalPointType f
+ound in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standar
+d:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$TransformParameter foun
+d in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbduals
+dk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:)
+ and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$UpdateOOCOrBType found
+in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk
+_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) a
+nd libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$Y16ModePreviewSrcType f
+ound in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standar
+d:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonParams$ZoomScaleStep found in
+modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.
+3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.CommonUtils found in modules libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_
+standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1
+.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.Const found in modules libusbdualsdk
+_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standa
+rd-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_2
+406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DeviceType found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams found in modules li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240627
+1906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$FusionType found in
+ modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1
+.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$ImageMirrorParam fo
+und in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard
+:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$ImageMovableParam f
+ound in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdu
+alsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standar
+d:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$ImageRotateParam fo
+und in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdua
+lsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard
+:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$IsothermalState fou
+nd in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdual
+sdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:
+) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$TypeLoadParameters
+found in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbd
+ualsdk_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standa
+rd:) and libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.DualCameraParams$VLMirrorType found
+in modules libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk
+_1.3.4_2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) a
+nd libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.EncryptUtil found in modules libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_
+standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1
+.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.FWFilter found in modules libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_sta
+ndard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.
+4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.HandlerThreadHandler found in module
+s libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24
+06271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusb
+dualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.IAlignCallback found in modules libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062719
+06_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsd
+k_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.IFrameCallback found in modules libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062719
+06_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsd
+k_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.IIRFrameCallback found in modules li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240627
+1906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.Line found in modules libusbdualsdk_
+1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standar
+d-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_24
+06271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.OnCreateResultCallback found in modu
+les libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_
+2406271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libu
+sbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.PNInfo found in modules libusbdualsd
+k_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stand
+ard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_
+2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.PreviewStartParam_t found in modules
+ libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240
+6271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbd
+ualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.SNInfo found in modules libusbdualsd
+k_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stand
+ard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_
+2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.SynchronizedBitmap found in modules
+libusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406
+271906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.utils.TempCalibParam_t found in modules li
+busbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240627
+1906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.CameraSize found in modules libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_sta
+ndard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.
+4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.CameraSize$1 found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.ConcreateUVCBuilder found in modules l
+ibusbdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_24062
+71906_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdua
+lsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.ConnectCallback found in modules libus
+bdualsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_240627190
+6_standard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk
+_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.SPIUVCCamera found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.USBUVCCamera found in modules libusbdu
+alsdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_s
+tandard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.
+3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.UVCBuilder found in modules libusbdual
+sdk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_sta
+ndard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.
+4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.UVCCamera found in modules libusbduals
+dk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stan
+dard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4
+_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.UVCResult found in modules libusbduals
+dk_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_stan
+dard-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4
+_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.energy.iruvc.uvc.UVCType found in modules libusbdualsdk
+_1.3.4_2406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standa
+rd-runtime (:libusbdualsdk_1.3.4_2406271906_standard:) and libusbdualsdk_1.3.4_2
+406271906_standard.aar -> jetified-libusbdualsdk_1.3.4_2406271906_standard-runtime (libusbdualsdk_1.3.4_2406271906_standard.aar)
+     Duplicate class com.example.opengl.BuildConfig found in modules opengl_1.3.
+2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2_standard
+:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.IRSurfaceView found in modules opengl_1.
+3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2_standa
+rd:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.IRSurfaceView$Companion found in modules
+ opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.
+3.2_standard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.IRSurfaceView$scaleListener found in mod
+ules opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:openg
+l_1.3.2_standard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.render.IROpen3DTools found in modules op
+engl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2
+_standard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.render.IRRender found in modules opengl_
+1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2_stan
+dard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.render.IRRender$Companion found in modul
+es opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_
+1.3.2_standard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.render.mesh.Group found in modules openg
+l_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2_st
+andard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.render.mesh.Mesh found in modules opengl
+_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2_sta
+ndard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.render.mesh.SimplePlane found in modules
+ opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.
+3.2_standard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.opengl.util.IrBufferUtil found in modules openg
+l_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (:opengl_1.3.2_st
+andard:) and opengl_1.3.2_standard.aar -> jetified-opengl_1.3.2_standard-runtime (opengl_1.3.2_standard.aar)
+     Duplicate class com.example.suplib.wrapper.An4K found in modules suplib-rel
+ease.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.An4KCPU found in modules suplib-
+release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.An4KCPUCNN found in modules supl
+ib-release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.An4KCreator found in modules sup
+lib-release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.An4KCreator$a found in modules s
+uplib-release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.An4KGPU found in modules suplib-
+release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.An4KGPUCNN found in modules supl
+ib-release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.SupHelp found in modules suplib-
+release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.VideoProcessor found in modules
+suplib-release.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.a found in modules suplib-releas
+e.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class com.example.suplib.wrapper.b found in modules suplib-releas
+e.aar -> jetified-suplib-release-runtime (:suplib-release:) and suplib-release.aar -> jetified-suplib-release-runtime (suplib-release.aar)
+     Duplicate class me.devsaki.hentoid.ai_upscale.AiUpscaler found in modules a
+i-upscale-release.aar -> jetified-ai-upscale-release-runtime (:ai-upscale-releas
+e:) and ai-upscale-release.aar -> jetified-ai-upscale-release-runtime (ai-upscale-release.aar)
+     Duplicate class me.devsaki.hentoid.ai_upscale.BuildConfig found in modules
+ai-upscale-release.aar -> jetified-ai-upscale-release-runtime (:ai-upscale-relea
+se:) and ai-upscale-release.aar -> jetified-ai-upscale-release-runtime (ai-upscale-release.aar)
+     Go to the documentation to learn how to <a href="d.android.com/r/tools/classpath-sync-errors">Fix dependency resolution errors</a>.
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 12s
+1 actionable task: 1 executed
