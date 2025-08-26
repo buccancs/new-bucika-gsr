@@ -117,7 +117,7 @@ data class Device(
             parcel.readByteArray(scanRecord!!)
         }
         name = parcel.readString() ?: ""
-        address = Objects.requireNonNull(parcel.readString())
+        address = parcel.readString() ?: ""
         rssi = parcel.readInt()
         connectionState = ConnectionState.valueOf(parcel.readString()!!)
     }

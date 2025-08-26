@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 
-class EasyBLE private constructor(builder: EasyBLEBuilder) {
+class EasyBLE internal constructor(builder: EasyBLEBuilder) {
     
     companion object {
         @Volatile
@@ -75,8 +75,8 @@ class EasyBLE private constructor(builder: EasyBLEBuilder) {
         if (builder.observable != null) {
             internalObservable = false
             observable = builder.observable!!
-            posterDispatcher = observable.posterDispatcher
-            executorService = posterDispatcher.executorService
+            posterDispatcher = observable.getPosterDispatcher()
+            executorService = posterDispatcher.getExecutorService()
         } else {
             internalObservable = true
             executorService = builder.executorService
@@ -120,7 +120,7 @@ class EasyBLE private constructor(builder: EasyBLEBuilder) {
 
     internal fun getLogger(): Logger = logger
 
-    fun getScannerType(): ScannerType? = scanner?.type
+    fun getScannerType(): ScannerType? = scannerType
 
     fun isInitialized(): Boolean = isInitialized && application != null && instance != null
 
@@ -211,7 +211,7 @@ class EasyBLE private constructor(builder: EasyBLEBuilder) {
     }
 
     fun setLogEnabled(isEnabled: Boolean) {
-        logger.isEnabled = isEnabled
+        logger.setEnabled(isEnabled)
     }
 
     @Synchronized
@@ -289,8 +289,8 @@ class EasyBLE private constructor(builder: EasyBLEBuilder) {
 
     fun startScan() {
         checkAndInstanceScanner()
-        if (checkStatus()) {
-            scanner?.startScan(application)
+        if (checkStatus() && application != null) {
+            scanner?.startScan(application!!)
         }
     }
 

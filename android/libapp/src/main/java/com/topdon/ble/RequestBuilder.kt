@@ -5,19 +5,12 @@ import java.util.UUID
 
 class RequestBuilder<T : RequestCallback>(val type: RequestType) {
     var tag: String? = null
-        private set
     var service: UUID? = null
-        private set
     var characteristic: UUID? = null
-        private set
     var descriptor: UUID? = null
-        private set
     var value: Any? = null
-        private set
     var priority: Int = 0
-        private set
     var callback: RequestCallback? = null
-        private set
     var writeOptions: WriteOptions? = null
         private set
 

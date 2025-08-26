@@ -157,7 +157,7 @@ abstract class AbstractScanner(
         parseScanResult(device, isConnectedBySys, null, -120, null)
     }
 
-    protected fun parseScanResult(
+    fun parseScanResult(
         device: BluetoothDevice,
         isConnectedBySys: Boolean,
         result: ScanResult?,
@@ -230,7 +230,7 @@ abstract class AbstractScanner(
     override fun isScanning(): Boolean = isScanning
 
     @CallSuper
-    protected open fun setScanning(scanning: Boolean) {
+    open fun setScanning(scanning: Boolean) {
         synchronized(this) {
             isScanning = scanning
         }
