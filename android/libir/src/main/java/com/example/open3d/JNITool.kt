@@ -40,6 +40,12 @@ object JNITool {
         lowB: Int
     ): ByteArray?
     
+    @JvmStatic
+    external fun diff2firstFrameU1(width: Int, height: Int, firstTemp: ByteArray, tempSrc: ByteArray, imageDst: ByteArray): ByteArray?
+    
+    @JvmStatic 
+    external fun diff2firstFrameU4(width: Int, height: Int, firstTemp: ByteArray, tempSrc: ByteArray, imageDst: ByteArray): ByteArray?
+    
     // Initialize native library (if available)
     init {
         try {

@@ -144,4 +144,25 @@ object ImageColorTools {
             BitmapFactory.decodeByteArray(b, 0, b.size)
         } else null
     }
+    
+    @JvmStatic
+    fun matToBitmap(mat: Mat): Bitmap? {
+        // Convert OpenCV Mat to Bitmap
+        val bitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), Bitmap.Config.ARGB_8888)
+        org.opencv.android.Utils.matToBitmap(mat, bitmap)
+        return bitmap
+    }
+    
+    @JvmStatic
+    fun adjustPhotoRotation(bitmap: Bitmap, orientationDegree: Int): Bitmap {
+        val matrix = android.graphics.Matrix()
+        matrix.setRotate(orientationDegree.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+    
+    @JvmStatic
+    fun testImage(): Bitmap {
+        // Create a test image bitmap
+        return Bitmap.createBitmap(256, 192, Bitmap.Config.ARGB_8888)
+    }
 }
