@@ -158,3 +158,4 @@ class TipPreviewDialog : DialogFragment() {
             }
         }
     }
+}
