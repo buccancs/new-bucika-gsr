@@ -237,7 +237,7 @@ class TemperatureView @JvmOverloads constructor(
     @Volatile
     private var runflag = false
 
-    private val isShowC = SharedManager.INSTANCE.temperature == 1
+    private val isShowC = SharedManager.getTemperature() == 1
 
     private var iTsTempListenerWeakReference: WeakReference<ITsTempListener>? = null
 
@@ -322,8 +322,8 @@ class TemperatureView @JvmOverloads constructor(
     fun addScalePoint(point: Point) {
         val sx = measuredWidth.toFloat() / temperatureWidth.toFloat()
         val sy = measuredHeight.toFloat() / temperatureHeight.toFloat()
-        val viewX = TempDrawHelper.correctPoint((point.x * sx).toInt(), measuredWidth)
-        val viewY = TempDrawHelper.correctPoint((point.y * sy).toInt(), measuredHeight)
+        val viewX = (point.x * sx).toInt().coerceIn(0, measuredWidth)
+        val viewY = (point.y * sy).toInt().coerceIn(0, measuredHeight)
         if (pointList.size == POINT_MAX_COUNT) {
             pointList.removeAt(0)
         }
@@ -334,10 +334,10 @@ class TemperatureView @JvmOverloads constructor(
         val sx = measuredWidth.toFloat() / temperatureWidth.toFloat()
         val sy = measuredHeight.toFloat() / temperatureHeight.toFloat()
         val line = Line(Point(), Point()).apply {
-            start.x = TempDrawHelper.correct((l.start.x * sx).toInt(), measuredWidth)
-            start.y = TempDrawHelper.correct((l.start.y * sy).toInt(), measuredHeight)
-            end.x = TempDrawHelper.correct((l.end.x * sx).toInt(), measuredWidth)
-            end.y = TempDrawHelper.correct((l.end.y * sy).toInt(), measuredHeight)
+            start.x = ((l.start.x * sx).toInt()).coerceIn(0, measuredWidth)
+            start.y = ((l.start.y * sy).toInt()).coerceIn(0, measuredHeight)
+            end.x = ((l.end.x * sx).toInt()).coerceIn(0, measuredWidth)
+            end.y = ((l.end.y * sy).toInt()).coerceIn(0, measuredHeight)
         }
         if (lineList.size == LINE_MAX_COUNT) {
             lineList.removeAt(0)
@@ -523,7 +523,7 @@ class TemperatureView @JvmOverloads constructor(
             if (index < pointResultList.size) {
                 val result = getPointTemp(Point((point.x / xScale).toInt(), (point.y / yScale).toInt()))
                 result?.let { r ->
-                    val tempText = UnitTools.formatTemperatureUnit(getTSTemp(r.averageTemperature), isShowC)
+                    val tempText = UnitTools.showC(getTSTemp(r.averageTemperature), isShowC)
                     drawTempText(canvas, tempText, point)
                 }
             }
@@ -539,9 +539,9 @@ class TemperatureView @JvmOverloads constructor(
                     )
                 )
                 result?.let { r ->
-                    val maxTemp = UnitTools.formatTemperatureUnit(getTSTemp(r.maxTemperature), isShowC)
-                    val minTemp = UnitTools.formatTemperatureUnit(getTSTemp(r.minTemperature), isShowC)
-                    val avgTemp = UnitTools.formatTemperatureUnit(getTSTemp(r.averageTemperature), isShowC)
+                    val maxTemp = UnitTools.showC(getTSTemp(r.maxTemperature), isShowC)
+                    val minTemp = UnitTools.showC(getTSTemp(r.minTemperature), isShowC)
+                    val avgTemp = UnitTools.showC(getTSTemp(r.averageTemperature), isShowC)
                     val tempText = "MAX:$maxTemp MIN:$minTemp AVG:$avgTemp"
                     
                     val centerX = (line.start.x + line.end.x) / 2
@@ -561,9 +561,9 @@ class TemperatureView @JvmOverloads constructor(
                     )
                 )
                 result?.let { r ->
-                    val maxTemp = UnitTools.formatTemperatureUnit(getTSTemp(r.maxTemperature), isShowC)
-                    val minTemp = UnitTools.formatTemperatureUnit(getTSTemp(r.minTemperature), isShowC)
-                    val avgTemp = UnitTools.formatTemperatureUnit(getTSTemp(r.averageTemperature), isShowC)
+                    val maxTemp = UnitTools.showC(getTSTemp(r.maxTemperature), isShowC)
+                    val minTemp = UnitTools.showC(getTSTemp(r.minTemperature), isShowC)
+                    val avgTemp = UnitTools.showC(getTSTemp(r.averageTemperature), isShowC)
                     val tempText = "MAX:$maxTemp MIN:$minTemp AVG:$avgTemp"
                     
                     val centerX = (rect.left + rect.right) / 2

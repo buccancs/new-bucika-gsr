@@ -158,9 +158,13 @@ class IRImageHelp {
                         imageWidth,
                         if (alarmBean.isHighOpen) alarmBean.highTemp else Float.MAX_VALUE,
                         if (alarmBean.isLowOpen) alarmBean.lowTemp else Float.MIN_VALUE,
-                        alarmBean.highColor,
-                        alarmBean.lowColor,
-                        alarmBean.markType)
+                        (alarmBean.highColor shr 16) and 0xFF, // highR
+                        (alarmBean.highColor shr 8) and 0xFF,  // highG
+                        alarmBean.highColor and 0xFF,          // highB
+                        (alarmBean.lowColor shr 16) and 0xFF,  // lowR
+                        (alarmBean.lowColor shr 8) and 0xFF,   // lowG
+                        alarmBean.lowColor and 0xFF            // lowB
+                    )
                     val diffMat = Mat(
                         imageHeight,
                         imageWidth,

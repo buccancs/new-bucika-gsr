@@ -5,3 +5,4 @@ enum class CompassSource(val id: String) {
     GeomagneticRotationVector("geomagnetic_rotation_vector"),
     CustomMagnetometer("custom_magnetometer"),
     Orientation("orientation")
+}
