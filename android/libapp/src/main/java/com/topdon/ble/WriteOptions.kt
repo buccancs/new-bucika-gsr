@@ -6,7 +6,6 @@ class WriteOptions private constructor(builder: Builder) {
     val packageWriteDelayMillis: Int = builder.packageWriteDelayMillis
     val requestWriteDelayMillis: Int = builder.requestWriteDelayMillis
     var packageSize: Int = builder.packageSize
-        private set
     val isWaitWriteResult: Boolean = builder.isWaitWriteResult
     val writeType: Int = builder.writeType
     val useMtuAsPackageSize: Boolean = builder.useMtuAsPackageSize

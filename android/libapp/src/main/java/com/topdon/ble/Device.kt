@@ -32,7 +32,7 @@ data class Device(
 
     fun getConnectionState(): ConnectionState {
         val connection = EasyBLE.getInstance().getConnection(this)
-        return connection?.getConnectionState() ?: connectionState
+        return connection?.connectionState ?: connectionState
     }
 
     fun isConnectable(): Boolean? {

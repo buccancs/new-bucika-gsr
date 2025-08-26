@@ -193,12 +193,15 @@ class BluetoothManager private constructor() : EventObserver {
             ConnectionState.RELEASED -> {
                 EventBus.getDefault().post(ConnectionState.RELEASED.name)
             }
+            ConnectionState.SERVICE_DISCOVERING -> {}
             ConnectionState.SERVICE_DISCOVERED -> {
                 setMTUValue()
                 if (device.isConnected()) {
                     EventBus.getDefault().post(ConnectionState.SERVICE_DISCOVERED.name)
                 }
             }
+            ConnectionState.TIMEOUT -> {}
+            ConnectionState.MTU_SUCCESS -> {}
         }
     }
 

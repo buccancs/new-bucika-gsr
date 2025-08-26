@@ -29,11 +29,9 @@ class ConnectionConfiguration {
         
     @RequiresApi(Build.VERSION_CODES.M)
     var transport = BluetoothDevice.TRANSPORT_LE
-        private set
         
     @RequiresApi(Build.VERSION_CODES.O)
     var phy = BluetoothDevice.PHY_LE_1M_MASK
-        private set
         
     @NonNull
     val scanIntervalPairsInAutoReconnection: MutableList<Pair<Int, Int>>

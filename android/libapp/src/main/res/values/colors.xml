@@ -25,5 +25,9 @@
     <color name="color_green_point">#FF00FF00</color>
     <color name="toolbar_5F16131E">#5F16131E</color>
     <color name="color_img_calibration_right">#FFFFFFFF</color>
+    <color name="color_img_calibration_normal">#FFCCCCCC</color>
+    <color name="color_img_calibration_left">#FF888888</color>
+    <color name="color_img_calibration_button">#FF444444</color>
+    <color name="color_select_view">#FF0066CC</color>
 
 </resources>

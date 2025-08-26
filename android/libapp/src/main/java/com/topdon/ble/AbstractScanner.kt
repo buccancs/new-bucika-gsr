@@ -230,7 +230,7 @@ abstract class AbstractScanner(
     override fun isScanning(): Boolean = isScanning
 
     @CallSuper
-    protected fun setScanning(scanning: Boolean) {
+    protected open fun setScanning(scanning: Boolean) {
         synchronized(this) {
             isScanning = scanning
         }

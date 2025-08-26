@@ -34,8 +34,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 internal class ConnectionImpl(
     private val easyBle: EasyBLE,
     private val bluetoothAdapter: BluetoothAdapter,
-    private val device: Device,
-    configuration: ConnectionConfiguration?,
+    override val device: Device,
+    configurationParam: ConnectionConfiguration?,
     connectDelay: Int,
     private val observer: EventObserver?
 ) : Connection, ScanListener {
@@ -54,7 +54,7 @@ internal class ConnectionImpl(
         private const val MSG_ARG_RECONNECT = 1
     }
 
-    private val configuration: ConnectionConfiguration = configuration ?: ConnectionConfiguration()
+    private val configuration: ConnectionConfiguration = configurationParam ?: ConnectionConfiguration()
     private var bluetoothGatt: BluetoothGatt? = null
     private val requestQueue = mutableListOf<GenericRequest>()
     private var currentRequest: GenericRequest? = null
@@ -72,8 +72,20 @@ internal class ConnectionImpl(
     private val observable: Observable = easyBle.getObservable()
     private val posterDispatcher: PosterDispatcher = easyBle.getPosterDispatcher()
     private val gattCallback = BleGattCallback()
-    private var mtu = 23
+    private var mtuValue = 23
     private var originCallback: BluetoothGattCallback? = null
+
+    override val mtu: Int
+        get() = mtuValue
+
+    override val connectionState: ConnectionState
+        get() = device.connectionState
+
+    override val gatt: BluetoothGatt?
+        get() = bluetoothGatt
+
+    override val connectionConfiguration: ConnectionConfiguration
+        get() = configuration
 
     init {
         connHandler = ConnHandler(this)
@@ -102,7 +114,7 @@ internal class ConnectionImpl(
 
     override fun onScanError(errorCode: Int, errorMsg: String) {}
 
-    override fun setBluetoothGattCallback(callback: BluetoothGattCallback?) {
+    override fun setBluetoothGattCallback(callback: BluetoothGattCallback) {
         originCallback = callback
     }
 
@@ -158,11 +170,11 @@ internal class ConnectionImpl(
             }
             
             currentRequest?.let { request ->
-                if (request.type == RequestType.WRITE_CHARACTERISTIC && request.writeOptions.isWaitWriteResult) {
+                if (request.type == RequestType.WRITE_CHARACTERISTIC && request.writeOptions?.isWaitWriteResult == true) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         handleSuccessfulWrite(request, characteristic)
                     } else {
-                        handleFailedCallback(request, REQUEST_FAIL_TYPE_GATT_STATUS_FAILED, true)
+                        handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_GATT_STATUS_FAILED, true)
                     }
                 }
             }
@@ -217,7 +229,7 @@ internal class ConnectionImpl(
                     val localDescriptor = getDescriptor(
                         descriptor.characteristic.service.uuid,
                         descriptor.characteristic.uuid,
-                        clientCharacteristicConfig
+                        Connection.clientCharacteristicConfig
                     )
                     if (status != BluetoothGatt.GATT_SUCCESS) {
                         handleGattStatusFailed()
@@ -239,7 +251,7 @@ internal class ConnectionImpl(
             currentRequest?.let { request ->
                 if (request.type == RequestType.CHANGE_MTU) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        this@ConnectionImpl.mtu = mtu
+                        this@ConnectionImpl.mtuValue = mtu
                         notifyMtuChanged(request, mtu)
                     } else {
                         handleGattStatusFailed()
@@ -271,7 +283,7 @@ internal class ConnectionImpl(
     private fun handleSuccessfulWrite(request: GenericRequest, characteristic: BluetoothGattCharacteristic) {
         if (logger.isEnabled()) {
             val data = request.value as ByteArray
-            val packageSize = request.writeOptions.packageSize
+            val packageSize = request.writeOptions?.packageSize ?: 20
             val total = data.size / packageSize + if (data.size % packageSize == 0) 0 else 1
             val progress = when {
                 request.remainQueue == null || request.remainQueue!!.isEmpty() -> total
@@ -289,7 +301,7 @@ internal class ConnectionImpl(
                 Message.obtain(connHandler, MSG_REQUEST_TIMEOUT, request),
                 configuration.requestTimeoutMillis.toLong()
             )
-            val delay = request.writeOptions.packageWriteDelayMillis
+            val delay = request.writeOptions?.packageWriteDelayMillis ?: 0
             if (delay > 0) {
                 try {
                     Thread.sleep(delay.toLong())
@@ -297,7 +309,9 @@ internal class ConnectionImpl(
                 if (request != currentRequest) return
             }
             request.sendingBytes = request.remainQueue!!.remove()
-            write(request, characteristic, request.sendingBytes)
+            request.sendingBytes?.let { bytes ->
+                write(request, characteristic, bytes)
+            }
         }
     }
 
@@ -375,9 +389,9 @@ internal class ConnectionImpl(
                     logE(Logger.TYPE_CONNECTION_STATE, "connect timeout! [name: %s, addr: %s]", device.name, device.address)
                     
                     val timeoutType = when (device.connectionState) {
-                        ConnectionState.SCANNING_FOR_RECONNECTION -> TIMEOUT_TYPE_CANNOT_DISCOVER_DEVICE
-                        ConnectionState.CONNECTING -> TIMEOUT_TYPE_CANNOT_CONNECT
-                        else -> TIMEOUT_TYPE_CANNOT_DISCOVER_SERVICES
+                        ConnectionState.SCANNING_FOR_RECONNECTION -> Connection.TIMEOUT_TYPE_CANNOT_DISCOVER_DEVICE
+                        ConnectionState.CONNECTING -> Connection.TIMEOUT_TYPE_CANNOT_CONNECT
+                        else -> Connection.TIMEOUT_TYPE_CANNOT_DISCOVER_SERVICES
                     }
                     
                     val methodInfo = MethodInfoGenerator.onConnectTimeout(device, timeoutType)
@@ -389,7 +403,7 @@ internal class ConnectionImpl(
                         doDisconnect(true)
                     } else {
                         doDisconnect(false)
-                        val failMethodInfo = MethodInfoGenerator.onConnectFailed(device, CONNECT_FAIL_TYPE_MAXIMUM_RECONNECTION)
+                        val failMethodInfo = MethodInfoGenerator.onConnectFailed(device, Connection.CONNECT_FAIL_TYPE_MAXIMUM_RECONNECTION)
                         observer?.let { posterDispatcher.post(it, failMethodInfo) }
                         observable.notifyObservers(failMethodInfo)
                         logE(Logger.TYPE_CONNECTION_STATE, "connect failed! [type: maximun reconnection, name: %s, addr: %s]",
@@ -408,15 +422,15 @@ internal class ConnectionImpl(
             easyBle.stopScan()
             bluetoothGatt = when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                    device.getOriginDevice().connectGatt(easyBle.getContext(), false, gattCallback,
+                    device.originDevice.connectGatt(easyBle.getContext(), false, gattCallback,
                         configuration.transport, configuration.phy)
                 }
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    device.getOriginDevice().connectGatt(easyBle.getContext(), false, gattCallback,
+                    device.originDevice.connectGatt(easyBle.getContext(), false, gattCallback,
                         configuration.transport)
                 }
                 else -> {
-                    device.getOriginDevice().connectGatt(easyBle.getContext(), false, gattCallback)
+                    device.originDevice.connectGatt(easyBle.getContext(), false, gattCallback)
                 }
             }
         }
@@ -554,7 +568,7 @@ internal class ConnectionImpl(
 
     private fun write(request: GenericRequest, characteristic: BluetoothGattCharacteristic, value: ByteArray): Boolean {
         characteristic.value = value
-        val writeType = request.writeOptions.writeType
+        val writeType = request.writeOptions?.writeType ?: BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
         if (writeType in listOf(
             BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE,
             BluetoothGattCharacteristic.WRITE_TYPE_SIGNED,
@@ -570,7 +584,7 @@ internal class ConnectionImpl(
                 false
             }
         } ?: run {
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_GATT_IS_NULL, true)
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_GATT_IS_NULL, true)
             return false
         }
     }
@@ -578,7 +592,7 @@ internal class ConnectionImpl(
     private fun handleWriteFailed(request: GenericRequest) {
         connHandler.removeMessages(MSG_REQUEST_TIMEOUT)
         request.remainQueue = null
-        handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
+        handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
     }
 
     private fun enableNotificationOrIndicationFail(
@@ -590,7 +604,7 @@ internal class ConnectionImpl(
             return true
         }
         
-        val descriptor = characteristic.getDescriptor(clientCharacteristicConfig) ?: return true
+        val descriptor = characteristic.getDescriptor(Connection.clientCharacteristicConfig) ?: return true
         val originValue = descriptor.value
         
         currentRequest?.let { request ->
@@ -633,7 +647,7 @@ internal class ConnectionImpl(
                 MSG_REQUEST_TIMEOUT -> {
                     val request = msg.obj as GenericRequest
                     if (connection.currentRequest == request) {
-                        connection.handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_TIMEOUT, false)
+                        connection.handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_REQUEST_TIMEOUT, false)
                         connection.executeNextRequest()
                     }
                 }
@@ -672,7 +686,7 @@ internal class ConnectionImpl(
 
     private fun enqueue(request: GenericRequest) {
         if (isReleased) {
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_CONNECTION_RELEASED, false)
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_CONNECTION_RELEASED, false)
         } else {
             synchronized(this) {
                 if (currentRequest == null) {
@@ -721,7 +735,7 @@ internal class ConnectionImpl(
         )
         
         if (!bluetoothAdapter.isEnabled) {
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_BLUETOOTH_ADAPTER_DISABLED, true)
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_BLUETOOTH_ADAPTER_DISABLED, true)
             return
         }
         
@@ -729,13 +743,13 @@ internal class ConnectionImpl(
             when (request.type) {
                 RequestType.READ_RSSI -> {
                     if (!gatt.readRemoteRssi()) {
-                        handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
+                        handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
                     }
                 }
                 RequestType.CHANGE_MTU -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if (!gatt.requestMtu(request.value as Int)) {
-                            handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
+                            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
                         }
                     }
                 }
@@ -767,14 +781,14 @@ internal class ConnectionImpl(
                                 else -> {}
                             }
                         } else {
-                            handleFailedCallback(request, REQUEST_FAIL_TYPE_CHARACTERISTIC_NOT_EXIST, true)
+                            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_CHARACTERISTIC_NOT_EXIST, true)
                         }
                     } else {
-                        handleFailedCallback(request, REQUEST_FAIL_TYPE_SERVICE_NOT_EXIST, true)
+                        handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_SERVICE_NOT_EXIST, true)
                     }
                 }
             }
-        } ?: handleFailedCallback(request, REQUEST_FAIL_TYPE_GATT_IS_NULL, true)
+        } ?: handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_GATT_IS_NULL, true)
     }
 
     private fun printWriteLog(request: GenericRequest, progress: Int, total: Int, value: ByteArray) {
@@ -793,7 +807,7 @@ internal class ConnectionImpl(
         try {
             val value = request.value as ByteArray
             val options = request.writeOptions
-            val reqDelay = if (options.requestWriteDelayMillis > 0) options.requestWriteDelayMillis else options.packageWriteDelayMillis
+            val reqDelay = if (options?.requestWriteDelayMillis ?: 0 > 0) options?.requestWriteDelayMillis ?: 0 else options?.packageWriteDelayMillis ?: 0
             
             if (reqDelay > 0) {
                 try {
@@ -802,14 +816,14 @@ internal class ConnectionImpl(
                 if (request != currentRequest) return
             }
             
-            if (options.useMtuAsPackageSize) {
-                options.packageSize = mtu - 3
+            if (options?.useMtuAsPackageSize == true) {
+                options.packageSize = mtuValue - 3
             }
             
-            if (value.size > options.packageSize) {
-                val list = MathUtils.splitPackage(value, options.packageSize)
-                if (!options.isWaitWriteResult) {
-                    val delay = options.packageWriteDelayMillis
+            if (value.size > (options?.packageSize ?: 20)) {
+                val list = MathUtils.splitPackage(value, options?.packageSize ?: 20)
+                if (options?.isWaitWriteResult != true) {
+                    val delay = options?.packageWriteDelayMillis ?: 0
                     for (i in list.indices) {
                         val bytes = list[i]
                         if (i > 0 && delay > 0) {
@@ -828,12 +842,14 @@ internal class ConnectionImpl(
                 } else {
                     request.remainQueue = ConcurrentLinkedQueue(list)
                     request.sendingBytes = request.remainQueue!!.remove()
-                    write(request, characteristic, request.sendingBytes)
+                    request.sendingBytes?.let { bytes ->
+                        write(request, characteristic, bytes)
+                    }
                 }
             } else {
                 request.sendingBytes = value
                 if (write(request, characteristic, value)) {
-                    if (!options.isWaitWriteResult) {
+                    if (options?.isWaitWriteResult != true) {
                         notifyCharacteristicWrite(request, value)
                         printWriteLog(request, 1, 1, value)
                         executeNextRequest()
@@ -849,16 +865,16 @@ internal class ConnectionImpl(
         val gattDescriptor = characteristic.getDescriptor(request.descriptor)
         if (gattDescriptor != null) {
             if (bluetoothGatt?.readDescriptor(gattDescriptor) != true) {
-                handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
+                handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
             }
         } else {
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_DESCRIPTOR_NOT_EXIST, true)
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_DESCRIPTOR_NOT_EXIST, true)
         }
     }
 
     private fun executeReadCharacteristic(request: GenericRequest, characteristic: BluetoothGattCharacteristic) {
         if (bluetoothGatt?.readCharacteristic(characteristic) != true) {
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_REQUEST_FAILED, true)
         }
     }
 
@@ -888,7 +904,7 @@ internal class ConnectionImpl(
 
     private fun handleGattStatusFailed() {
         currentRequest?.let { request ->
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_GATT_STATUS_FAILED, false)
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_GATT_STATUS_FAILED, false)
         }
     }
 
@@ -901,8 +917,14 @@ internal class ConnectionImpl(
 
     private fun toHex(bytes: ByteArray): String = StringUtils.toHex(bytes)
 
-    private fun substringUuid(uuid: UUID?): String = 
-        uuid?.toString()?.substring(0, 8) ?: "null"
+    private fun substringUuid(uuid: UUID?): String {
+        val uuidString = uuid?.toString()
+        return if (uuidString != null && uuidString.length >= 8) {
+            uuidString.substring(0, 8)
+        } else {
+            "null"
+        }
+    }
 
     private fun handleCallbacks(callback: RequestCallback?, info: MethodInfo) {
         observer?.let { posterDispatcher.post(it, info) }
@@ -993,11 +1015,6 @@ internal class ConnectionImpl(
         logD(Logger.TYPE_PHY_CHANGE, "%s [addr: %s, tvPhy: %s, rxPhy: %s]", event, device.address, txPhy, rxPhy)
     }
 
-    override fun getMtu(): Int = mtu
-
-    @NonNull
-    override fun getDevice(): Device = device
-
     override fun reconnect() {
         if (!isReleased) {
             isActiveDisconnect = false
@@ -1056,13 +1073,7 @@ internal class ConnectionImpl(
         release(true)
     }
 
-    @NonNull
-    override fun getConnectionState(): ConnectionState = device.connectionState
-
     override fun isAutoReconnectEnabled(): Boolean = configuration.isAutoReconnect
-
-    @Nullable
-    override fun getGatt(): BluetoothGatt? = bluetoothGatt
 
     override fun clearRequestQueue() {
         synchronized(this) {
@@ -1088,42 +1099,35 @@ internal class ConnectionImpl(
     private fun clearRequestQueueAndNotify() {
         synchronized(this) {
             requestQueue.forEach { request ->
-                handleFailedCallback(request, REQUEST_FAIL_TYPE_CONNECTION_DISCONNECTED, false)
+                handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_CONNECTION_DISCONNECTED, false)
             }
             currentRequest?.let { request ->
-                handleFailedCallback(request, REQUEST_FAIL_TYPE_CONNECTION_DISCONNECTED, false)
+                handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_CONNECTION_DISCONNECTED, false)
             }
         }
         clearRequestQueue()
     }
 
-    @NonNull
-    override fun getConnectionConfiguration(): ConnectionConfiguration = configuration
-
     @Nullable
-    override fun getService(service: UUID?): BluetoothGattService? {
-        return if (service != null && bluetoothGatt != null) {
-            bluetoothGatt?.getService(service)
-        } else null
+    override fun getService(service: UUID): BluetoothGattService? {
+        return bluetoothGatt?.getService(service)
     }
 
     @Nullable
-    override fun getCharacteristic(service: UUID?, characteristic: UUID?): BluetoothGattCharacteristic? {
-        if (service != null && characteristic != null && bluetoothGatt != null) {
-            val gattService = bluetoothGatt?.getService(service)
-            return gattService?.getCharacteristic(characteristic)
+    override fun getCharacteristic(service: UUID, characteristic: UUID): BluetoothGattCharacteristic? {
+        return bluetoothGatt?.let { gatt ->
+            val gattService = gatt.getService(service)
+            gattService?.getCharacteristic(characteristic)
         }
-        return null
     }
 
     @Nullable
-    override fun getDescriptor(service: UUID?, characteristic: UUID?, descriptor: UUID?): BluetoothGattDescriptor? {
-        if (service != null && characteristic != null && descriptor != null && bluetoothGatt != null) {
-            val gattService = bluetoothGatt?.getService(service)
+    override fun getDescriptor(service: UUID, characteristic: UUID, descriptor: UUID): BluetoothGattDescriptor? {
+        return bluetoothGatt?.let { gatt ->
+            val gattService = gatt.getService(service)
             val gattCharacteristic = gattService?.getCharacteristic(characteristic)
-            return gattCharacteristic?.getDescriptor(descriptor)
+            gattCharacteristic?.getDescriptor(descriptor)
         }
-        return null
     }
 
     private fun checkUuidExistsAndEnqueue(request: GenericRequest, uuidNum: Int) {
@@ -1139,17 +1143,17 @@ internal class ConnectionImpl(
     }
 
     private fun checkServiceExists(request: GenericRequest, uuid: UUID?): Boolean {
-        if (getService(uuid) == null) {
-            handleFailedCallback(request, REQUEST_FAIL_TYPE_SERVICE_NOT_EXIST, false)
+        if (uuid == null || getService(uuid) == null) {
+            handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_SERVICE_NOT_EXIST, false)
             return false
         }
         return true
     }
 
     private fun checkCharacteristicExists(request: GenericRequest, service: UUID?, characteristic: UUID?): Boolean {
-        if (checkServiceExists(request, service)) {
+        if (service != null && characteristic != null && checkServiceExists(request, service)) {
             if (getCharacteristic(service, characteristic) == null) {
-                handleFailedCallback(request, REQUEST_FAIL_TYPE_CHARACTERISTIC_NOT_EXIST, false)
+                handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_CHARACTERISTIC_NOT_EXIST, false)
                 return false
             }
             return true
@@ -1158,9 +1162,10 @@ internal class ConnectionImpl(
     }
 
     private fun checkDescriptorExists(request: GenericRequest, service: UUID?, characteristic: UUID?, descriptor: UUID?): Boolean {
-        if (checkServiceExists(request, service) && checkCharacteristicExists(request, service, characteristic)) {
+        if (service != null && characteristic != null && descriptor != null && 
+           checkServiceExists(request, service) && checkCharacteristicExists(request, service, characteristic)) {
             if (getDescriptor(service, characteristic, descriptor) == null) {
-                handleFailedCallback(request, REQUEST_FAIL_TYPE_DESCRIPTOR_NOT_EXIST, false)
+                handleFailedCallback(request, Connection.REQUEST_FAIL_TYPE_DESCRIPTOR_NOT_EXIST, false)
                 return false
             }
             return true
@@ -1177,8 +1182,11 @@ internal class ConnectionImpl(
                 RequestType.READ_CHARACTERISTIC,
                 RequestType.WRITE_CHARACTERISTIC -> {
                     if (request.type == RequestType.WRITE_CHARACTERISTIC && request.writeOptions == null) {
-                        request.writeOptions = configuration.getDefaultWriteOptions(request.service, request.characteristic)
-                            ?: WriteOptions.Builder().build()
+                        request.writeOptions = if (request.service != null && request.characteristic != null) {
+                            configuration.getDefaultWriteOptions(request.service!!, request.characteristic!!)
+                        } else {
+                            null
+                        } ?: WriteOptions.Builder().build()
                     }
                     checkUuidExistsAndEnqueue(request, 2)
                 }
@@ -1190,7 +1198,7 @@ internal class ConnectionImpl(
 
     override fun isNotificationOrIndicationEnabled(characteristic: BluetoothGattCharacteristic): Boolean {
         Inspector.requireNonNull(characteristic, "characteristic can't be null")
-        val descriptor = characteristic.getDescriptor(clientCharacteristicConfig)
+        val descriptor = characteristic.getDescriptor(Connection.clientCharacteristicConfig)
         return descriptor != null && (
             Arrays.equals(descriptor.value, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) ||
             Arrays.equals(descriptor.value, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE)
