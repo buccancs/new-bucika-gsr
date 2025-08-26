@@ -27,4 +27,12 @@
     <color name="color_23202E">#FF23202E</color>
     <color name="ui_main_custom_color">#FF4CAF50</color>
     
+    <!-- Color select options -->
+    <color name="color_select1">#FF000000</color>
+    <color name="color_select2">#FFFFFFFF</color>
+    <color name="color_select3">#FF2B79D8</color>
+    <color name="color_select4">#FFFF0000</color>
+    <color name="color_select5">#FF0FA752</color>
+    <color name="color_select6">#FF808080</color>
+    
 </resources>
