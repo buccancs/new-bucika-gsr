@@ -394,6 +394,6 @@ class DualViewWithExternalCameraCommonApi(
 
     fun setCurrentFusionType(currentFusionType: DualCameraParams.FusionType) {
         this.mCurrentFusionType = currentFusionType
-        dualUVCCamera?.setFusion(currentFusionType)
+        dualUVCCamera?.setFusion(currentFusionType.toBoolean())
     }
 }

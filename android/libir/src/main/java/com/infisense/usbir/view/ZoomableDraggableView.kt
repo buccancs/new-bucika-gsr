@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.infisense.usbir.R
-import com.topdon.lib.core.utils.BitmapUtils
+import com.infisense.usbir.view.BitmapUtils
 import kotlin.math.max
 import kotlin.math.min
 

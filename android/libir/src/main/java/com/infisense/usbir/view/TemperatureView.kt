@@ -495,7 +495,18 @@ class TemperatureView @JvmOverloads constructor(
                 tempArray?.let { array ->
                     synchronized(regionLock) {
                         irtemp?.let { temp ->
-                            temp.updateTemperatureData(array)
+                            // Convert ByteArray to FloatArray for temperature processing
+                            val floatArray = FloatArray(array.size / 2) { i ->
+                                val byteIndex = i * 2
+                                if (byteIndex + 1 < array.size) {
+                                    // Convert two bytes to float (little-endian 16-bit to float)
+                                    val short = ((array[byteIndex + 1].toInt() and 0xFF) shl 8) or (array[byteIndex].toInt() and 0xFF)
+                                    short.toFloat() * 0.04f - 273.15f // Convert to Celsius
+                                } else {
+                                    0f
+                                }
+                            }
+                            temp.updateTemperatureData(floatArray)
 
                             var max = temp.getMaxTemperature()
                             var min = temp.getMinTemperature()
@@ -527,7 +538,8 @@ class TemperatureView @JvmOverloads constructor(
                                     )
                                 )
                                 val temps = mutableListOf<Float>()
-                                for (i in 0 until tempResult?.count ?: 0) {
+                                val count = tempResult?.count ?: 0
+                                for (i in 0 until count) {
                                     tempResult?.temperatureArray?.get(i)?.let { temp ->
                                         temps.add(getTSTemp(temp))
                                     }
