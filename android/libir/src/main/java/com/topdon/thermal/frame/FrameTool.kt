@@ -191,15 +191,25 @@ class FrameTool {
 
             SupHelp.getInstance().initA4KCPP()
             if (SupHelp.getInstance().loadOpenclSuccess){
-                OpencvTools.supImage(dstArgbBytes, dstImageRes.height.code,
-                    dstImageRes.width.code,supImageData)
-                scrBitmap = Bitmap.createBitmap(dstImageRes.width.code * 2,
-                    dstImageRes.height.code * 2, Bitmap.Config.ARGB_8888)
-                scrBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(supImageData, 0, argbLen * 4))
+                val localDstArgbBytes = dstArgbBytes
+                if (localDstArgbBytes != null) {
+                    OpencvTools.supImage(localDstArgbBytes, dstImageRes.height.code,
+                        dstImageRes.width.code,supImageData)
+                    scrBitmap = Bitmap.createBitmap(dstImageRes.width.code * 2,
+                        dstImageRes.height.code * 2, Bitmap.Config.ARGB_8888)
+                    scrBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(supImageData, 0, argbLen * 4))
+                } else {
+                    scrBitmap = Bitmap.createBitmap(dstImageRes.width.code,
+                        dstImageRes.height.code, Bitmap.Config.ARGB_8888)
+                    scrBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(localDstArgbBytes, 0, argbLen))
+                }
             }else{
                 scrBitmap = Bitmap.createBitmap(dstImageRes.width.code,
                     dstImageRes.height.code, Bitmap.Config.ARGB_8888)
-                scrBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(dstArgbBytes, 0, argbLen))
+                val localDstArgbBytes = dstArgbBytes
+                if (localDstArgbBytes != null) {
+                    scrBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(localDstArgbBytes, 0, argbLen))
+                }
             }
         }else{
             scrBitmap = Bitmap.createBitmap(dstImageRes.width.code,
