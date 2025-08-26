@@ -115,7 +115,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
         mTextPaint = TextPaint().apply {
             color = Color.WHITE
             style = Paint.Style.FILL
-            textSize = ScreenUtils.sp2px(14).toFloat()
+            textSize = ScreenUtils.sp2px(14f).toFloat()
         }
 
         mPointDraw = PointDraw(mContext)
@@ -155,20 +155,20 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
 
                         when (mDrawModel) {
                             DrawModel.DRAW_POINT -> {
-                                if (mPointDraw.operateStatus == PointDraw.OPERATE_STATUS_POINT_IN_TOUCH) {
-                                    mPointDraw.operateStatus = PointDraw.OPERATE_STATUS_POINT_REMOVE
+                                if (mPointDraw.getOperateStatus() == PointDraw.OPERATE_STATUS_POINT_IN_TOUCH) {
+                                    mPointDraw.setOperateStatus(PointDraw.OPERATE_STATUS_POINT_REMOVE)
                                 }
                             }
                             DrawModel.DRAW_LINE -> {
-                                val status = mLineDraw.operateStatus
+                                val status = mLineDraw.getOperateStatus()
                                 if (status == LineDraw.OPERATE_STATUS_LINE_IN_TOUCH_START ||
                                     status == LineDraw.OPERATE_STATUS_LINE_IN_TOUCH_END ||
                                     status == LineDraw.OPERATE_STATUS_LINE_IN_TOUCH_CENTER) {
-                                    mLineDraw.operateStatus = LineDraw.OPERATE_STATUS_LINE_REMOVE
+                                    mLineDraw.setOperateStatus(LineDraw.OPERATE_STATUS_LINE_REMOVE)
                                 }
                             }
                             DrawModel.DRAW_RECT -> {
-                                val status = mRectDraw.operateStatus
+                                val status = mRectDraw.getOperateStatus()
                                 if (status in arrayOf(
                                     RectDraw.OPERATE_STATUS_RECTANGLE_LEFT_TOP_CORNER,
                                     RectDraw.OPERATE_STATUS_RECTANGLE_RIGHT_TOP_CORNER,
@@ -179,7 +179,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                     RectDraw.OPERATE_STATUS_RECTANGLE_RIGHT_EDGE,
                                     RectDraw.OPERATE_STATUS_RECTANGLE_BOTTOM_EDGE,
                                     RectDraw.OPERATE_STATUS_RECTANGLE_MOVE_ENTIRE)) {
-                                    mRectDraw.operateStatus = RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_REMOVE
+                                    mRectDraw.setOperateStatus(RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_REMOVE)
                                 }
                             }
                             else -> {}
@@ -205,11 +205,11 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                     DrawModel.DRAW_POINT -> {
                         val indexPointTouch = mPointDraw.checkTouchPointInclude(mFirstX, mFirstY)
                         Log.d(TAG, "indexPointTouch : $indexPointTouch")
-                        mPointDraw.operateStatus = if (indexPointTouch != -1) {
+                        mPointDraw.setOperateStatus(if (indexPointTouch != -1) {
                             PointDraw.OPERATE_STATUS_POINT_IN_TOUCH
                         } else {
                             PointDraw.OPERATE_STATUS_POINT_ADD
-                        }
+                        })
                     }
                     DrawModel.DRAW_LINE -> {
                         val indexLineTouch = mLineDraw.checkTouchLineInclude(mFirstX.toInt(), mFirstY.toInt())
@@ -217,7 +217,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                         if (indexLineTouch != -1) {
                             mLineDraw.changeTouchLineOperateStatus(mFirstX, mFirstY)
                         } else {
-                            mLineDraw.operateStatus = LineDraw.OPERATE_STATUS_LINE_ADD
+                            mLineDraw.setOperateStatus(LineDraw.OPERATE_STATUS_LINE_ADD)
                         }
                     }
                     DrawModel.DRAW_RECT -> {
@@ -226,7 +226,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                         if (indexRectTouch != -1) {
                             mRectDraw.changeTouchRectOperateStatus(mFirstX, mFirstY)
                         } else {
-                            mRectDraw.operateStatus = RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_ADD
+                            mRectDraw.setOperateStatus(RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_ADD)
                         }
                     }
                     else -> {}
@@ -252,13 +252,13 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
 
                 when (mDrawModel) {
                     DrawModel.DRAW_POINT -> {
-                        if (mPointDraw.operateStatus == PointDraw.OPERATE_STATUS_POINT_IN_TOUCH) {
+                        if (mPointDraw.getOperateStatus() == PointDraw.OPERATE_STATUS_POINT_IN_TOUCH) {
                             mPointDraw.changeTouchPointLocationByIndex(mPointDraw.touchInclude, mCurX, mCurY)
                         }
                         doTouchDraw()
                     }
                     DrawModel.DRAW_LINE -> {
-                        val status = mLineDraw.operateStatus
+                        val status = mLineDraw.getOperateStatus()
                         if (status == LineDraw.OPERATE_STATUS_LINE_IN_TOUCH_START ||
                             status == LineDraw.OPERATE_STATUS_LINE_IN_TOUCH_END ||
                             status == LineDraw.OPERATE_STATUS_LINE_IN_TOUCH_CENTER) {
@@ -267,7 +267,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                         doTouchDraw()
                     }
                     DrawModel.DRAW_RECT -> {
-                        val status = mRectDraw.operateStatus
+                        val status = mRectDraw.getOperateStatus()
                         if (status in arrayOf(
                             RectDraw.OPERATE_STATUS_RECTANGLE_LEFT_TOP_CORNER,
                             RectDraw.OPERATE_STATUS_RECTANGLE_RIGHT_TOP_CORNER,
@@ -335,7 +335,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                 Log.d(TAG, "ACTION_UP OR ACTION_POINTER_UP")
                 when (mDrawModel) {
                     DrawModel.DRAW_POINT -> {
-                        when (mPointDraw.operateStatus) {
+                        when (mPointDraw.getOperateStatus()) {
                             PointDraw.OPERATE_STATUS_POINT_ADD -> {
                                 mPointDraw.addPoint(1, mCurX, mCurY)
                             }
@@ -346,7 +346,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                         doShapeDraw()
                     }
                     DrawModel.DRAW_LINE -> {
-                        when (mLineDraw.operateStatus) {
+                        when (mLineDraw.getOperateStatus()) {
                             LineDraw.OPERATE_STATUS_LINE_ADD -> {
                                 mLineDraw.addLine(mFirstX.toInt(), mFirstY.toInt(), mCurX.toInt(), mCurY.toInt())
                             }
@@ -359,7 +359,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                         }
                     }
                     DrawModel.DRAW_RECT -> {
-                        when (mRectDraw.operateStatus) {
+                        when (mRectDraw.getOperateStatus()) {
                             RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_ADD -> {
                                 val left = min(mFirstX, mCurX).toInt()
                                 val right = max(mFirstX, mCurX).toInt()
@@ -496,18 +496,18 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
 
                     tempResultBeans.forEachIndexed { i, tempResultBean ->
                         // Update point views
-                        mPointDraw.pointViewList.filter { it.id == tempResultBean.id }
+                        mPointDraw.pointViewList.filter { it.getId() == tempResultBean.id }
                             .forEach { it.tempPoint = Point(tempResultBean.max_temp_x, tempResultBean.max_temp_y) }
 
                         // Update line views
-                        mLineDraw.lineViewList.filter { it.id == tempResultBean.id }
+                        mLineDraw.lineViewList.filter { it.getId() == tempResultBean.id }
                             .forEach { 
                                 it.highTempPoint = Point(tempResultBean.max_temp_x, tempResultBean.max_temp_y)
                                 it.lowTempPoint = Point(tempResultBean.min_temp_x, tempResultBean.min_temp_y)
                             }
 
                         // Update rect views
-                        mRectDraw.rectViewList.filter { it.id == tempResultBean.id }
+                        mRectDraw.rectViewList.filter { it.getId() == tempResultBean.id }
                             .forEach { 
                                 it.highTempPoint = Point(tempResultBean.max_temp_x, tempResultBean.max_temp_y)
                                 it.lowTempPoint = Point(tempResultBean.min_temp_x, tempResultBean.min_temp_y)
@@ -518,7 +518,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                         mPointDraw.onDraw(it, false)
                         mLineDraw.onDraw(it, false)
                         mRectDraw.onDraw(it, false)
-                        drawTempData(mContext, mLineDraw.mScreenDegree, it, tempResultBeans)
+                        drawTempData(mContext, mLineDraw.getScreenDegree(), it, tempResultBeans)
                     }
                 }
             }
@@ -543,17 +543,17 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
 
                 when (mDrawModel) {
                     DrawModel.DRAW_POINT -> {
-                        if (mPointDraw.operateStatus == PointDraw.OPERATE_STATUS_POINT_ADD) {
+                        if (mPointDraw.getOperateStatus() == PointDraw.OPERATE_STATUS_POINT_ADD) {
                             canvas?.let { mPointDraw.onTempDraw(it, 1, mCurX, mCurY) }
                         }
                     }
                     DrawModel.DRAW_LINE -> {
-                        if (mLineDraw.operateStatus == LineDraw.OPERATE_STATUS_LINE_ADD) {
+                        if (mLineDraw.getOperateStatus() == LineDraw.OPERATE_STATUS_LINE_ADD) {
                             canvas?.let { mLineDraw.onTempDraw(it, mFirstX.toInt(), mFirstY.toInt(), mCurX.toInt(), mCurY.toInt()) }
                         }
                     }
                     DrawModel.DRAW_RECT -> {
-                        if (mRectDraw.operateStatus == RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_ADD) {
+                        if (mRectDraw.getOperateStatus() == RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_ADD) {
                             canvas?.let { mRectDraw.onTempDraw(it, mFirstX.toInt(), mFirstY.toInt(), mCurX.toInt(), mCurY.toInt()) }
                         }
                     }
@@ -608,7 +608,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             }
         }
 
-        val interval = ScreenUtils.dp2px(mTextWidth + 10)
+        val interval = ScreenUtils.dp2px((mTextWidth + 10).toFloat())
         var count = 0
         var startIndex = 0
         var pointCount = 0

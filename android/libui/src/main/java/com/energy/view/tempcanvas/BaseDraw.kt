@@ -14,6 +14,8 @@ abstract class BaseDraw(protected val mContext: Context) {
     protected var mTouchIndex = -1
     protected var mViewWidth = 0
     protected var mViewHeight = 0
+    
+    fun getScreenDegree(): Int = mScreenDegree
 
     fun setViewWidth(viewWidth: Int) {
         this.mViewWidth = viewWidth

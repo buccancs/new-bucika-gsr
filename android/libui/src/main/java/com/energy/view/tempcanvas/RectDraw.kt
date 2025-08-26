@@ -41,6 +41,12 @@ class RectDraw(context: Context) : BaseDraw(context) {
     private val mBgColor = Color.parseColor("#CC1A1A1A")
     private var mTempRect: RectView? = null
     private var mOperateStatus = -1
+    override protected var mTouchIndex = -1
+    
+    var viewWidth: Int = 0
+    var viewHeight: Int = 0
+    
+    val touchInclude: Int get() = mTouchIndex
     
     init {
         lineStrokeWidth = ScreenUtils.dp2px(1)

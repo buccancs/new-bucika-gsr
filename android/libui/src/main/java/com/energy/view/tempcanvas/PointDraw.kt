@@ -41,6 +41,13 @@ class PointDraw(context: Context) : BaseDraw(context) {
     private val bgStrokeColor = Color.parseColor("#99000000")
     private val bgColor = Color.parseColor("#CC1A1A1A")
     private var operateStatus = -1
+    override protected var mTouchIndex = -1
+    
+    var viewWidth: Int = 0
+    var viewHeight: Int = 0
+    
+    val touchInclude: Int get() = mTouchIndex
+    val pointViewList: LinkedList<PointView> get() = pointList
 
     fun getOperateStatus(): Int = operateStatus
 
