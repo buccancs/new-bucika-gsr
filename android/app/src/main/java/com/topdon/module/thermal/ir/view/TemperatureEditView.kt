@@ -64,6 +64,40 @@ class TemperatureEditView @JvmOverloads constructor(
         invalidate()
     }
     
+    fun getBaseBitmap(): android.graphics.Bitmap? {
+        // Stub implementation for getting base bitmap
+        return null
+    }
+    
+    fun mergeBitmap(bitmap: android.graphics.Bitmap?): android.graphics.Bitmap? {
+        // Stub implementation for merging bitmap
+        return bitmap
+    }
+    
+    var fullInfo: String = ""
+        set(value) {
+            field = value
+            invalidate()
+        }
+    
+    var maxTemperature: Float = 100f
+        set(value) {
+            field = value
+            invalidate()
+        }
+    
+    var minTemperature: Float = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+    
+    var tempListData: List<com.topdon.tc001.bean.TempBean> = emptyList()
+        set(value) {
+            field = value
+            invalidate()
+        }
+    
     enum class Mode {
         CLEAR, EDIT, POINT, LINE, RECT
     }

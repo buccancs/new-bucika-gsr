@@ -34,7 +34,7 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         binding = ActivityGsrSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        binding.titleView.setTitle("GSR Settings & Configuration")
+        binding.titleView.setTitleText("GSR Settings & Configuration")
         binding.titleView.setLeftClickListener { finish() }
         
         try {

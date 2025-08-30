@@ -64,6 +64,7 @@ import com.topdon.thermal.report.bean.ImageTempBean
 import com.topdon.thermal.viewmodel.IRGalleryEditViewModel
 import com.topdon.pseudo.activity.PseudoSetActivity
 import com.topdon.pseudo.bean.CustomPseudoBean
+import com.topdon.tc001.bean.TempBean
 import com.topdon.tc001.databinding.ActivityIrGalleryEditBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -490,17 +491,17 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
                     var irBitmap = if (struct.isAmplify){
 
-                        OpencvTools.supImageFourExToBitmap(frameTool.getBaseBitmap(rotate))
+                        OpencvTools.supImageFourExToBitmap(binding.temperatureView.getBaseBitmap())
                     }else{
                         binding.irImageView.drawToBitmap()
                     }
-                    if (binding.temperatureView.mode != Mode.CLEAR) {
+                    if (binding.temperatureView.mode != TemperatureEditView.Mode.CLEAR) {
 
-                        irBitmap = BitmapUtils.mergeBitmap(irBitmap, binding.temperatureView.drawToBitmap(), 0, 0)
+                        irBitmap = binding.temperatureView.mergeBitmap(irBitmap)
                     }
 
                     if (binding.colorBarView.visibility == View.VISIBLE) {
-                        irBitmap = BitmapUtils.mergeBitmap(irBitmap, binding.colorBarView.drawToBitmap(), 0, 0)
+                        irBitmap = binding.temperatureView.mergeBitmap(irBitmap)
                     }
 
                     val fileAbsolutePath = ImageUtils.saveToCache(this@IRGalleryEditActivity, irBitmap)
