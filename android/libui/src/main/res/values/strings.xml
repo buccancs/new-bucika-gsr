@@ -22,4 +22,8 @@
     <string name="target_tips_step_2">Target tips step 2</string>
     <string name="target_tips_step_3">Target tips step 3</string>
     <string name="target_tips_step_4">Target tips step 4</string>
+    
+    <!-- Missing strings for tip preview dialog -->
+    <string name="preview_step_1">Preview step 1</string>
+    <string name="preview_step_2">Preview step 2</string>
 </resources>
