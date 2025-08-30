@@ -161,7 +161,12 @@ class EasyBLE internal constructor(builder: EasyBLEBuilder) {
                     (scanner as? ClassicScanner)?.setScanning(false)
                 }
                 BluetoothDevice.ACTION_FOUND -> {
-                    val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    }
                     if (device != null && scanner is ClassicScanner) {
                         val rssi = intent.extras?.getShort(BluetoothDevice.EXTRA_RSSI) ?: -120
                         (scanner as ClassicScanner).parseScanResult(device, false, null, rssi.toInt(), null)

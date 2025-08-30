@@ -102,14 +102,24 @@ data class Device(
     }
 
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(BluetoothDevice::class.java.classLoader)!!
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcel.readParcelable(BluetoothDevice::class.java.classLoader, BluetoothDevice::class.java)!!
+        } else {
+            @Suppress("DEPRECATION")
+            parcel.readParcelable(BluetoothDevice::class.java.classLoader)!!
+        }
     ) {
         readFromParcel(parcel)
     }
 
     fun readFromParcel(parcel: Parcel) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            scanResult = parcel.readParcelable(ScanResult::class.java.classLoader)
+            scanResult = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                parcel.readParcelable(ScanResult::class.java.classLoader, ScanResult::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                parcel.readParcelable(ScanResult::class.java.classLoader)
+            }
         }
         val scanRecordLen = parcel.readInt()
         if (scanRecordLen > 0) {

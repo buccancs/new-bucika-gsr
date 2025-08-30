@@ -69,33 +69,30 @@ android {
         }
     }
 
-    // Include signing configuration
+    // Signing configuration - disabled for development builds
+    // Production builds should configure proper signing externally
     signingConfigs {
-        debug {
-            storeFile file('artibox_key/ArtiBox.jks')
-            keyAlias 'Artibox'
-            storePassword 'artibox2017'
-            keyPassword 'artibox2017'
-        }
-        release {
-            storeFile file('artibox_key/ArtiBox.jks')
-            keyAlias 'Artibox'
-            storePassword 'artibox2017'
-            keyPassword 'artibox2017'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
+        // debug signing disabled - uses default Android debug keystore
+        // release {
+        //     // Configure in production environment with proper keystore
+        //     storeFile file('path/to/production.keystore')
+        //     keyAlias 'production_alias'
+        //     storePassword project.findProperty('KEYSTORE_PASSWORD') ?: ''
+        //     keyPassword project.findProperty('KEY_PASSWORD') ?: ''
+        //     v1SigningEnabled true
+        //     v2SigningEnabled true
+        // }
     }
 
     buildTypes {
         debug {
-            // Temporarily disable signing for debug builds
-            // signingConfig signingConfigs.debug
+            // Uses default Android debug keystore for development
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            signingConfig signingConfigs.release
+            // Release signing should be configured externally in production
+            // signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

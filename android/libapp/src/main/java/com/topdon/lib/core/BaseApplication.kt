@@ -9,7 +9,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Process
 import android.text.TextUtils
@@ -104,10 +106,34 @@ abstract class BaseApplication : Application() {
     open fun initWebSocket(){
         connectWebSocket()
 
-        if (Build.VERSION.SDK_INT < 33) {
-            registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        // Use modern NetworkCallback for API 24+ instead of deprecated broadcast receiver
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkRequest = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build()
+            
+            connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    Log.i("WebSocket", "Network available - connecting WebSocket")
+                    connectWebSocket()
+                }
+                
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    Log.i("WebSocket", "Network lost")
+                }
+            })
         } else {
-            registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), Context.RECEIVER_NOT_EXPORTED)
+            // Fallback for older APIs - using deprecated broadcast receiver
+            @Suppress("DEPRECATION")
+            if (Build.VERSION.SDK_INT < 33) {
+                registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            } else {
+                registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), Context.RECEIVER_NOT_EXPORTED)
+            }
         }
     }
 
@@ -169,16 +195,30 @@ abstract class BaseApplication : Application() {
     }
 
     private inner class NetworkChangedReceiver : BroadcastReceiver() {
+        @Suppress("DEPRECATION") // Maintained for backward compatibility with older Android versions
         override fun onReceive(context: Context?, intent: Intent?) {
             if (ConnectivityManager.CONNECTIVITY_ACTION == intent?.action) {
                 val manager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                val activeNetwork: NetworkInfo = manager.activeNetworkInfo ?: return
-                if (activeNetwork.isConnected && activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
-                    connectWebSocket()
-                }else{
-
+                
+                // Use modern network checking for API 23+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val activeNetwork = manager.activeNetwork
+                    val networkCapabilities = manager.getNetworkCapabilities(activeNetwork)
+                    val isWifi = networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+                    val isConnected = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+                    
+                    if (isConnected && isWifi) {
+                        connectWebSocket()
+                    }
+                    Log.i("WebSocket", "Network changed - WiFi: $isWifi, Connected: $isConnected")
+                } else {
+                    // Fallback for older APIs
+                    val activeNetwork = manager.activeNetworkInfo ?: return
+                    if (activeNetwork.isConnected && activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
+                        connectWebSocket()
+                    }
+                    Log.i("WebSocket", "Network changed - Type: ${activeNetwork.type}, Connected: ${activeNetwork.isConnected}")
                 }
-                Log.i("WebSocket", "网络切换 Wifi SSID: $activeNetwork"+activeNetwork.type)
             }
         }
     }

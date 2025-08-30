@@ -86,7 +86,7 @@ class PreUtil private constructor(context: Context, shareName: String = SHARE_NA
                 val methodName = method.name
                 if (methodName.startsWith("get")) {
                     val value = method.invoke(t)
-                    val saveValue = if (!TextUtils.isEmpty(value.toString())) value.toString() else ""
+                    val saveValue = if (!TextUtils.isEmpty(value?.toString())) value?.toString() ?: "" else ""
                     val saveKey = methodName.replace("get", "").lowercase()
                     edit.putString(saveKey, saveValue)
                 }
@@ -163,7 +163,7 @@ class PreUtil private constructor(context: Context, shareName: String = SHARE_NA
 
     fun <T> get(cls: Class<T>): Any? {
         return try {
-            val obj = cls.newInstance()
+            val obj = cls.getDeclaredConstructor().newInstance()
             val fields = cls.declaredFields
             
             for (field in fields) {

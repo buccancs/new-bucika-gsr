@@ -104,41 +104,42 @@ object Configuration {
             const val PACKET_RECEPTION_RATE = "PACKET_RECEPTION_RATE"
         }
         
-        object SensorMap {
+        // Sensor mapping configuration
+        object SensorMappings {
             object GSR {
                 const val mValue = 0x08
                 const val mName = "GSR"
-                const val mChannels = arrayOf("GSR_CONDUCTANCE", "GSR_RESISTANCE")
+                val mChannels = arrayOf("GSR_CONDUCTANCE", "GSR_RESISTANCE")
             }
             
             object TEMPERATURE {
                 const val mValue = 0x10
                 const val mName = "TEMPERATURE"
-                const val mChannels = arrayOf("SKIN_TEMPERATURE", "TEMPERATURE")
+                val mChannels = arrayOf("SKIN_TEMPERATURE", "TEMPERATURE")
             }
             
             object PPG {
                 const val mValue = 0x20
                 const val mName = "PPG"
-                const val mChannels = arrayOf("PPG", "HEART_RATE")
+                val mChannels = arrayOf("PPG", "HEART_RATE")
             }
             
             object ACCEL {
                 const val mValue = 0x80
                 const val mName = "ACCEL"
-                const val mChannels = arrayOf("ACCEL_X", "ACCEL_Y", "ACCEL_Z")
+                val mChannels = arrayOf("ACCEL_X", "ACCEL_Y", "ACCEL_Z")
             }
             
             object GYRO {
                 const val mValue = 0x40
                 const val mName = "GYRO"
-                const val mChannels = arrayOf("GYRO_X", "GYRO_Y", "GYRO_Z")
+                val mChannels = arrayOf("GYRO_X", "GYRO_Y", "GYRO_Z")
             }
             
             object MAG {
                 const val mValue = 0x01
                 const val mName = "MAG"
-                const val mChannels = arrayOf("MAG_X", "MAG_Y", "MAG_Z")
+                val mChannels = arrayOf("MAG_X", "MAG_Y", "MAG_Z")
             }
             
             object ALL_SENSORS {

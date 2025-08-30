@@ -81,3 +81,4 @@ class ConnectionGuideView: LinearLayout {
         spannableString.setSpan(ImageSpan(drawable), mContent.length - 1, mContent.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         contentText.text = spannableString
     }
+}

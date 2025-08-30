@@ -39,7 +39,7 @@ internal class BackgroundPoster(private val executorService: ExecutorService) : 
                         }
                     }
                 }
-                runnable.run()
+                runnable?.run()
             }
         } finally {
             executorRunning = false

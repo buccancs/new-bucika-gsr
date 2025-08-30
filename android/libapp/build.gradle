@@ -74,7 +74,8 @@ android {
 }
 
 dependencies {
-    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    // JAR dependencies only - AAR files moved to app module due to Gradle deprecation
+    api fileTree(include: ['*.jar'], dir: 'libs')
     api "androidx.appcompat:appcompat:1.6.1"
     api "androidx.fragment:fragment-ktx:1.6.1"  
     api "com.google.android.material:material:1.9.0"
@@ -129,12 +130,8 @@ dependencies {
     api "org.bytedeco:javacv:1.5.6"
     api "org.bytedeco:javacpp:1.5.6"
     
-    // Local AAR dependencies
-    api files('libs/abtest-1.0.1.aar')
-    api files('libs/auth-number-2.13.2.1.aar')
-    api files('libs/lms_international-3.90.009.0.aar')
-    api files('libs/logger-2.2.1-release.aar')
-    api files('libs/main-2.2.1-release.aar')
+    // Local AAR dependencies moved to app module due to Gradle deprecation
+    // (AAR dependencies in library modules are no longer supported)
     
     // Dependencies from merged libcom module
     api "com.github.skydoves:colorpickerview:2.2.4"

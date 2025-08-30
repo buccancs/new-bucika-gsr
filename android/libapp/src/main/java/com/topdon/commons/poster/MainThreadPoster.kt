@@ -43,7 +43,7 @@ internal class MainThreadPoster : Handler(Looper.getMainLooper()), Poster {
                         }
                     }
                 }
-                runnable.run()
+                runnable?.run()
             }
         } finally {
             handlerActive = false

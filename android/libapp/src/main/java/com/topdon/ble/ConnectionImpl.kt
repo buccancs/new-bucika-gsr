@@ -147,6 +147,7 @@ internal class ConnectionImpl(
             }
         }
 
+        @Deprecated("Use BluetoothGattCallback with newer BLE APIs")
         override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
             Log.e("bcf", "onCharacteristicRead  status: $status  value: ${HexUtil.bytesToHexString(characteristic.value)}")
             originCallback?.let { callback ->
@@ -180,6 +181,7 @@ internal class ConnectionImpl(
             }
         }
 
+        @Deprecated("Use BluetoothGattCallback with newer BLE APIs")
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
             originCallback?.let { callback ->
                 easyBle.getExecutorService().execute { callback.onCharacteristicChanged(gatt, characteristic) }
@@ -204,6 +206,7 @@ internal class ConnectionImpl(
             }
         }
 
+        @Deprecated("Use BluetoothGattCallback with newer BLE APIs")
         override fun onDescriptorRead(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
             originCallback?.let { callback ->
                 easyBle.getExecutorService().execute { callback.onDescriptorRead(gatt, descriptor, status) }
