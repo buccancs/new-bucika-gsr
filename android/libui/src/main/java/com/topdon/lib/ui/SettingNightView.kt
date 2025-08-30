@@ -3,6 +3,7 @@ package com.topdon.lib.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -10,7 +11,7 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.ui_setting_view.view.*
+import com.topdon.lib.ui.databinding.UiSettingViewBinding
 
 class SettingNightView : LinearLayout {
 
@@ -28,8 +29,6 @@ class SettingNightView : LinearLayout {
         }
     }
 
-
-
     private var iconRes: Int = 0
     private var contentStr: String = ""
     private var moreShow: Boolean = true
@@ -39,6 +38,7 @@ class SettingNightView : LinearLayout {
     private lateinit var headImg: ImageView
     private lateinit var endImg: ImageView
     private lateinit var contentText: TextView
+    private lateinit var lineView: View
 
     constructor(context: Context) : this(context, null)
 
@@ -76,6 +76,7 @@ class SettingNightView : LinearLayout {
         contentText = findViewById(R.id.item_setting_text)
         headImg = findViewById(R.id.item_setting_image)
         endImg = findViewById(R.id.item_setting_end_image)
+        lineView = findViewById(R.id.item_setting_line)
 
         headImg.setImageResource(iconRes)
         if (iconShow) {
@@ -89,6 +90,6 @@ class SettingNightView : LinearLayout {
         } else {
             endImg.visibility = View.GONE
         }
-        item_setting_line.visibility = if (lineShow) View.VISIBLE else View.GONE
+        lineView.visibility = if (lineShow) View.VISIBLE else View.GONE
     }
 }

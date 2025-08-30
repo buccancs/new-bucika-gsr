@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="temp_label">Temp :</string>
+    <string name="temp_max">Max :</string>
+    <string name="temp_min">Min :</string>
+    <string name="temp_avg">Moy :</string>
+
+    <string name="text_button_play">start</string>
+    <string name="person_headshot_camera">Person Headshot Camera</string>
+    <string name="app_video">App Video</string>
+    <string name="select_monitor_type_step2">Select Monitor Type - Step 2</string>
+    <string name="select_monitor_return">Return</string>
+    <string name="select_monitor_type_step1">Select Monitor Type - Step 1</string>
+    <string name="app_confirm">Confirm</string>
+</resources>
