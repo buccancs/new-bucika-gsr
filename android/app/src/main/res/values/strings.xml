@@ -49,6 +49,10 @@
     <!-- App update strings -->
     <string name="updata_new_version_update">New version available</string>
     
+    <!-- Navigation and Action strings -->
+    <string name="app_next">Next</string>
+    <string name="person_save">Save</string>
+    
     <!-- Permission related strings -->
     <string name="permission_request_camera_app">Camera permission required for thermal imaging</string>
     <string name="permission_request_storage_app">Storage permission required to save images</string>
@@ -76,7 +80,6 @@
     <string name="attachBaseContext">attachBaseContext</string>
     <string name="clNewVersion">clNewVersion</string>
     <string name="tvNewVersion">tvNewVersion</string>
-    <string name="app_next">Next</string>
     <string name="app_confirm">Confirm</string>
     <string name="app_cancel">Cancel</string>
     <string name="installation_package_downloading">Downloading update package</string>

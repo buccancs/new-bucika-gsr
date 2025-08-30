@@ -196,4 +196,47 @@ public class BitmapUtils {
     public static boolean isValidBitmap(Bitmap bitmap) {
         return bitmap != null && !bitmap.isRecycled() && bitmap.getWidth() > 0 && bitmap.getHeight() > 0;
     }
+    
+    /**
+     * Draw center label with title, address, time and temperature
+     */
+    public static Bitmap drawCenterLable(Bitmap bitmap, String title, String address, String time, int temperature) {
+        if (bitmap == null) return null;
+        
+        Bitmap result = bitmap.copy(bitmap.getConfig(), true);
+        Canvas canvas = new Canvas(result);
+        
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(android.graphics.Color.WHITE);
+        paint.setTextSize(24f);
+        paint.setTextAlign(Paint.Align.CENTER);
+        
+        int centerX = bitmap.getWidth() / 2;
+        int y = bitmap.getHeight() - 100; // Start from bottom
+        
+        // Draw title
+        if (title != null && !title.isEmpty()) {
+            canvas.drawText(title, centerX, y, paint);
+            y -= 30;
+        }
+        
+        // Draw address
+        if (address != null && !address.isEmpty()) {
+            canvas.drawText(address, centerX, y, paint);
+            y -= 30;
+        }
+        
+        // Draw time
+        if (time != null && !time.isEmpty()) {
+            canvas.drawText(time, centerX, y, paint);
+            y -= 30;
+        }
+        
+        // Draw temperature if provided
+        if (temperature != 0) {
+            canvas.drawText(temperature + "°C", centerX, y, paint);
+        }
+        
+        return result;
+    }
 }

@@ -50,7 +50,7 @@ class GalleryUIStateManager(
     fun toggleTemperatureOverlay(show: Boolean) {
         isTemperatureOverlayVisible = show
         
-        binding.temperatureOverlay?.isVisible = show
+        binding.temperatureView.isVisible = show
         
         updateTemperatureControls(show)
     }

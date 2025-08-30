@@ -5,6 +5,7 @@ import com.elvishew.xlog.XLog
 import com.shimmerresearch.driver.Configuration
 import com.shimmerresearch.driver.ProcessedGSRData
 import com.topdon.tc001.gsr.GSRManager
+import com.topdon.tc001.gsr.QualityAssessment
 import com.topdon.tc001.gsr.discovery.ShimmerDeviceDiscovery
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat

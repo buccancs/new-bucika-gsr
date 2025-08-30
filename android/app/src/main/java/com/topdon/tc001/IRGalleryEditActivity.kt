@@ -185,7 +185,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             delay(200)
             updateImage(
                 frameTool.getScrPseudoColorScaledBitmap(
-                    changePseudocodeModeByNew(changePseudocodeModeByOld(pseudocodeMode)),
+                    changePseudocodeModeByOld(pseudocodeMode),
                     rotate = rotate,
                     customPseudoBean = struct.customPseudoBean,
                     maxTemperature = tempCorrect(frameTool.getSrcTemp().maxTemperature),
@@ -360,7 +360,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 tempAlarmSetDialog?.show()
             }
             SettingType.FONT -> {
-                val colorPickDialog = ColorPickDialog(this, binding.temperatureView.textColor,binding.temperatureView.tempTextSize)
+                val colorPickDialog = ColorPickDialog(this, binding.temperatureView.textColor, binding.temperatureView.tempTextSize.toInt())
                 colorPickDialog.onPickListener = { it: Int, textSize: Int ->
                     binding.temperatureView.textColor = it
                     struct.textSize = SizeUtils.sp2px(textSize.toFloat())

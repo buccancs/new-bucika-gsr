@@ -58,23 +58,3 @@ class FrameStruct {
         return result
     }
 }
-
-/**
- * Watermark configuration for thermal images
- */
-data class WatermarkBean(
-    var title: String = "",
-    var address: String = "",
-    var isOpen: Boolean = false
-)
-
-/**
- * Alarm configuration for thermal monitoring  
- */
-data class AlarmBean(
-    var isHighOpen: Boolean = false,
-    var isLowOpen: Boolean = false,
-    var isOpen: Boolean = false,
-    var highTemp: Float = 100f,
-    var lowTemp: Float = 0f
-)
