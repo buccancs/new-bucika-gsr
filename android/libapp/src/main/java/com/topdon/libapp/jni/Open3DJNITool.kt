@@ -1,10 +1,10 @@
-package com.example.open3d
+package com.topdon.libapp.jni
 
 /**
  * JNI Tool for Open3D native library integration
  * Provides interface to Open3D point cloud processing capabilities
  */
-object JNITool {
+object Open3DJNITool {
     
     init {
         try {

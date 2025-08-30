@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.lifecycleScope
 import com.energy.iruvc.utils.CommonParams
 import com.infisense.usbir.utils.OpencvTools
-import com.topdon.lib.core.utils.BitmapUtils
+import com.topdon.libapp.utils.BitmapUtils
 import com.infisense.usbir.utils.PseudocodeUtils.changePseudocodeModeByOld
 import com.topdon.tc001.IRGalleryEditActivity
 import kotlinx.coroutines.launch

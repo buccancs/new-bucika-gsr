@@ -36,9 +36,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.core:core-ktx:1.10.1'
-    // implementation Deps.appcompat
-    // implementation 'com.google.android.material:material:1.12.0'
-    // implementation Deps.lifecycle_runtime_ktx
-
-    // implementation Deps.xlog
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    
+    // XLog library
+    implementation 'com.elvishew:xlog:1.11.0'
+    
+    // Kotlin coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
 }

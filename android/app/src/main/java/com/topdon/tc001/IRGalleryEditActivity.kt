@@ -22,7 +22,7 @@ import com.example.thermal_lite.IrConst
 import com.example.thermal_lite.util.CommonUtil
 import com.example.thermal_lite.util.IRTool
 import com.infisense.usbir.utils.OpencvTools
-import com.infisense.usbir.utils.BitmapUtils
+import com.topdon.libapp.utils.BitmapUtils
 import com.infisense.usbir.utils.PseudocodeUtils.changePseudocodeModeByOld
 import com.infisense.usbir.utils.PseudocodeUtils.changePseudocodeModeByNew
 import com.infisense.usbir.view.ITsTempListener
