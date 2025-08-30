@@ -62,7 +62,7 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         thermalView = binding.textureThermal
         visualView = binding.textureVisual
         
-        videoRecorder = EnhancedVideoRecorder() // TODO: Initialize with proper parameters when implemented
+        videoRecorder = EnhancedVideoRecorder(this)
         gsrManager = GSRManager.getInstance(this)
         gsrManager.setGSRDataListener(this)
         
@@ -132,7 +132,7 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
 
     private fun startEnhancedRecording() {
         if (!videoRecorder.isRecording) {
-            val success = videoRecorder.startRecording() // TODO: Pass recording mode when implemented
+            val success = videoRecorder.startRecording(currentRecordingMode)
             if (success) {
                 val modeText = when (currentRecordingMode) {
                     EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS -> "Samsung 4K 30FPS"
@@ -162,9 +162,9 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
                     gsrManager.stopRecording()
                 }
                 
-                // File recording management - TODO: implement proper file tracking
-                // val recordedFiles = videoRecorder.getRecordedFiles()
-                // val fileList = recordedFiles.joinToString("\n") { it.name }
+                // File recording management - now properly implemented
+                val recordedFiles = videoRecorder.getRecordedFiles()
+                val fileList = recordedFiles.joinToString("\n") { it.name }
                 
                 // Special handling for thermal recording mode
                 if (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS) {

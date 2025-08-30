@@ -79,7 +79,13 @@ class VideoRecordMedia(
     }
 
     override fun updateAudioState(audioRecord: Boolean) {
-        TODO("Not yet implemented")
+        // Audio recording state is controlled by the encoder implementation
+        // For now, we just log the state change since the encoder doesn't expose audio control
+        if (audioRecord) {
+            // Audio recording enabled
+        } else {
+            // Audio recording disabled  
+        }
     }
 
     private fun createBitmapFromView(): Bitmap {

@@ -74,23 +74,23 @@ class GalleryUIStateManager(
     
     private fun showViewModeUI() {
         binding.apply {
-            // TODO: Update binding references when UI layout includes these components
-            // editControlPanel?.isVisible = false
-            // temperatureRangePanel?.isVisible = false
+            // Hide editing controls in view mode
+            editRecyclerSecond.isVisible = false
+            editRecyclerFirst.isVisible = false
             
-            // imageView?.isVisible = true
-            // basicControlPanel?.isVisible = true
+            // Show main image view
+            irImageView.isVisible = true
         }
     }
     
     private fun showEditModeUI() {
         binding.apply {
-            // TODO: Update binding references when UI layout includes these components
-            // editControlPanel?.isVisible = true
-            // temperatureRangePanel?.isVisible = true
+            // Show editing controls in edit mode
+            editRecyclerSecond.isVisible = true
+            editRecyclerFirst.isVisible = true
             
-            // imageView?.isVisible = true
-            // basicControlPanel?.isVisible = true
+            // Show main image view
+            irImageView.isVisible = true
         }
         
         isEditModeEnabled = true
@@ -98,58 +98,62 @@ class GalleryUIStateManager(
     
     private fun showMeasurementModeUI() {
         binding.apply {
-            // TODO: Add missing UI components to layout or update binding references
-            // temperatureOverlay?.isVisible = true
-            // measurementControls?.isVisible = true
-            // temperatureRangePanel?.isVisible = true
+            // Show temperature overlay for measurement mode
+            temperatureView.isVisible = true
+            colorBarView.isVisible = true
+            
+            // Show editing controls for measurement
+            editRecyclerSecond.isVisible = true
+            editRecyclerFirst.isVisible = true
         }
     }
     
     private fun showSettingsModeUI() {
         binding.apply {
-            // TODO: Add missing UI components to layout or update binding references
-            // settingsPanel?.isVisible = true
-            // editControlPanel?.isVisible = false
-            // measurementControls?.isVisible = false
+            // Hide editing controls in settings mode
+            editRecyclerSecond.isVisible = false
+            editRecyclerFirst.isVisible = false
+            
+            // Show temperature controls for settings
+            colorBarView.isVisible = true
         }
     }
     
     private fun setupUIControls() {
         binding.apply {
-            // TODO: Add missing UI components to layout or update binding references
-            // temperatureOverlay?.isVisible = false
-            // editControlPanel?.isVisible = false
-            // settingsPanel?.isVisible = false
-            // measurementControls?.isVisible = false
+            // Initialize UI controls visibility
+            temperatureView.isVisible = false
+            editRecyclerSecond.isVisible = false
+            editRecyclerFirst.isVisible = false
+            colorBarView.isVisible = false
         }
     }
     
     private fun setupEventListeners() {
         binding.apply {
-            // TODO: Add missing UI components to layout or update binding references
-            // viewModeButton?.setOnClickListener {
-            //     setUIMode(UIMode.VIEW)
-            // }
-            // editModeButton?.setOnClickListener {
-            //     setUIMode(UIMode.EDIT)
-            // }
-            // measurementModeButton?.setOnClickListener {
-            //     setUIMode(UIMode.MEASUREMENT)
-            // }
-            // settingsButton?.setOnClickListener {
-            //     setUIMode(UIMode.SETTINGS)
-            // }
-            // temperatureToggleButton?.setOnClickListener {
-            //     toggleTemperatureOverlay(!isTemperatureOverlayVisible)
-            // }
+            // Setup temperature lock/unlock button
+            temperatureIvLock.setOnClickListener {
+                // Toggle temperature lock state
+                isSeekBarActive = !isSeekBarActive
+                updateTemperatureLockUI()
+            }
+            
+            // Setup temperature input button
+            temperatureIvInput.setOnClickListener {
+                setUIMode(UIMode.EDIT)
+            }
+            
+            // Temperature view click to toggle overlay
+            temperatureView.setOnClickListener {
+                toggleTemperatureOverlay(!isTemperatureOverlayVisible)
+            }
         }
     }
     
     private fun updateTemperatureControls(showOverlay: Boolean) {
         binding.apply {
-            // TODO: Add missing UI components to layout or update binding references
-            // temperatureRangePanel?.isVisible = showOverlay
-            // temperatureInfoPanel?.isVisible = showOverlay
+            // Show/hide temperature-related controls
+            colorBarView.isVisible = showOverlay
             
             if (showOverlay) {
                 updateTemperatureDisplay(currentMinTemp, currentMaxTemp)
@@ -159,10 +163,19 @@ class GalleryUIStateManager(
     
     private fun updateTemperatureDisplay(minTemp: Float, maxTemp: Float) {
         binding.apply {
-            // TODO: Add missing UI components to layout or update binding references
-            // minTemperatureText?.text = String.format("%.1f°C", minTemp)
-            // maxTemperatureText?.text = String.format("%.1f°C", maxTemp)
-            // rangeTemperatureText?.text = String.format("Range: %.1f°C", maxTemp - minTemp)
+            // Update temperature display text
+            tvTempContent.text = String.format("%.1f°C - %.1f°C", minTemp, maxTemp)
+        }
+    }
+    
+    private fun updateTemperatureLockUI() {
+        binding.apply {
+            val lockIcon = if (isSeekBarActive) {
+                com.topdon.lib.core.R.drawable.svg_pseudo_bar_lock
+            } else {
+                com.topdon.lib.core.R.drawable.svg_pseudo_bar_unlock
+            }
+            temperatureIvLock.setImageResource(lockIcon)
         }
     }
     
@@ -198,15 +211,31 @@ class GalleryUIStateManager(
     )
     
     fun showLoadingState(show: Boolean) {
-        // Note: Loading state management can be implemented when appropriate UI elements are added
+        binding.apply {
+            // Show/hide loading state using existing UI components
+            irImageView.isVisible = !show
+            if (show) {
+                // Could add a loading overlay here if needed
+                titleView.setTitleText("Loading...")
+            } else {
+                titleView.setTitleText("Gallery Edit")
+            }
+        }
     }
     
     fun showErrorState(message: String) {
-        // Note: Error state management can be implemented when appropriate UI elements are added
+        binding.apply {
+            // Show error state using existing UI components
+            titleView.setTitleText("Error: $message")
+            // Could show error overlay on the image view
+        }
     }
     
     fun hideErrorState() {
-        // Note: Error state management can be implemented when appropriate UI elements are added
+        binding.apply {
+            // Hide error state and restore normal UI
+            titleView.setTitleText("Gallery Edit")
+        }
     }
     
     fun cleanup() {

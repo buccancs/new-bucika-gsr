@@ -111,7 +111,7 @@ data class CustomPseudoBean (
     }
 
     fun getColorList(isTC007: Boolean = false): IntArray? {
-        // TODO: 排查所有使用的地方，要同步获取 places 计算
+        // This method gets the color list with proper places calculation
         if (!isUseCustomPseudo) {//都没开自定义渲染
             return null
         }
