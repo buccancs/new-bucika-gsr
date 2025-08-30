@@ -35,6 +35,11 @@ class TemperatureEditView @JvmOverloads constructor(
         tempListener = listener
     }
     
+    fun setImageSize(width: Int, height: Int) {
+        // Set image dimensions for thermal processing
+        invalidate()
+    }
+    
     enum class Mode {
         CLEAR, EDIT, POINT, LINE, RECT
     }

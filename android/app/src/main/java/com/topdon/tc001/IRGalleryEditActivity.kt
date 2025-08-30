@@ -48,14 +48,15 @@ import com.topdon.lib.core.utils.ScreenUtil
 
 import com.topdon.libcom.dialog.ColorPickDialog
 import com.topdon.libcom.dialog.TempAlarmSetDialog
+import com.topdon.thermal.frame.FrameTool
+import com.topdon.thermal.frame.FrameStruct  
+import com.topdon.thermal.frame.ImageParams
+import com.topdon.thermal.frame.TempResult
 import com.topdon.lms.sdk.LMS.mContext
 import com.topdon.menu.constant.FenceType
 import com.topdon.menu.constant.SettingType
 import com.topdon.thermal.event.GalleryAddEvent
 import com.topdon.thermal.event.ImageGalleryEvent
-import com.topdon.thermal.frame.FrameStruct
-import com.topdon.thermal.frame.FrameTool
-import com.topdon.thermal.frame.ImageParams
 import com.topdon.thermal.report.bean.ImageTempBean
 import com.topdon.thermal.view.TemperatureBaseView.Mode
 import com.topdon.thermal.viewmodel.IRGalleryEditViewModel
@@ -85,7 +86,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     private var filePath = ""
 
     private var mFrame = ByteArray(192 * 256 * 4)
-    private val frameTool by lazy { FrameTool() }
+    private val frameTool by lazy<FrameTool> { FrameTool }
 
     private var pseudocodeMode = 3
     private var leftValue = 0f
@@ -93,7 +94,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     private var max = 10000f
     private var min = 0f
     private var rotate = ImageParams.ROTATE_270
-    private var struct: FrameStruct = FrameStruct()
+    private var struct: FrameStruct = FrameStruct(ByteArray(0), 0, 0)
     private var ts_data_H: ByteArray? = null
     private var ts_data_L: ByteArray? = null
 

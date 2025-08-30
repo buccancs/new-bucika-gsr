@@ -8,8 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.android.arouter.launcher.ARouter
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.config.RouterConfig
-import com.topdon.thermal.activity.IRMainActivity
+import com.topdon.tc001.IRMainActivity
 import com.topdon.tc001.app.App
+import com.topdon.tc001.SplashActivity
 
 class BlankDevActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
