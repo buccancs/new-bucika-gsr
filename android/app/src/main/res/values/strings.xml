@@ -63,4 +63,7 @@
     <string name="app_tip">Tip</string>
     <string name="ts004_wlan_tips">WiFi connection instructions</string>
     <string name="app_open">Open</string>
+    <string name="tip_change_pseudo_mode">Change pseudo color mode</string>
+    <string name="app_yes">Yes</string>
+    <string name="app_no">No</string>
 </resources>

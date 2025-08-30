@@ -29,6 +29,20 @@ class TemperatureEditView @JvmOverloads constructor(
             invalidate()
         }
     
+    var textColor: Int = 0xffffffff.toInt()
+        set(value) {
+            field = value
+            invalidate()
+        }
+    
+    var tempTextSize: Float = 14f
+        set(value) {
+            field = value
+            invalidate()
+        }
+    
+    private var tempData: ByteArray? = null
+    
     private var tempListener: ITsTempListener? = null
     
     fun setITsTempListener(listener: ITsTempListener?) {
@@ -37,6 +51,16 @@ class TemperatureEditView @JvmOverloads constructor(
     
     fun setImageSize(width: Int, height: Int) {
         // Set image dimensions for thermal processing
+        invalidate()
+    }
+    
+    fun setData(data: ByteArray?) {
+        tempData = data
+        invalidate()
+    }
+    
+    fun drawCenterLable(enable: Boolean) {
+        // Draw center label for thermal view
         invalidate()
     }
     

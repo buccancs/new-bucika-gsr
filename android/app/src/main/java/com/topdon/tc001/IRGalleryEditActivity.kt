@@ -49,6 +49,7 @@ import com.topdon.lib.core.utils.ScreenUtil
 
 import com.topdon.libcom.dialog.ColorPickDialog
 import com.topdon.libcom.dialog.TempAlarmSetDialog
+import com.topdon.module.thermal.ir.view.TemperatureEditView
 import com.topdon.thermal.frame.FrameTool
 import com.topdon.thermal.frame.FrameStruct  
 import com.topdon.thermal.frame.ImageParams
@@ -205,7 +206,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             binding.editRecyclerSecond.setSettingSelected(SettingType.FONT,
                 struct.textColor != 0xffffffff.toInt() || struct.textSize != SizeUtils.sp2px(14f))
             binding.temperatureView.textColor = struct.textColor
-            binding.temperatureView.tempTextSize = struct.textSize
+            binding.temperatureView.tempTextSize = struct.textSize.toFloat()
             binding.temperatureView.setData(frameTool.getTempBytes(rotate = rotate))
             updateTemperatureSeekBar(false, R.drawable.svg_pseudo_bar_lock, "lock")
             if (struct.customPseudoBean.isUseCustomPseudo) {
@@ -268,10 +269,10 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
         binding.editRecyclerSecond.onFenceListener = { fenceType, isSelected ->
             when (fenceType) {
-                FenceType.POINT -> binding.temperatureView.mode = Mode.POINT
-                FenceType.LINE -> binding.temperatureView.mode = Mode.LINE
-                FenceType.RECT -> binding.temperatureView.mode = Mode.RECT
-                FenceType.DEL -> binding.temperatureView.mode = Mode.CLEAR
+                FenceType.POINT -> binding.temperatureView.mode = TemperatureEditView.Mode.POINT
+                FenceType.LINE -> binding.temperatureView.mode = TemperatureEditView.Mode.LINE
+                FenceType.RECT -> binding.temperatureView.mode = TemperatureEditView.Mode.RECT
+                FenceType.DEL -> binding.temperatureView.mode = TemperatureEditView.Mode.CLEAR
                 FenceType.FULL -> binding.temperatureView.isShowFull = isSelected
                 FenceType.TREND -> {
 
