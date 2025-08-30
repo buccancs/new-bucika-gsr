@@ -6,7 +6,7 @@ dependencyResolutionManagement {
         maven { url 'https://maven.aliyun.com/repository/google' }
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
+        // jcenter() deprecated - removed as it's shutting down, using mavenCentral() instead
         maven { url 'https://jitpack.io' }
         maven {
             url 'https://maven.zohodl.com'

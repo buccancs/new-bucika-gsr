@@ -61,8 +61,6 @@ android {
                 JPUSH_APPKEY : "cbd4eafc9049d751fc5a8c58",
                 JPUSH_CHANNEL : "developer-default",
         ]
-
-        setProperty("archivesBaseName", "BucikaGSR-v${versionName}.google")
     }
 
     bundle {
@@ -111,6 +109,11 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+}
+
+// Updated from deprecated archivesBaseName to archivesName
+base {
+    archivesName = "BucikaGSR-v" + rootProject.ext.android.versionName + ".google"
 }
 
 // Apply modular configuration files for additional components
