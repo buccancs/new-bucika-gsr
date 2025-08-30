@@ -75,7 +75,9 @@ android {
 
 dependencies {
     // JAR dependencies only - AAR files moved to app module due to Gradle deprecation
+    // Exception: lms_international needed for LMS SDK classes used in libapp
     api fileTree(include: ['*.jar'], dir: 'libs')
+    api files('libs/lms_international-3.90.009.0.aar')
     api "androidx.appcompat:appcompat:1.6.1"
     api "androidx.fragment:fragment-ktx:1.6.1"  
     api "com.google.android.material:material:1.9.0"

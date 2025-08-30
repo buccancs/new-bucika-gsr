@@ -472,3 +472,4 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     fun getServerUrl(): String? = currentServerUrl
 
     fun getDiscoveredServices(): Set<NsdServiceInfo> = discoveredServices.toSet()
+}

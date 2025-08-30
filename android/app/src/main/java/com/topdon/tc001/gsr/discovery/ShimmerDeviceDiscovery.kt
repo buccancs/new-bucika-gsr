@@ -289,3 +289,4 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         clearResults()
         discoveryListener = null
     }
+}

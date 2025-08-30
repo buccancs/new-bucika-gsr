@@ -110,7 +110,7 @@ class LocalFileBrowserActivity : BaseActivity() {
             )
             
             val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-                ?: "*
+                ?: "*/*"
     enum class FileType {
         
         VIDEO, 
@@ -267,3 +267,4 @@ class LocalFileBrowserActivity : BaseActivity() {
             .setPositiveButton("OK", null)
             .show()
     }
+}

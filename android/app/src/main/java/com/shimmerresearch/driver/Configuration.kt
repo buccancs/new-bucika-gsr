@@ -190,3 +190,4 @@ object Configuration {
             const val TEMP_CAL_GAIN = 0.01
         }
     }
+}

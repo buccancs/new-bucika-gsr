@@ -97,3 +97,4 @@ class VersionActivity : BaseActivity(), View.OnClickListener {
         }
         appVersionUtil?.checkVersion(isShow)
     }
+}

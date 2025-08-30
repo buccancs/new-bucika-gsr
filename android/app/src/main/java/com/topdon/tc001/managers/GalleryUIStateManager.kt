@@ -223,3 +223,4 @@ class GalleryUIStateManager(
     fun cleanup() {
         onRangeChangeListener = null
     }
+}

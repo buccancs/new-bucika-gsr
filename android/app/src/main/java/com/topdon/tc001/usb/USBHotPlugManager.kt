@@ -243,3 +243,4 @@ class USBHotPlugManager private constructor(private val context: Context) {
             Device Type: ${identifyDevice(device)}
         """.trimIndent()
     }
+}

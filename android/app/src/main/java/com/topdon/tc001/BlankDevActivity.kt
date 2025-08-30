@@ -42,3 +42,4 @@ class BlankDevActivity : AppCompatActivity() {
         }
         return false
     }
+}

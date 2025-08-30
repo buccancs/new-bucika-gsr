@@ -382,3 +382,4 @@ enum class QualityIssue {
     SIGNAL_FLATLINE,
     EXCESSIVE_GSR_CHANGE,
     EXCESSIVE_TEMP_CHANGE
+}

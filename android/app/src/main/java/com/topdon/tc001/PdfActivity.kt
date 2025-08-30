@@ -71,3 +71,4 @@ class PdfActivity : BaseActivity() {
         myInput.close()
         myOutput.close()
     }
+}

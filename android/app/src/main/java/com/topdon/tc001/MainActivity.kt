@@ -653,3 +653,4 @@ class MainActivity : BaseActivity(), View.OnClickListener, USBHotPlugManager.USB
             ).show()
         }
     }
+}

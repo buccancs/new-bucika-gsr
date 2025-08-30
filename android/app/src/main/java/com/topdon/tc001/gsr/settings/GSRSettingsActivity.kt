@@ -280,3 +280,4 @@ class GSRSettingsActivity : BaseActivity(), ShimmerSensorPanel.ShimmerConfigurat
         }
         XLog.i(TAG, "GSR Settings Activity destroyed")
     }
+}

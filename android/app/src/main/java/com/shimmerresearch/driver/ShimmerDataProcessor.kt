@@ -297,3 +297,4 @@ data class ProcessingStatistics(
     val artifactRatio: Double,
     val currentSignalQuality: Double,
     val bufferSize: Int
+)

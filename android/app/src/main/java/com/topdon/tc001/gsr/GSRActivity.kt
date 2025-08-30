@@ -244,3 +244,4 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener, GSRDataWriter.Da
         super.onDestroy()
         gsrManager.cleanup()
     }
+}

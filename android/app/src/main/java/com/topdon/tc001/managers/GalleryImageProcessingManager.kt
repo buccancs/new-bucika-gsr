@@ -153,3 +153,4 @@ class GalleryImageProcessingManager(
     fun cleanup() {
 
     }
+}
