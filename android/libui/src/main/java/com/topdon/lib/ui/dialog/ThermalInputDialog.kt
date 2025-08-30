@@ -210,8 +210,8 @@ class ThermalInputDialog : Dialog {
             if (minColor != 0) downColor = minColor
             upUnit.text = UnitTools.showUnit()
             downUnit.text = UnitTools.showUnit()
-            view.findViewById<View>(R.id.dialog_up_color).setColorFilter(upColor)
-            view.findViewById<View>(R.id.dialog_down_color).setColorFilter(downColor)
+            view.findViewById<ImageView>(R.id.dialog_up_color).setColorFilter(upColor)
+            view.findViewById<ImageView>(R.id.dialog_down_color).setColorFilter(downColor)
             colorPickerView.setInitialColor(upColor)
 
             recycler.layoutManager = GridLayoutManager(context!!, 6)
@@ -249,13 +249,13 @@ class ThermalInputDialog : Dialog {
                         if (selectColor != 0) {
                             upColor = selectColor
                         }
-                        view.findViewById<View>(R.id.dialog_up_color).setColorFilter(upColor)
+                        view.findViewById<ImageView>(R.id.dialog_up_color).setColorFilter(upColor)
                     }
                     if (dialog!!.action == 301) {
                         if (selectColor != 0) {
                             downColor = selectColor
                         }
-                        view.findViewById<View>(R.id.dialog_down_color).setColorFilter(downColor)
+                        view.findViewById<ImageView>(R.id.dialog_down_color).setColorFilter(downColor)
                     }
                     dialog!!.action = 100
                     return@setOnClickListener

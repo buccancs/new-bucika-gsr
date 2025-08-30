@@ -12,4 +12,14 @@
     <string name="select_monitor_return">Return</string>
     <string name="select_monitor_type_step1">Select Monitor Type - Step 1</string>
     <string name="app_confirm">Confirm</string>
+    
+    <!-- Missing strings for thermal input dialog -->
+    <string name="tip_input_format">Input format tip</string>
+    <string name="color_board">Color board</string>
+    
+    <!-- Missing strings for tip guide dialog -->
+    <string name="target_tips_step_1">Target tips step 1</string>
+    <string name="target_tips_step_2">Target tips step 2</string>
+    <string name="target_tips_step_3">Target tips step 3</string>
+    <string name="target_tips_step_4">Target tips step 4</string>
 </resources>
