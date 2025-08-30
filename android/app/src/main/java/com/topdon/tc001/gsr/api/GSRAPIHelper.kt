@@ -142,6 +142,17 @@ class GSRAPIHelper private constructor(private val context: Context) {
                 
                 listener.onConnectionStatusChanged(isConnected, deviceInfo)
             }
+            
+            override fun onQualityAssessmentUpdated(assessment: QualityAssessment) {
+                // Handle quality assessment updates
+                listener.onSignalQualityChanged(SignalQualityInfo(
+                    overallQuality = assessment.overallScore,
+                    gsrQuality = assessment.gsrScore,
+                    temperatureQuality = assessment.temperatureScore,
+                    signalNoiseRatio = assessment.snrRatio,
+                    artifactPercentage = assessment.artifactLevel
+                ))
+            }
         })
     }
     

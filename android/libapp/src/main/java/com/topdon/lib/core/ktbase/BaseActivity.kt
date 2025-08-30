@@ -55,7 +55,10 @@ abstract class BaseActivity : RxAppCompatActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
         window.navigationBarColor = ContextCompat.getColor(this,R.color.toolbar_16131E)
-        setContentView(initContentView())
+        val layoutRes = initContentView()
+        if (layoutRes != 0) {
+            setContentView(layoutRes)
+        }
         initView()
         initData()
         synLogin()

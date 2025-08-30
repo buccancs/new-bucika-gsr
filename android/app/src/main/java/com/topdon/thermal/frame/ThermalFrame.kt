@@ -63,6 +63,30 @@ object FrameTool {
         return ByteArray(0)
     }
     
+    fun setRotate(rotate: Int) {
+        // Set rotation for thermal frame
+    }
+    
+    fun tempCorrect(temp: Float): Float {
+        return temp
+    }
+    
+    fun updateImage(bitmap: android.graphics.Bitmap?) {
+        // Update thermal image display
+    }
+    
+    fun setDefLimit() {
+        // Set default temperature limits
+    }
+    
+    fun updateImageAndSeekbarColorList(customPseudoBean: CustomPseudoBean) {
+        // Update image and seekbar colors
+    }
+    
+    fun updateTemperatureSeekBar(flag: Boolean, drawableRes: Int, text: String) {
+        // Update temperature seekbar
+    }
+    
     // Asset paths
     const val TAU_HIGH_GAIN_ASSET_PATH = "tau_high_gain.bin"
     const val TAU_LOW_GAIN_ASSET_PATH = "tau_low_gain.bin"

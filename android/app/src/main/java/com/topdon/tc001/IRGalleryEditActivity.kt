@@ -58,7 +58,7 @@ import com.topdon.menu.constant.SettingType
 import com.topdon.thermal.event.GalleryAddEvent
 import com.topdon.thermal.event.ImageGalleryEvent
 import com.topdon.thermal.report.bean.ImageTempBean
-import com.topdon.thermal.view.TemperatureBaseView.Mode
+// import com.topdon.thermal.view.TemperatureBaseView.Mode // Removed to avoid conflict
 import com.topdon.thermal.viewmodel.IRGalleryEditViewModel
 import com.topdon.pseudo.activity.PseudoSetActivity
 import com.topdon.pseudo.bean.CustomPseudoBean
@@ -131,7 +131,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
         binding.editRecyclerSecond.fenceSelectType = FenceType.DEL
         binding.temperatureView.isShowName = isReportPick
-        binding.temperatureView.mode = Mode.CLEAR
+        binding.temperatureView.mode = com.topdon.module.thermal.ir.view.TemperatureEditView.Mode.CLEAR
         binding.temperatureView.setITsTempListener(this)
 
     }

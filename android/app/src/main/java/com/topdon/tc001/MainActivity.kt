@@ -103,6 +103,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, USBHotPlugManager.USB
         }
     }
 
+    override fun initContentView(): Int = 0  // Not used with ViewBinding
+
     override fun initView() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
