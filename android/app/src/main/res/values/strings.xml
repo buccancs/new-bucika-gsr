@@ -51,4 +51,13 @@
     <string name="installation_package_downloading_tips">Please wait while downloading</string>
     <string name="tips_download_information">Download Information</string>
     <string name="installation_package_download_progress">Download Progress</string>
+    
+    <!-- Help and guide strings -->
+    <string name="ts004_guide_text8">Device usage guide</string>
+    <string name="ts004_guide_text6">Temperature measurement guide</string>
+    <string name="ts004_disconnect_tips1">Device connection lost</string>
+    <string name="ts004_disconnect_tips4">Please check device connection</string>
+    <string name="app_tip">Tip</string>
+    <string name="ts004_wlan_tips">WiFi connection instructions</string>
+    <string name="app_open">Open</string>
 </resources>

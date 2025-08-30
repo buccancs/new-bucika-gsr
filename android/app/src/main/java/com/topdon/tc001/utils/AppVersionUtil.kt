@@ -14,7 +14,7 @@ import com.elvishew.xlog.XLog
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.config.HttpConfig
 import com.topdon.lib.core.dialog.TipDialog
-import com.topdon.lib.core.utils.AppUtil
+import com.topdon.tc001.utils.AppUtil
 import com.topdon.lms.sdk.LMS
 import com.topdon.lms.sdk.activity.LmsUpdateDialog
 import com.topdon.lms.sdk.bean.AppInfoBean
@@ -172,7 +172,7 @@ class AppVersionUtil(
             val files = ZipUtils.unzipFile(file, localFile)
             
             if (files?.isNotEmpty() == true) {
-                AppUtil.installApp(context, files[0])
+                AppUtil.installApp(context, files[0].absolutePath)
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -270,7 +270,7 @@ class AppVersionUtil(
             val files = ZipUtils.unzipFile(file, localFile)
             
             if (files?.isNotEmpty() == true) {
-                AppUtil.installApp(context, files[0])
+                AppUtil.installApp(context, files[0].absolutePath)
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()

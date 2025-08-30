@@ -25,4 +25,9 @@ object AppUtil {
     fun installApk(context: Context, filePath: String) {
         // Stub implementation for APK installation
     }
+    
+    fun installApp(context: Context, filePath: String) {
+        // Stub implementation for app installation
+        installApk(context, filePath)
+    }
 }

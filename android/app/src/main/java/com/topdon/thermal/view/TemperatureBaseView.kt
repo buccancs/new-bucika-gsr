@@ -7,6 +7,6 @@ open class TemperatureBaseView : View {
     constructor(context: android.content.Context, attrs: android.util.AttributeSet?) : super(context, attrs)
     
     enum class Mode {
-        NORMAL, EDIT
+        NORMAL, EDIT, CLEAR, POINT, LINE, RECT
     }
 }

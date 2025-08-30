@@ -1,7 +1,7 @@
-package com.topdon.tc001.tools
+package com.topdon.tc001.utils
 
 object VersionTools {
-    var mDownloadId = 0L
+    private var mDownloadId: Long = 0L
     
     fun setMDownloadId(id: Long) {
         mDownloadId = id
