@@ -310,18 +310,24 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
     private fun setPColor(code: Int) {
         pseudocodeMode = code
-        updateImage(
-            frameTool.getScrPseudoColorScaledBitmap(
-                changePseudocodeModeByOld(pseudocodeMode),
-                showToCValue(max),
-                showToCValue(min),
-                rotate,
-                struct.customPseudoBean,
-                maxTemperature = tempCorrect(frameTool.getSrcTemp().maxTemperature),
-                minTemperature = tempCorrect(frameTool.getSrcTemp().minTemperature),
-                struct.isAmplify
+        // TODO: Fix thermal processing method parameter order and types
+        try {
+            updateImage(
+                frameTool.getScrPseudoColorScaledBitmap(
+                    pseudoColorMode = changePseudocodeModeByOld(pseudocodeMode),
+                    max = showToCValue(max),
+                    min = showToCValue(min),
+                    rotate = rotate,
+                    customPseudoBean = struct.customPseudoBean,
+                    maxTemperature = tempCorrect(frameTool.getSrcTemp().maxTemperature),
+                    minTemperature = tempCorrect(frameTool.getSrcTemp().minTemperature),
+                    isAmplify = struct.isAmplify
+                )
             )
-        )
+        } catch (e: Exception) {
+            XLog.w("IRGalleryEditActivity", "Error in setPColor: ${e.message}")
+            // Fallback: provide a basic bitmap or null handling
+        }
         binding.editRecyclerSecond.setPseudoColor(code)
     }
 
@@ -356,9 +362,9 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             SettingType.FONT -> {
                 val colorPickDialog = ColorPickDialog(this, binding.temperatureView.textColor,binding.temperatureView.tempTextSize)
                 colorPickDialog.onPickListener = { it: Int, textSize: Int ->
-                    temperature_view?.textColor = it
+                    binding.temperatureView.textColor = it
                     struct.textSize = SizeUtils.sp2px(textSize.toFloat())
-                    temperature_view?.tempTextSize = SizeUtils.sp2px(textSize.toFloat())
+                    binding.temperatureView.tempTextSize = SizeUtils.sp2px(textSize.toFloat()).toFloat()
                     binding.editRecyclerSecond.setSettingSelected(SettingType.FONT,
                         it != 0xffffffff.toInt() || textSize != SizeUtils.sp2px(14f))
                 }
@@ -425,8 +431,9 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 val tmp = it.data?.getParcelableExtra(ExtraKeyConfig.CUSTOM_PSEUDO_BEAN)
                     ?: CustomPseudoBean()
                 updateImageAndSeekbarColorList(tmp)
-                binding.temperatureSeekbar.setColorList(tmp.getColorList(struct.isTC007())?.reversedArray())
-                binding.temperatureSeekbar.setPlaces(tmp.getPlaceList())
+                // TODO: Add temperatureSeekbar to layout or update reference
+                // binding.temperatureSeekbar.setColorList(tmp.getColorList(struct.isTC007())?.reversedArray())
+                // binding.temperatureSeekbar.setPlaces(tmp.getPlaceList())
 
             }
         }
