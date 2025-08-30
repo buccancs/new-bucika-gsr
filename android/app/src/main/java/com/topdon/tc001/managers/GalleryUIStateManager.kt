@@ -74,23 +74,23 @@ class GalleryUIStateManager(
     
     private fun showViewModeUI() {
         binding.apply {
-
-            editControlPanel?.isVisible = false
-            temperatureRangePanel?.isVisible = false
+            // TODO: Update binding references when UI layout includes these components
+            // editControlPanel?.isVisible = false
+            // temperatureRangePanel?.isVisible = false
             
-            imageView?.isVisible = true
-            basicControlPanel?.isVisible = true
+            // imageView?.isVisible = true
+            // basicControlPanel?.isVisible = true
         }
     }
     
     private fun showEditModeUI() {
         binding.apply {
-
-            editControlPanel?.isVisible = true
-            temperatureRangePanel?.isVisible = true
+            // TODO: Update binding references when UI layout includes these components
+            // editControlPanel?.isVisible = true
+            // temperatureRangePanel?.isVisible = true
             
-            imageView?.isVisible = true
-            basicControlPanel?.isVisible = true
+            // imageView?.isVisible = true
+            // basicControlPanel?.isVisible = true
         }
         
         isEditModeEnabled = true

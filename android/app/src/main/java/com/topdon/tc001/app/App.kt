@@ -8,7 +8,7 @@ import com.elvishew.xlog.XLog
 import com.example.thermal_lite.IrConst
 import com.example.thermal_lite.util.CommonUtil
 // import com.google.firebase.crashlytics.FirebaseCrashlytics // Firebase disabled
-import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.topdon.lib.core.BaseApplication
 import com.topdon.lib.core.common.SharedManager
@@ -35,9 +35,7 @@ class App : BaseApplication() {
 
     init {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
-            MaterialHeader(
-                context
-            )
+            ClassicsHeader(context)
         }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             LoadingFooter(context)

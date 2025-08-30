@@ -76,6 +76,7 @@
     <string name="attachBaseContext">attachBaseContext</string>
     <string name="clNewVersion">clNewVersion</string>
     <string name="tvNewVersion">tvNewVersion</string>
+    <string name="app_next">Next</string>
     <string name="app_confirm">Confirm</string>
     <string name="app_cancel">Cancel</string>
     <string name="installation_package_downloading">Downloading update package</string>
