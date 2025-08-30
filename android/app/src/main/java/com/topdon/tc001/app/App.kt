@@ -134,13 +134,7 @@ class App : BaseApplication() {
             null,
             object : InitListener {
                 override fun onInitSuccess() {
-
                     XLog.e("bcf", "ZohoSalesIQ成功")
-                }
-
-                override fun onInitError(errorCode: Int, errorMessage: String?) {
-
-                    XLog.e("bcf", "ZohoSalesIQ失敗")
                 }
             })
     }

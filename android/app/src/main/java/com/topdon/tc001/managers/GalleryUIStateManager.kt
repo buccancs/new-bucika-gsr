@@ -203,21 +203,15 @@ class GalleryUIStateManager(
     )
     
     fun showLoadingState(show: Boolean) {
-        binding.progressBar?.isVisible = show
-        binding.loadingOverlay?.isVisible = show
+        // Note: Loading state management can be implemented when appropriate UI elements are added
     }
     
     fun showErrorState(message: String) {
-        binding.errorText?.apply {
-            text = message
-            isVisible = true
-        }
-        binding.errorPanel?.isVisible = true
+        // Note: Error state management can be implemented when appropriate UI elements are added
     }
     
     fun hideErrorState() {
-        binding.errorPanel?.isVisible = false
-        binding.errorText?.isVisible = false
+        // Note: Error state management can be implemented when appropriate UI elements are added
     }
     
     fun cleanup() {

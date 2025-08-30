@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.topdon.lib.core.ktbase.BaseActivity
 import com.topdon.lib.core.config.FileConfig
+import com.topdon.lib.core.view.TitleView
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityLocalFileBrowserBinding
 import java.io.File
@@ -24,9 +25,9 @@ class LocalFileBrowserActivity : BaseActivity() {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     
     companion object {
-        private const val SUPPORTED_VIDEO_EXTENSIONS = listOf("mp4", "avi", "mov")
-        private const val SUPPORTED_DATA_EXTENSIONS = listOf("csv", "txt") 
-        private const val SUPPORTED_JSON_EXTENSIONS = listOf("json")
+        private val SUPPORTED_VIDEO_EXTENSIONS = listOf("mp4", "avi", "mov")
+        private val SUPPORTED_DATA_EXTENSIONS = listOf("csv", "txt") 
+        private val SUPPORTED_JSON_EXTENSIONS = listOf("json")
     }
     
     override fun initContentView(): Int = R.layout.activity_local_file_browser
@@ -35,7 +36,7 @@ class LocalFileBrowserActivity : BaseActivity() {
         binding = ActivityLocalFileBrowserBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        binding.titleView.setTitle("Local File Browser")
+        binding.titleView.setTitleText("Local File Browser")
         binding.titleView.setLeftClickListener { finish() }
         
         setupRecyclerView()
@@ -111,14 +112,26 @@ class LocalFileBrowserActivity : BaseActivity() {
             
             val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
                 ?: "*/*"
+            
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, mimeType)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            
+            startActivity(intent)
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(
+                this, 
+                "Error opening file: ${e.message}", 
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     enum class FileType {
-        
         VIDEO, 
-        
         DATA, 
-        
         JSON, 
-        
         OTHER
     }
 
@@ -173,7 +186,7 @@ class LocalFileBrowserActivity : BaseActivity() {
             ivFileType.setImageResource(iconRes)
             
             itemView.setOnClickListener {
-                onFileClick(file)
+                this@FileAdapter.onFileClick(file)
             }
             
             itemView.setOnLongClickListener {

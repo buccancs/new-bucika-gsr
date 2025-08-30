@@ -23,4 +23,32 @@
     <string name="czech">Čeština</string>
     <string name="ukrainian">Українська</string>
     <string name="dutch">Nederlands</string>
+    
+    <!-- Network and HTTP error messages -->
+    <string name="lms_setting_http_error">Network Error</string>
+    
+    <!-- Version and privacy related strings -->
+    <string name="version_year">Version Year</string>
+    <string name="privacy_tips">Privacy Policy</string>
+    <string name="privacy_confirm">Accept</string>
+    <string name="privacy_cancel">Cancel</string>
+    <string name="privacy_agreement_tips_new">Please read and accept our privacy policy to continue</string>
+    <string name="welcome_use_app">Welcome to use this app</string>
+    <string name="set_version">Set Version</string>
+    
+    <!-- Device connection strings -->
+    <string name="tc_connect_line">Connect via Cable</string>
+    <string name="tc_connect_wifi">Connect via WiFi</string>
+    
+    <!-- Thermal module strings -->
+    <string name="thermal_lite">Thermal Lite</string>
+    
+    <!-- App update strings -->
+    <string name="updata_new_version_update">New version available</string>
+    <string name="app_confirm">Confirm</string>
+    <string name="app_cancel">Cancel</string>
+    <string name="installation_package_downloading">Downloading update package</string>
+    <string name="installation_package_downloading_tips">Please wait while downloading</string>
+    <string name="tips_download_information">Download Information</string>
+    <string name="installation_package_download_progress">Download Progress</string>
 </resources>
