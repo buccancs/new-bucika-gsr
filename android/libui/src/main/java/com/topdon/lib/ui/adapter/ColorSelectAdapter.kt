@@ -9,14 +9,12 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.topdon.lib.ui.R
 import com.topdon.lib.ui.bean.ColorSelectBean
-import com.topdon.lib.ui.databinding.UiItemColorSelectBinding
+import kotlinx.android.synthetic.main.ui_item_color_select.view.*
 
 class ColorSelectAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var listener: ((code: Int, color: Int) -> Unit)? = null
-    
     private var type = 0
-    
     private var selected = -1
 
     fun selected(index: Int) {
@@ -33,23 +31,25 @@ class ColorSelectAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVi
         ColorSelectBean(R.color.color_select6, "#FF808080", 6),
     )
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = UiItemColorSelectBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemView(binding)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.ui_item_color_select, parent, false)
+        return ItemView(view)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemView) {
-            holder.binding.itemColorImg.setImageResource(colorBean[position].colorRes)
-            holder.binding.itemColorLay.setOnClickListener {
+            holder.img.setImageResource(colorBean[position].colorRes)
+            holder.lay.setOnClickListener {
                 listener?.invoke(position, Color.parseColor(colorBean[position].color))
                 selected(position)
             }
-            holder.binding.itemColorImg.isSelected = position == selected
+            holder.img.isSelected = position == selected
             if (position == selected) {
-                holder.binding.itemColorCheck.visibility = View.VISIBLE
+                holder.checkImg.visibility = View.VISIBLE
             } else {
-                holder.binding.itemColorCheck.visibility = View.GONE
+                holder.checkImg.visibility = View.GONE
             }
         }
     }
@@ -58,5 +58,11 @@ class ColorSelectAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVi
         return colorBean.size
     }
 
-    inner class ItemView(val binding: UiItemColorSelectBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val lay: View = itemView.item_color_lay
+        val img: ImageView = itemView.item_color_img
+        val checkImg: ImageView = itemView.item_color_check
+    }
+
+
 }

@@ -17,9 +17,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.topdon.lib.ui.R
-import com.topdon.lib.ui.databinding.DialogTipPreviewBinding
 import com.topdon.lib.ui.widget.IndicateView
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.dialog_tip_preview.view.*
 import java.util.Timer
 import kotlin.collections.ArrayList
 
@@ -98,6 +98,7 @@ class TipPreviewDialog : DialogFragment() {
 
         })
     }
+
 
     fun updateIndex(position : Int){
         if (index == position){

@@ -16,12 +16,15 @@ class FenceLineView : View {
     var listener: CallBack? = null
 
     private val mPaint by lazy { Paint() }
-    private val rect: Rect = Rect(0, 0, 0, 0)
-    private val strokeWidth by lazy { SizeUtils.dp2px(2f).toFloat() }
+    private val rect: Rect = Rect(0, 0, 0, 0) //手动绘制矩形
+    private val strokeWidth by lazy { SizeUtils.dp2px(2f).toFloat() } //线宽度
+
 
     constructor (context: Context) : super(context)
 
+
     constructor (context: Context, attrs: AttributeSet) : super(context, attrs)
+
 
     constructor (context: Context, attrs: AttributeSet, defStyle: Int) : super(
         context,
@@ -37,9 +40,10 @@ class FenceLineView : View {
         mPaint.alpha = 255
     }
 
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
+//        canvas.drawRect(rect, mPaint)
         canvas.drawLine(
             startPoint[0].toFloat(),
             startPoint[1].toFloat(),
@@ -145,7 +149,10 @@ class FenceLineView : View {
     }
 
     interface CallBack {
-        
+        /**
+         * startPoint: 左上角
+         * endPoint: 右下角
+         */
         fun callback(startPoint: IntArray, endPoint: IntArray, srcRect: IntArray)
     }
 }

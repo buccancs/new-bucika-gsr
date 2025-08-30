@@ -15,8 +15,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.topdon.lib.ui.R
-import com.topdon.lib.ui.databinding.DialogTipGuideBinding
 import com.topdon.lib.ui.widget.IndicateView
+import kotlinx.android.synthetic.main.dialog_tip_guide.view.*
 import kotlin.collections.ArrayList
 
 class TipGuideDialog : DialogFragment() {
@@ -86,6 +86,7 @@ class TipGuideDialog : DialogFragment() {
 
         })
     }
+
 
     fun updateIndex(position: Int) {
         if (index == position) {

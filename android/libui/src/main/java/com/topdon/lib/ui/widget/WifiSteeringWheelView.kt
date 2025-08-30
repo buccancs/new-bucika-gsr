@@ -2,15 +2,16 @@ package com.topdon.lib.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
-import com.topdon.lib.ui.databinding.UiWifiSteeringWheelViewBinding
+import com.topdon.lib.ui.R
+import kotlinx.android.synthetic.main.ui_wifi_steering_wheel_view.view.*
 
+/**
+ * 校准方向
+ */
 class WifiSteeringWheelView : LinearLayout, OnClickListener {
-
-    private lateinit var binding: UiWifiSteeringWheelViewBinding
 
     var listener: ((action: Int, moveX: Int,moveY:Int) -> Unit)? = null
     var moveX = 0
@@ -19,10 +20,10 @@ class WifiSteeringWheelView : LinearLayout, OnClickListener {
     set(value) {
         field = value
         if (value == 270 || value == 90){
-            binding.tvConfirm.rotation = 270f
+            tv_confirm?.rotation = 270f
             rotation = 90f
         }else{
-            binding.tvConfirm.rotation = 0f
+            tv_confirm?.rotation = 0f
             rotation = 0f
         }
         requestLayout()
@@ -41,17 +42,17 @@ class WifiSteeringWheelView : LinearLayout, OnClickListener {
     )
 
     private fun initView() {
-        binding = UiWifiSteeringWheelViewBinding.inflate(LayoutInflater.from(context), this, true)
-        binding.steeringWheelStartBtn.setOnClickListener(this)
-        binding.steeringWheelCenterBtn.setOnClickListener(this)
-        binding.steeringWheelEndBtn.setOnClickListener(this)
-        binding.steeringWheelTopBtn.setOnClickListener(this)
-        binding.steeringWheelBottomBtn.setOnClickListener(this)
+        inflate(context, R.layout.ui_wifi_steering_wheel_view, this)
+        steering_wheel_start_btn.setOnClickListener(this)
+        steering_wheel_center_btn.setOnClickListener(this)
+        steering_wheel_end_btn.setOnClickListener(this)
+        steering_wheel_top_btn.setOnClickListener(this)
+        steering_wheel_bottom_btn.setOnClickListener(this)
         if (rotationIR == 270 || rotationIR == 90){
-            binding.tvConfirm.rotation = 270f
+            tv_confirm.rotation = 270f
             rotation = 90f
         }else{
-            binding.tvConfirm.rotation = 0f
+            tv_confirm.rotation = 0f
             rotation = 0f
         }
     }
@@ -59,24 +60,27 @@ class WifiSteeringWheelView : LinearLayout, OnClickListener {
     val moveI = 2
     override fun onClick(v: View?) {
         when (v) {
-            binding.steeringWheelStartBtn -> {
-
+            steering_wheel_start_btn -> {
+//                moveY -= moveI
                 listener?.invoke(-1, moveX,moveY)
             }
-            binding.steeringWheelCenterBtn -> {
+            steering_wheel_center_btn -> {
                 listener?.invoke(0, moveX,moveY)
             }
-            binding.steeringWheelTopBtn -> {
-
+            steering_wheel_top_btn -> {
+//                moveX += moveI
                 listener?.invoke(2, moveX,moveY)
             }
-            binding.steeringWheelBottomBtn ->{
-
+            steering_wheel_bottom_btn ->{
+//                moveX -= moveI
                 listener?.invoke(3, moveX,moveY)
             }
-            binding.steeringWheelEndBtn -> {
-
+            steering_wheel_end_btn -> {
+//                moveY += moveI
                 listener?.invoke(1,moveX,moveY)
             }
         }
     }
+
+
+}

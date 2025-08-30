@@ -4,58 +4,52 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup.LayoutParams
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.lib.ui.R
-import com.topdon.lib.ui.databinding.DialogProgressBinding
+import kotlinx.android.synthetic.main.dialog_progress.view.*
 
+/**
+ * 带进度条的提示弹框.
+ */
 class ProgressDialog(context: Context) : Dialog(context, R.style.InfoDialog) {
-    
-    private lateinit var binding: DialogProgressBinding
-    
     var max: Int = 100
         set(value) {
-            if (::binding.isInitialized) {
-                binding.progressBar.max = value
-            }
+            rootView.progress_bar.max = value
             field = value
         }
 
     var progress: Int = 0
         set(value) {
-            if (::binding.isInitialized) {
-                binding.progressBar.progress = value
-            }
+            rootView.progress_bar.progress = value
             field = value
         }
+
+
+
+    private val rootView: View
+    init {
+        rootView = LayoutInflater.from(context).inflate(R.layout.dialog_progress, null)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setCancelable(false)
         setCanceledOnTouchOutside(false)
-        
-        binding = DialogProgressBinding.inflate(LayoutInflater.from(context))
-        setContentView(binding.root)
-        
-        setupDialogDimensions()
-    }
+        setContentView(rootView)
 
-    private fun setupDialogDimensions() {
-        window?.let { window ->
-            val layoutParams = window.attributes
-            val screenWidth = ScreenUtil.getScreenWidth(context)
-            val widthRatio = if (ScreenUtil.isPortrait(context)) 0.8 else 0.45
-            layoutParams.width = (screenWidth * widthRatio).toInt()
+        window?.let {
+            val layoutParams = it.attributes
+            layoutParams.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.8 else 0.45).toInt()
             layoutParams.height = LayoutParams.WRAP_CONTENT
-            window.attributes = layoutParams
+            it.attributes = layoutParams
         }
     }
 
     override fun show() {
         super.show()
-        binding.progressBar.apply {
-            this.max = this@ProgressDialog.max
-            this.progress = this@ProgressDialog.progress
-        }
+        rootView.progress_bar.max = max
+        rootView.progress_bar.progress = progress
     }
 }

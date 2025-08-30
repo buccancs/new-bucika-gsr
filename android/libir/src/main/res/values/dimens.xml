@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Missing dimensions -->
-    <dimen name="_65dp">65dp</dimen>
-    <dimen name="corner_radius_10dp">10dp</dimen>
-    <dimen name="corner_radius_8dp">8dp</dimen>
-</resources>

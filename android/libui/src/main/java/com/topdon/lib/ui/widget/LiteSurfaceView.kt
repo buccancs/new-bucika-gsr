@@ -6,6 +6,11 @@ import android.util.AttributeSet
 import android.view.SurfaceView
 import java.nio.ByteBuffer
 
+/**
+ * des:
+ * author: CaiSongL
+ * date: 2024/8/1 13:52
+ **/
 class LiteSurfaceView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : SurfaceView(context, attrs) {
@@ -18,6 +23,8 @@ class LiteSurfaceView @JvmOverloads constructor(
     var mIrRotateData: ByteArray ?= null
 
     var imageBitmap : Bitmap ?= null
+
+
 
     fun scaleBitmap() : Bitmap{
         try {
@@ -36,3 +43,5 @@ class LiteSurfaceView @JvmOverloads constructor(
             return Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888)
         }
     }
+
+}

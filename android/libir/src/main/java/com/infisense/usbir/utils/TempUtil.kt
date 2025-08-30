@@ -5,12 +5,12 @@ import kotlin.math.abs
 
 object TempUtil {
     fun getLineTemps(point1: Point, point2: Point, tempArray: ByteArray, width: Int): List<Float> {
-        if (point1 == point2) {
+        if (point1 == point2) {//搞毛啊，两个相同的点
             return ArrayList(0)
         }
 
         val pointList: ArrayList<Point> = ArrayList(abs(point1.x - point2.x).coerceAtLeast(abs(point1.y - point2.y)))
-        if (point1.x == point2.x) {
+        if (point1.x == point2.x) {//垂直于 X 轴的直线
             val startY = point1.y.coerceAtMost(point2.y)
             val endY = point1.y.coerceAtLeast(point2.y)
             for (i in startY .. endY) {
@@ -19,20 +19,20 @@ object TempUtil {
         } else {
             val k = (point1.y - point2.y).toFloat() / (point1.x - point2.x).toFloat()
             val b = point1.y - k * point1.x
-            if (abs(k) <= 1) {
+            if (abs(k) <= 1) {//x轴正整数点较多
                 val startX = point1.x.coerceAtMost(point2.x)
                 val endX = point1.x.coerceAtLeast(point2.x)
                 for (i in startX .. endX) {
                     pointList.add(Point(i, (k * i + b).toInt()))
                 }
-            } else {
-                if (k >= 0) {
+            } else {//y轴正整数点较多
+                if (k >= 0) {//左上到右下
                     val startY = point1.y.coerceAtMost(point2.y)
                     val endY = point1.y.coerceAtLeast(point2.y)
                     for (y in startY .. endY) {
                         pointList.add(Point(((y - b) / k).toInt(), y))
                     }
-                } else {
+                } else {//左下到右上
                     val startY = point1.y.coerceAtLeast(point2.y)
                     val endY = point1.y.coerceAtMost(point2.y)
                     for (y in startY downTo endY) {
@@ -51,18 +51,5 @@ object TempUtil {
         }
 
         return tempList
-    }
-    
-    fun distanceFromPointToLine(px: Float, py: Float, x1: Float, y1: Float, x2: Float, y2: Float): Float {
-        val dx = x2 - x1
-        val dy = y2 - y1
-        val length = kotlin.math.sqrt(dx * dx + dy * dy)
-        if (length == 0f) return kotlin.math.sqrt((px - x1) * (px - x1) + (py - y1) * (py - y1))
-        
-        val t = ((px - x1) * dx + (py - y1) * dy) / (length * length)
-        val closestX = x1 + t * dx
-        val closestY = y1 + t * dy
-        
-        return kotlin.math.sqrt((px - closestX) * (px - closestX) + (py - closestY) * (py - closestY))
     }
 }

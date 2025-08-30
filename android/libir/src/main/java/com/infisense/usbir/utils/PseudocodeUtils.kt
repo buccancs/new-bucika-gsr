@@ -3,7 +3,12 @@ package com.infisense.usbir.utils
 import android.widget.Switch
 import com.energy.iruvc.utils.CommonParams
 
+/**
+ * @author: CaiSongL
+ * @date: 2023/6/2 9:36
+ */
 object PseudocodeUtils {
+
 
     fun changeDualPseudocodeModelByOld(oldPseudocodeMode : Int) : CommonParams.PseudoColorUsbDualType {
         return when (oldPseudocodeMode) {
@@ -43,6 +48,9 @@ object PseudocodeUtils {
         }
     }
 
+    /**
+     * 旧版sdk的兼容
+     */
     fun changePseudocodeModeByOld(oldPseudocodeMode : Int) : CommonParams.PseudoColorType {
         return when (oldPseudocodeMode) {
             1 -> {
@@ -118,4 +126,6 @@ object PseudocodeUtils {
             }
         }
     }
+
+
 }

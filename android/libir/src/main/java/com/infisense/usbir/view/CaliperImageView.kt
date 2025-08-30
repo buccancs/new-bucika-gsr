@@ -10,6 +10,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import com.infisense.usbir.R
 
+/**
+ * 卡尺图片
+ * @author: CaiSongL
+ * @date: 2023/10/25 13:31
+ */
 class CaliperImageView : AppCompatImageView {
 
     private var showBitmapWidth: Float = 0f
@@ -34,6 +39,8 @@ class CaliperImageView : AppCompatImageView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView()
     }
+
+
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context,

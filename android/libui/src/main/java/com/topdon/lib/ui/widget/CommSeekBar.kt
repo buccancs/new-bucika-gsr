@@ -9,8 +9,14 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import com.topdon.lib.ui.R
 import kotlin.math.roundToInt
 
+/**
+ * 支持竖向的 SeekBar。
+ * 暂不支持 thumbOffset.
+ */
 class CommSeekBar: AppCompatSeekBar {
-    
+    /**
+     * 0-横向 1-竖向
+     */
     private val orientation: Int
 
     private var mMaxWidth = 48
@@ -96,6 +102,8 @@ class CommSeekBar: AppCompatSeekBar {
         }
     }
 
+
+
     private fun calculateDrawable(w: Int, h: Int) {
         val paddingWidth: Int = w - paddingLeft - paddingRight
         val paddingHeight: Int = h - paddingTop - paddingBottom
@@ -173,12 +181,16 @@ class CommSeekBar: AppCompatSeekBar {
         return true
     }
 
+    /**
+     * 通过级别分层进行粘性处理
+     */
     fun stopTrackTouchLevel(){
         if (level > 0){
             val newLevel = (progress.toFloat() / 100 * 4).roundToInt()
             setProgress((newLevel.toFloat() / level * 100).toInt())
          }
     }
+
 
     private fun trackTouchEvent(event: MotionEvent) {
         val y = event.y.roundToInt()

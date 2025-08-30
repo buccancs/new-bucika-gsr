@@ -4,20 +4,27 @@ import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.topdon.lib.core.utils.ScreenUtil
 import com.topdon.lib.ui.R
-import com.topdon.lib.ui.databinding.DialogMonitorSelectBinding
+import kotlinx.android.synthetic.main.dialog_monitor_select.view.*
 
+/**
+ * 提示窗
+ * create by fylder on 2018/6/15
+ **/
 class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog) {
 
     class Builder(private val context: Context) {
-        
+        /**
+         * 是否处于第 1 步.
+         */
         private var isFirstStep = true
-        
+        /**
+         * 当前选中的监控类型 1-点 2-线 3-面.
+         */
         private var monitorType = 0
+
+
 
         private var positiveClickListener: ((select: Int) -> Unit)? = null
 
@@ -26,6 +33,7 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             return this
         }
 
+
         fun create(): MonitorSelectDialog {
             val dialog = MonitorSelectDialog(context)
             dialog.setCanceledOnTouchOutside(false)
@@ -33,67 +41,57 @@ class MonitorSelectDialog(context: Context) : Dialog(context, R.style.InfoDialog
             val view = LayoutInflater.from(context).inflate(R.layout.dialog_monitor_select, null)
             dialog.setContentView(view)
 
-            // Get view references
-            val btnConfirmOrBack = view.findViewById<Button>(R.id.btn_confirm_or_back)
-            val btnCancel = view.findViewById<Button>(R.id.btn_cancel)
-            val clFirstStep = view.findViewById<ConstraintLayout>(R.id.cl_first_step)
-            val clSecondStep = view.findViewById<ConstraintLayout>(R.id.cl_second_step)
-            val tvTitle = view.findViewById<TextView>(R.id.tv_title)
-            val btnSelectLocation = view.findViewById<Button>(R.id.btn_select_location)
-            val tvPoint = view.findViewById<TextView>(R.id.tv_point)
-            val tvLine = view.findViewById<TextView>(R.id.tv_line)
-            val tvRect = view.findViewById<TextView>(R.id.tv_rect)
-
             val lp = dialog.window!!.attributes
-            lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt()
+            lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt() //设置宽度
             dialog.window!!.attributes = lp
 
-            btnConfirmOrBack.setOnClickListener {
-                if (isFirstStep) {
-                    if (monitorType == 0) {
+            view.btn_confirm_or_back.setOnClickListener {
+                if (isFirstStep) {//步骤1->步骤2 逻辑为“确认”
+                    if (monitorType == 0) {//还没选取类型不允许点确认
                         return@setOnClickListener
                     }
                     isFirstStep = false
-                    btnCancel.visibility = View.VISIBLE
-                    clFirstStep.visibility = View.INVISIBLE
-                    clSecondStep.visibility = View.VISIBLE
-                    tvTitle.text = context.getString(R.string.select_monitor_type_step2)
-                    btnConfirmOrBack.text = context.getString(R.string.select_monitor_return)
-                } else {
+                    view.btn_cancel.visibility = View.VISIBLE
+                    view.cl_first_step.visibility = View.INVISIBLE
+                    view.cl_second_step.visibility = View.VISIBLE
+                    view.tv_title.text = context.getString(R.string.select_monitor_type_step2)
+                    view.btn_confirm_or_back.text = context.getString(R.string.select_monitor_return)
+                } else {//步骤2->步骤1 逻辑为“返回”
                     isFirstStep = true
-                    btnCancel.visibility = View.GONE
-                    clFirstStep.visibility = View.VISIBLE
-                    clSecondStep.visibility = View.GONE
-                    tvTitle.text = context.getString(R.string.select_monitor_type_step1)
-                    btnConfirmOrBack.text = context.getString(R.string.app_confirm)
+                    view.btn_cancel.visibility = View.GONE
+                    view.cl_first_step.visibility = View.VISIBLE
+                    view.cl_second_step.visibility = View.GONE
+                    view.tv_title.text = context.getString(R.string.select_monitor_type_step1)
+                    view.btn_confirm_or_back.text = context.getString(R.string.app_confirm)
                 }
             }
 
-            btnCancel.setOnClickListener {
+            view.btn_cancel.setOnClickListener {
                 dialog.dismiss()
             }
 
-            btnSelectLocation.setOnClickListener {
+            view.btn_select_location.setOnClickListener {
                 dialog.dismiss()
                 positiveClickListener?.invoke(monitorType)
             }
 
-            tvPoint.setOnClickListener {
-                updateUI(tvPoint, tvLine, tvRect, 1)
+            view.tv_point.setOnClickListener {
+                updateUI(view, 1)
             }
-            tvLine.setOnClickListener {
-                updateUI(tvPoint, tvLine, tvRect, 2)
+            view.tv_line.setOnClickListener {
+                updateUI(view, 2)
             }
-            tvRect.setOnClickListener {
-                updateUI(tvPoint, tvLine, tvRect, 3)
+            view.tv_rect.setOnClickListener {
+                updateUI(view, 3)
             }
             return dialog
         }
 
-        private fun updateUI(tvPoint: TextView, tvLine: TextView, tvRect: TextView, index: Int) {
-            tvPoint.isSelected = index == 1
-            tvLine.isSelected = index == 2
-            tvRect.isSelected = index == 3
+
+        private fun updateUI(view: View, index: Int) {
+            view.tv_point.isSelected = index == 1
+            view.tv_line.isSelected = index == 2
+            view.tv_rect.isSelected = index == 3
             monitorType = index
         }
     }
