@@ -8,7 +8,7 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
-import com.energy.commonlibrary.view.SurfaceNativeWindow;
+import com.infisense.usbdual.view.SurfaceNativeWindow;
 import com.energy.iruvc.dual.ConcreateDualBuilder;
 import com.energy.iruvc.dual.DualType;
 import com.energy.iruvc.dual.DualUVCCamera;
@@ -296,13 +296,13 @@ public class DualViewWithExternalCameraCommonApi extends BaseDualView {
                     if (isOpenAmplify){
                         OpencvTools.supImage(irData,Const.IR_HEIGHT,Const.IR_WIDTH, amplifyIRRotateArray);
                         if (mSurface != null) {
-                            mSurfaceNativeWindow.onDrawFrame(mSurface, amplifyIRRotateArray,
+                            mSurfaceNativeWindow.onDrawFrame(amplifyIRRotateArray,
                                     Const.IR_WIDTH * MULTIPLE,
                                     Const.IR_HEIGHT * MULTIPLE);
                         }
                     }else {
                         if (mSurface != null) {
-                            mSurfaceNativeWindow.onDrawFrame(mSurface, irRGBAData, Const.IR_HEIGHT, Const.IR_WIDTH);
+                            mSurfaceNativeWindow.onDrawFrame(irRGBAData, Const.IR_HEIGHT, Const.IR_WIDTH);
                         }
                     }
                 }else {
@@ -310,19 +310,19 @@ public class DualViewWithExternalCameraCommonApi extends BaseDualView {
                         if (mCurrentFusionType == DualCameraParams.FusionType.IROnly){
                             OpencvTools.supImageMix(mixData,Const.DUAL_HEIGHT,Const.DUAL_WIDTH, mixData);
                             if (mSurface != null) {
-                                mSurfaceNativeWindow.onDrawFrame(mSurface, mixData, Const.DUAL_WIDTH, Const.DUAL_HEIGHT);
+                                mSurfaceNativeWindow.onDrawFrame(mixData, Const.DUAL_WIDTH, Const.DUAL_HEIGHT);
                             }
                         }else {
                             OpencvTools.supImage(mixData,Const.DUAL_HEIGHT,Const.DUAL_WIDTH, amplifyMixRotateArray);
                             if (mSurface != null) {
-                                mSurfaceNativeWindow.onDrawFrame(mSurface, amplifyMixRotateArray,
+                                mSurfaceNativeWindow.onDrawFrame(amplifyMixRotateArray,
                                         Const.DUAL_WIDTH * MULTIPLE,
                                         Const.DUAL_HEIGHT * MULTIPLE);
                             }
                         }
                     }else {
                         if (mSurface != null) {
-                            mSurfaceNativeWindow.onDrawFrame(mSurface, mixData, Const.DUAL_WIDTH, Const.DUAL_HEIGHT);
+                            mSurfaceNativeWindow.onDrawFrame(mixData, Const.DUAL_WIDTH, Const.DUAL_HEIGHT);
                         }
                     }
                 }

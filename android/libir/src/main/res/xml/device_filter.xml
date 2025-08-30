@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- USB device filters for UVC cameras -->
+    <usb-device vendor-id="5304" product-id="8192" />
+    <usb-device vendor-id="5304" product-id="8193" />
+    <usb-device vendor-id="1133" product-id="2085" />
+</resources>

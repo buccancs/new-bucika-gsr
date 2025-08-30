@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 
-import com.energy.commonlibrary.view.SurfaceNativeWindow;
+import com.infisense.usbdual.view.SurfaceNativeWindow;
 import com.energy.iruvc.dual.ConcreateDualBuilder;
 import com.energy.iruvc.dual.DualType;
 import com.energy.iruvc.dual.DualUVCCamera;
@@ -53,7 +53,7 @@ public class DualViewWithManualAlignExternalCamera extends BaseParamDualView{
 
                 mSurface = cameraview.getHolder().getSurface();
                 if (mSurface != null) {
-                    mSurfaceNativeWindow.onDrawFrame(mSurface, mixData, mDualWidth, mDualHeight);
+                    mSurfaceNativeWindow.onDrawFrame(mixData, mDualWidth, mDualHeight);
                 }
 
                 if (!firstFrame) {
@@ -71,7 +71,7 @@ public class DualViewWithManualAlignExternalCamera extends BaseParamDualView{
                 System.arraycopy(frame, 0, mixData, 0, fusionLength);
                 mSurface = cameraview.getHolder().getSurface();
                 if (mSurface != null) {
-                    mSurfaceNativeWindow.onDrawFrame(mSurface, mixData, mDualWidth, mDualHeight);
+                    mSurfaceNativeWindow.onDrawFrame(mixData, mDualWidth, mDualHeight);
                 }
             }
         };
@@ -143,7 +143,7 @@ public class DualViewWithManualAlignExternalCamera extends BaseParamDualView{
             if (dualUVCCamera != null) {
                 mSurface = cameraview.getHolder().getSurface();
                 if (mSurface != null) {
-                    mSurfaceNativeWindow.onDrawFrame(mSurface, mixData, mDualWidth, mDualHeight);
+                    mSurfaceNativeWindow.onDrawFrame(mixData, mDualWidth, mDualHeight);
                 }
             }
         }

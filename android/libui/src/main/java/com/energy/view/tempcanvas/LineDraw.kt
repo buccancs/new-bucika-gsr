@@ -27,7 +27,7 @@ class LineDraw(context: Context) : BaseDraw(context) {
     
     private val mLineList = LinkedList<LineView>()
     private val mLinePaint: Paint
-    private val lineStrokeWidth: Int = ScreenUtils.dp2px(1)
+    private val lineStrokeWidth: Int = ScreenUtils.dp2px(1f)
     private val mBgPaint: Paint
     private var mFontMetrics: Paint.FontMetrics? = null
     private val mTextPaint: Paint
@@ -53,14 +53,14 @@ class LineDraw(context: Context) : BaseDraw(context) {
         }
         
         mTextPaint = Paint().apply {
-            strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH).toFloat()
-            textSize = ScreenUtils.sp2px(TEXT_SIZE).toFloat()
+            strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH.toFloat()).toFloat()
+            textSize = ScreenUtils.sp2px(TEXT_SIZE.toFloat()).toFloat()
             color = Color.WHITE
             textAlign = Paint.Align.CENTER
         }
         
         mBgPaint = TextPaint().apply {
-            strokeWidth = ScreenUtils.dp2px(1).toFloat()
+            strokeWidth = ScreenUtils.dp2px(1f).toFloat()
         }
     }
     

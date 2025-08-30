@@ -643,9 +643,9 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             if (count != 0 && count % 3 == 0) {
                 startIndex = 0
                 val increment = if (pointCount == 3 && count == 3) {
-                    ScreenUtils.dp2px(40).toFloat()
+                    ScreenUtils.dp2px(40f).toFloat()
                 } else {
-                    ScreenUtils.dp2px(80).toFloat()
+                    ScreenUtils.dp2px(80f).toFloat()
                 }
                 y += increment.toInt()
             }
