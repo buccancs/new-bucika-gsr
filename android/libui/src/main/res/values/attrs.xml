@@ -46,7 +46,7 @@
     </declare-styleable>
 
     <declare-styleable name="IndicateView">
-        <attr name="selectColor" format="color|reference" />
+        <attr name="indicateSelectColor" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="RoundImageView">
@@ -55,14 +55,14 @@
     </declare-styleable>
 
     <declare-styleable name="TipsSeekBar">
-        <attr name="minText" format="string|reference" />
-        <attr name="maxText" format="string|reference" />
-        <attr name="tipsPercent" format="float" />
-        <attr name="seekPercent" format="float" />
+        <attr name="tipsMinText" format="string|reference" />
+        <attr name="tipsMaxText" format="string|reference" />
+        <attr name="tipsTipsPercent" format="float" />
+        <attr name="tipsSeekPercent" format="float" />
     </declare-styleable>
 
     <declare-styleable name="MenuSecondView">
-        <attr name="deviceType" format="integer" />
+        <attr name="menuDeviceType" format="integer" />
     </declare-styleable>
 
 </resources>
