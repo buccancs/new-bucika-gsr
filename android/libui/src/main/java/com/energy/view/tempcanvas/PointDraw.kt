@@ -43,10 +43,6 @@ class PointDraw(context: Context) : BaseDraw(context) {
     private var operateStatus = -1
     // mTouchIndex is inherited from BaseDraw, no need to override
     
-    var viewWidth: Int = 0
-    var viewHeight: Int = 0
-    
-    val touchInclude: Int get() = mTouchIndex
     val pointViewList: LinkedList<PointView> get() = pointList
 
     fun getOperateStatus(): Int = operateStatus
@@ -265,5 +261,4 @@ class PointDraw(context: Context) : BaseDraw(context) {
         }
     }
 
-    fun getPointViewList(): LinkedList<PointView> = pointList
 }

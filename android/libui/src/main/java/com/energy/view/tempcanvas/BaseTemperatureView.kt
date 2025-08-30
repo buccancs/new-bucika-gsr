@@ -253,7 +253,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                 when (mDrawModel) {
                     DrawModel.DRAW_POINT -> {
                         if (mPointDraw.getOperateStatus() == PointDraw.OPERATE_STATUS_POINT_IN_TOUCH) {
-                            mPointDraw.changeTouchPointLocationByIndex(mPointDraw.touchInclude, mCurX, mCurY)
+                            mPointDraw.changeTouchPointLocationByIndex(mPointDraw.getTouchInclude(), mCurX, mCurY)
                         }
                         doTouchDraw()
                     }
@@ -278,7 +278,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                             RectDraw.OPERATE_STATUS_RECTANGLE_RIGHT_EDGE,
                             RectDraw.OPERATE_STATUS_RECTANGLE_BOTTOM_EDGE,
                             RectDraw.OPERATE_STATUS_RECTANGLE_MOVE_ENTIRE)) {
-                            mRectDraw.changeTouchLineLocationByIndex(mRectDraw.touchInclude, moveX, moveY)
+                            mRectDraw.changeTouchLineLocationByIndex(mRectDraw.getTouchInclude(), moveX, moveY)
                         }
                         doTouchDraw()
                     }
@@ -340,7 +340,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                 mPointDraw.addPoint(1, mCurX, mCurY)
                             }
                             PointDraw.OPERATE_STATUS_POINT_REMOVE -> {
-                                mPointDraw.removePoint(mPointDraw.touchInclude)
+                                mPointDraw.removePoint(mPointDraw.getTouchInclude())
                             }
                         }
                         doShapeDraw()
@@ -351,7 +351,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                 mLineDraw.addLine(mFirstX.toInt(), mFirstY.toInt(), mCurX.toInt(), mCurY.toInt())
                             }
                             LineDraw.OPERATE_STATUS_LINE_REMOVE -> {
-                                mLineDraw.removeLine(mLineDraw.touchInclude)
+                                mLineDraw.removeLine(mLineDraw.getTouchInclude())
                             }
                             else -> {
                                 mLineDraw.changeTouchPointLocation()
@@ -368,7 +368,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                 mRectDraw.addRect(left, top, right, bottom)
                             }
                             RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_REMOVE -> {
-                                mRectDraw.removeRect(mRectDraw.touchInclude)
+                                mRectDraw.removeRect(mRectDraw.getTouchInclude())
                             }
                             else -> {
                                 mRectDraw.changeTouchRectLocation()
@@ -414,12 +414,12 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
         mViewWidth = initialWidth
         mViewHeight = initialHeight
 
-        mPointDraw.viewWidth = mViewWidth
-        mPointDraw.viewHeight = mViewHeight
-        mLineDraw.viewWidth = mViewWidth
-        mLineDraw.viewHeight = mViewHeight
-        mRectDraw.viewWidth = mViewWidth
-        mRectDraw.viewHeight = mViewHeight
+        mPointDraw.setViewWidth(mViewWidth)
+        mPointDraw.setViewHeight(mViewHeight)
+        mLineDraw.setViewWidth(mViewWidth)
+        mLineDraw.setViewHeight(mViewHeight)
+        mRectDraw.setViewWidth(mViewWidth)
+        mRectDraw.setViewHeight(mViewHeight)
 
         mTempWidth = getTempWidth()
         mTempHeight = getTempHeight()

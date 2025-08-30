@@ -24,7 +24,8 @@ import com.topdon.menu.constant.SettingType
 import com.topdon.menu.constant.TargetType
 import com.topdon.menu.constant.TempPointType
 import com.topdon.menu.constant.TwoLightType
-import com.topdon.menu.databinding.ViewMenuSecondBinding
+import com.topdon.lib.ui.R
+import com.topdon.lib.ui.databinding.ViewMenuSecondBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

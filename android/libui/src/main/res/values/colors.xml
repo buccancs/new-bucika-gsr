@@ -35,4 +35,9 @@
     <color name="color_select5">#FF0FA752</color>
     <color name="color_select6">#FF808080</color>
     
+    <!-- Wheel picker colors -->
+    <color name="wheel_select_bg">#4D2196F3</color>
+    <color name="wheel_select_text">#FF2196F3</color>
+    <color name="wheel_unselect_text">#99000000</color>
+    
 </resources>

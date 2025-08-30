@@ -5,7 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.topdon.menu.databinding.ViewMenuFirstTabBinding
+import com.topdon.lib.ui.R
+import com.topdon.lib.ui.databinding.ViewMenuFirstTabBinding
 
 class MenuFirstTabView : FrameLayout, View.OnClickListener {
 

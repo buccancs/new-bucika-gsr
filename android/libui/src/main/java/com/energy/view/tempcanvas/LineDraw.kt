@@ -37,11 +37,6 @@ class LineDraw(context: Context) : BaseDraw(context) {
     private var mOperateStatus = -1
     // mTouchIndex is inherited from BaseDraw, no need to override
     
-    var viewWidth: Int = 0
-    var viewHeight: Int = 0
-    
-    val touchInclude: Int get() = mTouchIndex
-    
     init {
         mLinePaint = Paint().apply {
             color = Color.WHITE
