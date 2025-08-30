@@ -15,4 +15,10 @@ object StringUtils {
     
     @JvmStatic
     fun format(format: String, vararg args: Any): String = String.format(format, *args)
+    
+    @JvmStatic
+    fun getResString(key: String): String = key
+    
+    @JvmStatic
+    fun getResString(context: android.content.Context?, resourceId: Int): String = "Resource$resourceId"
 }

@@ -23,4 +23,14 @@ object TToast {
     fun showShort(message: String) {
         // Stub implementation
     }
+    
+    @JvmStatic
+    fun shortToast(message: String) {
+        // Stub implementation  
+    }
+    
+    @JvmStatic
+    fun shortToast(context: android.content.Context?, message: String) {
+        // Stub implementation with context
+    }
 }

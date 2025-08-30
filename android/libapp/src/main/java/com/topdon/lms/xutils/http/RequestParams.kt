@@ -6,6 +6,9 @@ package com.topdon.lms.xutils.http
 class RequestParams {
     private val parameters = mutableMapOf<String, Any>()
     
+    var uri: String = ""
+    var isAsJsonContent: Boolean = false
+    
     fun addBodyParameter(name: String, value: Any) {
         parameters[name] = value
     }

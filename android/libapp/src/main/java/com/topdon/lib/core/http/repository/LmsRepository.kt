@@ -39,7 +39,7 @@ object LmsRepository {
     suspend fun getStatementUrl(type: String): StatementJson? {
         var result: StatementJson? = null
         val downLatch = CountDownLatch(1)
-        LMS.getInstance().getStatement(type, object : IResponseCallback {
+        LMS.getInstance().getStatement(type, object : IResponseCallback<String> {
             override fun onResponse(p0: String?) {
                 try {
                     val typeOfT = object : TypeToken<Resp<StatementJson>>() {}.type

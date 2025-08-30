@@ -14,5 +14,8 @@ object LanguageUtil {
     fun getLocalizedString(key: String): String = key
     
     @JvmStatic
-    fun getSystemLocal(): String = "en"
+    fun getSystemLocal(): java.util.Locale = java.util.Locale.getDefault()
+    
+    @JvmStatic 
+    fun getSystemLocalString(): String = "en"
 }
