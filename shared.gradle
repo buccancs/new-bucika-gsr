@@ -1,11 +1,11 @@
 // Shared configurations for BucikaGSR
 // This file provides dependency management and common configurations
 
-// Version management - Updated to latest stable versions compatible with Gradle 8.4
+// Version management - Updated to latest stable versions
 project.ext.bucika_versions = [
-    kotlin: '2.0.21',
-    gradle_plugin: '8.6.1',
-    ksp: '2.0.21-1.0.25',
+    kotlin: '2.2.10',
+    gradle_plugin: '8.7.2',
+    ksp: '2.2.10-2.0.2',
     
     // Core dependencies - Updated to latest stable
     androidx_core: '1.13.1',
@@ -78,6 +78,13 @@ project.ext.applyCommonConfig = { Project module ->
         
         kotlinOptions {
             jvmTarget = '17'
+            languageVersion = '2.2'
+            apiVersion = '2.2'
+            freeCompilerArgs += [
+                '-opt-in=kotlin.RequiresOptIn',
+                '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                '-opt-in=kotlin.time.ExperimentalTime'
+            ]
         }
         
         buildFeatures {
