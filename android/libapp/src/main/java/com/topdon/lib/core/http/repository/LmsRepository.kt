@@ -8,9 +8,9 @@ import com.topdon.lib.core.bean.json.StatementJson
 import com.topdon.lib.core.bean.base.Resp
 import com.topdon.lib.core.bean.json.CheckVersionJson
 import com.topdon.lms.sdk.LMS
-import com.topdon.lms.sdk.network.IResponseCallback
-import com.topdon.lms.sdk.utils.StringUtils
-import com.topdon.lms.sdk.weiget.TToast
+import com.topdon.lms.core.IResponseCallback
+import com.topdon.lms.utils.StringUtils
+import com.topdon.lms.utils.TToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CountDownLatch

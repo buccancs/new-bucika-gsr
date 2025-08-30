@@ -1,7 +1,7 @@
 package com.topdon.lib.core.http.ts004
-import com.topdon.lms.sdk.xutils.common.Callback
-import com.topdon.lms.sdk.xutils.http.RequestParams
-import com.topdon.lms.sdk.xutils.x
+import com.topdon.lms.xutils.common.Callback
+import com.topdon.lms.xutils.http.RequestParams
+import com.topdon.lms.xutils.x
 object HttpUtils {
     
     fun setPseudoColor(mode: Int, iResponseCallback: Callback.CommonCallback<String>?) {

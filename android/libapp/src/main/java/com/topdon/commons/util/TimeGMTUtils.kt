@@ -2,7 +2,7 @@ package com.topdon.commons.util
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
-import com.topdon.lms.sdk.utils.LanguageUtil
+import com.topdon.lms.utils.LanguageUtil
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
