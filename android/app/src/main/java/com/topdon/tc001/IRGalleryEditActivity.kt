@@ -339,9 +339,9 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
                 if (tempAlarmSetDialog == null) {
                     tempAlarmSetDialog = TempAlarmSetDialog(this, true)
-                    tempAlarmSetDialog?.onSaveListener = {
-                        binding.editRecyclerSecond.setSettingSelected(SettingType.ALARM, it.isHighOpen || it.isLowOpen)
-                        struct.alarmBean = it
+                    tempAlarmSetDialog?.onSaveListener = { libCoreBean ->
+                        binding.editRecyclerSecond.setSettingSelected(SettingType.ALARM, libCoreBean.isHighOpen || libCoreBean.isLowOpen)
+                        struct.alarmBean = toThermalAlarmBean(libCoreBean)
                         frameTool.initStruct(struct)
                         updateImage(
                             frameTool.getScrPseudoColorScaledBitmap(
@@ -357,7 +357,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                         )
                     }
                 }
-                tempAlarmSetDialog?.alarmBean = struct.alarmBean
+                tempAlarmSetDialog?.alarmBean = toLibCoreAlarmBean(struct.alarmBean)
                 tempAlarmSetDialog?.show()
             }
             SettingType.FONT -> {
@@ -372,11 +372,11 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
                 colorPickDialog.show()
             }
             SettingType.WATERMARK -> {
-                TipWaterMarkDialog.Builder(this, struct.watermarkBean)
-                    .setCancelListener {
-                        struct.watermarkBean = it
+                TipWaterMarkDialog.Builder(this, toLibCoreWatermarkBean(struct.watermarkBean))
+                    .setCancelListener { libCoreBean ->
+                        struct.watermarkBean = toThermalWatermarkBean(libCoreBean)
                         frameTool.initStruct(struct)
-                        binding.editRecyclerSecond.setSettingSelected(SettingType.WATERMARK, it.isOpen)
+                        binding.editRecyclerSecond.setSettingSelected(SettingType.WATERMARK, libCoreBean.isOpen)
                         updateImage(
                             frameTool.getScrPseudoColorScaledBitmap(
                                 changePseudocodeModeByOld(pseudocodeMode),
@@ -541,42 +541,54 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
 
     private fun buildImageTempBean(): ImageTempBean {
         var full: ImageTempBean.TempBean? = null
-        if (binding.temperatureView.isShowFull) {
-            binding.temperatureView.fullInfo?.let {
-                val max = keepOneDigit(tempCorrect(it.maxTemperature))
-                val min = keepOneDigit(tempCorrect(it.minTemperature))
-                full = ImageTempBean.TempBean(max, min)
+        
+        try {
+            if (binding.temperatureView.isShowFull) {
+                binding.temperatureView.fullInfo?.let { fullInfo ->
+                    val max = keepOneDigit(tempCorrect(fullInfo.maxTemperature))
+                    val min = keepOneDigit(tempCorrect(fullInfo.minTemperature))
+                    full = ImageTempBean.TempBean(max, min)
+                }
             }
-        }
 
-        val pointList = arrayListOf<ImageTempBean.TempBean>()
-        for (temp in binding.temperatureView.tempListData.pointTemps) {
-            if (temp.type != -99) {
-                pointList.add(ImageTempBean.TempBean(keepOneDigit(tempCorrect(temp.maxTemperature))))
+            val pointList = arrayListOf<ImageTempBean.TempBean>()
+            val pointTemps = binding.temperatureView.tempListData.pointTemps
+            for (i in pointTemps.indices) {
+                val temp = pointTemps[i]
+                if (temp.type != -99) {
+                    pointList.add(ImageTempBean.TempBean(keepOneDigit(tempCorrect(temp.maxTemperature))))
+                }
             }
-        }
 
-        val lineList = arrayListOf<ImageTempBean.TempBean>()
-        for (temp in binding.temperatureView.tempListData.lineTemps) {
-            if (temp.type != -99) {
-                val max = keepOneDigit(tempCorrect(temp.maxTemperature))
-                val min = keepOneDigit(tempCorrect(temp.minTemperature))
-                val average = keepOneDigit(temp.averageTemperature)
-                lineList.add(ImageTempBean.TempBean(max, min, average))
+            val lineList = arrayListOf<ImageTempBean.TempBean>()
+            val lineTemps = binding.temperatureView.tempListData.lineTemps
+            for (i in lineTemps.indices) {
+                val temp = lineTemps[i]
+                if (temp.type != -99) {
+                    val max = keepOneDigit(tempCorrect(temp.maxTemperature))
+                    val min = keepOneDigit(tempCorrect(temp.minTemperature))
+                    val average = keepOneDigit(tempCorrect((temp.maxTemperature + temp.minTemperature) / 2))
+                    lineList.add(ImageTempBean.TempBean(max, min, average))
+                }
             }
-        }
 
-        val rectList = arrayListOf<ImageTempBean.TempBean>()
-        for (temp in binding.temperatureView.tempListData.rectangleTemps) {
-            if (temp.type != -99) {
-                val max = keepOneDigit(tempCorrect(temp.maxTemperature))
-                val min = keepOneDigit(tempCorrect(temp.minTemperature))
-                val average = keepOneDigit(temp.averageTemperature)
-                rectList.add(ImageTempBean.TempBean(max, min, average))
+            val rectList = arrayListOf<ImageTempBean.TempBean>()
+            val rectangleTemps = binding.temperatureView.tempListData.rectangleTemps
+            for (i in rectangleTemps.indices) {
+                val temp = rectangleTemps[i]
+                if (temp.type != -99) {
+                    val max = keepOneDigit(tempCorrect(temp.maxTemperature))
+                    val min = keepOneDigit(tempCorrect(temp.minTemperature))
+                    val average = keepOneDigit(tempCorrect((temp.maxTemperature + temp.minTemperature) / 2))
+                    rectList.add(ImageTempBean.TempBean(max, min, average))
+                }
             }
-        }
 
-        return ImageTempBean(full, pointList, lineList, rectList)
+            return ImageTempBean(full, pointList, lineList, rectList)
+        } catch (e: Exception) {
+            // Return empty bean if temperature data is not available
+            return ImageTempBean(null, arrayListOf(), arrayListOf(), arrayListOf())
+        }
     }
 
     private fun saveImage() {
@@ -715,5 +727,55 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
         }finally {
             return newTemp
         }
+    }
+    
+    // Conversion functions for WatermarkBean types
+    private fun toLibCoreWatermarkBean(thermal: com.topdon.thermal.frame.WatermarkBean): com.topdon.lib.core.bean.WatermarkBean {
+        return com.topdon.lib.core.bean.WatermarkBean(
+            isOpen = thermal.isOpen,
+            title = thermal.title,
+            address = thermal.address,
+            isAddTime = thermal.isAddTime
+        )
+    }
+    
+    private fun toThermalWatermarkBean(libCore: com.topdon.lib.core.bean.WatermarkBean): com.topdon.thermal.frame.WatermarkBean {
+        return com.topdon.thermal.frame.WatermarkBean(
+            isOpen = libCore.isOpen,
+            title = libCore.title,
+            address = libCore.address,
+            isAddTime = libCore.isAddTime
+        )
+    }
+    
+    // Conversion functions for AlarmBean types
+    private fun toLibCoreAlarmBean(thermal: com.topdon.thermal.frame.AlarmBean): com.topdon.lib.core.bean.AlarmBean {
+        return com.topdon.lib.core.bean.AlarmBean(
+            isHighOpen = thermal.isHighOpen,
+            isLowOpen = thermal.isLowOpen,
+            highTemp = thermal.highTemp,
+            lowTemp = thermal.lowTemp,
+            isMarkOpen = thermal.isMarkOpen,
+            highColor = thermal.highColor,
+            lowColor = thermal.lowColor,
+            markType = thermal.markType,
+            isRingtoneOpen = thermal.isRingtoneOpen,
+            ringtoneType = thermal.ringtoneType
+        )
+    }
+    
+    private fun toThermalAlarmBean(libCore: com.topdon.lib.core.bean.AlarmBean): com.topdon.thermal.frame.AlarmBean {
+        return com.topdon.thermal.frame.AlarmBean(
+            isHighOpen = libCore.isHighOpen,
+            isLowOpen = libCore.isLowOpen,
+            highTemp = libCore.highTemp,
+            lowTemp = libCore.lowTemp,
+            isMarkOpen = libCore.isMarkOpen,
+            highColor = libCore.highColor,
+            lowColor = libCore.lowColor,
+            markType = libCore.markType,
+            isRingtoneOpen = libCore.isRingtoneOpen,
+            ringtoneType = libCore.ringtoneType
+        )
     }
 }

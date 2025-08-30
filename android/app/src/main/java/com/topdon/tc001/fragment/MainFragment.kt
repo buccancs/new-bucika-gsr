@@ -106,10 +106,9 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             popup.show(view)
         }
 
-        findViewById<RecyclerView>(R.id.recycler_view).apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@MainFragment.adapter
-        }
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = this.adapter
 
         if (WebSocketProxy.getInstance().isTC007Connect()) {
             lifecycleScope.launch {

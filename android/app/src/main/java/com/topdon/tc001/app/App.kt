@@ -2,6 +2,7 @@ package com.topdon.tc001.app
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import com.elvishew.xlog.XLog
@@ -10,6 +11,7 @@ import com.example.thermal_lite.util.CommonUtil
 // import com.google.firebase.crashlytics.FirebaseCrashlytics // Firebase disabled
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.topdon.lib.core.BaseApplication
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.config.HttpConfig
@@ -34,10 +36,10 @@ import kotlinx.coroutines.launch
 class App : BaseApplication() {
 
     init {
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context: Context, _: RefreshLayout ->
             ClassicsHeader(context)
         }
-        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context: Context, _: RefreshLayout ->
             LoadingFooter(context)
         }
     }

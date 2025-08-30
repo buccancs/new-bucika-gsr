@@ -36,7 +36,7 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener, GSRDataWriter.Da
         binding = ActivityGsrBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        binding.titleView.setTitle("GSR Monitoring - Bucika")
+        binding.titleView.setTitleText("GSR Monitoring - Bucika")
         binding.titleView.setLeftClickListener { finish() }
         
         gsrManager = GSRManager.getInstance(this)
