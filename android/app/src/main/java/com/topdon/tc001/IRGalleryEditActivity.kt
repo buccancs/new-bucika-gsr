@@ -88,7 +88,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     private var filePath = ""
 
     private var mFrame = ByteArray(192 * 256 * 4)
-    private val frameTool by lazy<FrameTool> { FrameTool }
+    private val frameTool by lazy { FrameTool() }
 
     private var pseudocodeMode = 3
     private var leftValue = 0f
