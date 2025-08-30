@@ -142,7 +142,7 @@ class LocalFileBrowserActivity : BaseActivity() {
 
     private inner class FileAdapter(
         private val onFileClick: (File) -> Unit
-    ) : RecyclerView.Adapter<FileViewHolder>() {
+    ) : RecyclerView.Adapter<FileAdapter.FileViewHolder>() {
         
         private var files = listOf<FileItem>()
         
@@ -161,9 +161,8 @@ class LocalFileBrowserActivity : BaseActivity() {
         }
         
         override fun getItemCount(): Int = files.size
-    }
 
-    private inner class FileViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
+        private inner class FileViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
         
         private val tvFileName = itemView.findViewById<android.widget.TextView>(R.id.tv_file_name)
         private val tvFileSize = itemView.findViewById<android.widget.TextView>(R.id.tv_file_size)
@@ -186,7 +185,7 @@ class LocalFileBrowserActivity : BaseActivity() {
             ivFileType.setImageResource(iconRes)
             
             itemView.setOnClickListener {
-                this@FileAdapter.onFileClick(file)
+                onFileClick(file)
             }
             
             itemView.setOnLongClickListener {
@@ -194,6 +193,7 @@ class LocalFileBrowserActivity : BaseActivity() {
                 true
             }
         }
+    }
     }
 
     private fun formatFileSize(bytes: Long): String {

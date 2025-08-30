@@ -44,28 +44,8 @@ android {
         dataBinding = true
     }
 
-    flavorDimensions 'app'
-    productFlavors {
-        dev {
-            dimension 'app'
-        }
-        beta {
-            dimension 'app'
-        }
-        prod {
-            dimension 'app'
-        }
-        prodTopdon {
-            dimension 'app'
-        }
-
-        insideChina {
-            dimension 'app'
-        }
-        prodTopdonInsideChina {
-            dimension 'app'
-        }
-    }
+    // Product flavors removed from library module - they belong in the app module only
+    // This fixes dependency resolution issues where other modules can't determine which flavor to use
     sourceSets {
         main {
             jniLibs.srcDirs = ['src/main/jniLibs']

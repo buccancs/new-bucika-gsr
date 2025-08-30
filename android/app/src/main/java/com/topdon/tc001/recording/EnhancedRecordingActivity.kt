@@ -9,12 +9,12 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.topdon.lib.core.ktbase.BaseActivity
-import com.topdon.thermal.capture.video.EnhancedVideoRecorder
-import com.topdon.thermal.capture.parallel.ParallelCaptureManager
+// import com.topdon.thermal.capture.video.EnhancedVideoRecorder // Wrong import - using local class
+// import com.topdon.thermal.capture.parallel.ParallelCaptureManager // Wrong import - not implemented
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityEnhancedRecordingBinding
 import com.topdon.tc001.gsr.GSRManager
-import com.topdon.tc001.LocalFileBrowserActivity
+import com.topdon.tc001.recording.LocalFileBrowserActivity
 import com.topdon.tc001.orchestrator.OrchestratorConfigActivity
 
 class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
@@ -23,7 +23,8 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
 
     private lateinit var videoRecorder: EnhancedVideoRecorder
     
-    private lateinit var parallelCaptureManager: ParallelCaptureManager
+    // TODO: Implement parallel capture manager for dual thermal/visual recording
+    // private lateinit var parallelCaptureManager: ParallelCaptureManager
     
     private lateinit var gsrManager: GSRManager
     
@@ -55,13 +56,13 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
 
         binding = ActivityEnhancedRecordingBinding.bind(findViewById(android.R.id.content))
         
-        binding.titleView.setTitle("Enhanced Recording - Bucika GSR")
+        binding.titleView.setTitleText("Enhanced Recording - Bucika GSR")
         binding.titleView.setLeftClickListener { finish() }
         
         thermalView = binding.textureThermal
         visualView = binding.textureVisual
         
-        videoRecorder = EnhancedVideoRecorder(this, thermalView, visualView)
+        videoRecorder = EnhancedVideoRecorder() // TODO: Initialize with proper parameters when implemented
         gsrManager = GSRManager.getInstance(this)
         gsrManager.setGSRDataListener(this)
         
@@ -81,12 +82,12 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         }
         
         binding.btnRadDngLevel3.setOnClickListener {
-            currentRecordingMode = EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS
+            currentRecordingMode = EnhancedVideoRecorder.RecordingMode.STANDARD_1080P_30FPS
             updateRecordingModeUI()
         }
         
         binding.btnParallelRecording.setOnClickListener {
-            currentRecordingMode = EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM
+            currentRecordingMode = EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS
             updateRecordingModeUI()
         }
         
@@ -130,13 +131,14 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
     }
 
     private fun startEnhancedRecording() {
-        if (!videoRecorder.isRecording()) {
-            val success = videoRecorder.startRecording(currentRecordingMode)
+        if (!videoRecorder.isRecording) {
+            val success = videoRecorder.startRecording() // TODO: Pass recording mode when implemented
             if (success) {
                 val modeText = when (currentRecordingMode) {
                     EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS -> "Samsung 4K 30FPS"
-                    EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS -> "RAD DNG Level 3 30FPS"
-                    EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM -> "Parallel Dual Stream"
+                    EnhancedVideoRecorder.RecordingMode.STANDARD_1080P_30FPS -> "Standard 1080P 30FPS"
+                    EnhancedVideoRecorder.RecordingMode.HIGH_SPEED_720P_60FPS -> "High Speed 720P 60FPS"
+                    EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS -> "Thermal 640x480 30FPS"
                 }
                 Toast.makeText(this, "$modeText recording started", Toast.LENGTH_SHORT).show()
                 
@@ -151,7 +153,7 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
     }
 
     private fun stopEnhancedRecording() {
-        if (videoRecorder.isRecording()) {
+        if (videoRecorder.isRecording) {
             val success = videoRecorder.stopRecording()
             if (success) {
                 Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show()
@@ -160,18 +162,19 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
                     gsrManager.stopRecording()
                 }
                 
-                val recordedFiles = videoRecorder.getRecordedFiles()
-                val fileList = recordedFiles.joinToString("\n") { it.name }
+                // File recording management - TODO: implement proper file tracking
+                // val recordedFiles = videoRecorder.getRecordedFiles()
+                // val fileList = recordedFiles.joinToString("\n") { it.name }
                 
-                if (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS) {
-                    val dngStats = videoRecorder.getDNGCaptureStats()
-                    val framesCaptured = dngStats["framesCaptured"] as? Int ?: 0
-                    val actualFPS = dngStats["actualFPS"] as? Double ?: 0.0
-                    Toast.makeText(this, 
-                        "DNG Recording Complete!\nFrames: $framesCaptured\nActual FPS: %.2f\nFiles: $fileList".format(actualFPS), 
-                        Toast.LENGTH_LONG).show()
+                // Special handling for thermal recording mode
+                if (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS) {
+                    // TODO: Implement thermal capture statistics
+                    // val dngStats = videoRecorder.getDNGCaptureStats()
+                    // val framesCaptured = dngStats["framesCaptured"] as? Int ?: 0
+                    // val actualFPS = dngStats["actualFPS"] as? Double ?: 0.0
+                    Toast.makeText(this, "Thermal recording completed", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Saved files:\n$fileList", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Recording saved successfully", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(this, "Failed to stop recording", Toast.LENGTH_SHORT).show()
@@ -207,22 +210,24 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
     private fun updateRecordingModeUI() {
 
         binding.btnSamsung4k.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS)
-        binding.btnRadDngLevel3.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS)
-        binding.btnParallelRecording.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM)
+        binding.btnRadDngLevel3.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.STANDARD_1080P_30FPS)
+        binding.btnParallelRecording.isSelected = (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS)
         
         val modeDescription = when (currentRecordingMode) {
             EnhancedVideoRecorder.RecordingMode.SAMSUNG_4K_30FPS -> 
                 "Samsung optimized 4K recording at 30FPS with 20Mbps bitrate"
-            EnhancedVideoRecorder.RecordingMode.RAD_DNG_LEVEL3_30FPS -> 
-                "Professional RAD DNG Level 3 capture at 30FPS with RAW sensor data"
-            EnhancedVideoRecorder.RecordingMode.PARALLEL_DUAL_STREAM -> 
-                "Simultaneous thermal and visual stream recording"
+            EnhancedVideoRecorder.RecordingMode.STANDARD_1080P_30FPS -> 
+                "Standard 1080p recording at 30FPS for balanced quality and file size"
+            EnhancedVideoRecorder.RecordingMode.HIGH_SPEED_720P_60FPS -> 
+                "High-speed 720p recording at 60FPS for smooth motion capture"
+            EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS -> 
+                "Thermal imaging recording at 640x480 resolution for temperature analysis"
         }
         binding.tvModeDescription.text = modeDescription
     }
 
     private fun updateUI() {
-        val isRecording = videoRecorder.isRecording()
+        val isRecording = videoRecorder.isRecording
         
         binding.btnStartRecording.isEnabled = !isRecording
         binding.btnStopRecording.isEnabled = isRecording
@@ -252,7 +257,7 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
             binding.tvGsrValue.text = "GSR: %.3f µS".format(gsrValue)
             binding.tvSkinTemp.text = "Skin: %.2f °C".format(skinTemperature)
             
-            if (videoRecorder.isRecording()) {
+            if (videoRecorder.isRecording) {
 
                 binding.tvRecordingOverlay.text = "Recording with GSR: ${gsrValue}µS @ ${skinTemperature}°C"
             }

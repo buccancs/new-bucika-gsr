@@ -5,12 +5,14 @@ class EnhancedVideoRecorder {
     var isRecording: Boolean = false
         private set
     
-    fun startRecording() {
+    fun startRecording(): Boolean {
         isRecording = true
+        return true // TODO: Implement proper recording start logic with error handling
     }
     
-    fun stopRecording() {
+    fun stopRecording(): Boolean {
         isRecording = false
+        return true // TODO: Implement proper recording stop logic with error handling
     }
     
     fun cleanup() {

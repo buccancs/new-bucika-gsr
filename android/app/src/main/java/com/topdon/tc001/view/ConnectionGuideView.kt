@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.blankj.utilcode.util.SizeUtils
 import androidx.core.content.ContextCompat
+import com.topdon.tc001.R
 
 class ConnectionGuideView: LinearLayout {
     private var iconRes: Int = 0
