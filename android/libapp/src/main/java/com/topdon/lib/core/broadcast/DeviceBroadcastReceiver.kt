@@ -16,9 +16,12 @@ class DeviceBroadcastReceiver : BroadcastReceiver() {
     private val TAG = this.javaClass.simpleName
 
     companion object {
-        
+        /**
+         * 在 [DeviceTools] 中申请 Usb 权限附带的广播.
+         */
         const val ACTION_USB_PERMISSION = "com.topdon.topInfrared.USB_PERMISSION"
     }
+
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent == null) {
@@ -32,11 +35,12 @@ class DeviceBroadcastReceiver : BroadcastReceiver() {
         }
 
         if (intent.action == ACTION_USB_PERMISSION) {
-            DeviceTools.isConnect(isSendConnectEvent = true, isAutoRequest = false)
+            DeviceTools.isConnect(isSendConnectEvent = true, isAutoRequest = false)//重新确认usb连接
         } else {
             handleUsbEvent(intent)
         }
     }
+
 
     private fun handleUsbEvent(intent: Intent) {
         val usbDevice: UsbDevice?
@@ -53,12 +57,13 @@ class DeviceBroadcastReceiver : BroadcastReceiver() {
         }
         XLog.v("$TAG usbDevice PRODUCT_ID = ${usbDevice.productId}, VENDOR_ID = ${usbDevice.vendorId}")
         if (usbDevice.isTcTsDevice()) {
-            if (UsbManager.ACTION_USB_DEVICE_ATTACHED == intent.action) {
+            if (UsbManager.ACTION_USB_DEVICE_ATTACHED == intent.action) {//已连接
                 DeviceTools.isConnect(isSendConnectEvent = true, isAutoRequest = true)
             }
-            if (UsbManager.ACTION_USB_DEVICE_DETACHED == intent.action) {
+            if (UsbManager.ACTION_USB_DEVICE_DETACHED == intent.action) {//已断开
                 EventBus.getDefault().post(DeviceConnectEvent(false, null))
             }
         }
     }
+
 }

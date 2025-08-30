@@ -12,10 +12,15 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.topdon.lib.core.R
-import com.topdon.lib.core.databinding.DialogTipOtgBinding
 import com.topdon.lib.core.utils.ScreenUtil
 
+
+/**
+ * 提示窗
+ * create by fylder on 2018/6/15
+ **/
 class TipOtgDialog : Dialog {
+
 
     constructor(context: Context) : super(context)
 
@@ -32,7 +37,10 @@ class TipOtgDialog : Dialog {
         private var canceled = false
         private var hasCheck = false
 
-        private lateinit var binding: DialogTipOtgBinding
+        private lateinit var messageText: TextView
+        private lateinit var checkBox: CheckBox
+        private lateinit var successBtn: Button
+        private lateinit var cancelBtn: Button
 
         constructor(context: Context) {
             this.context = context
@@ -80,67 +88,70 @@ class TipOtgDialog : Dialog {
             this.dialog!!.dismiss()
         }
 
+
         fun create(): TipOtgDialog {
             if (dialog == null) {
                 dialog = TipOtgDialog(context!!, R.style.InfoDialog)
             }
-            
-            binding = DialogTipOtgBinding.inflate(LayoutInflater.from(context!!))
-            
+            val inflater =
+                context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val view = inflater.inflate(R.layout.dialog_tip_otg, null)
+            messageText = view.dialog_tip_msg_text
+            checkBox = view.dialog_tip_check
+            successBtn = view.dialog_tip_success_btn
+            cancelBtn = view.dialog_tip_cancel_btn
             dialog!!.addContentView(
-                binding.root,
+                view,
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             )
-            
             val lp = dialog!!.window!!.attributes
             val wRatio =
                 if (context!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-
+                    //竖屏
                     0.85
                 } else {
-
+                    //横屏
                     0.35
                 }
-            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt()
+            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt() //设置宽度
             dialog!!.window!!.attributes = lp
 
             dialog!!.setCanceledOnTouchOutside(canceled)
-            
-            binding.dialogTipCheck.isChecked = false
+            checkBox.isChecked = false
             hasCheck = false
-            binding.dialogTipCheck.setOnCheckedChangeListener { _, isChecked ->
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
                 hasCheck = isChecked
             }
-            
-            binding.dialogTipSuccessBtn.setOnClickListener {
+            successBtn.setOnClickListener {
                 dismiss()
                 positiveEvent?.invoke(hasCheck)
             }
-            binding.dialogTipCancelBtn.setOnClickListener {
+            cancelBtn.setOnClickListener {
                 dismiss()
                 cancelEvent?.invoke()
             }
 
             if (positiveStr != null) {
-                binding.dialogTipSuccessBtn.text = positiveStr
+                successBtn.text = positiveStr
             }
             if (!TextUtils.isEmpty(cancelStr)) {
-                binding.dialogTipCancelBtn.visibility = View.VISIBLE
-                binding.dialogTipCancelBtn.text = cancelStr
+                cancelBtn.visibility = View.VISIBLE
+                cancelBtn.text = cancelStr
             } else {
-                binding.dialogTipCancelBtn.visibility = View.GONE
-                binding.dialogTipCancelBtn.text = ""
+                cancelBtn.visibility = View.GONE
+                cancelBtn.text = ""
             }
-            
+            //msg
             if (message != null) {
-                binding.dialogTipMsgText.visibility = View.VISIBLE
-                binding.dialogTipMsgText.setText(message, TextView.BufferType.NORMAL)
+                messageText.visibility = View.VISIBLE
+                messageText.setText(message, TextView.BufferType.NORMAL)
             } else {
-                binding.dialogTipMsgText.visibility = View.GONE
+                messageText.visibility = View.GONE
             }
 
-            dialog!!.setContentView(binding.root)
+            dialog!!.setContentView(view)
             return dialog as TipOtgDialog
         }
     }
+
 }

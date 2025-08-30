@@ -7,23 +7,28 @@ import android.view.View
 import android.view.View.MeasureSpec
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.topdon.lib.core.R
-import com.topdon.lib.core.databinding.ActivityImagePickIrPlushBinding
 import com.topdon.lib.core.dialog.ColorSelectDialog
 import com.topdon.lib.core.dialog.TipDialog
 import com.topdon.lib.core.view.ImageEditView
 import kotlinx.coroutines.launch
 import java.io.File
 
+/**
+ * des:
+ * author: CaiSongL
+ * date: 2024/9/3 9:25
+ **/
 abstract class BasePickImgActivity : BaseActivity(), View.OnClickListener {
-
-    private lateinit var binding: ActivityImagePickIrPlushBinding
-    
+    /**
+     * String 类型 - 拾取的图片在本地的绝对路径.
+     */
     val RESULT_IMAGE_PATH = "RESULT_IMAGE_PATH"
-    
+    /**
+     * 当前是否已拍了一张照等待完成.
+     */
     private var hasTakePhoto = false
 
     override fun initContentView(): Int {
@@ -36,164 +41,116 @@ abstract class BasePickImgActivity : BaseActivity(), View.OnClickListener {
     override fun initData() {
     }
 
-    fun getViewBinding(): ViewBinding {
-        binding = ActivityImagePickIrPlushBinding.inflate(layoutInflater)
-        return binding
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        setupDefaultState()
-        setupClickListeners()
-        setupTitleBar()
-        resize()
-    }
+        //默认选中画圆
+        iv_edit_circle.isSelected = true
+        image_edit_view.type = ImageEditView.Type.CIRCLE
+        view_color.setBackgroundColor(image_edit_view.color)
 
-    private fun setupDefaultState() {
-        binding.ivEditCircle.isSelected = true
-        binding.imageEditView.type = ImageEditView.Type.CIRCLE
-        binding.viewColor.setBackgroundColor(binding.imageEditView.color)
-    }
+        iv_edit_color.setOnClickListener(this)
+        iv_edit_circle.setOnClickListener(this)
+        iv_edit_rect.setOnClickListener(this)
+        iv_edit_arrow.setOnClickListener(this)
+        iv_edit_clear.setOnClickListener(this)
+        img_pick.setOnClickListener(this)
 
-    private fun setupClickListeners() {
-        with(binding) {
-            ivEditColor.setOnClickListener(this@BasePickImgActivity)
-            ivEditCircle.setOnClickListener(this@BasePickImgActivity)
-            ivEditRect.setOnClickListener(this@BasePickImgActivity)
-            ivEditArrow.setOnClickListener(this@BasePickImgActivity)
-            ivEditClear.setOnClickListener(this@BasePickImgActivity)
-            imgPick.setOnClickListener(this@BasePickImgActivity)
-        }
-    }
-
-    private fun setupTitleBar() {
-        binding.titleView.setLeftClickListener {
+        title_view.setLeftClickListener {
             if (hasTakePhoto) {
                 switchPhotoState(false)
             } else {
                 finish()
             }
         }
-        
-        binding.titleView.setRightClickListener {
+        title_view.setRightClickListener {
             if (hasTakePhoto) {
-                handleSaveImage()
+                val absolutePath: String = intent.getStringExtra(RESULT_IMAGE_PATH)!!
+                ImageUtils.save(image_edit_view.buildResultBitmap(), File(absolutePath), Bitmap.CompressFormat.PNG)
+                val intent = Intent()
+                intent.putExtra(RESULT_IMAGE_PATH, absolutePath)
+                setResult(RESULT_OK, intent)
+                finish()
             }
         }
-    }
 
-    private fun handleSaveImage() {
-        try {
-            val absolutePath: String = intent.getStringExtra(RESULT_IMAGE_PATH)!!
-            ImageUtils.save(
-                binding.imageEditView.buildResultBitmap(), 
-                File(absolutePath), 
-                Bitmap.CompressFormat.PNG
-            )
-            val intent = Intent()
-            intent.putExtra(RESULT_IMAGE_PATH, absolutePath)
-            setResult(RESULT_OK, intent)
-            finish()
-        } catch (e: Exception) {
-
-            e.printStackTrace()
-        }
+        resize()
     }
 
     private fun resize() {
         val widthPixels = resources.displayMetrics.widthPixels
         val heightPixels = resources.displayMetrics.heightPixels
-        
-        binding.titleView.measure(
-            MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.EXACTLY), 
-            MeasureSpec.makeMeasureSpec(heightPixels, MeasureSpec.AT_MOST)
-        )
+        title_view.measure(MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(heightPixels, MeasureSpec.AT_MOST))
 
-        val ivPickHeight = SizeUtils.dp2px(60f + 20 + 20)
+        val ivPickHeight = SizeUtils.dp2px(60f + 20 + 20) //拍照按钮高度，60dp+上下各20dp margin
         val menuHeight = (widthPixels * 75f / 384).toInt()
         val bottomHeight = ivPickHeight.coerceAtLeast(menuHeight)
-        val canUseHeight = heightPixels - binding.titleView.measuredHeight - bottomHeight
+        val canUseHeight = heightPixels - title_view.measuredHeight - bottomHeight
         val wantHeight = (widthPixels * 256f / 192).toInt()
-        
-        if (wantHeight <= canUseHeight) {
-            binding.fragmentContainerView.layoutParams = binding.fragmentContainerView.layoutParams.apply {
+        if (wantHeight <= canUseHeight) {//够用
+            fragment_container_view.layoutParams = fragment_container_view.layoutParams.apply {
                 width = widthPixels
                 height = wantHeight
             }
-            binding.imageEditView.layoutParams = binding.imageEditView.layoutParams.apply {
+            image_edit_view.layoutParams = image_edit_view.layoutParams.apply {
                 width = widthPixels
                 height = wantHeight
             }
         } else {
-            val optimalWidth = (canUseHeight * 192f / 256).toInt()
-            binding.fragmentContainerView.layoutParams = binding.fragmentContainerView.layoutParams.apply {
-                width = optimalWidth
+            fragment_container_view.layoutParams = fragment_container_view.layoutParams.apply {
+                width = (canUseHeight * 192f / 256).toInt()
                 height = canUseHeight
             }
-            binding.imageEditView.layoutParams = binding.imageEditView.layoutParams.apply {
-                width = optimalWidth
+            image_edit_view.layoutParams = image_edit_view.layoutParams.apply {
+                width = (canUseHeight * 192f / 256).toInt()
                 height = canUseHeight
             }
         }
     }
 
-    open suspend fun getPickBitmap(): Bitmap? {
-        return null
+
+    open suspend fun getPickBitmap() : Bitmap?{
+       return null
     }
+
 
     override fun onClick(v: View?) {
         when (v) {
-            binding.imgPick -> {
+            img_pick -> {
                 lifecycleScope.launch {
-                    getPickBitmap()?.let { bitmap ->
+                    getPickBitmap()?.let {
                         switchPhotoState(true)
-                        binding.imageEditView.sourceBitmap = bitmap
-                        binding.imageEditView.clear()
+                        image_edit_view.sourceBitmap = it
+                        image_edit_view.clear()
                     }
                 }
             }
-            binding.ivEditColor -> {
-                val colorPickDialog = ColorSelectDialog(this, binding.imageEditView.color)
-                colorPickDialog.onPickListener = { selectedColor ->
-                    binding.imageEditView.color = selectedColor
-                    binding.viewColor.setBackgroundColor(selectedColor)
+            iv_edit_color -> {
+                val colorPickDialog = ColorSelectDialog(this, image_edit_view.color)
+                colorPickDialog.onPickListener = {
+                    image_edit_view.color = it
+                    view_color.setBackgroundColor(it)
                 }
                 colorPickDialog.show()
             }
-            binding.ivEditCircle -> {
-                selectDrawingTool(ImageEditView.Type.CIRCLE)
+            iv_edit_circle -> {
+                iv_edit_circle.isSelected = true
+                iv_edit_rect.isSelected = false
+                iv_edit_arrow.isSelected = false
+                image_edit_view.type = ImageEditView.Type.CIRCLE
             }
-            binding.ivEditRect -> {
-                selectDrawingTool(ImageEditView.Type.RECT)
+            iv_edit_rect -> {
+                iv_edit_circle.isSelected = false
+                iv_edit_rect.isSelected = true
+                iv_edit_arrow.isSelected = false
+                image_edit_view.type = ImageEditView.Type.RECT
             }
-            binding.ivEditArrow -> {
-                selectDrawingTool(ImageEditView.Type.ARROW)
+            iv_edit_arrow -> {
+                iv_edit_circle.isSelected = false
+                iv_edit_rect.isSelected = false
+                iv_edit_arrow.isSelected = true
+                image_edit_view.type = ImageEditView.Type.ARROW
             }
-            binding.ivEditClear -> binding.imageEditView.clear()
-        }
-    }
-
-    private fun selectDrawingTool(type: ImageEditView.Type) {
-        with(binding) {
-
-            ivEditCircle.isSelected = false
-            ivEditRect.isSelected = false
-            ivEditArrow.isSelected = false
-            
-            when (type) {
-                ImageEditView.Type.CIRCLE -> {
-                    ivEditCircle.isSelected = true
-                }
-                ImageEditView.Type.RECT -> {
-                    ivEditRect.isSelected = true
-                }
-                ImageEditView.Type.ARROW -> {
-                    ivEditArrow.isSelected = true
-                }
-            }
-            
-            imageEditView.type = type
+            iv_edit_clear -> image_edit_view.clear()
         }
     }
 
@@ -205,18 +162,22 @@ abstract class BasePickImgActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     * 切换 已拍照模式/未拍照模式.
+     */
     private fun switchPhotoState(hasTakePhoto: Boolean) {
         this.hasTakePhoto = hasTakePhoto
-        
-        with(binding) {
-            imageEditView.isVisible = hasTakePhoto
-            clEditMenu.isVisible = hasTakePhoto
-            imgPick.isVisible = !hasTakePhoto
-            fragmentContainerView.isVisible = !hasTakePhoto
-            titleView.setRightDrawable(if (hasTakePhoto) R.drawable.app_save else 0)
-        }
+        image_edit_view.isVisible = hasTakePhoto
+        cl_edit_menu.isVisible = hasTakePhoto
+        img_pick.isVisible = !hasTakePhoto
+        fragment_container_view.isVisible = !hasTakePhoto
+        title_view.setRightDrawable(if (hasTakePhoto) R.drawable.app_save else 0)
     }
 
+    /**
+     * 显示退出不保存提示弹框
+     * @param listener 点击弹框上退出事件监听
+     */
     private fun showExitTipsDialog(listener: (() -> Unit)) {
         TipDialog.Builder(this)
             .setMessage(R.string.diy_tip_save)
@@ -231,4 +192,5 @@ abstract class BasePickImgActivity : BaseActivity(), View.OnClickListener {
         super.disConnected()
         finish()
     }
+
 }

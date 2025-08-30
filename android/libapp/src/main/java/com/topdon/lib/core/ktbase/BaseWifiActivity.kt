@@ -1,6 +1,5 @@
 package com.topdon.lib.core.ktbase
 
-import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -8,16 +7,22 @@ import android.view.WindowManager
 import com.hjq.permissions.Permission
 import com.topdon.lib.core.utils.NetWorkUtils
 
+/**
+ * des:
+ * author: CaiSongL
+ * date: 2024/4/28 17:08
+ **/
 abstract class BaseWifiActivity : BaseActivity() {
 
-    protected val permissionList: List<String> by lazy {
+
+    protected val permissionList by lazy {
         if (this.applicationInfo.targetSdkVersion >= 34){
             listOf(
                 Permission.WRITE_EXTERNAL_STORAGE,
             )
         } else if (this.applicationInfo.targetSdkVersion == 33) {
             mutableListOf(
-                Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_IMAGES,
+                Permission.READ_MEDIA_VIDEO, Permission.READ_MEDIA_IMAGES,
                 Permission.WRITE_EXTERNAL_STORAGE
             )
         } else {
@@ -27,7 +32,7 @@ abstract class BaseWifiActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= 29) {
-
+            //Android10 及以上
             NetWorkUtils.switchNetwork(true)
         }
         super.onCreate(savedInstanceState)
@@ -41,7 +46,7 @@ abstract class BaseWifiActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT >= 29) {
+        if (Build.VERSION.SDK_INT >= 29) {//Android10 及以上
             NetWorkUtils.switchNetwork(true)
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -55,4 +60,5 @@ abstract class BaseWifiActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
     }
+
 }

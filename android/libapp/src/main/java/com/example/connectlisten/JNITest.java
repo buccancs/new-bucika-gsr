@@ -1,43 +1,19 @@
 package com.example.connectlisten;
 
-/**
- * JNI test utility for native library testing
- */
+
+import com.topdon.lib.core.so.algorithm;
+
 public class JNITest {
-    
     static {
-        try {
-            System.loadLibrary("jniavutil");
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-        }
+        System.loadLibrary("opencv_java4");
+//        System.loadLibrary("SRImage");
+//        System.loadLibrary("minMaxTemperatureDetect");
     }
-    
-    /**
-     * Test native method
-     */
-    public native int testConnection();
-    
-    /**
-     * Initialize native library
-     */
-    public native boolean initNative();
-    
-    /**
-     * Release native resources
-     */
-    public native void releaseNative();
-    
-    /**
-     * Test method to verify library loading
-     */
-    public static boolean isNativeLibraryLoaded() {
-        try {
-            JNITest test = new JNITest();
-            test.testConnection();
-            return true;
-        } catch (UnsatisfiedLinkError e) {
-            return false;
-        }
+
+    public static byte[] maxTempL(byte[] imgBytes,byte[] tempByte,int width,int height) {
+        return  algorithm.maxTempL(imgBytes, tempByte,width,height);
+    }
+    public static byte[] lowTemTrack(byte[] imgBytes,byte[] tempByte,int width,int height) {
+        return  algorithm.lowTemTrack(imgBytes, tempByte,width,height);
     }
 }

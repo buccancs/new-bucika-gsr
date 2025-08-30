@@ -22,7 +22,6 @@ import com.topdon.lib.core.dialog.LoadingDialog
 import com.topdon.lib.core.tools.*
 import com.topdon.lib.core.dialog.TipCameraProgressDialog
 import com.topdon.lib.core.dialog.TipProgressDialog
-import com.topdon.lib.core.AppLanguageUtils
 import com.topdon.lms.sdk.LMS
 import com.topdon.lms.sdk.bean.CommonBean
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
@@ -31,6 +30,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
+/**
+ * Created by admin on 2018/6/4.
+ */
 abstract class BaseActivity : RxAppCompatActivity() {
 
     val TAG = this.javaClass.simpleName
@@ -55,14 +57,12 @@ abstract class BaseActivity : RxAppCompatActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
         window.navigationBarColor = ContextCompat.getColor(this,R.color.toolbar_16131E)
-        val layoutRes = initContentView()
-        if (layoutRes != 0) {
-            setContentView(layoutRes)
-        }
+        setContentView(initContentView())
         initView()
         initData()
         synLogin()
     }
+
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(AppLanguageUtils.attachBaseContext(newBase, SharedManager.getLanguage(newBase!!)))
@@ -83,6 +83,8 @@ abstract class BaseActivity : RxAppCompatActivity() {
         super.onStop()
     }
 
+
+
     override fun onDestroy() {
         cameraDialog?.dismiss()
         super.onDestroy()
@@ -92,6 +94,10 @@ abstract class BaseActivity : RxAppCompatActivity() {
         BaseApplication.instance.activitys.remove(this)
     }
 
+
+    /**
+     * 监听 USB 连接状态
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun getConnectState(event: DeviceConnectEvent) {
         if (event.isConnect) {
@@ -106,6 +112,9 @@ abstract class BaseActivity : RxAppCompatActivity() {
     protected open fun disConnected() {
 
     }
+
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketConnectState(event: SocketStateEvent) {
@@ -123,8 +132,14 @@ abstract class BaseActivity : RxAppCompatActivity() {
 
     }
 
+
+    /**
+     * 新版 LMS 风格的加载中弹框.
+     */
     private var loadingDialog: LoadingDialog? = null
-    
+    /**
+     * 真是醉了，一个加载中的弹框现在就有 3 种，不管了，继续加，理论上后续都要改成这个.
+     */
     fun showLoadingDialog(@StringRes resId: Int = R.string.tip_loading) {
         showLoadingDialog(getString(resId))
     }
@@ -135,10 +150,13 @@ abstract class BaseActivity : RxAppCompatActivity() {
         loadingDialog?.setTips(text)
         loadingDialog?.show()
     }
-    
+    /**
+     * 真是醉了，一个加载中的弹框现在就有 3 种，不管了，继续加，理论上后续都要改成这个.
+     */
     fun dismissLoadingDialog() {
         loadingDialog?.dismiss()
     }
+
 
     private var cameraDialog: TipCameraProgressDialog? = null
     fun showCameraLoading() {
@@ -156,7 +174,7 @@ abstract class BaseActivity : RxAppCompatActivity() {
                 cameraDialog?.show()
             }
         }catch (e:Exception){
-
+            //临时捕获方案，后面需求完成后再追踪优化
             Log.e("临时处理方案",e.message.toString())
         }
     }
@@ -166,6 +184,7 @@ abstract class BaseActivity : RxAppCompatActivity() {
         }
     }
 
+    //同步登录信息
     private fun synLogin() {
         if (this::class.java.simpleName == "MainActivity") {
             LMS.getInstance().syncUserInfo()
@@ -188,7 +207,7 @@ abstract class BaseActivity : RxAppCompatActivity() {
             }
         } else {
             if (UserInfoManager.getInstance().isLogin()) {
-
+                //账号已退出,本地登录状态,需退出操作
                 UserInfoManager.getInstance().logout()
             }
         }

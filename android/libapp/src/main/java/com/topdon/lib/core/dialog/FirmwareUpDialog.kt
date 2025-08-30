@@ -8,55 +8,77 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.topdon.lib.core.R
-import com.topdon.lib.core.databinding.DialogFirmwareUpBinding
 import com.topdon.lib.core.utils.ScreenUtil
 
+/**
+ * 固件升级有新版本提示弹框.
+ * Created by LCG on 2024/3/4.
+ */
 class FirmwareUpDialog(context: Context) : Dialog(context, R.style.InfoDialog), View.OnClickListener {
 
-    private lateinit var binding: DialogFirmwareUpBinding
-
+    /**
+     * 标题文字，如 “发现新版本 V3.50”
+     */
     var titleStr: CharSequence?
-        get() = binding.tvTitle.text
+        get() = rootView.tv_title.text
         set(value) {
-            binding.tvTitle.text = value
+            rootView.tv_title.text = value
         }
 
+    /**
+     * 文件大小文字，如 “大小: 239.6MB”
+     */
     var sizeStr: CharSequence?
-        get() = binding.tvSize.text
+        get() = rootView.tv_size.text
         set(value) {
-            binding.tvSize.text = value
+            rootView.tv_size.text = value
         }
 
+    /**
+     * 升级内容，一般直接扔从接口拿到的东西
+     */
     var contentStr: CharSequence?
-        get() = binding.tvContent.text
+        get() = rootView.tv_content.text
         set(value) {
-            binding.tvContent.text = value
+            rootView.tv_content.text = value
         }
 
+    /**
+     * 是否显示底部设备重启提示，目前仅固件升级需要显示，默认隐藏(Gone).
+     */
     var isShowRestartTips: Boolean
-        get() = binding.tvRestartTips.isVisible
+        get() = rootView.tv_restart_tips.isVisible
         set(value) {
-            binding.tvRestartTips.isVisible = value
+            rootView.tv_restart_tips.isVisible = value
         }
 
+    /**
+     * 是否显示取消按钮，默认显示.
+     */
     var isShowCancel: Boolean
-        get() = binding.tvCancel.isVisible
+        get() = rootView.tv_cancel.isVisible
         set(value) {
-            binding.tvCancel.isVisible = value
+            rootView.tv_cancel.isVisible = value
         }
 
-    var onCancelClickListener: (() -> Unit)? = null
 
+    /**
+     * 取消点击事件监听.
+     */
+    var onCancelClickListener: (() -> Unit)? = null
+    /**
+     * 更新点击事件监听.
+     */
     var onConfirmClickListener: (() -> Unit)? = null
+
+
+    private val rootView: View = LayoutInflater.from(context).inflate(R.layout.dialog_firmware_up, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        binding = DialogFirmwareUpBinding.inflate(LayoutInflater.from(context))
-        
         setCancelable(false)
         setCanceledOnTouchOutside(false)
-        setContentView(binding.root)
+        setContentView(rootView)
 
         window?.let {
             val layoutParams = it.attributes
@@ -65,17 +87,17 @@ class FirmwareUpDialog(context: Context) : Dialog(context, R.style.InfoDialog), 
             it.attributes = layoutParams
         }
 
-        binding.tvCancel.setOnClickListener(this)
-        binding.tvConfirm.setOnClickListener(this)
+        rootView.tv_cancel.setOnClickListener(this)
+        rootView.tv_confirm.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v) {
-            binding.tvCancel -> {
+            rootView.tv_cancel -> {//取消
                 dismiss()
                 onCancelClickListener?.invoke()
             }
-            binding.tvConfirm -> {
+            rootView.tv_confirm -> {//确认
                 dismiss()
                 onConfirmClickListener?.invoke()
             }

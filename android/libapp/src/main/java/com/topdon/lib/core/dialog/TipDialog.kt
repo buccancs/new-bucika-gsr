@@ -11,8 +11,11 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import com.topdon.lib.core.R
-import com.topdon.lib.core.databinding.DialogTipBinding
 
+/**
+ * 提示窗
+ * create by fylder on 2018/6/15
+ **/
 class TipDialog : Dialog {
 
     constructor(context: Context) : super(context)
@@ -22,6 +25,7 @@ class TipDialog : Dialog {
     override fun onBackPressed() {
 
     }
+
 
     class Builder(private val context: Context) {
         var dialog: TipDialog? = null
@@ -81,66 +85,66 @@ class TipDialog : Dialog {
         }
 
         fun dismiss() {
-            this.dialog?.dismiss()
+            this.dialog!!.dismiss()
         }
+
 
         fun create(): TipDialog {
             if (dialog == null) {
                 dialog = TipDialog(context, R.style.InfoDialog)
             }
 
-            val binding = DialogTipBinding.inflate(LayoutInflater.from(context))
-            dialog!!.addContentView(binding.root, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
-            
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_tip, null)
+            dialog!!.addContentView(view, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
             val isPortrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
             val widthPixels = context.resources.displayMetrics.widthPixels
             val lp = dialog!!.window!!.attributes
-            lp.width = (widthPixels * if (isPortrait) 0.85 else 0.35).toInt()
+            lp.width = (widthPixels * if (isPortrait) 0.85 else 0.35).toInt() //设置宽度
             dialog!!.window!!.attributes = lp
 
             dialog!!.setCanceledOnTouchOutside(canceled)
-            
-            binding.dialogTipSuccessBtn.setOnClickListener {
+            view.dialog_tip_success_btn.setOnClickListener {
                 dismiss()
                 positiveEvent?.invoke()
             }
-            binding.dialogTipCancelBtn.setOnClickListener {
+            view.dialog_tip_cancel_btn.setOnClickListener {
                 dismiss()
                 cancelEvent?.invoke()
             }
 
             if (positiveStr != null) {
-                binding.dialogTipSuccessBtn.text = positiveStr
+                view.dialog_tip_success_btn.text = positiveStr
             }
-            
             if (!TextUtils.isEmpty(cancelStr)) {
-                binding.spaceMargin.visibility = View.VISIBLE
-                binding.dialogTipCancelBtn.visibility = View.VISIBLE
-                binding.dialogTipCancelBtn.text = cancelStr
+                view.space_margin.visibility = View.VISIBLE
+                view.dialog_tip_cancel_btn.visibility = View.VISIBLE
+                view.dialog_tip_cancel_btn.text = cancelStr
             } else {
-                binding.spaceMargin.visibility = View.GONE
-                binding.dialogTipCancelBtn.visibility = View.GONE
-                binding.dialogTipCancelBtn.text = ""
+                view.space_margin.visibility = View.GONE
+                view.dialog_tip_cancel_btn.visibility = View.GONE
+                view.dialog_tip_cancel_btn.text = ""
             }
-            
+            //msg
             if (message != null) {
-                binding.dialogTipMsgText.visibility = View.VISIBLE
-                binding.dialogTipMsgText.setText(message, TextView.BufferType.NORMAL)
+                view.dialog_tip_msg_text.visibility = View.VISIBLE
+                view.dialog_tip_msg_text.setText(message, TextView.BufferType.NORMAL)
             } else {
-                binding.dialogTipMsgText.visibility = View.GONE
+                view.dialog_tip_msg_text.visibility = View.GONE
             }
 
+            //msg
             if (titleMessage != null) {
-                binding.dialogTipTitleMsgText.visibility = View.VISIBLE
-                binding.dialogTipTitleMsgText.setText(titleMessage, TextView.BufferType.NORMAL)
+                view.dialog_tip_title_msg_text.visibility = View.VISIBLE
+                view.dialog_tip_title_msg_text.setText(titleMessage, TextView.BufferType.NORMAL)
             } else {
-                binding.dialogTipTitleMsgText.visibility = View.GONE
+                view.dialog_tip_title_msg_text.visibility = View.GONE
             }
 
-            binding.tvRestartTips.isVisible = isShowRestartTips
+            view.tv_restart_tips.isVisible = isShowRestartTips
 
-            dialog!!.setContentView(binding.root)
+            dialog!!.setContentView(view)
             return dialog as TipDialog
         }
     }
+
 }

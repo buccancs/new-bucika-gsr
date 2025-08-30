@@ -9,9 +9,15 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import com.topdon.lib.core.R
 import com.topdon.lib.core.utils.ScreenUtil
-import com.topdon.lib.core.databinding.DialogTipShutterBinding
 
+
+/**
+ * 自动快门提示弹窗
+ * @author: CaiSongL
+ * @date: 2023/4/13 10:57
+ */
 class TipShutterDialog : Dialog {
+
 
     constructor(context: Context) : super(context)
 
@@ -39,6 +45,7 @@ class TipShutterDialog : Dialog {
             return this
         }
 
+
         fun setCancelListener(event: ((check: Boolean) -> Unit)? = null): Builder {
             this.closeEvent = event
             return this
@@ -53,39 +60,40 @@ class TipShutterDialog : Dialog {
             this.dialog!!.dismiss()
         }
 
+
         fun create(): TipShutterDialog {
             if (dialog == null) {
                 dialog = TipShutterDialog(context, R.style.InfoDialog)
             }
-            val binding = DialogTipShutterBinding.inflate(
-                LayoutInflater.from(context)
-            )
-            dialog!!.addContentView(binding.root, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val view = inflater.inflate(R.layout.dialog_tip_shutter, null)
+            dialog!!.addContentView(view, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
             dialog!!.setCanceledOnTouchOutside(canceled)
 
             val lp = dialog!!.window!!.attributes
-            lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt()
+            lp.width = (ScreenUtil.getScreenWidth(context) * if (ScreenUtil.isPortrait(context)) 0.85 else 0.35).toInt() //设置宽度
             dialog!!.window!!.attributes = lp
 
-            binding.tvIKnow.setOnClickListener {
+            view.tv_i_know.setOnClickListener {
                 dismiss()
-                closeEvent?.invoke(binding.dialogTipCheck.isChecked)
+                closeEvent?.invoke(view.dialog_tip_check.isChecked)
             }
-            binding.imgClose.setOnClickListener {
+            view.img_close.setOnClickListener {
                 dismiss()
-                closeEvent?.invoke(binding.dialogTipCheck.isChecked)
+                closeEvent?.invoke(view.dialog_tip_check.isChecked)
             }
             if (titleRes != null) {
-                binding.tvTitle.setText(titleRes!!)
+                view.tv_title.setText(titleRes!!)
             }
             if (message != null) {
-                binding.dialogTipMsgText.visibility = View.VISIBLE
-                binding.dialogTipMsgText.setText(message, TextView.BufferType.NORMAL)
+                view.dialog_tip_msg_text.visibility = View.VISIBLE
+                view.dialog_tip_msg_text.setText(message, TextView.BufferType.NORMAL)
             } else {
-                binding.dialogTipMsgText.visibility = View.GONE
+                view.dialog_tip_msg_text.visibility = View.GONE
             }
-            dialog!!.setContentView(binding.root)
+            dialog!!.setContentView(view)
             return dialog as TipShutterDialog
         }
     }
+
 }

@@ -9,16 +9,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
+import android.net.NetworkInfo
 import android.os.Build
 import android.os.Process
 import android.text.TextUtils
 import android.util.Log
 import android.webkit.WebView
 import androidx.annotation.RequiresApi
-
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.LanguageUtils
 import com.elvishew.xlog.XLog
 import com.topdon.lib.core.bean.event.SocketMsgEvent
@@ -31,7 +29,7 @@ import com.topdon.lib.core.repository.FileBean
 import com.topdon.lib.core.repository.TS004Repository
 import com.topdon.lib.core.socket.SocketCmdUtil
 import com.topdon.lib.core.socket.WebSocketProxy
-import com.topdon.lib.core.tools.LanguageTool
+import com.topdon.lib.core.tools.AppLanguageUtils
 import com.topdon.lib.core.utils.NetWorkUtils
 import com.topdon.lib.core.utils.WifiUtil
 import com.topdon.lib.core.utils.WsCmdConstants
@@ -42,35 +40,6 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import java.io.File
-import java.util.Locale
-
-// Temporary replacement for AppLanguageUtils
-object AppLanguageUtils {
-    @JvmStatic
-    fun getChineseSystemLanguage(): String {
-        return "zh-CN" // Default Chinese
-    }
-    
-    @JvmStatic
-    fun getSystemLanguage(): String {
-        return "en-US" // Default English
-    }
-    
-    @JvmStatic
-    fun getLocaleByLanguage(language: String?): Locale {
-        return when (language) {
-            "zh-CN" -> Locale.SIMPLIFIED_CHINESE
-            "zh-TW" -> Locale.TRADITIONAL_CHINESE
-            else -> Locale.ENGLISH
-        }
-    }
-    
-    @JvmStatic
-    fun attachBaseContext(context: Context?, language: String?): Context? {
-        // Simple implementation - just return the original context
-        return context
-    }
-}
 
 abstract class BaseApplication : Application() {
 
@@ -82,11 +51,22 @@ abstract class BaseApplication : Application() {
     var tau_data_L: ByteArray? = null
 
     var activitys = arrayListOf<Activity>()
-    var hasOtgShow = false
+    var hasOtgShow = false//otg提示只出现一次
 
+    /**
+     * 获取软件编码.
+     */
     abstract fun getSoftWareCode(): String
 
+    /**
+     * 是否国内渠道。
+     *
+     * 国内渠道一些逻辑不同，如国内渠道可以应用内升级，权限申请前有提示弹窗等。
+     * 根据 2024/8/27 邮件结论，“热视界和电小搭其实没有形成销售，可以不用维护。”
+     * @return true-国内渠道 false-非国内渠道
+     */
     abstract fun isDomestic(): Boolean
+
 
     override fun onCreate() {
         super.onCreate()
@@ -105,35 +85,11 @@ abstract class BaseApplication : Application() {
 
     open fun initWebSocket(){
         connectWebSocket()
-
-        // Use modern NetworkCallback for API 24+ instead of deprecated broadcast receiver
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkRequest = NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .build()
-            
-            connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    Log.i("WebSocket", "Network available - connecting WebSocket")
-                    connectWebSocket()
-                }
-                
-                override fun onLost(network: Network) {
-                    super.onLost(network)
-                    Log.i("WebSocket", "Network lost")
-                }
-            })
+        //注册网络变更广播
+        if (Build.VERSION.SDK_INT < 33) {
+            registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         } else {
-            // Fallback for older APIs - using deprecated broadcast receiver
-            @Suppress("DEPRECATION")
-            if (Build.VERSION.SDK_INT < 33) {
-                registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-            } else {
-                registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), Context.RECEIVER_NOT_EXPORTED)
-            }
+            registerReceiver(NetworkChangedReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), Context.RECEIVER_NOT_EXPORTED)
         }
     }
 
@@ -156,21 +112,25 @@ abstract class BaseApplication : Application() {
         WebSocketProxy.getInstance().stopWebSocket()
     }
 
+    /**
+     * 解析socket消息
+     * @param msgJson
+     */
     private fun parserSocketMessage(msgJson: String) {
         if (TextUtils.isEmpty(msgJson)) return
         EventBus.getDefault().post(SocketMsgEvent(msgJson))
 
-        if (SharedManager.is04AutoSync) {
+        if (SharedManager.is04AutoSync) {//自动保存到手机开启
             when (SocketCmdUtil.getCmdResponse(msgJson)) {
-                WsCmdConstants.AR_COMMAND_SNAPSHOT -> {
+                WsCmdConstants.AR_COMMAND_SNAPSHOT -> {//拍照事件
                     autoSaveNewest(false)
                 }
 
-                WsCmdConstants.AR_COMMAND_VRECORD -> {
+                WsCmdConstants.AR_COMMAND_VRECORD -> {//开始或结束录像事件
                     try {
                         val data: JSONObject = JSONObject(msgJson).getJSONObject("data")
                         val enable: Boolean = data.getBoolean("enable")
-                        if (!enable) {
+                        if (!enable) {//结束才同步
                             autoSaveNewest(true)
                         }
                     } catch (_: Exception) {
@@ -195,39 +155,30 @@ abstract class BaseApplication : Application() {
     }
 
     private inner class NetworkChangedReceiver : BroadcastReceiver() {
-        @Suppress("DEPRECATION") // Maintained for backward compatibility with older Android versions
         override fun onReceive(context: Context?, intent: Intent?) {
             if (ConnectivityManager.CONNECTIVITY_ACTION == intent?.action) {
                 val manager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                
-                // Use modern network checking for API 23+
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val activeNetwork = manager.activeNetwork
-                    val networkCapabilities = manager.getNetworkCapabilities(activeNetwork)
-                    val isWifi = networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
-                    val isConnected = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-                    
-                    if (isConnected && isWifi) {
-                        connectWebSocket()
-                    }
-                    Log.i("WebSocket", "Network changed - WiFi: $isWifi, Connected: $isConnected")
-                } else {
-                    // Fallback for older APIs
-                    val activeNetwork = manager.activeNetworkInfo ?: return
-                    if (activeNetwork.isConnected && activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
-                        connectWebSocket()
-                    }
-                    Log.i("WebSocket", "Network changed - Type: ${activeNetwork.type}, Connected: ${activeNetwork.isConnected}")
+                val activeNetwork: NetworkInfo = manager.activeNetworkInfo ?: return
+                if (activeNetwork.isConnected && activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
+                    connectWebSocket()
+                }else{
+//                    NetWorkUtils.
                 }
+                Log.i("WebSocket", "网络切换 Wifi SSID: $activeNetwork"+activeNetwork.type)
             }
         }
     }
 
+
+
+    /**
+     * 设置webview的android9以上系统的多进程兼容性处理
+     */
     @RequiresApi(api = 28)
     open fun webviewSetPath(context: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val processName = getProcessName(context)
-            if (!applicationContext.packageName.equals(processName)) {
+            if (!applicationContext.packageName.equals(processName)) { //判断不等于默认进程名称
                 WebView.setDataDirectorySuffix(processName!!)
             }
         }
@@ -247,18 +198,21 @@ abstract class BaseApplication : Application() {
     private fun initARouter() {
         try {
             if (BuildConfig.DEBUG) {
-                Log.e("TopInfrared_LOG", "router init debug - using ModernRouter (internal)")
+                Log.e("TopInfrared_LOG", "router init debug")
+                ARouter.openDebug()
             }
-
+            ARouter.init(this)
         } catch (e: Exception) {
-
+            //异常后建议清除映射表 (官方文档 开发模式会清除)
             if (SharedManager.getHasShowClause()) {
                 Log.e("TopInfrared_LOG", "router init error: ${e.message}")
             }
-
+            ARouter.openDebug()
+            ARouter.init(this)
         }
     }
 
+    //清除无用数据
     fun clearDb() {
         GlobalScope.launch(Dispatchers.Default) {
             try {
@@ -273,13 +227,14 @@ abstract class BaseApplication : Application() {
         val selectLan = SharedManager.getLanguage(baseContext)
         if (TextUtils.isEmpty(selectLan)) {
             if (isDomestic()) {
-
+                //国内版默认中文
                 val autoSelect = AppLanguageUtils.getChineseSystemLanguage()
                 val locale = AppLanguageUtils.getLocaleByLanguage(autoSelect)
                 LanguageUtils.applyLanguage(locale)
                 SharedManager.setLanguage(baseContext, autoSelect)
             } else {
-
+                //初始语言设置
+                //默认初始语言，跟随系统语言设置，没有则默认英文
                 val autoSelect = AppLanguageUtils.getSystemLanguage()
                 val locale = AppLanguageUtils.getLocaleByLanguage(autoSelect)
                 LanguageUtils.applyLanguage(locale)
@@ -296,6 +251,9 @@ abstract class BaseApplication : Application() {
         return SharedManager.getLanguage(context)
     }
 
+    /**
+     * 退出所有
+     */
     fun exitAll() {
         hasOtgShow = false
         activitys.forEach {

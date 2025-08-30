@@ -8,15 +8,18 @@ import com.topdon.lib.core.bean.json.StatementJson
 import com.topdon.lib.core.bean.base.Resp
 import com.topdon.lib.core.bean.json.CheckVersionJson
 import com.topdon.lms.sdk.LMS
-import com.topdon.lms.core.IResponseCallback
-import com.topdon.lms.utils.StringUtils
-import com.topdon.lms.utils.TToast
+import com.topdon.lms.sdk.network.IResponseCallback
+import com.topdon.lms.sdk.utils.StringUtils
+import com.topdon.lms.sdk.weiget.TToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CountDownLatch
 
 object LmsRepository {
 
+    /**
+     * 查看版本信息
+     */
     suspend fun getVersionInfo(): CheckVersionJson? {
         var result: CheckVersionJson? = null
         val downLatch = CountDownLatch(1)
@@ -36,14 +39,17 @@ object LmsRepository {
         return result
     }
 
+    /**
+     * 查看声明链接
+     */
     suspend fun getStatementUrl(type: String): StatementJson? {
         var result: StatementJson? = null
         val downLatch = CountDownLatch(1)
-        LMS.getInstance().getStatement(type, object : IResponseCallback<String> {
-            override fun onResponse(response: String) {
+        LMS.getInstance().getStatement(type, object : IResponseCallback {
+            override fun onResponse(p0: String?) {
                 try {
                     val typeOfT = object : TypeToken<Resp<StatementJson>>() {}.type
-                    val json = Gson().fromJson<Resp<StatementJson>>(response, typeOfT)
+                    val json = Gson().fromJson<Resp<StatementJson>>(p0, typeOfT)
                     if (json.code == "2000") {
                         result = json.data
                     }
@@ -53,9 +59,9 @@ object LmsRepository {
                 downLatch.countDown()
             }
 
-            override fun onFail(errorCode: Int, errorMessage: String) {
+            override fun onFail(p0: Exception?) {
                 downLatch.countDown()
-                XLog.w("onFail: $errorCode - $errorMessage")
+                XLog.w("onFail: $result")
             }
 
             override fun onFail(failMsg: String?, errorCode: String) {

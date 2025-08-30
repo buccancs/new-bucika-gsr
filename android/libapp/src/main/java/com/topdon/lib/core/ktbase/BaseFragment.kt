@@ -16,6 +16,9 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+/**
+ * create by fylder on 2018/7/13
+ **/
 abstract class BaseFragment : RxFragment() {
 
     val TAG = BaseFragment::class.java.simpleName
@@ -36,12 +39,14 @@ abstract class BaseFragment : RxFragment() {
         initView()
     }
 
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
+            // 不在最前端显示 相当于调用了onPause();
 
-        } else {
-
+        } else {  // 在最前端显示 相当于调用了onResume();
+            //网络数据刷新
             initData()
         }
     }
@@ -51,8 +56,16 @@ abstract class BaseFragment : RxFragment() {
         EventBus.getDefault().unregister(this)
     }
 
+
+
+
+    /**
+     * 新版 LMS 风格的加载中弹框.
+     */
     private var loadingDialog: LoadingDialog? = null
-    
+    /**
+     * 显示 LMS 风格的加载中弹框.
+     */
     fun showLoadingDialog(@StringRes resId: Int = 0) {
         if (loadingDialog == null) {
             loadingDialog = LoadingDialog(requireContext())
@@ -60,7 +73,9 @@ abstract class BaseFragment : RxFragment() {
         loadingDialog?.setTips(if (resId == 0) R.string.tip_loading else resId)
         loadingDialog?.show()
     }
-    
+    /**
+     * 显示 LMS 风格的加载中弹框.
+     */
     fun showLoadingDialog(text: CharSequence) {
         if (loadingDialog == null) {
             loadingDialog = LoadingDialog(requireContext())
@@ -68,10 +83,14 @@ abstract class BaseFragment : RxFragment() {
         loadingDialog?.setTips(text)
         loadingDialog?.show()
     }
-    
+    /**
+     * 关闭 LMS 风格的加载中弹框.
+     */
     fun dismissLoadingDialog() {
         loadingDialog?.dismiss()
     }
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun getConnectState(event: DeviceConnectEvent) {
@@ -87,6 +106,7 @@ abstract class BaseFragment : RxFragment() {
     protected open fun disConnected() {
 
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketConnectState(event: SocketStateEvent) {

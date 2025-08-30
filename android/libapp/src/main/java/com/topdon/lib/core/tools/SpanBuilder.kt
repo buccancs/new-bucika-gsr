@@ -20,6 +20,10 @@ import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
 import java.lang.ref.WeakReference
 
+/**
+ *
+ * Created by LCG on 2024/2/19.
+ */
 class SpanBuilder : SpannableStringBuilder {
 
     constructor() : super()
@@ -38,7 +42,7 @@ class SpanBuilder : SpannableStringBuilder {
     }
 
     fun appendColor(text: CharSequence, @ColorInt color: Int): SpanBuilder {
-        if (text.isEmpty()) {
+        if (text.isEmpty()) {//搞个空字符串过来干嘛
             return this
         }
         val oldLength = this.length
@@ -48,7 +52,7 @@ class SpanBuilder : SpannableStringBuilder {
     }
 
     fun appendColorAndClick(text: CharSequence, @ColorInt color: Int, listener: OnClickListener): SpanBuilder {
-        if (text.isEmpty()) {
+        if (text.isEmpty()) {//搞个空字符串过来干嘛
             return this
         }
         val oldLength = this.length

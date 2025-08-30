@@ -12,8 +12,10 @@ import com.topdon.lib.core.R
 import com.topdon.lib.core.adapter.TargetColorAdapter
 import com.topdon.lib.core.bean.ObserveBean
 import com.topdon.lib.core.utils.ScreenUtil
-import com.topdon.lib.core.databinding.DialogTipTargetColorBinding
 
+/**
+ * 观测-标靶颜色
+ */
 class TipTargetColorDialog : Dialog {
 
     constructor(context: Context) : super(context)
@@ -58,18 +60,18 @@ class TipTargetColorDialog : Dialog {
             if (dialog == null) {
                 dialog = TipTargetColorDialog(context!!, R.style.InfoDialog)
             }
-            val binding = DialogTipTargetColorBinding.inflate(
-                LayoutInflater.from(context!!)
-            )
+            val inflater =
+                context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val view = inflater.inflate(R.layout.dialog_tip_target_color, null)
 
-            binding.tvIKnow.setOnClickListener {
+            view.tv_i_know.setOnClickListener {
                 dismiss()
                 closeEvent?.invoke(targetColor)
             }
 
-            titleText = binding.tvTitle
-            imgClose = binding.imgClose
-            recyclerView = binding.recyclerView
+            titleText = view.tv_title
+            imgClose = view.img_close
+            recyclerView = view.recycler_view
             recyclerView.layoutManager = LinearLayoutManager(context!!, RecyclerView.HORIZONTAL, false)
             val targetColorAdapter = TargetColorAdapter(context!!,targetColor)
             targetColorAdapter.listener = listener@{ _, item ->
@@ -78,27 +80,27 @@ class TipTargetColorDialog : Dialog {
             }
             recyclerView?.adapter = targetColorAdapter
             dialog!!.addContentView(
-                binding.root,
+                view,
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             )
             val lp = dialog!!.window!!.attributes
             val wRatio =
                 if (context!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-
+                    //竖屏
                     0.90
                 } else {
-
+                    //横屏
                     0.35
                 }
-            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt()
+            lp.width = (ScreenUtil.getScreenWidth(context!!) * wRatio).toInt() //设置宽度
             dialog!!.window!!.attributes = lp
 
             dialog!!.setCanceledOnTouchOutside(canceled)
             imgClose.setOnClickListener {
                 dismiss()
-
+//              closeEvent?.invoke(targetColor)
             }
-            dialog!!.setContentView(binding.root)
+            dialog!!.setContentView(view)
             return dialog as TipTargetColorDialog
         }
     }

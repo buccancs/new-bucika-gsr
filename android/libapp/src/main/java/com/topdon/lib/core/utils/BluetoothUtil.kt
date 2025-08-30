@@ -20,6 +20,9 @@ import com.topdon.lib.core.tools.PermissionTool
 
 object BluetoothUtil {
 
+    /**
+     * 在给定 activity 生命周期内添加 蓝牙 开关状态监听.
+     */
     fun addBtStateListener(activity: ComponentActivity, listener: ((isEnable: Boolean) -> Unit)) {
         activity.lifecycle.addObserver(BtStateObserver(activity, listener))
     }
@@ -46,13 +49,23 @@ object BluetoothUtil {
         }
     }
 
+
+
+
     private val scanCallback = MyScanCallback()
 
+    /**
+     * 设置低功耗蓝牙搜索回调.
+     */
     fun setLeScanListener(isTS004: Boolean, listener: (name: String) -> Unit) {
         scanCallback.isTS004 = isTS004
         scanCallback.listener = listener
     }
 
+    /**
+     * 开启低功耗蓝牙搜索，调用前需确保拥有相应权限且开启蓝牙.
+     * @return true-调用成功 false-缺少权限或蓝牙未开启
+     */
     @SuppressLint("MissingPermission")
     fun startLeScan(context: Context): Boolean {
         XLog.i("startLeScan()")
@@ -78,6 +91,10 @@ object BluetoothUtil {
         return true
     }
 
+    /**
+     * 停止低功耗蓝牙搜索，调用前需确保拥有相应权限且开启蓝牙.
+     * @return true-调用成功 false-缺少权限或蓝牙未开启
+     */
     @SuppressLint("MissingPermission")
     fun stopLeScan(context: Context): Boolean {
         XLog.i("stopBtScan()")
