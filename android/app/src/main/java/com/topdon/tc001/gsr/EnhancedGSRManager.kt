@@ -3,7 +3,7 @@ package com.topdon.tc001.gsr
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import com.topdon.thermal.capture.sync.EnhancedSynchronizedCaptureSystem
+import com.topdon.tc001.capture.EnhancedSynchronizedCaptureSystem
 import com.elvishew.xlog.XLog
 import com.shimmerresearch.android.Shimmer
 import com.shimmerresearch.android.ShimmerBluetooth
@@ -329,7 +329,7 @@ class EnhancedGSRManager private constructor(private val context: Context) {
 
                 device.setSamplingRateShimmer(GSR_SAMPLING_RATE_HZ)
                 
-                device.setEnabledSensors(Configuration.Shimmer3.SensorMap.GSR.mValue)
+                device.setEnabledSensors(Configuration.Shimmer3.SensorMap.GSR.mValue.toInt())
                 
                 XLog.i(TAG, "Shimmer configured for GSR using official SDK: ${GSR_SAMPLING_RATE_HZ} Hz")
             }
@@ -389,7 +389,7 @@ class EnhancedGSRManager private constructor(private val context: Context) {
             
             connectionExecutor?.shutdown()
             try {
-                if (!connectionExecutor?.awaitTermination(1000, TimeUnit.MILLISECONDS) == true) {
+                if (connectionExecutor?.awaitTermination(1000, TimeUnit.MILLISECONDS) != true) {
                     connectionExecutor?.shutdownNow()
                 }
             } catch (e: InterruptedException) {

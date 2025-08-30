@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.topdon.lib.core.ktbase.BaseActivity
+import com.topdon.lib.core.view.TitleView
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityGsrBinding
 import com.topdon.tc001.gsr.data.GSRDataWriter

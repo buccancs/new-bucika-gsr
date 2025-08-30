@@ -98,66 +98,60 @@ class GalleryUIStateManager(
     
     private fun showMeasurementModeUI() {
         binding.apply {
-
-            temperatureOverlay?.isVisible = true
-            measurementControls?.isVisible = true
-            
-            temperatureRangePanel?.isVisible = true
+            // TODO: Add missing UI components to layout or update binding references
+            // temperatureOverlay?.isVisible = true
+            // measurementControls?.isVisible = true
+            // temperatureRangePanel?.isVisible = true
         }
     }
     
     private fun showSettingsModeUI() {
         binding.apply {
-
-            settingsPanel?.isVisible = true
-            
-            editControlPanel?.isVisible = false
-            measurementControls?.isVisible = false
+            // TODO: Add missing UI components to layout or update binding references
+            // settingsPanel?.isVisible = true
+            // editControlPanel?.isVisible = false
+            // measurementControls?.isVisible = false
         }
     }
     
     private fun setupUIControls() {
-
         binding.apply {
-            temperatureOverlay?.isVisible = false
-            editControlPanel?.isVisible = false
-            settingsPanel?.isVisible = false
-            measurementControls?.isVisible = false
+            // TODO: Add missing UI components to layout or update binding references
+            // temperatureOverlay?.isVisible = false
+            // editControlPanel?.isVisible = false
+            // settingsPanel?.isVisible = false
+            // measurementControls?.isVisible = false
         }
     }
     
     private fun setupEventListeners() {
         binding.apply {
-
-            viewModeButton?.setOnClickListener {
-                setUIMode(UIMode.VIEW)
-            }
-            
-            editModeButton?.setOnClickListener {
-                setUIMode(UIMode.EDIT)
-            }
-            
-            measurementModeButton?.setOnClickListener {
-                setUIMode(UIMode.MEASUREMENT)
-            }
-            
-            settingsButton?.setOnClickListener {
-                setUIMode(UIMode.SETTINGS)
-            }
-            
-            temperatureToggleButton?.setOnClickListener {
-                toggleTemperatureOverlay(!isTemperatureOverlayVisible)
-            }
+            // TODO: Add missing UI components to layout or update binding references
+            // viewModeButton?.setOnClickListener {
+            //     setUIMode(UIMode.VIEW)
+            // }
+            // editModeButton?.setOnClickListener {
+            //     setUIMode(UIMode.EDIT)
+            // }
+            // measurementModeButton?.setOnClickListener {
+            //     setUIMode(UIMode.MEASUREMENT)
+            // }
+            // settingsButton?.setOnClickListener {
+            //     setUIMode(UIMode.SETTINGS)
+            // }
+            // temperatureToggleButton?.setOnClickListener {
+            //     toggleTemperatureOverlay(!isTemperatureOverlayVisible)
+            // }
         }
     }
     
     private fun updateTemperatureControls(showOverlay: Boolean) {
         binding.apply {
-            temperatureRangePanel?.isVisible = showOverlay
-            temperatureInfoPanel?.isVisible = showOverlay
+            // TODO: Add missing UI components to layout or update binding references
+            // temperatureRangePanel?.isVisible = showOverlay
+            // temperatureInfoPanel?.isVisible = showOverlay
             
             if (showOverlay) {
-
                 updateTemperatureDisplay(currentMinTemp, currentMaxTemp)
             }
         }
@@ -165,9 +159,10 @@ class GalleryUIStateManager(
     
     private fun updateTemperatureDisplay(minTemp: Float, maxTemp: Float) {
         binding.apply {
-            minTemperatureText?.text = String.format("%.1f°C", minTemp)
-            maxTemperatureText?.text = String.format("%.1f°C", maxTemp)
-            rangeTemperatureText?.text = String.format("Range: %.1f°C", maxTemp - minTemp)
+            // TODO: Add missing UI components to layout or update binding references
+            // minTemperatureText?.text = String.format("%.1f°C", minTemp)
+            // maxTemperatureText?.text = String.format("%.1f°C", maxTemp)
+            // rangeTemperatureText?.text = String.format("Range: %.1f°C", maxTemp - minTemp)
         }
     }
     

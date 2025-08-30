@@ -3,6 +3,7 @@ package com.topdon.tc001.gsr.settings
 import android.os.Bundle
 import android.widget.Toast
 import com.topdon.lib.core.ktbase.BaseActivity
+import com.topdon.lib.core.view.TitleView
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityGsrSettingsBinding
 import com.topdon.tc001.gsr.ui.ShimmerSensorPanel
