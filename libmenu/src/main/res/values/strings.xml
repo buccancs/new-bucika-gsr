@@ -14,6 +14,23 @@
     <string name="main_tab_second_high_temperature_source">高温热源</string>
     <string name="main_tab_second_low_temperature_source">低温热源</string>
     
+    <!-- Thermal Measurement -->
+    <string name="thermal_point">点测温</string>
+    <string name="thermal_line">线测温</string>
+    <string name="thermal_rect">矩形测温</string>
+    <string name="thermal_full_rect">全屏测温</string>
+    <string name="thermal_trend">温度趋势</string>
+    <string name="thermal_delete">删除测温</string>
+    
+    <!-- Settings -->
+    <string name="main_tab_second_compass">指南针</string>
+    <string name="thermal_rotate">旋转</string>
+    <string name="mirror">镜像</string>
+    <string name="thermal_contrast">对比度</string>
+    <string name="thermal_brightness">亮度</string>
+    <string name="thermal_shutter">快门</string>
+    <string name="thermal_emissivity">发射率</string>
+    
     <!-- Additional menu items -->
     <string name="menu_capture">拍照</string>
     <string name="menu_record">录制</string>
@@ -25,4 +42,12 @@
     <string name="menu_contrast">对比度</string>
     <string name="menu_shutter">快门</string>
     <string name="menu_emissivity">发射率</string>
+    
+    <!-- Common UI Elements -->
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="save">保存</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="close">关闭</string>
 </resources>

@@ -82,11 +82,11 @@ object IRTool {
      * 锐度：参数是0-100，也就是细节
      */
     fun basicImageDetailEnhanceLevelSet(levelValue : Int){
-//        val professionModeSetResult = DeviceIrcmdControlManager.getInstance().ircmdEngine
-//            .advProfessionModeSet(CommonParams.ProfessionMode.valueOf(0))
-//        val basicImageDetailEnhanceLevelSetResult = DeviceIrcmdControlManager.getInstance().getIrcmdEngine()
-//            ?.basicImageDetailEnhanceLevelSet(levelValue);
-//        Log.d(TAG, "basicImageDetailEnhanceLevelSet=" + basicImageDetailEnhanceLevelSetResult)
+        val professionModeSetResult = DeviceIrcmdControlManager.getInstance().ircmdEngine
+            ?.advProfessionModeSet(CommonParams.ProfessionMode.valueOf(0))
+        val basicImageDetailEnhanceLevelSetResult = DeviceIrcmdControlManager.getInstance().getIrcmdEngine()
+            ?.basicImageDetailEnhanceLevelSet(levelValue);
+        Log.d(TAG, "basicImageDetailEnhanceLevelSet=" + basicImageDetailEnhanceLevelSetResult)
     }
 
     /**
@@ -218,11 +218,11 @@ object IRTool {
      * 设置场景模式三
      */
     fun setMode(){
-//        val professionModeSetResult = DeviceIrcmdControlManager.getInstance().ircmdEngine
-//            .advProfessionModeSet(CommonParams.ProfessionMode.valueOf(0))
-//        val ircmdError = DeviceIrcmdControlManager.getInstance().ircmdEngine
-//            .basicImageSceneModeSet(3)
-//        Log.d(TAG, "setModel=${ircmdError}")
+        val professionModeSetResult = DeviceIrcmdControlManager.getInstance().ircmdEngine
+            ?.advProfessionModeSet(CommonParams.ProfessionMode.valueOf(0))
+        val ircmdError = DeviceIrcmdControlManager.getInstance().ircmdEngine
+            ?.basicImageSceneModeSet(3)
+        Log.d(TAG, "setMode=${ircmdError}")
     }
 
 

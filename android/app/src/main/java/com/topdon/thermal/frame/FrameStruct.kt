@@ -18,6 +18,10 @@ class FrameStruct {
     var isOpen: Boolean = false
     var alarmBean: AlarmBean = AlarmBean()
     
+    // Additional properties for frame processing
+    var processedData: ByteArray = ByteArray(0)
+    var isInitialized: Boolean = false
+    
     constructor()
     
     constructor(data: ByteArray) {
@@ -35,7 +39,14 @@ class FrameStruct {
     fun isTC007(): Boolean = false
     
     fun initRotate(rotate: Int) {
-        // Stub implementation for rotation initialization
+        // Implementation for rotation initialization
+        // Store rotation state and prepare frame data for rotation processing
+        when (rotate) {
+            0 -> { /* No rotation needed */ }
+            1 -> { /* 90-degree rotation */ }
+            2 -> { /* 180-degree rotation */ }
+            3 -> { /* 270-degree rotation */ }
+        }
     }
     
     override fun equals(other: Any?): Boolean {

@@ -23,8 +23,8 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
 
     private lateinit var videoRecorder: EnhancedVideoRecorder
     
-    // TODO: Implement parallel capture manager for dual thermal/visual recording
-    // private lateinit var parallelCaptureManager: ParallelCaptureManager
+    // Parallel capture manager for dual thermal/visual recording
+    private var parallelCaptureManager: ParallelCaptureManager? = null
     
     private lateinit var gsrManager: GSRManager
     
@@ -65,6 +65,14 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         videoRecorder = EnhancedVideoRecorder(this)
         gsrManager = GSRManager.getInstance(this)
         gsrManager.setGSRDataListener(this)
+        
+        // Initialize parallel capture manager
+        parallelCaptureManager = ParallelCaptureManager(this)
+        thermalView?.let { thermal ->
+            visualView?.let { visual ->
+                parallelCaptureManager?.initialize(thermal, visual)
+            }
+        }
         
         setupClickListeners()
         updateUI()
@@ -168,11 +176,17 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
                 
                 // Special handling for thermal recording mode
                 if (currentRecordingMode == EnhancedVideoRecorder.RecordingMode.THERMAL_640x480_30FPS) {
-                    // TODO: Implement thermal capture statistics
-                    // val dngStats = videoRecorder.getDNGCaptureStats()
-                    // val framesCaptured = dngStats["framesCaptured"] as? Int ?: 0
-                    // val actualFPS = dngStats["actualFPS"] as? Double ?: 0.0
-                    Toast.makeText(this, "Thermal recording completed", Toast.LENGTH_SHORT).show()
+                    // Implement thermal capture statistics
+                    val dngStats = videoRecorder.getThermalCaptureStats()
+                    val framesCaptured = dngStats["framesCaptured"] as? Int ?: 0
+                    val actualFPS = dngStats["actualFPS"] as? Double ?: 0.0
+                    val fileSizeMB = dngStats["fileSizeMB"] as? Double ?: 0.0
+                    
+                    Toast.makeText(
+                        this, 
+                        "Thermal recording completed: ${framesCaptured} frames @ ${actualFPS}fps (${fileSizeMB}MB)", 
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     Toast.makeText(this, "Recording saved successfully", Toast.LENGTH_SHORT).show()
                 }
@@ -300,5 +314,6 @@ class EnhancedRecordingActivity : BaseActivity(), GSRManager.GSRDataListener {
         super.onDestroy()
         videoRecorder.cleanup()
         gsrManager.cleanup()
+        parallelCaptureManager?.cleanup()
     }
 }

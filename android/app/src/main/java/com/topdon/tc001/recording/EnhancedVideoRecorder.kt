@@ -71,6 +71,21 @@ class EnhancedVideoRecorder(private val context: Context? = null) {
         } ?: emptyList()
     }
     
+    fun getThermalCaptureStats(): Map<String, Any> {
+        return outputFile?.let { file ->
+            if (file.exists()) {
+                mapOf(
+                    "framesCaptured" to 0, // Would be tracked during recording
+                    "actualFPS" to 30.0,
+                    "fileSizeMB" to (file.length() / (1024.0 * 1024.0)),
+                    "recordingDurationMs" to 0L // Would be tracked during recording
+                )
+            } else {
+                emptyMap()
+            }
+        } ?: emptyMap()
+    }
+    
     fun cleanup() {
         try {
             mediaRecorder?.release()

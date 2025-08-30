@@ -18,6 +18,7 @@ import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
 import com.topdon.lib.core.config.FileConfig
 import com.topdon.lib.core.utils.CommUtils
+import com.topdon.libcom.R
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
