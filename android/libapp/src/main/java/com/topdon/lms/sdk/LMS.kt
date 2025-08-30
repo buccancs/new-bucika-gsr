@@ -43,7 +43,9 @@ class LMS private constructor() {
         callback.invoke(CallbackData())
     }
     
-    fun getStatement(request: Any?, callback: Any?) {}
+    fun getStatement(type: String, callback: Any) {
+        // Stub implementation for IRCamera compatibility
+    }
     
     fun syncUserInfo() {}
     

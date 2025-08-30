@@ -41,5 +41,12 @@
         <attr name="isTitleCenter" format="boolean" /><!-- 标题文字是否居中 true-居中 false-居左 -->
     </declare-styleable>
 
+    <!-- LMS loading dialog attributes for IRCamera integration -->
+    <declare-styleable name="LoadingDotView">
+        <attr name="lms_dot_spacing" format="dimension" />
+        <attr name="lms_dot_radius" format="dimension" />
+        <attr name="lms_dot_move_rate" format="float" />
+    </declare-styleable>
+
 
 </resources>

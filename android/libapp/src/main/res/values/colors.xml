@@ -60,4 +60,10 @@
     <color name="color_B3FFFFFF">#B3FFFFFF</color>
     <color name="toolbar_5F16131E">#5F16131E</color>
 
+    <!-- Missing colors for IRCamera integration -->
+    <color name="color_green_point">#4CAF50</color>
+    <color name="lms_color_999">#999999</color>
+    <color name="lms_color_333">#333333</color>
+    <color name="transparent">#00000000</color>
+
 </resources>
