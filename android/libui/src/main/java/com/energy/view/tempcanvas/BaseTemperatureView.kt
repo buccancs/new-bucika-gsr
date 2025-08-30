@@ -58,6 +58,11 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
 
     private val mTextWidth = 110
     private lateinit var mTextPaint: TextPaint
+    
+    // Additional properties for thermal imaging
+    var textColor: Int = 0xffffffff.toInt()
+    var tempTextSize: Int = 14
+    private var tempData: ByteArray? = null
 
     constructor(context: Context) : this(context, null)
     
@@ -656,5 +661,11 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             count++
             startIndex++
         }
+    }
+    
+    // Additional method for thermal imaging data
+    fun setData(data: ByteArray) {
+        tempData = data
+        // Process temperature data if needed
     }
 }

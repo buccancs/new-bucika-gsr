@@ -24,6 +24,7 @@ import com.example.thermal_lite.util.IRTool
 import com.infisense.usbir.utils.OpencvTools
 import com.infisense.usbir.utils.BitmapUtils
 import com.infisense.usbir.utils.PseudocodeUtils.changePseudocodeModeByOld
+import com.infisense.usbir.utils.PseudocodeUtils.changePseudocodeModeByNew
 import com.infisense.usbir.view.ITsTempListener
 import com.topdon.lib.core.BaseApplication
 import com.topdon.lib.core.bean.event.ReportCreateEvent
@@ -93,7 +94,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     private var rightValue = 10000f
     private var max = 10000f
     private var min = 0f
-    private var rotate = ImageParams.ROTATE_270
+    private var rotate = FrameTool.ROTATE_270
     private var struct: FrameStruct = FrameStruct(ByteArray(0), 0, 0)
     private var ts_data_H: ByteArray? = null
     private var ts_data_L: ByteArray? = null
@@ -140,7 +141,13 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
         viewModel.resultLiveData.observe(this) {
 
             System.arraycopy(it.frame, 0, mFrame, 0, it.frame.size)
-            showImage(it.capital, it.frame)
+            // Convert capital string to ByteArray if needed
+            val capitalBytes = if (it.capital is String) {
+                (it.capital as String).toByteArray()
+            } else {
+                it.capital as ByteArray
+            }
+            showImage(capitalBytes, it.frame)
         }
     }
 
@@ -156,8 +163,8 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
         binding.temperatureIvInput.setOnClickListener(this)
     }
 
-    private fun setRotate(rotate: ImageParams) {
-        if (rotate == ImageParams.ROTATE_270 || rotate == ImageParams.ROTATE_90) {
+    private fun setRotate(rotate: Int) {
+        if (rotate == FrameTool.ROTATE_270 || rotate == FrameTool.ROTATE_90) {
             binding.temperatureView.setImageSize(imageHeight, imageWidth)
         } else {
             binding.temperatureView.setImageSize(imageWidth, imageHeight)
@@ -168,7 +175,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
     private fun showImage(capital: ByteArray, frame: ByteArray) {
         lifecycleScope.launch {
             frameTool.read(frame)
-            struct = FrameStruct(capital)
+            struct = FrameStruct(frame)
             frameTool.initStruct(struct)
             isShowC = SharedManager.getTemperature() == 1
             rotate = frameTool.initRotate()
@@ -177,7 +184,7 @@ class IRGalleryEditActivity : BaseActivity(), View.OnClickListener, ITsTempListe
             delay(200)
             updateImage(
                 frameTool.getScrPseudoColorScaledBitmap(
-                    changePseudocodeModeByOld(pseudocodeMode),
+                    changePseudocodeModeByNew(changePseudocodeModeByOld(pseudocodeMode)),
                     rotate = rotate,
                     customPseudoBean = struct.customPseudoBean,
                     maxTemperature = tempCorrect(frameTool.getSrcTemp().maxTemperature),

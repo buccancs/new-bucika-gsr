@@ -32,8 +32,8 @@ object FrameTool {
         return ByteArray(0)
     }
     
-    fun read(path: String): FrameStruct {
-        return FrameStruct(ByteArray(0), 0, 0)
+    fun read(data: ByteArray): FrameStruct {
+        return FrameStruct(data, 0, 0)
     }
     
     fun initStruct(struct: FrameStruct) {
