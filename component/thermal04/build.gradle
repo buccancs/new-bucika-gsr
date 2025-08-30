@@ -1,0 +1,97 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
+}
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
+}
+
+android {
+    namespace = "com.topdon.component.thermal04"
+    compileSdk rootProject.ext.android.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.ext.android.minSdk
+        targetSdk rootProject.ext.android.targetSdk
+
+        buildConfigField "String", "VERSION_NAME", "\"$rootProject.ext.android.versionName\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs', 'src/main/jnilibs']
+        }
+    }
+
+    flavorDimensions 'app'
+    productFlavors {
+        dev {
+            dimension 'app'
+        }
+        beta {
+            dimension 'app'
+        }
+        prod {
+            dimension 'app'
+        }
+        prodTopdon {
+            dimension 'app'
+        }
+        insideChina {
+            dimension 'app'
+        }
+        prodTopdonInsideChina {
+            dimension 'app'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':android:libapp')
+    implementation project(':android:libui')
+    implementation project(':android:libir')
+
+    api(name: 'library_1.0', ext: 'aar')
+    // ARouter and other optional dependencies commented out for core functionality
+    // ARouter and other optional dependencies commented out for core functionality
+    // kapt 'com.alibaba:arouter-compiler:1.5.2'
+    // gsy player
+    def gsy_version = "v8.1.4"
+    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-java:$gsy_version"
+    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-exo_player2:$gsy_version"
+    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-armv64:$gsy_version"
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-java:v8.1.9-release-jitpack'
+//    //是否需要ExoPlayer模式
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-exo2:v8.1.9-release-jitpack'
+//    //是否需要AliPlayer模式
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-aliplay:v8.1.9-release-jitpack'
+//
+//    //根据你的需求ijk模式的so
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-ex_so:v8.1.9-release-jitpack'
+
+    //是否需要AliPlayer模式
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-aliplay:v8.5.0-release-jitpack'
+}

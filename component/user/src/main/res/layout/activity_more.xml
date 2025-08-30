@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_16131E"
+    android:fitsSystemWindows="true">
+
+    <com.topdon.lib.core.view.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:titleText="@string/search_learn_more"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="36dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/title_view"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_bg_shape"
+            android:layout_marginHorizontal="20dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_device_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_device_information_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/more_device_info"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_tisr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_device_information"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_tisr_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="TISR"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_auto_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_tisr"
+                    app:setting_icon_night="@drawable/ic_auto_save_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/ts004_auto_save"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_storage_space"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_auto_save"
+                    app:setting_icon_night="@drawable/ic_storage_space_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/ts004_storage_space"/>
+
+                <include
+                    android:id="@+id/setting_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    layout="@layout/layout_upgrade"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/setting_storage_space"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_version"
+                    app:setting_icon_night="@drawable/ic_reset_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/more_device_reset"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_disconnect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_reset"
+                    app:setting_icon_night="@drawable/ic_disconnect_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/ts004_device_disconnect"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

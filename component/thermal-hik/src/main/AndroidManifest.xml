@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name=".activity.ImagePickIRHikActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.IRCorrectHikThreeActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.IRCorrectHikFourActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.IRMonitorCaptureHik1Activity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.IRMonitorCaptureHik2Activity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.IRThermalHikActivity"
+            android:screenOrientation="userPortrait"
+            android:windowSoftInputMode="adjustPan" />
+    </application>
+</manifest>

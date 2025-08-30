@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#16131e">
+
+    <com.topdon.lib.core.view.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:titleText="@string/ts004_add_device"
+        app:leftDrawable="@drawable/svg_arrow_left_e8"
+        app:rightDrawable="@drawable/svg_info_ff"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 扫描 gif -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/iv_scan_gif"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        android:contentDescription="@null"
+        app:lottie_fileName="wifi_scan.json"
+        app:lottie_imageAssetsFolder="images/"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="false"
+        app:layout_constraintWidth_percent="0.48"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_view" />
+
+    <TextView
+        android:id="@+id/tv_scan_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/ts004_scan_wait"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_scan_gif" />
+
+    <TextView
+        android:id="@+id/tv_scan_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        tools:text="请确保设备已经开机，且位于手机附近"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_scan_state" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_scan_tips"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- 顶部提示文字 -->
+    <TextView
+        android:id="@+id/tv_top_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:background="@drawable/bg_corners10_solid_ff"
+        android:visibility="gone"
+        tools:text="@string/ts004_wlan_auth"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

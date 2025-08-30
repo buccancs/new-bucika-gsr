@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    tools:background="#16131e">
+
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/selector_house_radio"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/view_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="-16dp"
+        android:background="@drawable/bg_corners10_solid_23202e"
+        app:layout_constraintStart_toEndOf="@id/iv_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/et_input_name" />
+
+    <EditText
+        android:id="@+id/et_input_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="5dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:inputType="text"
+        android:maxLength="50"
+        android:background="@drawable/bg_corners08_stroke_20_ff"
+        tools:text="一楼汇总"
+        app:layout_constraintWidth_percent="0.49"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/view_bg" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/svg_edit_drag"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="@id/view_bg"
+        app:layout_constraintTop_toTopOf="@id/et_input_name"
+        app:layout_constraintBottom_toBottomOf="@id/et_input_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topdon.module.user">
+
+    <application>
+        <activity
+            android:name=".activity.LanguageActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.QuestionActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.QuestionDetailsActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.UnitActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.MoreActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.StorageSpaceActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.DeviceDetailsActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.ElectronicManualActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.TISRActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.AutoSaveActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="userPortrait" />
+    </application>
+</manifest>

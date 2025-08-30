@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topdon.pseudo">
+
+    <application>
+        <activity
+            android:name="com.topdon.pseudo.activity.PseudoSetActivity"
+            android:screenOrientation="userPortrait" />
+    </application>
+
+</manifest>

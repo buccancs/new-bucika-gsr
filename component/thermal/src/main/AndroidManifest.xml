@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topdon.module.thermal">
+
+    <application>
+        <activity
+            android:name=".activity.ThermalActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.MonitorActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.ConnectActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.GalleryActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.VideoActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.temp.ChartActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.MonitorChartActivity"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".activity.LogMPChartActivity"
+            android:screenOrientation="behind" />
+    </application>
+
+</manifest>

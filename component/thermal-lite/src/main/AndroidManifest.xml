@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.thermal_lite"
+    >
+    <application>
+
+        <activity android:name=".activity.IRMonitorLiteActivity" />
+        <activity android:name=".activity.IRMonitorChartLiteActivity" />
+        <activity android:name=".activity.IRCorrectionLiteThreeActivity" />
+        <activity android:name=".activity.IRCorrectionLiteFourActivity" />
+        <activity android:name=".activity.ImagePickIRLiteActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.IRThermalLiteActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:requestLegacyExternalStorage="true"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="userPortrait"
+            android:windowSoftInputMode="adjustPan"/>
+    </application>
+
+</manifest>

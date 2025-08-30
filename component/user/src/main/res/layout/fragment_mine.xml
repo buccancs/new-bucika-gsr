@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_16131E"
+    android:fitsSystemWindows="true">
+
+    <com.topdon.lib.core.view.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:titleText="@string/main_person"
+        app:isInitLeft="false"
+        app:isTitleCenter="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/title_view"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dp_24"
+            android:paddingBottom="20dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/setting_user_img_night"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_default_user_head"
+                app:layout_constraintWidth_percent="0.16"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/setting_user_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                tools:text="Roger Mills"
+                app:layout_constraintStart_toEndOf="@id/setting_user_img_night"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/setting_user_img_night"
+                app:layout_constraintBottom_toTopOf="@id/tv_email" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/color_8A898E"
+                android:textSize="11sp"
+                tools:text="tigerltr1@gmail.com"
+                app:layout_constraintStart_toEndOf="@id/setting_user_img_night"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_user_text"
+                app:layout_constraintBottom_toBottomOf="@id/setting_user_img_night" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/setting_user_lay"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="28dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:src="@drawable/ic_change_night"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/setting_user_img_night" />
+
+            <!-- 冬季特辑入口 -->
+            <ImageView
+                android:id="@+id/iv_winter"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="28dp"
+                android:src="@drawable/ic_user_winter_bg"
+                android:contentDescription="@null"
+                app:layout_constraintDimensionRatio="1005:309"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_user_img_night" />
+            <!-- 右侧图标占位 -->
+            <View
+                android:id="@+id/space_winter_right"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="W,116:103"
+                app:layout_constraintEnd_toEndOf="@id/iv_winter"
+                app:layout_constraintTop_toTopOf="@id/iv_winter"
+                app:layout_constraintBottom_toBottomOf="@id/iv_winter" />
+            <!-- 标题 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_winter_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@id/iv_winter"
+                app:layout_constraintEnd_toStartOf="@+id/space_winter_right"
+                app:layout_constraintTop_toTopOf="@id/iv_winter"
+                app:layout_constraintBottom_toTopOf="@+id/tv_winter_sub_title">
+                <TextView
+                    android:id="@+id/tv_winter_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/testing_guidance"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/view_winter_point" />
+                <View
+                    android:id="@+id/view_winter_point"
+                    android:layout_width="8sp"
+                    android:layout_height="8sp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/shape_oval_ff0000"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:ignore="SmallSp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_winter_title"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- 副标题 -->
+            <TextView
+                android:id="@+id/tv_winter_sub_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/unlock_professional_perspectives"
+                android:textSize="14sp"
+                android:textColor="#99ffffff"
+                android:maxLines="2"
+                android:ellipsize="end"
+                app:layout_constraintStart_toStartOf="@id/cl_winter_title"
+                app:layout_constraintEnd_toEndOf="@id/cl_winter_title"
+                app:layout_constraintTop_toBottomOf="@id/cl_winter_title"
+                app:layout_constraintBottom_toBottomOf="@id/iv_winter" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="20dp"
+                android:background="@drawable/setting_bg_shape"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_winter">
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_electronic_manual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:setting_icon_night="@drawable/ic_electronic_manual_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/electronic_manual"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_faq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_electronic_manual"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_faq_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/app_question"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_faq"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_feedback_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/user_advice_feedback"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_feedback"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_temp_unit_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/setting_unit"
+                    />
+
+                <!-- 由于原有逻辑清除缓存也会清除数据库，温度监控数据也没了，经测试与产品沟通后，于 2023/12/12 产品决定砍掉清除缓存 -->
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_clear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_unit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_clear_cache_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    android:visibility="gone"
+                    app:setting_text_night="@string/set_clear_cache"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_clear"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_version_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/setting_version"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_version"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_launguage_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/app_language"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <include layout="@layout/layout_customer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

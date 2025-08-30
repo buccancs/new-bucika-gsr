@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="3dp"
+    tools:ignore="SmallSp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_image1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.topdon.lib.ui.widget.RoundImageView
+            android:id="@+id/iv_image1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            tools:background="#008080"
+            app:round_radius="3dp"
+            app:layout_constraintDimensionRatio="77:58"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_item_name1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="7dp"
+            android:gravity="center_horizontal"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="天花板"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_image1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_image2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_image1">
+
+        <com.topdon.lib.ui.widget.RoundImageView
+            android:id="@+id/iv_image2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            tools:background="#008080"
+            app:round_radius="3dp"
+            app:layout_constraintDimensionRatio="77:58"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_item_name2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="7dp"
+            android:gravity="center_horizontal"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="地板"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_image2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_image3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_image2">
+
+        <com.topdon.lib.ui.widget.RoundImageView
+            android:id="@+id/iv_image3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            tools:background="#008080"
+            app:round_radius="3dp"
+            app:layout_constraintDimensionRatio="77:58"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_item_name3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="7dp"
+            android:gravity="center_horizontal"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="地板"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_image3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_image4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_image3">
+
+        <com.topdon.lib.ui.widget.RoundImageView
+            android:id="@+id/iv_image4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            tools:background="#008080"
+            app:round_radius="3dp"
+            app:layout_constraintDimensionRatio="77:58"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_item_name4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="7dp"
+            android:gravity="center_horizontal"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="墙壁"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_image4" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

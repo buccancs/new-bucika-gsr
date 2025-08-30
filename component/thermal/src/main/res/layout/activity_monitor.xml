@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/toolbar_lay" />
+
+    <fragment
+        android:id="@+id/thermal_fragment"
+        android:name="com.topdon.module.thermal.fragment.MonitorThermalFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/motion_action_lay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_lay" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/motion_action_lay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <Button
+            android:id="@+id/motion_log_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/app_btn_big_height"
+            android:background="@drawable/ui_btn_round_second_theme"
+            android:text="@string/monitor_query_log"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/app_small_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/motion_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.4" />
+
+        <Button
+            android:id="@+id/motion_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/app_btn_big_height"
+            android:background="@drawable/ui_btn_round_theme"
+            android:text="@string/monitor_create_chart"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/app_small_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/motion_log_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.4" />
+
+        <Button
+            android:id="@+id/motion_start_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/app_btn_big_height"
+            android:background="@drawable/ui_btn_round_theme"
+            android:text="@string/monitor_start"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/app_small_font"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.4" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

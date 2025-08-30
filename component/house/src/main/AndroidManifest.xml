@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name=".activity.DetectAddActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.DirEditActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.HouseHomeActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.ImagesDetailActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.ItemEditActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.ReportAddActivity"
+            android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".activity.SignInputActivity"
+            android:screenOrientation="userLandscape" />
+        <activity
+            android:name=".activity.TextInputActivity"
+            android:screenOrientation="userPortrait" />
+    </application>
+</manifest>

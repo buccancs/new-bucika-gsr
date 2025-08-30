@@ -20,8 +20,32 @@ dependencyResolutionManagement {
 rootProject.name = "BucikaGSR"
 include ':android:app'
 
-
+// Core modules
 include ':android:libapp'
 include ':android:libir'
 include ':android:libui'
+
+// Additional modules from IRCamera
+include ':BleModule'
+include ':commonlibrary'
+include ':component:CommonComponent'
+include ':component:edit3d'
+include ':component:house'
+include ':component:pseudo'
+include ':component:thermal-hik'
+include ':component:thermal-ir'
+include ':component:thermal-lite'
+include ':component:thermal'
+include ':component:thermal04'
+include ':component:thermal07'
+include ':component:transfer'
+include ':component:user'
+include ':libcom'
+include ':libhik'
+include ':libmenu'
+include ':libmatrix'
+include ':LocalRepo:libac020'
+include ':LocalRepo:libcommon'
+include ':LocalRepo:libirutils'
+include ':RangeSeekBar'
 
