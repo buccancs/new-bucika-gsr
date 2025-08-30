@@ -3,7 +3,7 @@ package com.topdon.menu.adapter
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.topdon.menu.R
+import com.topdon.lib.ui.R
 import com.topdon.menu.constant.MenuType
 import com.topdon.menu.constant.TwoLightType
 
@@ -107,3 +107,4 @@ internal class TwoLightAdapter(private val menuType: MenuType) : BaseMenuAdapter
         val isSingle: Boolean,
         var isSelected: Boolean = false,
     )
+}

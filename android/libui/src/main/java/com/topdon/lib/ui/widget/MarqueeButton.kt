@@ -19,3 +19,4 @@ class MarqueeButton : AppCompatButton {
     override fun isFocused(): Boolean {
         return true
     }
+}

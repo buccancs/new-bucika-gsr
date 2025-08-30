@@ -66,3 +66,4 @@ class MenuEditView : FrameLayout, View.OnClickListener {
             onTabClickListener?.invoke(selectPosition)
         }
     }
+}

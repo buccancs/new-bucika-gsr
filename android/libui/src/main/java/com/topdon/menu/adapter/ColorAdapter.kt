@@ -46,3 +46,4 @@ internal class ColorAdapter : RecyclerView.Adapter<ColorAdapter.ViewHolder>() {
     override fun getItemCount(): Int = colorCodeArray.size
 
     class ViewHolder(val colorView: ColorView) : RecyclerView.ViewHolder(colorView)
+}

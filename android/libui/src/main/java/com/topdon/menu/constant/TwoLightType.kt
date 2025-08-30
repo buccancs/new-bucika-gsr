@@ -15,3 +15,4 @@ enum class TwoLightType {
     P_IN_P,
 
     BLEND_EXTENT,
+}

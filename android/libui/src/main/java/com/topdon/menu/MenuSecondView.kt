@@ -279,3 +279,4 @@ class MenuSecondView : FrameLayout {
     fun clearTempPointSelect() {
         tempPointAdapter.clearAllSelect()
     }
+}

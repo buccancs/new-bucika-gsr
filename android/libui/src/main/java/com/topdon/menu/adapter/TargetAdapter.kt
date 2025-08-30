@@ -3,7 +3,7 @@ package com.topdon.menu.adapter
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.topdon.menu.R
+import com.topdon.lib.ui.R
 import com.topdon.menu.constant.TargetType
 
 @SuppressLint("NotifyDataSetChanged")
@@ -64,3 +64,4 @@ internal class TargetAdapter : BaseMenuAdapter() {
         val targetType: TargetType,
         var isSelected: Boolean = false,
     )
+}

@@ -172,3 +172,4 @@ class TipsSeekBar: ViewGroup, SeekBar.OnSeekBarChangeListener {
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         onStopTrackingTouch?.invoke(this.seekBar.progress)
     }
+}

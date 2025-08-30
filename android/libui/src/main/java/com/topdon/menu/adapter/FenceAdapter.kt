@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.topdon.menu.constant.MenuType
-import com.topdon.menu.R
+import com.topdon.lib.ui.R
 import com.topdon.menu.constant.FenceType
 
 @SuppressLint("NotifyDataSetChanged")
@@ -69,3 +69,4 @@ internal class FenceAdapter(menuType: MenuType) : BaseMenuAdapter() {
     override fun getItemCount(): Int = dataList.size
 
     data class Data(@StringRes val stringId: Int, @DrawableRes val drawableId: Int, val fenceType: FenceType)
+}

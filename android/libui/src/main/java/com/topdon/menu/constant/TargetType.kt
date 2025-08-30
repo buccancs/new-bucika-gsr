@@ -11,3 +11,4 @@ enum class TargetType {
     DELETE,
 
     HELP,
+}

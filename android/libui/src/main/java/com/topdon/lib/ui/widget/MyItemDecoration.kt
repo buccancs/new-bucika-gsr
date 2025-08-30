@@ -106,3 +106,4 @@ class MyItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     }
 
     private fun dp2px(dpValue: Float): Int = (dpValue * density + 0.5f).toInt()
+}
