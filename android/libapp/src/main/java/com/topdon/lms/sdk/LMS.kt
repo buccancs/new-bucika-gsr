@@ -1,5 +1,7 @@
 package com.topdon.lms.sdk
 
+import com.topdon.lms.sdk.bean.CommonBean
+
 /**
  * Stub implementation of LMS SDK for compilation
  * This provides minimal implementation to allow compilation when LMS AAR is in app module
@@ -11,6 +13,10 @@ class LMS private constructor() {
         
         var mContext: android.content.Context? = null
         
+        // Response codes
+        const val SUCCESS = 200
+        const val ERROR = -1
+        
         @JvmStatic
         fun getInstance(): LMS {
             return instance ?: synchronized(this) {
@@ -20,13 +26,15 @@ class LMS private constructor() {
     }
     
     var loginName: String = ""
+    var token: String = ""
     
     // Minimal stub methods for compilation
     fun init(context: android.content.Context) {
         LMS.mContext = context
     }
     
-    fun isLogin(): Boolean = false
+    // Property instead of function to match usage
+    val isLogin: Boolean = false
     
     fun login(username: String, password: String, callback: Any?) {}
     
@@ -39,7 +47,17 @@ class LMS private constructor() {
     
     fun syncUserInfo() {}
     
-    fun getUserInfo(): CommonBean = CommonBean()
+    // Method that takes callback parameter to match usage
+    fun getUserInfo(callback: ((CommonBean) -> Unit)? = null): CommonBean {
+        val bean = CommonBean()
+        callback?.invoke(bean)
+        return bean
+    }
+    
+    fun bindDevice(sn: String, randomNum: String, param1: String, param2: String, callback: (CallbackData) -> Unit) {
+        // Stub implementation - simulates binding success
+        callback.invoke(CallbackData(code = SUCCESS))
+    }
     
     // Mock callback data
     data class CallbackData(

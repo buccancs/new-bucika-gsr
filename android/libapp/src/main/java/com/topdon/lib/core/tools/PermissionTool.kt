@@ -11,7 +11,7 @@ import com.hjq.permissions.XXPermissions
 import com.topdon.lib.core.BaseApplication
 import com.topdon.lib.core.R
 import com.topdon.lib.core.dialog.TipDialog
-import com.topdon.lms.sdk.weiget.TToast
+import com.topdon.lms.utils.TToast
 
 object PermissionTool {
 

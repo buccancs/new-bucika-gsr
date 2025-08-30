@@ -40,10 +40,10 @@ object LmsRepository {
         var result: StatementJson? = null
         val downLatch = CountDownLatch(1)
         LMS.getInstance().getStatement(type, object : IResponseCallback<String> {
-            override fun onResponse(p0: String?) {
+            override fun onResponse(response: String) {
                 try {
                     val typeOfT = object : TypeToken<Resp<StatementJson>>() {}.type
-                    val json = Gson().fromJson<Resp<StatementJson>>(p0, typeOfT)
+                    val json = Gson().fromJson<Resp<StatementJson>>(response, typeOfT)
                     if (json.code == "2000") {
                         result = json.data
                     }
@@ -53,9 +53,9 @@ object LmsRepository {
                 downLatch.countDown()
             }
 
-            override fun onFail(p0: Exception?) {
+            override fun onFail(errorCode: Int, errorMessage: String) {
                 downLatch.countDown()
-                XLog.w("onFail: $result")
+                XLog.w("onFail: $errorCode - $errorMessage")
             }
 
             override fun onFail(failMsg: String?, errorCode: String) {

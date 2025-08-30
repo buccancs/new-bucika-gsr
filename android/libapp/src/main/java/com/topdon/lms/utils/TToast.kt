@@ -33,4 +33,9 @@ object TToast {
     fun shortToast(context: android.content.Context?, message: String) {
         // Stub implementation with context
     }
+    
+    @JvmStatic
+    fun shortToast(context: android.content.Context?, resId: Int) {
+        // Stub implementation with string resource
+    }
 }
