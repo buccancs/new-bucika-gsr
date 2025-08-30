@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import com.blankj.utilcode.util.SizeUtils
-import com.kylecorry.andromeda.core.ui.setCompoundDrawables
+// import com.kylecorry.andromeda.core.ui.setCompoundDrawables // Not available - using standard Android method
 import com.topdon.tc001.R
 
 class DelPopup(val context: Context) : PopupWindow() {
@@ -24,7 +24,10 @@ class DelPopup(val context: Context) : PopupWindow() {
         textView.textSize = 14f
         textView.setTextColor(0xffffffff.toInt())
         textView.compoundDrawablePadding = SizeUtils.dp2px(8f)
-        textView.setCompoundDrawables(size = SizeUtils.sp2px(16f), left = R.drawable.svg_main_device_del)
+        // Use standard Android method instead of kylecorry extension
+        val iconDrawable = ContextCompat.getDrawable(context, R.drawable.svg_main_device_del)
+        iconDrawable?.setBounds(0, 0, SizeUtils.sp2px(16f), SizeUtils.sp2px(16f))
+        textView.setCompoundDrawables(iconDrawable, null, null, null)
         textView.minWidth = (widthPixels * 128f / 375).toInt()
         textView.setOnClickListener {
             dismiss()
@@ -35,9 +38,9 @@ class DelPopup(val context: Context) : PopupWindow() {
         val heightMeasureSpec: Int = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         textView.measure(widthMeasureSpec, heightMeasureSpec)
 
-        val drawable = ContextCompat.getDrawable(context, R.drawable.svg_popup_del_bg)
-        drawable?.setBounds(0, 0, textView.measuredWidth, textView.measuredHeight)
-        textView.background = drawable
+        val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.svg_popup_del_bg)
+        backgroundDrawable?.setBounds(0, 0, textView.measuredWidth, textView.measuredHeight)
+        textView.background = backgroundDrawable
 
         isOutsideTouchable = true
 

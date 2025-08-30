@@ -27,6 +27,9 @@
     <!-- Network and HTTP error messages -->
     <string name="lms_setting_http_error">Network Error</string>
     
+    <!-- Delete/Report related -->
+    <string name="report_delete">Delete</string>
+    
     <!-- Version and privacy related strings -->
     <string name="version_year">Version Year</string>
     <string name="privacy_tips">Privacy Policy</string>
