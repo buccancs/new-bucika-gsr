@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace = "com.topdon.ble"
-    compileSdk rootProject.ext.android.compileSdk
+    compileSdk = rootProject.ext.android.compileSdk
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
-        versionCode 1
-        versionName "1.0"
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
+        versionCode = 1
+        versionName = "1.0"
         flavorDimensions "versionCode"
     }
 

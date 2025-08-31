@@ -14,11 +14,11 @@ kapt {
 
 android {
     namespace = "com.topdon.component.thermal"
-    compileSdk rootProject.ext.android.compileSdk
+    compileSdk = rootProject.ext.android.compileSdk
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
 
         consumerProguardFiles "consumer-rules.pro"
     }

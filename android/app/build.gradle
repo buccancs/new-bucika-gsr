@@ -23,7 +23,7 @@ static def getTimeStr() {
 apply from: 'config/build-helpers.gradle'
 
 android {
-    namespace 'com.topdon.tc001'
+    namespace = 'com.topdon.tc001'
     
     buildFeatures {
         buildConfig true
@@ -31,7 +31,7 @@ android {
         dataBinding = true
     }
     
-    compileSdk rootProject.ext.android.compileSdk
+    compileSdk = rootProject.ext.android.compileSdk
     
     // Suppress resource formatting warnings from external dependencies
     lint {
@@ -41,10 +41,10 @@ android {
     
     defaultConfig {
         applicationId rootProject.ext.android.applicationId
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
-        versionCode rootProject.ext.android.versionCode
-        versionName rootProject.ext.android.versionName
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
+        versionCode = rootProject.ext.android.versionCode
+        versionName = rootProject.ext.android.versionName
         ndkVersion rootProject.ext.android.ndkVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

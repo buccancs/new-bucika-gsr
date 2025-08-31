@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:menu="http://schemas.android.com/apk/res/com.topdon.menu"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,7 +29,7 @@
             android:id="@+id/edit_recycler_second"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:deviceType="gallery_edit"/>
+            menu:deviceType="gallery_edit"/>
         <!-- 一级菜单 -->
         <com.topdon.menu.MenuEditView
             android:id="@+id/edit_recycler_first"

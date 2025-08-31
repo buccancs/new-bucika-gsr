@@ -4,13 +4,13 @@ plugins {
 
 android {
 
-    namespace 'com.energy.commoncomponent'
-    compileSdk rootProject.ext.android.compileSdkVer
-    compileSdk 33
+    namespace = 'com.energy.commoncomponent'
+    compileSdk = rootProject.ext.android.compileSdkVer
+    compileSdk = 33
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdkVer
-        targetSdk rootProject.ext.android.targetSdkVer
+        minSdk = rootProject.ext.android.minSdkVer
+        targetSdk = rootProject.ext.android.targetSdkVer
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

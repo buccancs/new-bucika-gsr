@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.topdon.house'
-    compileSdk rootProject.ext.android.compileSdk
+    namespace = 'com.topdon.house'
+    compileSdk = rootProject.ext.android.compileSdk
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdk
+        minSdk = rootProject.ext.android.minSdk
     }
 
     buildTypes {

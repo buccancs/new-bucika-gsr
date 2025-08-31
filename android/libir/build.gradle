@@ -6,12 +6,12 @@ plugins {
 
 
 android {
-    namespace 'com.infisense.usbir'
-    compileSdk rootProject.ext.android.compileSdk
+    namespace = 'com.infisense.usbir'
+    compileSdk = rootProject.ext.android.compileSdk
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
         ndkVersion rootProject.ext.android.ndkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

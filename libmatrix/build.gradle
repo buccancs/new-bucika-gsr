@@ -15,12 +15,12 @@ kapt {
 
 android {
     namespace = "com.topdon.lib.matrix"
-    compileSdk rootProject.ext.android.compileSdk
+    compileSdk = rootProject.ext.android.compileSdk
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
-        ndkVersion rootProject.ext.android.ndkVersion
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
+        ndkVersion = rootProject.ext.android.ndkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

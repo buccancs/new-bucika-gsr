@@ -22,16 +22,16 @@ ksp {
 }
 
 android {
-    namespace 'com.topdon.lib.core'
-    compileSdk rootProject.ext.android.compileSdk
+    namespace = 'com.topdon.lib.core'
+    compileSdk = rootProject.ext.android.compileSdk
     buildFeatures {
         buildConfig true
         viewBinding true
     }
 
     defaultConfig {
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
