@@ -39,27 +39,8 @@ android {
         jvmTarget = '17'
     }
 
-    flavorDimensions 'app'
-    productFlavors {
-        dev {
-            dimension 'app'
-        }
-        beta {
-            dimension 'app'
-        }
-        prod {
-            dimension 'app'
-        }
-        prodTopdon {
-            dimension 'app'
-        }
-        insideChina {
-            dimension 'app'
-        }
-        prodTopdonInsideChina {
-            dimension 'app'
-        }
-    }
+    // Product flavors removed from library module - they create ambiguity for consumers
+    // Library modules should not have product flavors
 }
 dependencies {
     implementation project(':android:libapp')
