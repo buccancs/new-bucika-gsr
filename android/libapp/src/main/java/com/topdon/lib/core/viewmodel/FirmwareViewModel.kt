@@ -296,8 +296,8 @@ class FirmwareViewModel(application: Application) : AndroidViewModel(application
         return withContext(Dispatchers.IO) {
             var code = LMS.SUCCESS
             val countDownLatch = CountDownLatch(1)
-            LMS.getInstance().bindDevice(sn, randomNum, "", "") {
-                code = commonBean.code
+            LMS.getInstance().bindDevice(sn, randomNum, "", "") { callbackData ->
+                code = callbackData.code
                 countDownLatch.countDown()
             }
             countDownLatch.await()

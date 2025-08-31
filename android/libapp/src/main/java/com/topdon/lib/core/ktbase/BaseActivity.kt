@@ -65,7 +65,8 @@ abstract class BaseActivity : RxAppCompatActivity() {
 
 
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(AppLanguageUtils.attachBaseContext(newBase, SharedManager.getLanguage(newBase!!)))
+        val context = newBase ?: this
+        super.attachBaseContext(AppLanguageUtils.attachBaseContext(context, SharedManager.getLanguage(context)))
     }
 
     override fun onStart() {
@@ -166,7 +167,6 @@ abstract class BaseActivity : RxAppCompatActivity() {
         if (cameraDialog == null) {
             cameraDialog =
                 TipCameraProgressDialog.Builder(this)
-                    .setCanceleable(false)
                     .create()
         }
         try {
