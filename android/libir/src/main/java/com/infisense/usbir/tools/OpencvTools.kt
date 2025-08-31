@@ -1,37 +1,33 @@
 package com.infisense.usbir.tools
 
+
+
+/**
+ * @author: CaiSongL
+ * @date: 2023/5/18 9:46
+ */
 object OpencvTools {
-    
-    @JvmStatic
-    fun getStatus(firstFrame: ByteArray?, currentFrame: ByteArray?): Boolean {
-        // Stub implementation - compare frames
-        return firstFrame != null && currentFrame != null && firstFrame.contentEquals(currentFrame)
-    }
-    
-    @JvmStatic
-    fun compareFrames(frame1: ByteArray?, frame2: ByteArray?): Boolean {
-        return frame1 != null && frame2 != null
-    }
-    
-    @JvmStatic
-    fun supImage(imageDst: ByteArray?, height: Int, width: Int, amplifyArray: ByteArray) {
-        // Stub implementation for image superresolution/enhancement
-        if (imageDst != null && imageDst.size <= amplifyArray.size) {
-            System.arraycopy(imageDst, 0, amplifyArray, 0, imageDst.size)
-        }
-    }
-    
-    @JvmStatic
-    fun getOneColorByTempUnif(maxTemp: Float, minTemp: Float, currentTemp: Float, colorType: Int): Int {
-        // Stub implementation for temperature-to-color mapping
-        val ratio = if (maxTemp != minTemp) (currentTemp - minTemp) / (maxTemp - minTemp) else 0f
-        val clampedRatio = ratio.coerceIn(0f, 1f)
-        
-        // Simple gradient from blue (cold) to red (hot)
-        val red = (clampedRatio * 255).toInt()
-        val blue = ((1f - clampedRatio) * 255).toInt()
-        val green = 128 // neutral green
-        
-        return (0xFF shl 24) or (red shl 16) or (green shl 8) or blue
-    }
+
+//    init {
+//        System.loadLibrary("opencv_java4");
+//    }
+//
+//
+//    fun mergeBitmap(backBitmap: Bitmap,frontBitmap : Bitmap) : Bitmap?{
+//        val time = System.currentTimeMillis()
+//        if (backBitmap == null || backBitmap.isRecycled() || frontBitmap == null || frontBitmap.isRecycled()) {
+//            return null
+//        }
+//        var backM = Mat()
+//        var frontM = Mat()
+//        var dst = Mat()
+//        Utils.bitmapToMat(backBitmap, backM)
+//        Utils.bitmapToMat(frontBitmap, frontM)
+//        addWeighted(backM, 1.0, frontM, 0.0, 0.0, dst)
+//        val dstBitmap = Bitmap.createBitmap(backM.width(), backM.height(), Bitmap.Config.ARGB_8888)
+//        Utils.matToBitmap(dst,dstBitmap)
+//        Log.w("opencv图像合并时间耗时：","${System.currentTimeMillis() - time}")
+//        return dstBitmap
+//    }
+
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_16131E"
+    android:fitsSystemWindows="true">
+
+    <com.topdon.lib.core.view.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/setting_bg_shape"
+        app:layout_constraintTop_toBottomOf="@id/title_view"
+        android:layout_marginTop="36dp"
+        android:layout_marginHorizontal="20dp">
+
+        <com.topdon.lib.ui.SettingNightView
+            android:id="@+id/setting_item_tisr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingLeft="12dp"
+            app:setting_line_night="false"
+            app:setting_more_night="false"
+            app:setting_text_night="@string/ts004_tisr_title"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/setting_item_tisr_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            style="@style/cameraSetSwitch"
+            android:textColor="@color/font_second_color"
+            app:layout_constraintBottom_toBottomOf="@id/setting_item_tisr"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/setting_item_tisr" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ts004_tisr_tips"
+        android:fontFamily="@font/pingfang_regular"
+        android:textColor="#CCFFFFFF"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cLayout"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

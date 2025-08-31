@@ -44,3 +44,4 @@ abstract class Shimmer {
     abstract fun startStreaming()
     
     abstract fun stopStreaming()
+}

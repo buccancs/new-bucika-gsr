@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.ThermalActivity">
+
+    <include layout="@layout/toolbar_lay" />
+
+    <com.topdon.menu.MenuFirstTabView
+        android:id="@+id/thermal_tab"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <com.topdon.module.thermal.adapter.MenuRecyclerView
+        android:id="@+id/thermal_recycler"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toTopOf="@id/thermal_tab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_menu_tab_view" />
+
+    <fragment
+        android:id="@+id/thermal_fragment"
+        android:name="com.topdon.module.thermal.fragment.ThermalFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/thermal_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_lay" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

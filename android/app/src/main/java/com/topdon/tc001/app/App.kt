@@ -2,14 +2,16 @@ package com.topdon.tc001.app
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import com.elvishew.xlog.XLog
 import com.example.thermal_lite.IrConst
 import com.example.thermal_lite.util.CommonUtil
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.scwang.smart.refresh.header.MaterialHeader
+// import com.google.firebase.crashlytics.FirebaseCrashlytics // Firebase disabled
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.topdon.lib.core.BaseApplication
 import com.topdon.lib.core.common.SharedManager
 import com.topdon.lib.core.config.HttpConfig
@@ -24,8 +26,8 @@ import com.topdon.tc001.InitUtil.initLms
 import com.topdon.tc001.InitUtil.initLog
 import com.topdon.tc001.InitUtil.initReceiver
 import com.topdon.tc001.InitUtil.initUM
-import com.zoho.livechat.android.listeners.InitListener
-import com.zoho.salesiqembed.ZohoSalesIQ
+// import com.zoho.livechat.android.listeners.InitListener // Zoho disabled
+// import com.zoho.salesiqembed.ZohoSalesIQ // Zoho disabled
 import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,12 +36,10 @@ import kotlinx.coroutines.launch
 class App : BaseApplication() {
 
     init {
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
-            MaterialHeader(
-                context
-            )
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context: Context, _: RefreshLayout ->
+            ClassicsHeader(context)
         }
-        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context: Context, _: RefreshLayout ->
             LoadingFooter(context)
         }
     }
@@ -89,7 +89,7 @@ class App : BaseApplication() {
             SharedManager.setBaseHost(UrlConstant.BASE_URL)
         }
         if(BuildConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+            // FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false) // Firebase disabled
         }
         CoroutineScope(Dispatchers.IO).launch {
             tau_data_H = CommonUtil.getAssetData(mContext, IrConst.TAU_HIGH_GAIN_ASSET_PATH)
@@ -123,25 +123,19 @@ class App : BaseApplication() {
             }
 
         })
-        initZoho()
+        // initZoho() // Zoho disabled
     }
 
     private fun initZoho() {
-        ZohoSalesIQ.init(
+        /* ZohoSalesIQ.init( // Zoho disabled
             this,
             "IjGWlJ%2FAnwvKPO0yHSMeLDRbq9%2Bcumf0TA6lWzHNybOq7Ew5UI7135B1F4y60Vwh",
             "CvYpd1tLP6hT1aJmYxGdvW8UtM0LUMt6bBvazW%2FbsCBFODZM54UgnVzDVtVbh%2F3hcFU7q4JlCZCw7vElzm8MeN5MdZjWoFSAKHNNgYfT33vNaBPm8ASTII05T57%2F3WxK",
             null,
             object : InitListener {
                 override fun onInitSuccess() {
-
                     XLog.e("bcf", "ZohoSalesIQ成功")
                 }
-
-                override fun onInitError(errorCode: Int, errorMessage: String?) {
-
-                    XLog.e("bcf", "ZohoSalesIQ失敗")
-                }
-            })
+            }) */
     }
 }

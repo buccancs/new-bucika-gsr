@@ -225,3 +225,4 @@ class RadioGroupPlus : LinearLayout {
             mOnHierarchyChangeListener?.onChildViewRemoved(parent, child)
         }
     }
+}

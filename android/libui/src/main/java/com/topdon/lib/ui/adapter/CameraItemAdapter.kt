@@ -69,3 +69,4 @@ class CameraItemAdapter(context: Context) : RecyclerView.Adapter<CameraItemAdapt
             parentRecycler!!.smoothScrollToPosition(adapterPosition)
         }
     }
+}

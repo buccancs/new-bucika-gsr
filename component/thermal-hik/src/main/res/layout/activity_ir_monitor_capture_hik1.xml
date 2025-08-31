@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#16131e"
+        tools:context=".activity.IRMonitorCaptureHik1Activity">
+
+        <com.topdon.lib.core.view.TitleView
+            android:id="@+id/title_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:titleText="@string/main_thermal_motion"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_bottom_btn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <!-- 开始拾取点、线、面 -->
+            <Button
+                android:id="@+id/btn_select"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/app_btn_big_height"
+                android:text="@string/monitor_create_chart"
+                android:textSize="@dimen/app_small_font"
+                android:textColor="#55272F"
+                android:background="@drawable/bg_corners05_solid_theme"
+                app:layout_constraintWidth_percent="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+            <!-- 跳转下一步 -->
+            <Button
+                android:id="@+id/btn_start"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/app_btn_big_height"
+                android:text="@string/monitor_start"
+                android:textSize="@dimen/app_small_font"
+                android:visibility="gone"
+                android:textColor="#55272F"
+                android:background="@drawable/bg_corners05_solid_theme"
+                app:layout_constraintWidth_percent="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 热成像画面图层 -->
+        <com.topdon.module.thermal.ir.view.HikSurfaceView
+            android:id="@+id/hik_surface_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="192:256"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_view"
+            app:layout_constraintBottom_toTopOf="@id/cl_bottom_btn" />
+        <!-- 温度图层 -->
+        <com.topdon.module.thermal.ir.view.TemperatureHikView
+            android:id="@+id/temperature_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:maxCount="1"
+            app:layout_constraintStart_toStartOf="@id/hik_surface_view"
+            app:layout_constraintEnd_toEndOf="@id/hik_surface_view"
+            app:layout_constraintTop_toTopOf="@id/hik_surface_view"
+            app:layout_constraintBottom_toBottomOf="@id/hik_surface_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

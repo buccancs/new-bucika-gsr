@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    tools:ignore="SmallSp">
+
+    <!-- 垃圾 Barrier 不起作用，再包一层 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/inspector_signature"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHorizontal_bias="0.16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/house_owner_signature"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHorizontal_bias="0.74"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_inspector_signature"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        app:layout_constraintWidth_percent="0.16"
+        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintDimensionRatio="63:39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_title" />
+    <ImageView
+        android:id="@+id/iv_house_owner_signature"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        app:layout_constraintWidth_percent="0.16"
+        app:layout_constraintHorizontal_bias="0.74"
+        app:layout_constraintDimensionRatio="63:39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_inspector_signature" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_16131E"
+    android:fitsSystemWindows="true">
+
+    <com.topdon.lib.core.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/app_question" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/question_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:itemCount="8"
+        tools:listitem="@layout/item_question" />
+
+</LinearLayout>

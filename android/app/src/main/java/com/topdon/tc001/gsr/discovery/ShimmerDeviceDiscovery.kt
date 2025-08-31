@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.elvishew.xlog.XLog
 
@@ -64,7 +65,12 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 BluetoothDevice.ACTION_FOUND -> {
-                    val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    }
                     val rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, 0)
                     
                     device?.let { handleDeviceFound(it, rssi) }
@@ -289,3 +295,4 @@ class ShimmerDeviceDiscovery(private val context: Context) {
         clearResults()
         discoveryListener = null
     }
+}

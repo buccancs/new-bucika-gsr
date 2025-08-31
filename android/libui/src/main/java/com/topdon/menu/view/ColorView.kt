@@ -11,7 +11,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
-import com.topdon.ui.R
+import com.topdon.lib.ui.R
 
 class ColorView : View {
     

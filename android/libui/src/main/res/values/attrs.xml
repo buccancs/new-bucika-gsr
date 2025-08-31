@@ -10,6 +10,62 @@
         <attr name="item_value_text" format="string|reference" />
     </declare-styleable>
 
+    <declare-styleable name="SettingNightView">
+        <attr name="setting_icon_night" format="reference" />
+        <attr name="setting_text_night" format="string|reference" />
+        <attr name="setting_more_night" format="boolean" />
+        <attr name="setting_line_night" format="boolean" />
+        <attr name="setting_icon_show_night" format="boolean" />
+    </declare-styleable>
 
+    <declare-styleable name="BarPickView">
+        <attr name="android:max" />
+        <attr name="android:progress" />
+        <attr name="android:textSize" />
+        <attr name="barLabel" format="string|reference" />
+        <attr name="barMin" format="integer" />
+        <attr name="barOrientation" format="integer" />
+        <attr name="barSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CommSeekBar">
+        <attr name="android:orientation" />
+        <attr name="android:maxWidth" />
+        <attr name="android:maxHeight" />
+        <attr name="android:minWidth" />
+        <attr name="android:minHeight" />
+    </declare-styleable>
+
+    <declare-styleable name="CountDownView">
+        <attr name="ringColor" format="color|reference" />
+        <attr name="ringWidth" format="dimension" />
+        <attr name="progressTextSize" format="dimension" />
+        <attr name="progressTextColor" format="color|reference" />
+        <attr name="countdownTime" format="integer" />
+        <attr name="progressText" format="string|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="IndicateView">
+        <attr name="indicateSelectColor" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundImageView">
+        <attr name="round_radius" format="dimension" />
+        <attr name="round_position" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="TipsSeekBar">
+        <attr name="tipsMinText" format="string|reference" />
+        <attr name="tipsMaxText" format="string|reference" />
+        <attr name="tipsTipsPercent" format="float" />
+        <attr name="tipsSeekPercent" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="MenuSecondView">
+        <attr name="menuDeviceType" format="integer" />
+    </declare-styleable>
+    
+    <!-- Custom view attributes -->
+    <attr name="selectColor" format="color|reference" />
 
 </resources>

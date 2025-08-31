@@ -77,10 +77,10 @@ class TipsSeekBar: ViewGroup, SeekBar.OnSeekBarChangeListener {
         addView(tvTips)
 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.TipsSeekBar, defStyleAttr, 0)
-        val minText = typedArray.getText(R.styleable.TipsSeekBar_minText)
-        val maxText = typedArray.getText(R.styleable.TipsSeekBar_maxText)
-        tipsPercent = typedArray.getFraction(R.styleable.TipsSeekBar_tipsPercent, 1, 1, 0f)
-        seekPercent = typedArray.getFraction(R.styleable.TipsSeekBar_seekPercent, 1, 1, 0f)
+        val minText = typedArray.getText(R.styleable.TipsSeekBar_tipsMinText)
+        val maxText = typedArray.getText(R.styleable.TipsSeekBar_tipsMaxText)
+        tipsPercent = typedArray.getFraction(R.styleable.TipsSeekBar_tipsTipsPercent, 1, 1, 0f)
+        seekPercent = typedArray.getFraction(R.styleable.TipsSeekBar_tipsSeekPercent, 1, 1, 0f)
         typedArray.recycle()
 
         tvMin = TextView(context)
@@ -172,3 +172,4 @@ class TipsSeekBar: ViewGroup, SeekBar.OnSeekBarChangeListener {
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         onStopTrackingTouch?.invoke(this.seekBar.progress)
     }
+}

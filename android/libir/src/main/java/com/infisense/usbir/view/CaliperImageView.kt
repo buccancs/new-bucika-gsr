@@ -8,8 +8,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.infisense.usbir.R
 
+/**
+ * 卡尺图片
+ * @author: CaiSongL
+ * @date: 2023/10/25 13:31
+ */
 class CaliperImageView : AppCompatImageView {
 
     private var showBitmapWidth: Float = 0f
@@ -35,13 +41,15 @@ class CaliperImageView : AppCompatImageView {
         initView()
     }
 
+
+
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
     private fun initView() {
-        originalBitmap = (resources.getDrawable(R.drawable.svg_ic_target_horizontal_person_green) as BitmapDrawable).bitmap
+        originalBitmap = (ContextCompat.getDrawable(context, R.drawable.svg_ic_target_horizontal_person_green) as BitmapDrawable).bitmap
         originalBitmapWidth = originalBitmap?.width?.toFloat() ?: 0f
         originalBitmapHeight = originalBitmap?.height?.toFloat() ?: 0f
         visibility = View.GONE

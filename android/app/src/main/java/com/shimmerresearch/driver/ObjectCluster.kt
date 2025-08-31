@@ -48,3 +48,4 @@ class ObjectCluster {
         val data: Double,
         val unit: String
     )
+}

@@ -41,24 +41,12 @@
         <attr name="isTitleCenter" format="boolean" /><!-- 标题文字是否居中 true-居中 false-居左 -->
     </declare-styleable>
 
-    <!-- Custom attributes for device configuration -->
-    <declare-styleable name="DeviceView">
-        <attr name="deviceType" format="string"/>
-        <attr name="guide_text" format="string"/>
-        <attr name="guide_icon" format="reference"/>
-        <attr name="guide_icon_show" format="boolean"/>
+    <!-- LMS loading dialog attributes for IRCamera integration -->
+    <declare-styleable name="LoadingDotView">
+        <attr name="lms_dot_spacing" format="dimension" />
+        <attr name="lms_dot_radius" format="dimension" />
+        <attr name="lms_dot_move_rate" format="float" />
     </declare-styleable>
 
-    <!-- Legacy RangeSeekBar attributes (for layout compatibility) -->
-    <declare-styleable name="RangeSeekBar">
-        <attr name="seekPercent" format="string|float"/>
-        <attr name="tipsPercent" format="string|float"/>
-        <attr name="minText" format="string"/>
-        <attr name="maxText" format="string"/>
-        <attr name="selectColor" format="color|reference"/>
-    </declare-styleable>
-
-    <!-- Custom background corners attribute -->
-    <attr name="bgCorners" format="dimension"/>
 
 </resources>

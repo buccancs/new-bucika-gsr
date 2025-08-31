@@ -13,3 +13,4 @@ enum class FenceType {
     TREND,
 
     DEL,
+}

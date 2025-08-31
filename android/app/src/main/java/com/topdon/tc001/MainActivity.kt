@@ -49,7 +49,7 @@ import com.topdon.lib.core.viewmodel.VersionViewModel
 import com.topdon.lms.sdk.LMS
 import com.topdon.thermal.activity.IRThermalNightActivity
 import com.topdon.thermal.activity.IRThermalPlusActivity
-import com.topdon.thermal.fragment.IRGalleryTabFragment
+import com.topdon.module.thermal.ir.fragment.IRGalleryTabFragment
 import com.topdon.module.user.fragment.MineFragment
 import com.topdon.tc001.app.App
 import com.topdon.tc001.fragment.MainFragment
@@ -102,6 +102,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, USBHotPlugManager.USB
             }
         }
     }
+
+    override fun initContentView(): Int = 0  // Not used with ViewBinding
 
     override fun initView() {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -400,13 +402,13 @@ class MainActivity : BaseActivity(), View.OnClickListener, USBHotPlugManager.USB
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> {
-                    IRGalleryTabFragment().apply {
-                        arguments = Bundle().also {
-                            it.putBoolean(ExtraKeyConfig.CAN_SWITCH_DIR, true)
-                            it.putBoolean(ExtraKeyConfig.HAS_BACK_ICON, false)
-                            it.putInt(ExtraKeyConfig.DIR_TYPE, GalleryRepository.DirType.LINE.ordinal)
-                        }
-                    }
+                    val fragment = IRGalleryTabFragment()
+                    val args = Bundle()
+                    args.putBoolean(ExtraKeyConfig.CAN_SWITCH_DIR, true)
+                    args.putBoolean(ExtraKeyConfig.HAS_BACK_ICON, false)
+                    args.putInt(ExtraKeyConfig.DIR_TYPE, GalleryRepository.DirType.LINE.ordinal)
+                    fragment.arguments = args
+                    fragment
                 }
                 1 -> MainFragment()
                 else -> MineFragment()
@@ -653,3 +655,4 @@ class MainActivity : BaseActivity(), View.OnClickListener, USBHotPlugManager.USB
             ).show()
         }
     }
+}

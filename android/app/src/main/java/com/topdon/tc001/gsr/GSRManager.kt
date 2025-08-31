@@ -110,7 +110,7 @@ class GSRManager private constructor(private val context: Context) {
     private fun configureShimmerForGSR() {
         shimmerDevice?.let { device ->
             device.setSamplingRateShimmer(DEFAULT_SAMPLING_RATE)
-            device.setEnabledSensors(Configuration.Shimmer3.SensorMap.GSR.mValue or Configuration.Shimmer3.SensorMap.TEMPERATURE.mValue)
+            device.setEnabledSensors((Configuration.Shimmer3.SensorMap.GSR.mValue or Configuration.Shimmer3.SensorMap.TEMPERATURE.mValue).toInt())
             XLog.i(TAG, "Shimmer configured for GSR and temperature sampling at $DEFAULT_SAMPLING_RATE Hz")
         }
     }
@@ -374,3 +374,4 @@ class GSRManager private constructor(private val context: Context) {
         fileName: String? = null,
         includeAnalysis: Boolean = true
     ) = dataWriter.exportGSRDataToFile(gsrData, fileName, includeAnalysis)
+}

@@ -21,32 +21,28 @@ class PointDraw(context: Context) : BaseDraw(context) {
         private const val TOUCH_EXTRA = 20f
     }
 
-    private val textPointMargin = ScreenUtils.dp2px(4)
-    private val labelPointMargin = ScreenUtils.dp2px(24)
+    private val textPointMargin = ScreenUtils.dp2px(4f).toFloat()
+    private val labelPointMargin = ScreenUtils.dp2px(24f).toFloat()
     private val pointList = LinkedList<PointView>()
     private var tempPoint: PointView? = null
     
     private val textPaint = Paint().apply {
-        strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH).toFloat()
-        textSize = ScreenUtils.sp2px(TEXT_SIZE).toFloat()
+        strokeWidth = ScreenUtils.dp2px(STROKE_WIDTH.toFloat()).toFloat()
+        textSize = ScreenUtils.sp2px(TEXT_SIZE.toFloat()).toFloat()
         color = Color.WHITE
         textAlign = Paint.Align.CENTER
     }
     
     private val bgPaint = TextPaint().apply {
-        strokeWidth = ScreenUtils.dp2px(1).toFloat()
+        strokeWidth = ScreenUtils.dp2px(1f).toFloat()
     }
     
     private var fontMetrics: Paint.FontMetrics? = null
     private val bgStrokeColor = Color.parseColor("#99000000")
     private val bgColor = Color.parseColor("#CC1A1A1A")
     private var operateStatus = -1
-    override protected var mTouchIndex = -1
+    // mTouchIndex is inherited from BaseDraw, no need to override
     
-    var viewWidth: Int = 0
-    var viewHeight: Int = 0
-    
-    val touchInclude: Int get() = mTouchIndex
     val pointViewList: LinkedList<PointView> get() = pointList
 
     fun getOperateStatus(): Int = operateStatus
@@ -265,5 +261,4 @@ class PointDraw(context: Context) : BaseDraw(context) {
         }
     }
 
-    fun getPointViewList(): LinkedList<PointView> = pointList
 }

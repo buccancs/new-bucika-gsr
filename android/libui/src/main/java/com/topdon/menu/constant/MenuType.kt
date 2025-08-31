@@ -10,3 +10,4 @@ enum class MenuType {
     TC007,
 
     GALLERY_EDIT,
+}

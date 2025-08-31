@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#060606"
+    android:clipChildren="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_monocular"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@+id/cLayout_menu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <FrameLayout
+            android:id="@+id/render_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_portrait"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="30dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_thermal_portrait_svg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cLayout_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#0D1521"
+        android:paddingRight="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_expand"
+            android:layout_width="16dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/ic_menu_down_svg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/recyclerView"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintLeft_toRightOf="@+id/iv_expand"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cLayout_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/recyclerView">
+
+            <ImageView
+                android:layout_width="139dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_land_bottom_bg"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/camera_setting_img"
+                android:layout_width="74dp"
+                android:layout_height="74dp"
+                android:layout_marginTop="35dp"
+                android:src="@mipmap/ic_menu_video_setting"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:id="@+id/camera_img"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_menu_camera"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/camera_gallery_img"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_menu_photo_default"
+                android:layout_marginBottom="35dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:roundPercent="1" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/video_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

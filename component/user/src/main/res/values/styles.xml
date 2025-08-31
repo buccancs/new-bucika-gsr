@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MessageSettingItem">
+        <attr name="iconImg" format="reference|integer" />
+        <attr name="textTitle" format="reference|integer" />
+        <attr name="iconSwitch" format="reference|integer" />
+        <attr name="lineShow" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="ListItemView">
+        <attr name="list_item_left_icon" format="string" />
+        <attr name="list_item_left_text" format="string" />
+        <attr name="list_item_right_text" format="string" />
+        <attr name="list_item_line" format="boolean" />
+    </declare-styleable>
+</resources>

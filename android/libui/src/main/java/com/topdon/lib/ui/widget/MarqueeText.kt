@@ -19,3 +19,4 @@ class MarqueeText : AppCompatTextView {
     override fun isFocused(): Boolean {
         return true
     }
+}

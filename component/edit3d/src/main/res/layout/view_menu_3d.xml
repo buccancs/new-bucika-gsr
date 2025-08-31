@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- 视角 -->
+    <View
+        android:id="@+id/view_menu1_visual"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_menu1_visual"
+        app:layout_constraintStart_toStartOf="parent" />
+    <ImageView
+        android:id="@+id/iv_menu1_visual"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/selector_menu1_visual"
+        android:contentDescription="@null"
+        app:layout_constraintWidth_percent="0.064"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_visual"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_visual" />
+    <com.topdon.lib.menu.MarqueeTextView
+        android:id="@+id/tv_menu1_visual"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
+        android:text="@string/menu_3d_visual"
+        android:textSize="14sp"
+        android:textColor="@color/menu_text"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_visual"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_visual"
+        app:layout_constraintTop_toBottomOf="@id/iv_menu1_visual" />
+
+    <!-- 标定 -->
+    <View
+        android:id="@+id/view_menu1_mark"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_menu1_mark"
+        app:layout_constraintStart_toEndOf="@id/view_menu1_visual" />
+    <ImageView
+        android:id="@+id/iv_menu1_mark"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/selector_menu1_mark"
+        android:contentDescription="@null"
+        app:layout_constraintWidth_percent="0.064"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_mark"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_mark" />
+    <com.topdon.lib.menu.MarqueeTextView
+        android:id="@+id/tv_menu1_mark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
+        android:text="@string/menu_3d_calibrate"
+        android:textSize="14sp"
+        android:textColor="@color/menu_text"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_mark"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_mark"
+        app:layout_constraintTop_toBottomOf="@id/iv_menu1_mark" />
+
+    <!-- 伪彩 -->
+    <View
+        android:id="@+id/view_menu1_pseudo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_menu1_pseudo"
+        app:layout_constraintStart_toEndOf="@id/view_menu1_mark" />
+    <ImageView
+        android:id="@+id/iv_menu1_pseudo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/selector_menu1_pseudo"
+        android:contentDescription="@null"
+        app:layout_constraintWidth_percent="0.064"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_pseudo"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_pseudo" />
+    <com.topdon.lib.menu.MarqueeTextView
+        android:id="@+id/tv_menu1_pseudo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
+        android:text="@string/thermal_false_color"
+        android:textSize="14sp"
+        android:textColor="@color/menu_text"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_pseudo"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_pseudo"
+        app:layout_constraintTop_toBottomOf="@id/iv_menu1_pseudo" />
+
+    <!-- 模式 -->
+    <View
+        android:id="@+id/view_menu1_mode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_menu1_mode"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/iv_menu1_mode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/selector_menu1_mode"
+        android:contentDescription="@null"
+        app:layout_constraintWidth_percent="0.064"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_mode"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_mode" />
+    <com.topdon.lib.menu.MarqueeTextView
+        android:id="@+id/tv_menu1_mode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
+        android:text="@string/model"
+        android:textSize="14sp"
+        android:textColor="@color/menu_text"
+        app:layout_constraintStart_toStartOf="@id/view_menu1_mode"
+        app:layout_constraintEnd_toEndOf="@id/view_menu1_mode"
+        app:layout_constraintTop_toBottomOf="@id/iv_menu1_mode" />
+</merge>

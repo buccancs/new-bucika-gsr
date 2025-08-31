@@ -10,7 +10,14 @@ dependencies {
     // Shimmer3 GSR integration - using local implementation
     // Note: Official Shimmer SDK not available in public repositories
     // implementation 'com.github.ShimmerEngineering:Shimmer-Android-API:1.2.0'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    
+    // Custom AAR dependencies moved from libapp (deprecated in library modules)
+    implementation files('libs/abtest-1.0.1.aar')
+    implementation files('libs/auth-number-2.13.2.1.aar') 
+    implementation files('libs/lms_international-3.90.009.0.aar')
+    implementation files('libs/logger-2.2.1-release.aar')
+    implementation files('libs/main-2.2.1-release.aar')
 
     // Core Android libraries
     implementation 'com.github.lzyzsd:jsbridge:1.0.4'

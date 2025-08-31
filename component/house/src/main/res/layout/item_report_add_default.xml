@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.topdon.house.view.MyEasySwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_menu_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="12dp"
+    android:background="#23202e"
+    app:contentView="@+id/cl_content"
+    app:rightMenuView="@+id/cl_menu">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view_bg_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_corners10_solid_16131e"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_item_add_img" />
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="14dp"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            tools:text="阳台"
+            app:layout_constraintStart_toStartOf="@id/view_bg_item"
+            app:layout_constraintEnd_toEndOf="@id/view_bg_item"
+            app:layout_constraintTop_toTopOf="@id/view_bg_item" />
+
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_good"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:paddingVertical="18dp"
+            android:paddingHorizontal="9dp"
+            android:drawableStart="@drawable/selector_house_state_good"
+            app:drawable_height="20sp"
+            app:layout_constraintStart_toStartOf="@id/view_bg_item"
+            app:layout_constraintTop_toBottomOf="@id/tv_item_name" />
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_warn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="18dp"
+            android:paddingHorizontal="9dp"
+            android:drawableStart="@drawable/selector_house_state_warn"
+            app:drawable_height="20sp"
+            app:layout_constraintStart_toEndOf="@id/tv_good"
+            app:layout_constraintTop_toTopOf="@id/tv_good" />
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_danger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="18dp"
+            android:paddingHorizontal="9dp"
+            android:drawableStart="@drawable/selector_house_state_danger"
+            app:drawable_height="20sp"
+            app:layout_constraintStart_toEndOf="@id/tv_warn"
+            app:layout_constraintTop_toTopOf="@id/tv_good" />
+
+        <!-- 状态对应文案 -->
+        <TextView
+            android:id="@+id/tv_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            tools:text="需维修"
+            app:layout_constraintStart_toEndOf="@id/tv_danger"
+            app:layout_constraintEnd_toEndOf="@id/view_bg_item"
+            app:layout_constraintTop_toTopOf="@id/tv_good"
+            app:layout_constraintBottom_toBottomOf="@id/tv_good"/>
+
+        <TextView
+            android:id="@+id/tv_input_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:textSize="13sp"
+            android:textColor="#b2ffffff"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="灯需要更换灯需要更换灯需要更换灯需要更换灯需要更换灯需要更换"
+            app:layout_constraintStart_toStartOf="@id/view_bg_item"
+            app:layout_constraintEnd_toEndOf="@id/view_bg_item"
+            app:layout_constraintTop_toBottomOf="@id/tv_good" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="@id/view_bg_item"
+            app:layout_constraintEnd_toEndOf="@id/view_bg_item"
+            app:layout_constraintTop_toBottomOf="@id/tv_input_text">
+
+            <!-- 仅用于占位，无实际交互 -->
+            <View
+                android:id="@+id/space_image1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintDimensionRatio="64:48"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/space_image2" />
+            <View
+                android:id="@+id/space_image2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintDimensionRatio="64:48"
+                app:layout_constraintTop_toTopOf="@id/space_image1"
+                app:layout_constraintStart_toEndOf="@id/space_image1"
+                app:layout_constraintEnd_toStartOf="@+id/space_image3" />
+            <View
+                android:id="@+id/space_image3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintDimensionRatio="64:48"
+                app:layout_constraintTop_toTopOf="@id/space_image1"
+                app:layout_constraintStart_toEndOf="@id/space_image2"
+                app:layout_constraintEnd_toStartOf="@+id/space_image4" />
+            <View
+                android:id="@+id/space_image4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintDimensionRatio="64:48"
+                app:layout_constraintTop_toTopOf="@id/space_image1"
+                app:layout_constraintStart_toEndOf="@id/space_image3"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- 图片 -->
+            <com.topdon.lib.ui.widget.RoundImageView
+                android:id="@+id/iv_image1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:round_radius="4dp"
+                app:layout_constraintStart_toStartOf="@id/space_image1"
+                app:layout_constraintEnd_toEndOf="@id/space_image1"
+                app:layout_constraintTop_toTopOf="@id/space_image1"
+                app:layout_constraintBottom_toBottomOf="@id/space_image1" />
+            <com.topdon.lib.ui.widget.RoundImageView
+                android:id="@+id/iv_image2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:round_radius="4dp"
+                app:layout_constraintStart_toStartOf="@id/space_image2"
+                app:layout_constraintEnd_toEndOf="@id/space_image2"
+                app:layout_constraintTop_toTopOf="@id/space_image2"
+                app:layout_constraintBottom_toBottomOf="@id/space_image2" />
+            <com.topdon.lib.ui.widget.RoundImageView
+                android:id="@+id/iv_image3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:round_radius="4dp"
+                app:layout_constraintStart_toStartOf="@id/space_image3"
+                app:layout_constraintEnd_toEndOf="@id/space_image3"
+                app:layout_constraintTop_toTopOf="@id/space_image3"
+                app:layout_constraintBottom_toBottomOf="@id/space_image3" />
+            <com.topdon.lib.ui.widget.RoundImageView
+                android:id="@+id/iv_image4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:round_radius="4dp"
+                app:layout_constraintStart_toStartOf="@id/space_image4"
+                app:layout_constraintEnd_toEndOf="@id/space_image4"
+                app:layout_constraintTop_toTopOf="@id/space_image4"
+                app:layout_constraintBottom_toBottomOf="@id/space_image4" />
+
+            <!-- 删除 -->
+            <ImageView
+                android:id="@+id/iv_del_image1"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="-13dp"
+                android:padding="5dp"
+                android:src="@drawable/svg_house_red_close"
+                android:contentDescription="@null"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/space_image1" />
+            <ImageView
+                android:id="@+id/iv_del_image2"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="-13dp"
+                android:padding="5dp"
+                android:src="@drawable/svg_house_red_close"
+                android:contentDescription="@null"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/space_image2" />
+            <ImageView
+                android:id="@+id/iv_del_image3"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="-13dp"
+                android:padding="5dp"
+                android:src="@drawable/svg_house_red_close"
+                android:contentDescription="@null"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/space_image3" />
+            <ImageView
+                android:id="@+id/iv_del_image4"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="-13dp"
+                android:padding="5dp"
+                android:src="@drawable/svg_house_red_close"
+                android:contentDescription="@null"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/space_image4" />
+
+            <TextView
+                android:id="@+id/tv_image_count_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                tools:text="4/4"
+                app:layout_constraintStart_toStartOf="@id/space_image1"
+                app:layout_constraintTop_toBottomOf="@id/space_image1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="5dp"
+            android:background="#26ffffff"
+            app:layout_constraintStart_toStartOf="@id/view_bg_item"
+            app:layout_constraintEnd_toEndOf="@id/view_bg_item"
+            app:layout_constraintTop_toBottomOf="@id/cl_image" />
+
+        <!-- 添加图片 -->
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_item_add_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:drawableStart="@drawable/svg_house_item_add_img"
+            app:drawable_height="17sp"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintTop_toBottomOf="@id/view_line"
+            app:layout_constraintStart_toStartOf="@id/view_bg_item"
+            app:layout_constraintEnd_toStartOf="@+id/tv_item_add_text" />
+        <!-- 添加文字 -->
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_item_add_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:drawableStart="@drawable/svg_house_item_add_text"
+            app:drawable_height="17sp"
+            app:layout_constraintTop_toTopOf="@id/tv_item_add_img"
+            app:layout_constraintStart_toEndOf="@id/tv_item_add_img"
+            app:layout_constraintEnd_toStartOf="@+id/tv_item_copy" />
+        <!-- 复制 -->
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_item_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:drawableStart="@drawable/svg_house_item_copy"
+            app:drawable_height="17sp"
+            app:layout_constraintTop_toTopOf="@id/tv_item_add_img"
+            app:layout_constraintStart_toEndOf="@id/tv_item_add_text"
+            app:layout_constraintEnd_toStartOf="@+id/tv_item_del" />
+        <!-- 删除 -->
+        <com.topdon.lib.core.view.MyTextView
+            android:id="@+id/tv_item_del"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:drawableStart="@drawable/svg_house_item_del"
+            app:drawable_height="17sp"
+            app:layout_constraintTop_toTopOf="@id/tv_item_add_img"
+            app:layout_constraintStart_toEndOf="@id/tv_item_copy"
+            app:layout_constraintEnd_toEndOf="@id/view_bg_item" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_menu"
+        android:layout_width="50dp"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/iv_red_del"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/svg_house_item_red_del"
+            android:contentDescription="@null"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.topdon.house.view.MyEasySwipeMenuLayout>

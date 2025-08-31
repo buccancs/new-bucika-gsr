@@ -76,3 +76,4 @@ class Pivot(
         private const val PIVOT_CENTER = -1
         private const val PIVOT_MAX = -2
     }
+}

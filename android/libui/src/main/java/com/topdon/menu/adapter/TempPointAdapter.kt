@@ -3,7 +3,7 @@ package com.topdon.menu.adapter
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.topdon.menu.R
+import com.topdon.lib.ui.R
 import com.topdon.menu.constant.TempPointType
 
 @SuppressLint("NotifyDataSetChanged")
@@ -74,3 +74,4 @@ internal class TempPointAdapter : BaseMenuAdapter() {
         val tempPointType: TempPointType,
         var isSelected: Boolean = false,
     )
+}

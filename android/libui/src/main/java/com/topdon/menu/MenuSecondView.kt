@@ -24,7 +24,8 @@ import com.topdon.menu.constant.SettingType
 import com.topdon.menu.constant.TargetType
 import com.topdon.menu.constant.TempPointType
 import com.topdon.menu.constant.TwoLightType
-import com.topdon.menu.databinding.ViewMenuSecondBinding
+import com.topdon.lib.ui.R
+import com.topdon.lib.ui.databinding.ViewMenuSecondBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -131,7 +132,7 @@ class MenuSecondView : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes) {
         val typedArray: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.MenuSecondView, defStyleAttr, defStyleRes)
-        menuType = when (typedArray.getInt(R.styleable.MenuSecondView_deviceType, 0)) {
+        menuType = when (typedArray.getInt(R.styleable.MenuSecondView_menuDeviceType, 0)) {
             0 -> MenuType.SINGLE_LIGHT
             1 -> MenuType.DOUBLE_LIGHT
             2 -> MenuType.Lite
@@ -279,3 +280,4 @@ class MenuSecondView : FrameLayout {
     fun clearTempPointSelect() {
         tempPointAdapter.clearAllSelect()
     }
+}

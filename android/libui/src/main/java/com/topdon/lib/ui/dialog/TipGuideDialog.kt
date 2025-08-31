@@ -25,12 +25,8 @@ class TipGuideDialog : DialogFragment() {
     private lateinit var imgList: ArrayList<Int>
     var closeEvent: ((check: Boolean) -> Unit)? = null
 
-    private lateinit var tvContent1: TextView
-    private lateinit var tvContent2: TextView
-    private lateinit var tvContent3: TextView
-    private lateinit var viewPager: ViewPager
-    private lateinit var ivTarget: AppCompatImageView
-    private lateinit var indicateView: IndicateView
+    private var _binding: DialogTipGuideBinding? = null
+    private val binding get() = _binding!!
     private var index: Int = -1
 
     override fun onCreateView(
@@ -38,7 +34,8 @@ class TipGuideDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_tip_guide, container, false)
+        _binding = DialogTipGuideBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,21 +52,16 @@ class TipGuideDialog : DialogFragment() {
             R.drawable.target_guide_pic_3,
             R.drawable.target_guide_pic_4,
         )
-        viewPager = view.view_pager
-        tvContent1 = view.tv_content_1
-        tvContent2 = view.tv_content_2
-        tvContent3 = view.tv_content_3
-        indicateView = view.indicate_view
-        ivTarget = view.iv_target
+        
         val adapter = PageAdapter(childFragmentManager, imgList)
-        indicateView.itemCount = adapter.count
-        viewPager.adapter = adapter
-        view.tv_i_know.setOnClickListener {
+        binding.indicateView.itemCount = adapter.count
+        binding.viewPager.adapter = adapter
+        binding.tvIKnow.setOnClickListener {
             closeEvent?.invoke(true)
             dismiss()
         }
         updateIndex(0)
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -91,29 +83,34 @@ class TipGuideDialog : DialogFragment() {
         if (index == position) {
             return
         }
-        indicateView.currentIndex = position
-        viewPager.setCurrentItem(position, true)
+        binding.indicateView.currentIndex = position
+        binding.viewPager.setCurrentItem(position, true)
         when (position) {
             0 -> {
-                tvContent1.visibility = View.VISIBLE
-                tvContent3.visibility = View.VISIBLE
-                ivTarget.visibility = View.GONE
+                binding.tvContent1.visibility = View.VISIBLE
+                binding.tvContent3.visibility = View.VISIBLE
+                binding.ivTarget.visibility = View.GONE
             }
 
             2 -> {
-                tvContent1.visibility = View.GONE
-                tvContent3.visibility = View.GONE
-                ivTarget.visibility = View.VISIBLE
+                binding.tvContent1.visibility = View.GONE
+                binding.tvContent3.visibility = View.GONE
+                binding.ivTarget.visibility = View.VISIBLE
             }
 
             else -> {
-                tvContent1.visibility = View.GONE
-                tvContent3.visibility = View.GONE
-                ivTarget.visibility = View.GONE
+                binding.tvContent1.visibility = View.GONE
+                binding.tvContent3.visibility = View.GONE
+                binding.ivTarget.visibility = View.GONE
             }
         }
-        tvContent2.text = titleList[position]
+        binding.tvContent2.text = titleList[position]
         index = position
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {
@@ -152,3 +149,4 @@ class TipGuideDialog : DialogFragment() {
             return PageFragment.newInstance(imgResList[position])
         }
     }
+}

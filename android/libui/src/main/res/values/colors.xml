@@ -27,4 +27,21 @@
     <color name="color_23202E">#FF23202E</color>
     <color name="ui_main_custom_color">#FF4CAF50</color>
     
+    <!-- Color select options -->
+    <color name="color_select1">#FF000000</color>
+    <color name="color_select2">#FFFFFFFF</color>
+    <color name="color_select3">#FF2B79D8</color>
+    <color name="color_select4">#FFFF0000</color>
+    <color name="color_select5">#FF0FA752</color>
+    <color name="color_select6">#FF808080</color>
+    
+    <!-- Wheel picker colors -->
+    <color name="wheel_select_bg">#4D2196F3</color>
+    <color name="wheel_select_text">#FF2196F3</color>
+    <color name="wheel_unselect_text">#99000000</color>
+    
+    <!-- Thermal dialog colors -->
+    <color name="color_default_min">#FF0000FF</color>
+    <color name="color_default_max">#FFFF0000</color>
+    
 </resources>

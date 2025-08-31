@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:background="#23202e">
+
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/selector_house_radio"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/view_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="-3dp"
+        android:background="@drawable/bg_corners10_solid_16131e"
+        app:layout_constraintStart_toEndOf="@id/iv_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_good" />
+
+    <EditText
+        android:id="@+id/et_input_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="5dp"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:inputType="text"
+        android:maxLength="50"
+        android:background="@drawable/bg_corners08_stroke_20_ff"
+        tools:text="一楼汇总"
+        app:layout_constraintWidth_percent="0.54"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/view_bg" />
+
+    <ImageView
+        android:id="@+id/iv_drag"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/svg_edit_drag"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="@id/view_bg"
+        app:layout_constraintTop_toTopOf="@id/view_bg"
+        app:layout_constraintBottom_toBottomOf="@id/view_bg" />
+
+    <com.topdon.lib.core.view.MyTextView
+        android:id="@+id/tv_good"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="9dp"
+        android:drawableStart="@drawable/selector_house_state_good"
+        app:drawable_height="20sp"
+        app:layout_constraintStart_toStartOf="@id/view_bg"
+        app:layout_constraintTop_toBottomOf="@id/et_input_name" />
+    <com.topdon.lib.core.view.MyTextView
+        android:id="@+id/tv_warn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="9dp"
+        android:drawableStart="@drawable/selector_house_state_warn"
+        app:drawable_height="20sp"
+        app:layout_constraintStart_toEndOf="@id/tv_good"
+        app:layout_constraintTop_toTopOf="@id/tv_good" />
+    <com.topdon.lib.core.view.MyTextView
+        android:id="@+id/tv_danger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="9dp"
+        android:drawableStart="@drawable/selector_house_state_danger"
+        app:drawable_height="20sp"
+        app:layout_constraintStart_toEndOf="@id/tv_warn"
+        app:layout_constraintTop_toTopOf="@id/tv_good" />
+
+    <!-- 状态对应文案 -->
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:textSize="13sp"
+        android:textColor="@color/white"
+        tools:text="需维修"
+        app:layout_constraintStart_toEndOf="@id/tv_danger"
+        app:layout_constraintEnd_toStartOf="@id/iv_drag"
+        app:layout_constraintTop_toTopOf="@id/tv_good"
+        app:layout_constraintBottom_toBottomOf="@id/tv_good"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

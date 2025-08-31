@@ -23,4 +23,79 @@
     <string name="czech">Čeština</string>
     <string name="ukrainian">Українська</string>
     <string name="dutch">Nederlands</string>
+    
+    <!-- Network and HTTP error messages -->
+    <string name="lms_setting_http_error">Network Error</string>
+    
+    <!-- Delete/Report related -->
+    <string name="report_delete">Delete</string>
+    
+    <!-- Version and privacy related strings -->
+    <string name="version_year">Version Year</string>
+    <string name="privacy_tips">Privacy Policy</string>
+    <string name="privacy_confirm">Accept</string>
+    <string name="privacy_cancel">Cancel</string>
+    <string name="privacy_agreement_tips_new">Please read and accept our privacy policy to continue</string>
+    <string name="welcome_use_app">Welcome to use this app</string>
+    <string name="set_version">Set Version</string>
+    
+    <!-- Device connection strings -->
+    <string name="tc_connect_line">Connect via Cable</string>
+    <string name="tc_connect_wifi">Connect via WiFi</string>
+    
+    <!-- Thermal module strings -->
+    <string name="thermal_lite">Thermal Lite</string>
+    
+    <!-- App update strings -->
+    <string name="updata_new_version_update">New version available</string>
+    
+    <!-- Navigation and Action strings -->
+    <string name="app_next">Next</string>
+    <string name="person_save">Save</string>
+    
+    <!-- Permission related strings -->
+    <string name="permission_request_camera_app">Camera permission required for thermal imaging</string>
+    <string name="permission_request_storage_app">Storage permission required to save images</string>
+    
+    <!-- Manifest constants -->
+    <string name="READ_MEDIA_VIDEO">android.permission.READ_MEDIA_VIDEO</string>
+    <string name="READ_MEDIA_IMAGES">android.permission.READ_MEDIA_IMAGES</string>
+    
+    <!-- App content strings -->
+    <string name="app_album_content">Album</string>
+    <string name="app_camera_content">Camera</string>
+    
+    <!-- Policy related strings -->
+    <string name="user_services_agreement">User Services Agreement</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="third_party_components">Third Party Components</string>
+    
+    <!-- Device connection strings -->
+    <string name="tc_delete_device">Delete Device</string>
+    
+    <!-- Color constants -->
+    <string name="toolbar_16131E">#16131E</string>
+    
+    <!-- Additional strings -->
+    <string name="attachBaseContext">attachBaseContext</string>
+    <string name="clNewVersion">clNewVersion</string>
+    <string name="tvNewVersion">tvNewVersion</string>
+    <string name="app_confirm">Confirm</string>
+    <string name="app_cancel">Cancel</string>
+    <string name="installation_package_downloading">Downloading update package</string>
+    <string name="installation_package_downloading_tips">Please wait while downloading</string>
+    <string name="tips_download_information">Download Information</string>
+    <string name="installation_package_download_progress">Download Progress</string>
+    
+    <!-- Help and guide strings -->
+    <string name="ts004_guide_text8">Device usage guide</string>
+    <string name="ts004_guide_text6">Temperature measurement guide</string>
+    <string name="ts004_disconnect_tips1">Device connection lost</string>
+    <string name="ts004_disconnect_tips4">Please check device connection</string>
+    <string name="app_tip">Tip</string>
+    <string name="ts004_wlan_tips">WiFi connection instructions</string>
+    <string name="app_open">Open</string>
+    <string name="tip_change_pseudo_mode">Change pseudo color mode</string>
+    <string name="app_yes">Yes</string>
+    <string name="app_no">No</string>
 </resources>

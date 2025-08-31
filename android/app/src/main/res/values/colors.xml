@@ -4,4 +4,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="color_CCFFFFFF">#CCFFFFFF</color>
     <color name="c_bg_white">#FF16131E</color>
+    
+    <!-- Missing app colors -->
+    <color name="temp_font_title_item_color">#FF333333</color>
+    <color name="tab_text">#FF666666</color>
+    
 </resources>

@@ -1,0 +1,71 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/color_16131E"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+    <FrameLayout
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="256:192"
+        >
+        <ImageView
+            android:id="@+id/surface_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_16131E"
+            android:visibility="gone"
+            android:scaleType="centerCrop"/>
+
+        <TextureView
+            android:id="@+id/surface_view"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/iv_not_connect_space"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_ts04_not_connect"
+            android:contentDescription="@null" />
+
+        <ProgressBar
+            android:id="@android:id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+        <ImageView
+            android:id="@+id/live_video_snap_thumb"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="right|top"
+            android:layout_margin="3dp"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onTakePictureThumbClicked"
+            android:padding="3dp"
+            android:scaleType="centerCrop"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:text="退出全屏"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="#fff"
+            android:layout_gravity="right|top"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,3 +12,4 @@ class LoadingView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs, 0) {
         inflate(context, R.layout.ui_footer_view, this)
     }
+}

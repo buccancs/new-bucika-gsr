@@ -25,7 +25,7 @@ import com.topdon.lib.core.repository.BatteryInfo
 import com.topdon.lib.core.repository.TC007Repository
 import com.topdon.lib.core.socket.SocketCmdUtil
 import com.topdon.lib.core.socket.WebSocketProxy
-import com.topdon.lib.core.tools.AppLanguageUtils
+import com.topdon.tc001.utils.AppLanguageUtils
 import com.topdon.lib.core.tools.DeviceTools
 import com.topdon.lib.core.utils.NetWorkUtils
 import com.topdon.lib.core.utils.WsCmdConstants
@@ -49,9 +49,9 @@ class MainFragment : BaseFragment(), View.OnClickListener {
     override fun initView() {
         adapter = MyAdapter()
         
-        findViewById<TextView>(R.id.tv_connect_device).setOnClickListener(this)
-        findViewById<TextView>(R.id.tv_gsr_monitoring).setOnClickListener(this)
-        findViewById<ImageView>(R.id.iv_add).setOnClickListener(this)
+        view?.findViewById<TextView>(R.id.tv_connect_device)?.setOnClickListener(this)
+        view?.findViewById<TextView>(R.id.tv_gsr_monitoring)?.setOnClickListener(this)
+        view?.findViewById<ImageView>(R.id.iv_add)?.setOnClickListener(this)
         
         adapter.hasConnectLine = DeviceTools.isConnect()
         adapter.hasConnectTS004 = WebSocketProxy.getInstance().isTS004Connect()
@@ -106,10 +106,9 @@ class MainFragment : BaseFragment(), View.OnClickListener {
             popup.show(view)
         }
 
-        findViewById<RecyclerView>(R.id.recycler_view).apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@MainFragment.adapter
-        }
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = this.adapter
 
         if (WebSocketProxy.getInstance().isTC007Connect()) {
             lifecycleScope.launch {
@@ -374,3 +373,4 @@ class MainFragment : BaseFragment(), View.OnClickListener {
         
         TC007,
     }
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_lay" />
+
+    <ImageView
+        android:id="@+id/bluetooth_img"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.18"
+        app:layout_constraintWidth_percent="0.12"
+        app:srcCompat="@drawable/ic_bluetooth_big_svg" />
+
+    <TextView
+        android:id="@+id/bluetooth_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/app_name"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@id/bluetooth_img"
+        app:layout_constraintStart_toStartOf="@id/bluetooth_img"
+        app:layout_constraintTop_toBottomOf="@id/bluetooth_img" />
+
+    <Button
+        android:id="@+id/bluetooth_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/ui_btn_theme"
+        android:minHeight="42dp"
+        android:text="@string/app_connect"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@id/bluetooth_msg"
+        app:layout_constraintStart_toStartOf="@id/bluetooth_msg"
+        app:layout_constraintTop_toBottomOf="@id/bluetooth_msg"
+        app:layout_constraintWidth_percent="0.7" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

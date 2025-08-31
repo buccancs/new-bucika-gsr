@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="13dp"
+    tools:ignore="SmallSp">
+
+    <!-- 房屋图片 -->
+    <ImageView
+        android:id="@+id/iv_house_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        tools:background="#008080"
+        app:layout_constraintDimensionRatio="1110:400"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 报告名称 -->
+    <TextView
+        android:id="@+id/tv_report_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="4dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        tools:text="这是报告名称"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_house_image" />
+
+    <!-- 时间 -->
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="8sp"
+        android:textColor="#666666"
+        tools:text="检测时间:  2023-12-20 12:20 - 15:30"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_report_name" />
+
+    <!-- 房屋详细地址 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_time">
+        <ImageView
+            android:id="@+id/iv_house_address"
+            android:layout_width="11sp"
+            android:layout_height="11sp"
+            android:src="@drawable/svg_house_pdf_icon_address"
+            android:contentDescription="@null"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/tv_house_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:textSize="8sp"
+            android:textColor="#333333"
+            tools:text="地址：深圳市南山区前海街道888号深圳市南山区前海街道888号深圳市南山区前海街道888号"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_house_address"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/bg_corners03_solid_f4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_address">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <!-- 检测师姓名 -->
+        <ImageView
+            android:id="@+id/iv_inspector_name"
+            android:layout_width="10sp"
+            android:layout_height="10sp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/svg_house_pdf_icon_inspector"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_inspector_name_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_inspector_name_title" />
+        <TextView
+            android:id="@+id/tv_inspector_name_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginTop="8dp"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="检测师姓名:"
+            app:layout_constraintStart_toEndOf="@id/iv_inspector_name"
+            app:layout_constraintEnd_toEndOf="@id/guide_line"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_inspector_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="6sp"
+            android:textColor="#666666"
+            tools:text="兖州别驾皇甫嵩"
+            app:layout_constraintStart_toStartOf="@id/tv_inspector_name_title"
+            app:layout_constraintEnd_toEndOf="@id/tv_inspector_name_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_inspector_name_title" />
+
+        <!-- 建筑年份 -->
+        <ImageView
+            android:id="@+id/iv_house_year"
+            android:layout_width="10sp"
+            android:layout_height="10sp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/svg_house_pdf_icon_time"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="@id/guide_line"
+            app:layout_constraintTop_toTopOf="@+id/tv_house_year_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_house_year_title" />
+        <TextView
+            android:id="@+id/tv_house_year_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="房屋建造时间:"
+            app:layout_constraintStart_toEndOf="@id/iv_house_year"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_house_year"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="6sp"
+            android:textColor="#666666"
+            tools:text="2016年"
+            app:layout_constraintStart_toStartOf="@id/tv_house_year_title"
+            app:layout_constraintEnd_toEndOf="@id/tv_house_year_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_house_year_title" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tv_inspector_name,tv_house_year" />
+
+        <!-- 建筑面积 -->
+        <ImageView
+            android:id="@+id/iv_house_space"
+            android:layout_width="10sp"
+            android:layout_height="10sp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/svg_house_pdf_icon_house"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_house_space_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_house_space_title" />
+        <TextView
+            android:id="@+id/tv_house_space_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginTop="8dp"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="房屋面积:"
+            app:layout_constraintStart_toEndOf="@id/iv_house_space"
+            app:layout_constraintEnd_toEndOf="@id/guide_line"
+            app:layout_constraintTop_toBottomOf="@id/barrier1" />
+        <TextView
+            android:id="@+id/tv_house_space"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="6sp"
+            android:textColor="#666666"
+            tools:text="23英亩"
+            app:layout_constraintStart_toStartOf="@id/tv_house_space_title"
+            app:layout_constraintEnd_toEndOf="@id/tv_house_space_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_house_space_title" />
+
+        <!-- 检测费用 -->
+        <ImageView
+            android:id="@+id/iv_cost"
+            android:layout_width="10sp"
+            android:layout_height="10sp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/svg_house_pdf_icon_cost"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="@id/guide_line"
+            app:layout_constraintTop_toTopOf="@+id/tv_cost_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_cost_title" />
+        <TextView
+            android:id="@+id/tv_cost_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="6sp"
+            android:textColor="#333333"
+            tools:text="检测费用:"
+            app:layout_constraintStart_toEndOf="@id/iv_cost"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier1" />
+        <TextView
+            android:id="@+id/tv_cost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="6sp"
+            android:textColor="#666666"
+            tools:text="230 USD"
+            app:layout_constraintStart_toStartOf="@id/tv_cost_title"
+            app:layout_constraintEnd_toEndOf="@id/tv_cost_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_cost_title" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
