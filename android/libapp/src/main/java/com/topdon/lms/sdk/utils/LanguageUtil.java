@@ -11,4 +11,9 @@ public class LanguageUtil {
     public static Locale getSystemLocal() {
         return Locale.getDefault();
     }
+    
+    public static int getLanguageId() {
+        // Stub implementation - return default language ID
+        return 0;
+    }
 }

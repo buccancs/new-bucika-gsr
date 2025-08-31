@@ -14,12 +14,45 @@ public class LMS {
     // Context stub
     public static Context mContext;
     
+    public String token = "stub_token";
+    
     public static LMS getInstance() {
         return instance;
     }
     
     public String getLoginName() {
         return "guest";
+    }
+    
+    public boolean isLogin() {
+        return true; // Stub - always logged in
+    }
+    
+    public void syncUserInfo() {
+        // Stub implementation for sync
+    }
+    
+    public void getUserInfo(UserInfoCallback callback) {
+        // Stub implementation - create mock user info
+        com.topdon.lms.sdk.bean.CommonBean bean = new com.topdon.lms.sdk.bean.CommonBean();
+        bean.data = "{\"id\":1,\"name\":\"Test User\"}";
+        callback.invoke(bean);
+    }
+    
+    public void bindDevice(String deviceId, CheckUpdateCallback callback) {
+        // Stub implementation
+        CallbackData response = new CallbackData();
+        response.code = 2000;
+        response.data = "{\"success\":true}";
+        callback.invoke(response);
+    }
+    
+    public void bindDevice(String sn, String randomNum, String param3, String param4, CheckUpdateCallback callback) {
+        // Overloaded stub implementation for 5-parameter version
+        CallbackData response = new CallbackData();
+        response.code = 2000;
+        response.data = "{\"success\":true}";
+        callback.invoke(response);
     }
     
     public void checkAppUpdate(CheckUpdateCallback callback) {
@@ -44,5 +77,10 @@ public class LMS {
     // Functional interface for checkAppUpdate callback
     public interface CheckUpdateCallback {
         void invoke(CallbackData data);
+    }
+    
+    // Functional interface for getUserInfo callback
+    public interface UserInfoCallback {
+        void invoke(com.topdon.lms.sdk.bean.CommonBean bean);
     }
 }

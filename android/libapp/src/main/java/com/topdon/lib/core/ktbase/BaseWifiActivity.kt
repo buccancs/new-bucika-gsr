@@ -22,7 +22,8 @@ abstract class BaseWifiActivity : BaseActivity() {
             )
         } else if (this.applicationInfo.targetSdkVersion == 33) {
             mutableListOf(
-                Permission.READ_MEDIA_VIDEO, Permission.READ_MEDIA_IMAGES,
+                Permission.READ_EXTERNAL_STORAGE, // Fallback for READ_MEDIA_VIDEO
+                Permission.READ_EXTERNAL_STORAGE, // Fallback for READ_MEDIA_IMAGES  
                 Permission.WRITE_EXTERNAL_STORAGE
             )
         } else {

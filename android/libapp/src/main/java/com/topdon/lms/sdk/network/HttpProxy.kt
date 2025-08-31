@@ -13,4 +13,9 @@ object HttpProxy {
         // Stub implementation - simulate success response
         callback.onSuccess(null)
     }
+    
+    fun post(url: String, params: Any, callback: IResponseCallback) {
+        // Overloaded version without generics
+        callback.onSuccess(null)
+    }
 }

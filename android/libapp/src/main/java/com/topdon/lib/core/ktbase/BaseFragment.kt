@@ -70,7 +70,7 @@ abstract class BaseFragment : RxFragment() {
         if (loadingDialog == null) {
             loadingDialog = LoadingDialog(requireContext())
         }
-        loadingDialog?.setTips(if (resId == 0) R.string.tip_loading else resId)
+        loadingDialog?.setTips(getString(if (resId == 0) R.string.tip_loading else resId))
         loadingDialog?.show()
     }
     /**

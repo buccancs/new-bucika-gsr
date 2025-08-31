@@ -52,13 +52,13 @@ object PermissionTool {
             Type.RECORD_AUDIO -> listOf(Permission.RECORD_AUDIO)
             Type.CAMERA -> listOf(Permission.CAMERA)
             Type.LOCATION -> listOf(Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)
-            Type.IMAGE -> listOf(if (context.applicationInfo.targetSdkVersion < 33) Permission.READ_EXTERNAL_STORAGE else Permission.READ_MEDIA_IMAGES)
+            Type.IMAGE -> listOf(if (context.applicationInfo.targetSdkVersion < 33) Permission.READ_EXTERNAL_STORAGE else Permission.READ_EXTERNAL_STORAGE) // Fallback for READ_MEDIA_IMAGES
             Type.FILE -> if (context.applicationInfo.targetSdkVersion < 30) {//Android 10及以下
                 listOf(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
             } else if (context.applicationInfo.targetSdkVersion < 33) {//Android 13以下
                 listOf(Permission.READ_EXTERNAL_STORAGE)
             } else {//Android 13及以上
-                listOf(Permission.READ_MEDIA_VIDEO, Permission.READ_MEDIA_IMAGES)
+                listOf(Permission.READ_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE) // Fallback for media permissions
             }
         }
 
@@ -69,7 +69,7 @@ object PermissionTool {
                     if (allGranted) {
                         callback.invoke()
                     } else {
-                        TToast.shortToast(context, R.string.scan_ble_tip_authorize)
+                        TToast.shortToast(context, context.getString(R.string.scan_ble_tip_authorize))
                     }
                 }
 
@@ -83,7 +83,7 @@ object PermissionTool {
                             Type.FILE -> R.string.app_storage_content
                         }
                         if (BaseApplication.instance.isDomestic()) {//国内版
-                            TToast.shortToast(context, tipsResId)
+                            TToast.shortToast(context, context.getString(tipsResId))
                         } else {
                             TipDialog.Builder(context)
                                 .setTitleMessage(context.getString(R.string.app_tip))
@@ -97,7 +97,7 @@ object PermissionTool {
                                 .create().show()
                         }
                     } else {
-                        TToast.shortToast(context, R.string.scan_ble_tip_authorize)
+                        TToast.shortToast(context, context.getString(R.string.scan_ble_tip_authorize))
                     }
                 }
             })

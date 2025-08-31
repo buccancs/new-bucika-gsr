@@ -15,4 +15,10 @@ object DateUtils {
     fun getCurrentTimestamp(): Long {
         return System.currentTimeMillis()
     }
+    
+    fun format(timestamp: Long, pattern: String, timeZone: TimeZone): String {
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+        formatter.timeZone = timeZone
+        return formatter.format(Date(timestamp))
+    }
 }

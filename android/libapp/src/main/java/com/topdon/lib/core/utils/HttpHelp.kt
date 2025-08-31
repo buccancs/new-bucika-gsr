@@ -2,8 +2,8 @@ package com.topdon.lib.core.utils
 
 import com.blankj.utilcode.util.Utils
 import com.topdon.lib.core.config.HttpConfig
-import com.topdon.lms.sdk.UrlConstant
-import com.topdon.lms.sdk.network.HttpProxy.Companion.instant
+import com.topdon.lms.sdk.network.UrlConstant
+import com.topdon.lms.sdk.network.HttpProxy
 import com.topdon.lms.sdk.network.IResponseCallback
 import com.topdon.lms.sdk.utils.LanguageUtil
 import com.topdon.lms.sdk.xutils.http.RequestParams
@@ -24,10 +24,10 @@ object HttpHelp{
         params.addBodyParameter("modelId", if (isTC007) 1783 else 950)//TC001-950, TC002-951, TC003-952 TC007-1783
         params.addBodyParameter("status", 1)
         params.addBodyParameter("reportType", 2)
-        params.addBodyParameter("languageId",  LanguageUtil.getLanguageId(Utils.getApp()))
+        params.addBodyParameter("languageId",  LanguageUtil.getLanguageId())
         params.addBodyParameter("current", pageNumber)
         params.addBodyParameter("size", 20)
-        instant.post(url,true, params, iResponseCallback)
+        HttpProxy.post(url, params, iResponseCallback)
     }
 
 }

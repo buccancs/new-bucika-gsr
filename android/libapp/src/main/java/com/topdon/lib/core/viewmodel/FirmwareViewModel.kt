@@ -15,7 +15,7 @@ import com.topdon.lib.core.repository.ProductBean
 import com.topdon.lib.core.repository.TC007Repository
 import com.topdon.lib.core.repository.TS004Repository
 import com.topdon.lms.sdk.LMS
-import com.topdon.lms.sdk.UrlConstant
+import com.topdon.lms.sdk.network.UrlConstant
 import com.topdon.lms.sdk.bean.CommonBean
 import com.topdon.lms.sdk.network.HttpProxy
 import com.topdon.lms.sdk.network.IResponseCallback
@@ -297,7 +297,7 @@ class FirmwareViewModel(application: Application) : AndroidViewModel(application
             var code = LMS.SUCCESS
             val countDownLatch = CountDownLatch(1)
             LMS.getInstance().bindDevice(sn, randomNum, "", "") {
-                code = it.code
+                code = commonBean.code
                 countDownLatch.countDown()
             }
             countDownLatch.await()
@@ -316,10 +316,10 @@ class FirmwareViewModel(application: Application) : AndroidViewModel(application
         val params = RequestParams()
         params.addBodyParameter("sn", sn)
         params.addBodyParameter("softCode", softCode)
-        params.addBodyParameter("downloadLanguageId", LanguageUtil.getLanguageId(Utils.getApp()))
+        params.addBodyParameter("downloadLanguageId", LanguageUtil.getLanguageId())
         params.addBodyParameter("downloadPlatformId", 2) //1-IOS 2-APP 3-官网 4-PC 5-生产 6-其他
         params.addBodyParameter("queryTime", DateUtils.format(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("GMT")))
-        HttpProxy.instant.post(url, params, object : IResponseCallback {
+        HttpProxy.post(url, params, object : IResponseCallback {
             override fun onResponse(response: String?) {
                 try {
                     val commonBean: CommonBean = ResponseBean.convertCommonBean(response, null)
@@ -352,7 +352,7 @@ class FirmwareViewModel(application: Application) : AndroidViewModel(application
         params.addBodyParameter("businessType", 20)//业务类型，20-软件包
         params.addBodyParameter("productType", 20)//0-未知 10-贸易体系 20-品牌体系
         params.addBodyParameter("isCheckPoint", 0)//0-不校验 1-校验（也不知道校验的是什么，接口文档没说）
-        HttpProxy.instant.post(url, params, object : IResponseCallback {
+        HttpProxy.post(url, params, object : IResponseCallback {
             override fun onResponse(response: String?) {
                 try {
                     val commonBean: CommonBean = ResponseBean.convertCommonBean(response, null)
