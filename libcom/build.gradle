@@ -14,7 +14,7 @@ kapt {
 
 
 android {
-    namespace = "com.topdon.lib.com"
+    namespace = "com.topdon.libcom"
     compileSdk = rootProject.ext.android.compileSdk
 
     defaultConfig {
@@ -43,9 +43,11 @@ android {
     // Library modules should not have product flavors
 }
 dependencies {
-    implementation project(':android:libapp')
-    implementation project(':android:libui')
-
+    // Core Android dependencies for libcom functionality
+    implementation "androidx.core:core-ktx:1.12.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.blankj:utilcodex:1.30.6"
+    
     // kapt 'com.alibaba:arouter-compiler:1.5.2' // Commented out - ARouter not needed for core functionality
     // api 'com.github.skydoves:colorpickerview:2.3.0' // Commented out - use direct dependency if needed
     // implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7' // Commented out - use direct dependency if needed
