@@ -64,5 +64,8 @@
     <declare-styleable name="MenuSecondView">
         <attr name="menuDeviceType" format="integer" />
     </declare-styleable>
+    
+    <!-- Custom view attributes -->
+    <attr name="selectColor" format="color|reference" />
 
 </resources>

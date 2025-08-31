@@ -83,8 +83,8 @@ dependencies {
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
     api "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
 
-    // Room dependencies - using KSP for Room, kapt for others as needed for IRCamera compatibility
-    ksp "androidx.room:room-compiler:2.5.2"
+    // Room dependencies - temporarily disabled KSP for compilation
+    // ksp "androidx.room:room-compiler:2.5.2"
     api "androidx.room:room-ktx:2.5.2"
 
     // Work manager

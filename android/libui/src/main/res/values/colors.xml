@@ -40,4 +40,8 @@
     <color name="wheel_select_text">#FF2196F3</color>
     <color name="wheel_unselect_text">#99000000</color>
     
+    <!-- Thermal dialog colors -->
+    <color name="color_default_min">#FF0000FF</color>
+    <color name="color_default_max">#FFFF0000</color>
+    
 </resources>

@@ -216,7 +216,9 @@ abstract class BaseApplication : Application() {
     fun clearDb() {
         GlobalScope.launch(Dispatchers.Default) {
             try {
-                AppDatabase.getInstance().thermalDao().deleteZero(SharedManager.getUserId())
+                // Temporarily disabled to fix KSP issues
+                // AppDatabase.getInstance().thermalDao().deleteZero(SharedManager.getUserId())
+                XLog.i("Database cleanup temporarily disabled")
             } catch (e: Exception) {
                 XLog.e("delete db error: ${e.message}")
             }

@@ -1,12 +1,10 @@
 package com.topdon.commons.util;
 
 import android.content.Context;
-
-import com.umeng.analytics.MobclickAgent;
-
+import android.util.Log;
 
 /**
- * @Desc 友盟埋点工具类
+ * @Desc 友盟埋点工具类 - Stub implementation
  * @ClassName UMUtils
  * @Email 616862466@qq.com
  * @Author 子墨
@@ -15,12 +13,16 @@ import com.umeng.analytics.MobclickAgent;
 
 public class UMUtils {
 
+    private static final String TAG = "UMUtils";
+
     public static void onEvent(Context mContext, String var1, String var2) {
-        MobclickAgent.onEvent(mContext, var1, var2);
+        // Stub implementation - logging instead of actual analytics
+        Log.d(TAG, "Analytics event: " + var1 + " with value: " + var2);
     }
 
     public static void onEvent(Context mContext, String var1) {
-        MobclickAgent.onEvent(mContext, var1);
+        // Stub implementation - logging instead of actual analytics
+        Log.d(TAG, "Analytics event: " + var1);
     }
 
 }
