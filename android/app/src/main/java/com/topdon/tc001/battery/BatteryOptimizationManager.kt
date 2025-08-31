@@ -516,3 +516,4 @@ class BatteryOptimizationManager(private val context: Context) {
         val name: String,
         val execute: () -> Unit
     )
+}

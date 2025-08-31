@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_16131E"
+    android:fitsSystemWindows="true">
+
+    <com.topdon.lib.core.view.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:titleText="@string/search_learn_more"
+        app:isInitLeft="false"
+        app:isTitleCenter="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="36dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/title_view"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_bg_shape"
+            android:layout_marginHorizontal="20dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_temp_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/setting_model"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_dual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_model"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_dual_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/dual_light_title"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_correction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_dual"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_picture_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/correction_title"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_item_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_correction"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_temp_unit_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/setting_unit"
+                    />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_setting_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/setting_item_unit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:setting_icon_night="@drawable/ic_setting_save_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="false"
+                    app:setting_text_night="@string/save_setting_model"/>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/setting_item_config_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/cameraSetSwitch"
+                    android:textColor="@color/font_second_color"
+                    app:layout_constraintBottom_toBottomOf="@id/setting_setting_model"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/setting_setting_model" />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_auto_show"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/setting_setting_model"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/setting_item_auto_show"
+                    app:setting_icon_night="@drawable/ic_auto_tv_night"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="false"
+                    app:setting_text_night="@string/connect_auto_open"
+                    />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/setting_item_auto_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/cameraSetSwitch"
+                    android:textColor="@color/font_second_color"
+                    app:layout_constraintBottom_toBottomOf="@id/setting_auto_show"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/setting_auto_show" />
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_device_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:setting_icon_night="@drawable/ic_device_information_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/more_device_info"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/setting_auto_show" />
+
+                <include
+                    android:id="@+id/setting_version"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    layout="@layout/layout_upgrade"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/setting_device_information"/>
+
+                <com.topdon.lib.ui.SettingNightView
+                    android:id="@+id/setting_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:setting_icon_night="@drawable/ic_reset_svg"
+                    app:setting_icon_show_night="true"
+                    app:setting_line_night="false"
+                    app:setting_more_night="true"
+                    app:setting_text_night="@string/more_device_reset"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_version" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

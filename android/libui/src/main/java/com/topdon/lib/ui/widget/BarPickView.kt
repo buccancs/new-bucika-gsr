@@ -55,7 +55,7 @@ class BarPickView : View {
             }
         }
 
-    private var progress: Int
+    private var progress: Int = 0
         set(value) {
             if (field != value) {
                 field = value.coerceAtLeast(min).coerceAtMost(max)
@@ -380,3 +380,4 @@ class BarPickView : View {
             canvas.drawText(labelText, labelX, labelY, paint)
         }
     }
+}

@@ -198,3 +198,4 @@ class PolicyActivity : BaseViewModelActivity<PolicyViewModel>() {
             }
         }
     }
+}

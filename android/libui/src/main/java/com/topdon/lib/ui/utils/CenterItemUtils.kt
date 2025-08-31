@@ -12,6 +12,5 @@ internal object CenterItemUtils {
         return minItem
     }
 
-    class CenterViewItem
-
-        (var position: Int, var differ: Int)
+    class CenterViewItem(var position: Int, var differ: Int)
+}

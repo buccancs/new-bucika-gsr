@@ -6,4 +6,68 @@
     <string name="temp_avg">Moy :</string>
 
     <string name="text_button_play">start</string>
+    <string name="person_headshot_camera">Person Headshot Camera</string>
+    <string name="app_video">App Video</string>
+    <string name="select_monitor_type_step2">Select Monitor Type - Step 2</string>
+    <string name="select_monitor_return">Return</string>
+    <string name="select_monitor_type_step1">Select Monitor Type - Step 1</string>
+    <string name="app_confirm">Confirm</string>
+    
+    <!-- Missing strings for thermal input dialog -->
+    <string name="tip_input_format">Input format tip</string>
+    <string name="color_board">Color board</string>
+    
+    <!-- Missing strings for tip guide dialog -->
+    <string name="target_tips_step_1">Target tips step 1</string>
+    <string name="target_tips_step_2">Target tips step 2</string>
+    <string name="target_tips_step_3">Target tips step 3</string>
+    <string name="target_tips_step_4">Target tips step 4</string>
+    
+    <!-- Missing strings for tip preview dialog -->
+    <string name="preview_step_1">Preview step 1</string>
+    <string name="preview_step_2">Preview step 2</string>
+    
+    <!-- Missing thermal strings -->
+    <string name="thermal_point">Point</string>
+    <string name="thermal_line">Line</string>
+    <string name="thermal_rect">Rectangle</string>
+    <string name="thermal_full_rect">Full Rectangle</string>
+    <string name="thermal_trend">Trend</string>
+    <string name="thermal_delete">Delete</string>
+    <string name="thermal_rotate">Rotate</string>
+    <string name="thermal_contrast">Contrast</string>
+    <string name="thermal_pseudo">Pseudo Color</string>
+    <string name="thermal_sharpen">Sharpen</string>
+    <string name="thermal_automatic">Automatic</string>
+    <string name="thermal_high_temperature">High Temperature</string>
+    <string name="thermal_normal_temperature">Normal Temperature</string>
+    <string name="thermal_picture_in_camera">Picture in Camera</string>
+    
+    <!-- Missing main tab strings -->
+    <string name="main_tab_second_compass">Compass</string>
+    <string name="main_tab_first_target">Target</string>
+    <string name="main_tab_second_measure_mode">Measure Mode</string>
+    <string name="main_tab_second_target_color">Target Color</string>
+    <string name="main_tab_second_target_help">Target Help</string>
+    <string name="main_tab_second_high_temperature_point">High Temperature Point</string>
+    <string name="main_tab_second_low_temperature_point">Low Temperature Point</string>
+    <string name="main_tab_second_dynamic_recognition">Dynamic Recognition</string>
+    <string name="main_tab_second_high_temperature_source">High Temperature Source</string>
+    <string name="main_tab_second_low_temperature_source">Low Temperature Source</string>
+    
+    <!-- Missing app and setting strings -->
+    <string name="temp_alarm_alarm">Temperature Alarm</string>
+    <string name="menu_thermal_font">Thermal Font</string>
+    <string name="app_watemarking">Watermarking</string>
+    <string name="mirror">Mirror</string>
+    
+    <!-- Missing dual light strings -->
+    <string name="dual_menu_1">Dual Menu 1</string>
+    <string name="dual_menu_2">Dual Menu 2</string>
+    <string name="ios_double_light">Double Light</string>
+    <string name="menu_thermal_imaging">Thermal Imaging</string>
+    <string name="menu_thermal_merge">Thermal Merge</string>
+    <string name="menu_thermal_registration">Thermal Registration</string>
+    <string name="menu_thermal_visible_light">Visible Light</string>
+    
 </resources>

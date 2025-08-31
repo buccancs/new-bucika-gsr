@@ -136,3 +136,4 @@ class BatteryView : AppCompatImageView {
         canvas.clipPath(path)
         canvas.drawRect(lineSize + anodeWidth, lineSize + anodeWidth, lineSize + anodeWidth + progressWidth, drawHeight - lineSize - anodeWidth, paint)
     }
+}

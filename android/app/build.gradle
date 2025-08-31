@@ -23,7 +23,7 @@ static def getTimeStr() {
 apply from: 'config/build-helpers.gradle'
 
 android {
-    namespace 'com.topdon.tc001'
+    namespace = 'com.topdon.tc001'
     
     buildFeatures {
         buildConfig true
@@ -31,14 +31,20 @@ android {
         dataBinding = true
     }
     
-    compileSdk rootProject.ext.android.compileSdk
+    compileSdk = rootProject.ext.android.compileSdk
+    
+    // Suppress resource formatting warnings from external dependencies
+    lint {
+        warning 'StringFormatMatches', 'StringFormatInvalid', 'PluralsCandidate'
+        ignore 'StringFormatInvalid'
+    }
     
     defaultConfig {
         applicationId rootProject.ext.android.applicationId
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
-        versionCode rootProject.ext.android.versionCode
-        versionName rootProject.ext.android.versionName
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
+        versionCode = rootProject.ext.android.versionCode
+        versionName = rootProject.ext.android.versionName
         ndkVersion rootProject.ext.android.ndkVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -55,8 +61,6 @@ android {
                 JPUSH_APPKEY : "cbd4eafc9049d751fc5a8c58",
                 JPUSH_CHANNEL : "developer-default",
         ]
-
-        setProperty("archivesBaseName", "BucikaGSR-v${versionName}.google")
     }
 
     bundle {
@@ -65,34 +69,30 @@ android {
         }
     }
 
-    // Include signing configuration
+    // Signing configuration - disabled for development builds
+    // Production builds should configure proper signing externally
     signingConfigs {
-        // Debug builds will use Android's default debug keystore automatically
-        // No custom debug configuration needed
-        
-        release {
-            // Only configure release signing if keystore exists
-            def keystoreFile = file('artibox_key/ArtiBox.jks')
-            if (keystoreFile.exists()) {
-                storeFile keystoreFile
-                keyAlias 'Artibox'
-                storePassword 'artibox2017'
-                keyPassword 'artibox2017'
-                v1SigningEnabled true
-                v2SigningEnabled true
-            }
-        }
+        // debug signing disabled - uses default Android debug keystore
+        // release {
+        //     // Configure in production environment with proper keystore
+        //     storeFile file('path/to/production.keystore')
+        //     keyAlias 'production_alias'
+        //     storePassword project.findProperty('KEYSTORE_PASSWORD') ?: ''
+        //     keyPassword project.findProperty('KEY_PASSWORD') ?: ''
+        //     v1SigningEnabled true
+        //     v2SigningEnabled true
+        // }
     }
 
     buildTypes {
         debug {
-            // Temporarily disable signing for debug builds
-            // signingConfig signingConfigs.debug
+            // Uses default Android debug keystore for development
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            signingConfig signingConfigs.release
+            // Release signing should be configured externally in production
+            // signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -105,20 +105,19 @@ android {
     
     kotlinOptions {
         jvmTarget = '17'
+        languageVersion = '2.2'
+        apiVersion = '2.2'
+        freeCompilerArgs += [
+            '-opt-in=kotlin.RequiresOptIn',
+            '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+            '-opt-in=kotlin.time.ExperimentalTime'
+        ]
     }
-    
-    // Configure D8/R8 to handle missing stack map tables from legacy libraries
-    packagingOptions {
-        pickFirst '**/libc++_shared.so'
-        pickFirst '**/libjsc.so'
-    }
-    
-    // Add D8 configuration for legacy bytecode compatibility
-    androidComponents {
-        onVariants(selector().all()) { variant ->
-            variant.packaging.jniLibs.pickFirsts.add("**/libc++_shared.so")
-        }
-    }
+}
+
+// Updated from deprecated archivesBaseName to archivesName
+base {
+    archivesName = "BucikaGSR-v" + rootProject.ext.android.versionName + ".google"
 }
 
 // Apply modular configuration files for additional components

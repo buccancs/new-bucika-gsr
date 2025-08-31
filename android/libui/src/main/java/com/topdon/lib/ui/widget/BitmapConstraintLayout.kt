@@ -24,3 +24,4 @@ open class BitmapConstraintLayout : ConstraintLayout {
         } catch (_: Exception) {
         }
     }
+}

@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.topdon.lib.core.config.FileConfig
 import com.topdon.lib.core.tools.TimeTool
 import com.topdon.lib.core.utils.ImageUtils
-import com.topdon.lib.core.utils.BitmapUtils
+import com.topdon.libapp.utils.BitmapUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -253,3 +253,4 @@ class GalleryFileManagementManager(
             cleanupTemporaryFiles()
         }
     }
+}

@@ -5,18 +5,18 @@ import com.topdon.lib.core.config.FileConfig
 import com.topdon.lib.core.repository.FileBean
 import com.topdon.lib.core.tools.TimeTool
 import com.topdon.lib.core.tools.VideoTools
-import kotlinx.parcelize.Parcelize
+import kotlinx.android.parcel.Parcelize
 import java.io.File
 import java.util.TimeZone
 
 @Parcelize
 open class GalleryBean(
-    val id: Int,
+    val id: Int, //仅TS004远端时，id
     val path: String,
     val thumb: String,
     val name: String,
-    val duration: Long,
-    open val timeMillis: Long,
+    val duration: Long,//仅当为视频时，持续毫秒数
+    val timeMillis: Long,
     var hasDownload: Boolean,
 ) : Parcelable {
     constructor(file: File): this(
@@ -40,8 +40,7 @@ open class GalleryBean(
     )
 }
 
-@Parcelize
-class GalleryTitle(override val timeMillis: Long) : GalleryBean(
+class GalleryTitle(timeMillis: Long) : GalleryBean(
     id = 0,
     path = "",
     thumb = "",
@@ -49,4 +48,5 @@ class GalleryTitle(override val timeMillis: Long) : GalleryBean(
     duration = 0L,
     timeMillis = timeMillis,
     hasDownload = true,
-), Parcelable
+)
+

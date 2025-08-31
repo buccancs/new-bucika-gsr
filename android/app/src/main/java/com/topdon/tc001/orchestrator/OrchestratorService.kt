@@ -253,24 +253,7 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         serviceListener?.onConnectionError(error)
     }
 
-    override fun onStartSession(sessionId: String, config: Map<String, Any>) {
-        Log.i(TAG, "Session start requested: $sessionId")
-        updateNotification("Recording session active")
-        serviceListener?.onStartSession(sessionId, config)
-        
-        val intent = Intent(this, EnhancedRecordingActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra("sessionId", sessionId)
-            putExtra("orchestratorMode", true)
-        }
-        startActivity(intent)
-    }
-
-    override fun onStopSession() {
-        Log.i(TAG, "Session stop requested")
-        updateNotification("Session ended")
-        serviceListener?.onStopSession()
-    }
+    // Session management methods moved to lines 345+ for proper implementation
 
     override fun onSyncMark(markerId: String, referenceTime: Long) {
         Log.i(TAG, "Sync mark: $markerId at $referenceTime")
@@ -308,7 +291,7 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Bucika GSR Orchestrator")
             .setContentText(status)
-            .setSmallIcon(R.drawable.ic_recording_active)
+            .setSmallIcon(android.R.drawable.ic_media_play) // Using system drawable instead of missing custom icon
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -472,3 +455,4 @@ class OrchestratorService : Service(), OrchestratorClient.OrchestratorListener {
     fun getServerUrl(): String? = currentServerUrl
 
     fun getDiscoveredServices(): Set<NsdServiceInfo> = discoveredServices.toSet()
+}

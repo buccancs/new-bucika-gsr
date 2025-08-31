@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="13dp"
+    android:paddingEnd="13dp"
+    tools:ignore="SmallSp">
+
+    <View
+        android:id="@+id/view_item_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#f4f4f4"
+        app:layout_constraintHorizontal_weight="65"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cl_good" />
+    <TextView
+        android:id="@+id/tv_item_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textSize="6sp"
+        android:textColor="#333333"
+        tools:text="天花板"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/view_item_name"
+        app:layout_constraintEnd_toEndOf="@id/view_item_name" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_good"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintHorizontal_weight="45"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_item_name"
+        app:layout_constraintEnd_toStartOf="@+id/cl_warn">
+        <ImageView
+            android:id="@+id/iv_good"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/svg_house_state_good_select_yes"
+            android:contentDescription="@null"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintWidth_percent="0.22"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_warn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintHorizontal_weight="45"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_good"
+        app:layout_constraintEnd_toStartOf="@+id/cl_danger">
+        <ImageView
+            android:id="@+id/iv_warn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/svg_house_state_warn_select_yes"
+            android:contentDescription="@null"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintWidth_percent="0.22"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_danger"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintHorizontal_weight="45"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_warn"
+        app:layout_constraintEnd_toStartOf="@+id/tv_input">
+        <ImageView
+            android:id="@+id/iv_danger"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/svg_house_state_danger_select_yes"
+            android:contentDescription="@null"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintWidth_percent="0.22"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textSize="6sp"
+        android:textColor="#666666"
+        tools:text="房屋质量检测是运用一定的技术手段和方法，对其结构质量进行检查测定，实施动态监控，房屋检测又称房屋质量检测评估，是指由具备资质的检测单位对房屋质量进行检测，评估，并开具报告的过程。"
+        app:layout_constraintHorizontal_weight="158"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_danger"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/view_top_line"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="#dddddd"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="#dddddd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="0dp"
+        android:background="#dddddd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="0dp"
+        android:background="#dddddd"
+        app:layout_constraintEnd_toEndOf="@id/view_item_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="0dp"
+        android:background="#dddddd"
+        app:layout_constraintEnd_toEndOf="@id/cl_good"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="0dp"
+        android:background="#dddddd"
+        app:layout_constraintEnd_toEndOf="@id/cl_warn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="0dp"
+        android:background="#dddddd"
+        app:layout_constraintEnd_toEndOf="@id/cl_danger"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="0dp"
+        android:background="#dddddd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

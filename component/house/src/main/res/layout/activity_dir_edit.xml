@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#16131e">
+
+    <View
+        android:id="@+id/view_title_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        tools:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/iv_exit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/svg_house_close"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_title_bar"
+        app:layout_constraintBottom_toBottomOf="@id/view_title_bar" />
+    <ImageView
+        android:id="@+id/iv_save"
+        android:layout_width="44dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/svg_house_save"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_title_bar"
+        app:layout_constraintBottom_toBottomOf="@id/view_title_bar" />
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/not_selected"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@id/iv_exit"
+        app:layout_constraintEnd_toStartOf="@id/iv_save"
+        app:layout_constraintTop_toTopOf="@id/view_title_bar"
+        app:layout_constraintBottom_toBottomOf="@id/view_title_bar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_bottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        tools:visibility="visible"
+        app:layout_constraintDimensionRatio="375:84"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#33ffffff"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 全选 -->
+        <View
+            android:id="@+id/view_select_all"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <ImageView
+            android:id="@+id/iv_select_all"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/selector_house_select_all"
+            android:contentDescription="@null"
+            app:layout_constraintWidth_percent="0.064"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/view_select_all"
+            app:layout_constraintEnd_toEndOf="@id/view_select_all"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_select_all" />
+        <TextView
+            android:id="@+id/tv_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="@string/report_select_all"
+            android:textSize="13sp"
+            android:textColor="@color/del_text"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintStart_toStartOf="@id/view_select_all"
+            app:layout_constraintEnd_toEndOf="@id/view_select_all"
+            app:layout_constraintTop_toBottomOf="@id/iv_select_all"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- 复制 -->
+        <View
+            android:id="@+id/view_copy"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <ImageView
+            android:id="@+id/iv_copy"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/selector_house_copy"
+            android:contentDescription="@null"
+            app:layout_constraintWidth_percent="0.064"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/view_copy"
+            app:layout_constraintEnd_toEndOf="@id/view_copy"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_copy" />
+        <TextView
+            android:id="@+id/tv_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="@string/paste"
+            android:textSize="13sp"
+            android:textColor="@color/del_text"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintStart_toStartOf="@id/view_copy"
+            app:layout_constraintEnd_toEndOf="@id/view_copy"
+            app:layout_constraintTop_toBottomOf="@id/iv_copy"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- 删除 -->
+        <View
+            android:id="@+id/view_del"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.32"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <ImageView
+            android:id="@+id/iv_del"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/selector_house_del"
+            android:contentDescription="@null"
+            app:layout_constraintWidth_percent="0.064"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/view_del"
+            app:layout_constraintEnd_toEndOf="@id/view_del"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_del" />
+        <TextView
+            android:id="@+id/tv_del"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="@string/report_delete"
+            android:textSize="13sp"
+            android:textColor="@color/del_text"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintStart_toStartOf="@id/view_del"
+            app:layout_constraintEnd_toEndOf="@id/view_del"
+            app:layout_constraintTop_toBottomOf="@id/iv_del"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_title_bar"
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_empty"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_title_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <!-- 数据为空时提示图片 -->
+        <ImageView
+            android:id="@+id/iv_empty"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_list_empty"
+            android:contentDescription="@null"
+            app:layout_constraintVertical_bias="0.28"
+            app:layout_constraintWidth_percent="0.38"
+            app:layout_constraintDimensionRatio="436:318"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/no_detect"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_empty" />
+        <TextView
+            android:id="@+id/tv_add"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="@string/add"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_corners10_solid_theme"
+            app:layout_constraintWidth_percent="0.42"
+            app:layout_constraintDimensionRatio="161:50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_empty" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

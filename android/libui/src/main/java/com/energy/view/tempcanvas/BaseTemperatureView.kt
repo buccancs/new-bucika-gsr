@@ -58,6 +58,11 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
 
     private val mTextWidth = 110
     private lateinit var mTextPaint: TextPaint
+    
+    // Additional properties for thermal imaging
+    var textColor: Int = 0xffffffff.toInt()
+    var tempTextSize: Int = 14
+    private var tempData: ByteArray? = null
 
     constructor(context: Context) : this(context, null)
     
@@ -253,7 +258,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                 when (mDrawModel) {
                     DrawModel.DRAW_POINT -> {
                         if (mPointDraw.getOperateStatus() == PointDraw.OPERATE_STATUS_POINT_IN_TOUCH) {
-                            mPointDraw.changeTouchPointLocationByIndex(mPointDraw.touchInclude, mCurX, mCurY)
+                            mPointDraw.changeTouchPointLocationByIndex(mPointDraw.getTouchInclude(), mCurX, mCurY)
                         }
                         doTouchDraw()
                     }
@@ -278,7 +283,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                             RectDraw.OPERATE_STATUS_RECTANGLE_RIGHT_EDGE,
                             RectDraw.OPERATE_STATUS_RECTANGLE_BOTTOM_EDGE,
                             RectDraw.OPERATE_STATUS_RECTANGLE_MOVE_ENTIRE)) {
-                            mRectDraw.changeTouchLineLocationByIndex(mRectDraw.touchInclude, moveX, moveY)
+                            mRectDraw.changeTouchLineLocationByIndex(mRectDraw.getTouchInclude(), moveX, moveY)
                         }
                         doTouchDraw()
                     }
@@ -340,7 +345,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                 mPointDraw.addPoint(1, mCurX, mCurY)
                             }
                             PointDraw.OPERATE_STATUS_POINT_REMOVE -> {
-                                mPointDraw.removePoint(mPointDraw.touchInclude)
+                                mPointDraw.removePoint(mPointDraw.getTouchInclude())
                             }
                         }
                         doShapeDraw()
@@ -351,7 +356,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                 mLineDraw.addLine(mFirstX.toInt(), mFirstY.toInt(), mCurX.toInt(), mCurY.toInt())
                             }
                             LineDraw.OPERATE_STATUS_LINE_REMOVE -> {
-                                mLineDraw.removeLine(mLineDraw.touchInclude)
+                                mLineDraw.removeLine(mLineDraw.getTouchInclude())
                             }
                             else -> {
                                 mLineDraw.changeTouchPointLocation()
@@ -368,7 +373,7 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
                                 mRectDraw.addRect(left, top, right, bottom)
                             }
                             RectDraw.OPERATE_STATUS_RECTANGLE_STATUS_REMOVE -> {
-                                mRectDraw.removeRect(mRectDraw.touchInclude)
+                                mRectDraw.removeRect(mRectDraw.getTouchInclude())
                             }
                             else -> {
                                 mRectDraw.changeTouchRectLocation()
@@ -414,12 +419,12 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
         mViewWidth = initialWidth
         mViewHeight = initialHeight
 
-        mPointDraw.viewWidth = mViewWidth
-        mPointDraw.viewHeight = mViewHeight
-        mLineDraw.viewWidth = mViewWidth
-        mLineDraw.viewHeight = mViewHeight
-        mRectDraw.viewWidth = mViewWidth
-        mRectDraw.viewHeight = mViewHeight
+        mPointDraw.setViewWidth(mViewWidth)
+        mPointDraw.setViewHeight(mViewHeight)
+        mLineDraw.setViewWidth(mViewWidth)
+        mLineDraw.setViewHeight(mViewHeight)
+        mRectDraw.setViewWidth(mViewWidth)
+        mRectDraw.setViewHeight(mViewHeight)
 
         mTempWidth = getTempWidth()
         mTempHeight = getTempHeight()
@@ -642,11 +647,12 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             canvas.save()
             if (count != 0 && count % 3 == 0) {
                 startIndex = 0
-                y += if (pointCount == 3 && count == 3) {
-                    ScreenUtils.dp2px(40f)
+                val increment = if (pointCount == 3 && count == 3) {
+                    ScreenUtils.dp2px(40f).toFloat()
                 } else {
-                    ScreenUtils.dp2px(80f)
+                    ScreenUtils.dp2px(80f).toFloat()
                 }
+                y += increment.toInt()
             }
             canvas.translate((x + interval * startIndex).toFloat(), y.toFloat())
             canvas.rotate(screenDegree.toFloat())
@@ -655,5 +661,11 @@ abstract class BaseTemperatureView : SurfaceView, SurfaceHolder.Callback {
             count++
             startIndex++
         }
+    }
+    
+    // Additional method for thermal imaging data
+    fun setData(data: ByteArray) {
+        tempData = data
+        // Process temperature data if needed
     }
 }

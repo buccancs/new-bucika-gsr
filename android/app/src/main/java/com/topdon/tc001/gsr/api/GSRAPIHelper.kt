@@ -5,6 +5,7 @@ import com.elvishew.xlog.XLog
 import com.shimmerresearch.driver.Configuration
 import com.shimmerresearch.driver.ProcessedGSRData
 import com.topdon.tc001.gsr.GSRManager
+import com.topdon.tc001.gsr.quality.QualityAssessment
 import com.topdon.tc001.gsr.discovery.ShimmerDeviceDiscovery
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -141,6 +142,17 @@ class GSRAPIHelper private constructor(private val context: Context) {
                 } else null
                 
                 listener.onConnectionStatusChanged(isConnected, deviceInfo)
+            }
+            
+            override fun onQualityAssessmentUpdated(assessment: QualityAssessment) {
+                // Handle quality assessment updates
+                listener.onSignalQualityChanged(SignalQualityInfo(
+                    overallQuality = assessment.qualityScore,
+                    gsrQuality = assessment.detailedMetrics.gsrStatistics.mean,
+                    temperatureQuality = assessment.detailedMetrics.temperatureStatistics.mean,
+                    signalNoiseRatio = 100.0 - assessment.detailedMetrics.artifactPercentage,
+                    artifactPercentage = assessment.detailedMetrics.artifactPercentage
+                ))
             }
         })
     }
@@ -410,3 +422,4 @@ class GSRAPIHelper private constructor(private val context: Context) {
         deviceDiscoveryListener = null
         gsrDataBuffer.clear()
     }
+}

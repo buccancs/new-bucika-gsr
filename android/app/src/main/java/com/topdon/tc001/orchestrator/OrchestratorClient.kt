@@ -143,16 +143,16 @@ class OrchestratorClient(
 
     private fun createMessage(
         type: String, 
-        payload: Any, 
+        payload: Any?, 
         messageId: String = UUID.randomUUID().toString()
     ): Map<String, Any> {
         return mapOf(
             "id" to messageId,
             "type" to type,
             "ts" to System.nanoTime(),
-            "sessionId" to currentSessionId,
+            "sessionId" to (currentSessionId ?: ""),
             "deviceId" to deviceId,
-            "payload" to payload
+            "payload" to (payload ?: "")
         )
     }
 
@@ -578,7 +578,7 @@ class OrchestratorClient(
         sendMessage(message, expectAck = false)
     }
 
-    private val fileUploadCallbacks = mutableMapOf<String, FileUploadCallback>()
+    private val fileUploadCallbacks = mutableMapOf<String, FileUploadCallback?>()
     private val pendingUploads = mutableMapOf<String, FileUploadInfo>()
     
     private data class FileUploadInfo(
@@ -625,3 +625,4 @@ class OrchestratorClient(
         fun onCompleted(uploadedFilePath: String)
         fun onError(error: String)
     }
+}

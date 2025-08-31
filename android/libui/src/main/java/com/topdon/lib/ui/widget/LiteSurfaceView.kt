@@ -36,3 +36,4 @@ class LiteSurfaceView @JvmOverloads constructor(
             return Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888)
         }
     }
+}

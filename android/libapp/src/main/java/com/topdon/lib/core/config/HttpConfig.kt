@@ -1,5 +1,8 @@
 package com.topdon.lib.core.config
 
+/**
+ * create by fylder on 2021/4/1
+ **/
 object HttpConfig {
 
     const val HOST = "https://api.topdon.com"

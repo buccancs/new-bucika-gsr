@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_corners08_solid_23202e_stroke_20_ff">
+
+    <TextView
+        android:id="@+id/tv_option1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="14dp"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="@string/app_edit" />
+    <View
+        android:id="@+id/view_line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="#26ffffff" />
+
+    <TextView
+        android:id="@+id/tv_option2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="14dp"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="@string/paste" />
+    <View
+        android:id="@+id/view_line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="#26ffffff" />
+
+    <TextView
+        android:id="@+id/tv_option3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="14dp"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="@string/report_delete" />
+</LinearLayout>

@@ -15,3 +15,4 @@ object MainThreadHandler {
     fun remove(r: Runnable?) {
         handler.removeCallbacks(r!!)
     }
+}

@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.blankj.utilcode.util.SizeUtils
+import androidx.core.content.ContextCompat
 import com.topdon.tc001.R
 
 class ConnectionGuideView: LinearLayout {
@@ -76,8 +77,9 @@ class ConnectionGuideView: LinearLayout {
         if (contentText == null) return
         var mContent = "$content  "
         val spannableString = SpannableString(mContent)
-        val drawable = context.getDrawable(R.drawable.ic_connection_press_tip)
+        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_connection_press_tip)
         drawable!!.setBounds(0, 0, drawable.minimumWidth, drawable.minimumHeight)
         spannableString.setSpan(ImageSpan(drawable), mContent.length - 1, mContent.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         contentText.text = spannableString
     }
+}

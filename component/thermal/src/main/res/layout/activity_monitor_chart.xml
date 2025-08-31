@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/toolbar_lay" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chart_lay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#ffffff"
+        android:elevation="1.5dp"
+        android:paddingTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_lay">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/monitor_chart_time_recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_select_time"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.72"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_setting_time" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/monitor_vol_lay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@id/mp_chart_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/monitor_chart_time_recycler"
+            app:layout_constraintWidth_percent="0.9">
+
+            <ImageView
+                android:id="@+id/monitor_current_img"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_chart_current_shape"
+                app:layout_constraintBottom_toBottomOf="@id/monitor_real_vol"
+                app:layout_constraintEnd_toStartOf="@id/monitor_current_vol"
+                app:layout_constraintTop_toTopOf="@id/monitor_real_vol" />
+
+            <TextView
+                android:id="@+id/monitor_current_vol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/chart_current"
+                android:textColor="@color/font_gray"
+                android:textSize="@dimen/app_smaller_font"
+                app:layout_constraintEnd_toStartOf="@id/monitor_real_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/monitor_real_img"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_chart_real_shape"
+                app:layout_constraintBottom_toBottomOf="@id/monitor_real_vol"
+                app:layout_constraintEnd_toStartOf="@id/monitor_real_vol"
+                app:layout_constraintTop_toTopOf="@id/monitor_real_vol" />
+
+            <TextView
+                android:id="@+id/monitor_real_vol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chart_real_time"
+                android:textColor="@color/font_gray"
+                android:textSize="@dimen/app_smaller_font"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/mp_chart_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/monitor_vol_lay" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/monitor_chart_setting_lay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_setting_radio"
+        android:elevation="2dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_lay"
+        app:layout_constraintWidth_percent="0.85">
+
+        <TextView
+            android:id="@+id/monitor_chart_setting_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="设置间隔"
+            android:textColor="@color/font_color"
+            android:textSize="@dimen/app_font"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.9" />
+
+        <View
+            android:id="@+id/monitor_chart_setting_line"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="8dp"
+            android:background="#eeeeee"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/monitor_chart_setting_text" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/monitor_chart_setting_recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/monitor_chart_setting_line"
+            app:layout_constraintWidth_percent="0.9"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_setting_check" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/monitor_chart_start_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/ui_btn_round_theme"
+        android:text="开始记录"
+        android:textColor="@color/white"
+        android:textSize="@dimen/app_font"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/monitor_chart_setting_lay"
+        app:layout_constraintWidth_percent="0.3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

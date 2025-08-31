@@ -3,7 +3,7 @@ package com.topdon.menu.adapter
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.topdon.menu.R
+import com.topdon.lib.ui.R
 import com.topdon.menu.constant.MenuType
 import com.topdon.menu.constant.SettingType
 
@@ -90,3 +90,4 @@ internal class SettingAdapter(menuType: MenuType = MenuType.SINGLE_LIGHT, isObse
         val settingType: SettingType,
         var isSelected: Boolean = false,
     )
+}

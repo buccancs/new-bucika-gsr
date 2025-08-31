@@ -1,0 +1,95 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
+}
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
+}
+
+android {
+    namespace = "com.example.thermal_lite"
+    compileSdk = rootProject.ext.android.compileSdk
+
+    defaultConfig {
+        minSdk = rootProject.ext.android.minSdk
+        targetSdk = rootProject.ext.android.targetSdk
+
+        consumerProguardFiles "consumer-rules.pro"
+        buildConfigField "String", "VERSION_NAME", "\"$rootProject.ext.android.versionName\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+    }
+    buildFeatures{
+        dataBinding = true
+    }
+
+    flavorDimensions 'app'
+    productFlavors {
+        dev {
+            dimension 'app'
+        }
+        beta {
+            dimension 'app'
+        }
+        prod {
+            dimension 'app'
+        }
+        prodTopdon {
+            dimension 'app'
+        }
+        insideChina {
+            dimension 'app'
+        }
+        prodTopdonInsideChina {
+            dimension 'app'
+        }
+    }
+}
+
+dependencies {
+    implementation(name: 'libusbdualsdk_1.3.4_2406271906_standard', ext: 'aar')
+
+    implementation project(':android:libapp')
+    implementation project(':libcom')
+    implementation project(':android:libir')
+    implementation project(':libmenu')
+    implementation project(':android:libui')
+    implementation project(':component:pseudo')
+    implementation project(':component:thermal-ir')
+
+    // ARouter and other optional dependencies commented out for core functionality
+    // ARouter and other optional dependencies commented out for core functionality
+    // kapt 'com.alibaba:arouter-compiler:1.5.2'
+    api(project(":LocalRepo:libac020"))
+    api(project(":LocalRepo:libirutils"))
+    api(project(":LocalRepo:libcommon"))
+    api(project(":component:CommonComponent"))
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.google.android.material:material:1.12.0'
+
+    //     // api Deps.compass_sense
+    //     // api Deps.compass_core
+
+}

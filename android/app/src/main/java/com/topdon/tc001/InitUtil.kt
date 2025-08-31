@@ -113,3 +113,4 @@ object InitUtil {
             BaseApplication.instance.registerReceiver(BaseApplication.usbObserver, filter, Context.RECEIVER_NOT_EXPORTED)
         }
     }
+}

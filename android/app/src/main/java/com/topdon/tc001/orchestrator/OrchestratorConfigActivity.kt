@@ -265,6 +265,29 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
         }
     }
 
+    override fun onGSRConnectionChanged(isConnected: Boolean, deviceName: String?) {
+        runOnUiThread {
+            val message = if (isConnected) {
+                "GSR device connected: ${deviceName ?: "Unknown"}"
+            } else {
+                "GSR device disconnected"
+            }
+            showSuccess(message)
+        }
+    }
+
+    override fun onSessionStarted(sessionId: String, config: Map<String, Any>) {
+        runOnUiThread {
+            showSuccess("Session started: $sessionId")
+        }
+    }
+
+    override fun onSessionStopped() {
+        runOnUiThread {
+            showSuccess("Session stopped")
+        }
+    }
+
     private class DiscoveredServicesAdapter(
         private val services: List<NsdServiceInfo>,
         private val onServiceClick: (NsdServiceInfo) -> Unit
@@ -298,3 +321,4 @@ class OrchestratorConfigActivity : AppCompatActivity(), OrchestratorService.Serv
             }
         }
     }
+}

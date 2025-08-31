@@ -3,7 +3,7 @@ package com.topdon.menu.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.topdon.menu.databinding.ItemMenuBinding
+import com.topdon.lib.ui.databinding.ItemMenuBinding
 
 internal abstract class BaseMenuAdapter : RecyclerView.Adapter<BaseMenuAdapter.ViewHolder>() {
     companion object {
@@ -42,3 +42,4 @@ internal abstract class BaseMenuAdapter : RecyclerView.Adapter<BaseMenuAdapter.V
     }
 
     class ViewHolder(val binding: ItemMenuBinding) : RecyclerView.ViewHolder(binding.root)
+}

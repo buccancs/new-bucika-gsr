@@ -29,3 +29,4 @@ class PolicyViewModel : BaseViewModel() {
     }
 
     data class HtmlBean(val body: String? = null, val action: Int = 0)
+}

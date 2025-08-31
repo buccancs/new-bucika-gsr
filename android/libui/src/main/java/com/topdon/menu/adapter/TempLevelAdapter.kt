@@ -3,7 +3,7 @@ package com.topdon.menu.adapter
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.topdon.menu.R
+import com.topdon.lib.ui.R
 import com.topdon.menu.constant.MenuType
 
 @SuppressLint("NotifyDataSetChanged")
@@ -66,3 +66,4 @@ internal class TempLevelAdapter(menuType: MenuType) : BaseMenuAdapter() {
     override fun getItemCount(): Int = dataList.size
 
     data class Data(@StringRes val stringId: Int, @DrawableRes val drawableId: Int, val range: IntRange? = null, val code: Int)
+}

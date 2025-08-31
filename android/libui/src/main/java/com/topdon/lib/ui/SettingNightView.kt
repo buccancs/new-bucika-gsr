@@ -38,6 +38,7 @@ class SettingNightView : LinearLayout {
     private lateinit var headImg: ImageView
     private lateinit var endImg: ImageView
     private lateinit var contentText: TextView
+    private lateinit var lineView: View
 
     constructor(context: Context) : this(context, null)
 
@@ -75,6 +76,7 @@ class SettingNightView : LinearLayout {
         contentText = findViewById(R.id.item_setting_text)
         headImg = findViewById(R.id.item_setting_image)
         endImg = findViewById(R.id.item_setting_end_image)
+        lineView = findViewById(R.id.item_setting_line)
 
         headImg.setImageResource(iconRes)
         if (iconShow) {
@@ -88,5 +90,6 @@ class SettingNightView : LinearLayout {
         } else {
             endImg.visibility = View.GONE
         }
-        item_setting_line.visibility = if (lineShow) View.VISIBLE else View.GONE
+        lineView.visibility = if (lineShow) View.VISIBLE else View.GONE
     }
+}

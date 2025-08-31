@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_16131E"
+    android:fitsSystemWindows="true">
+
+    <com.topdon.lib.core.view.TitleView
+        android:id="@+id/title_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:titleText="@string/ts004_storage_space"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cLayout_storage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/setting_bg_shape"
+        app:layout_constraintTop_toBottomOf="@id/title_view">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="22dp"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:paddingBottom="28dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cLayout_storage_bg"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:padding="4dp"
+                android:background="@drawable/ic_storage_bg_svg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.topdon.module.user.view.ProgressBarView
+                    android:id="@+id/custom_view_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_progress_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:textColor="@color/white"
+                android:textSize="19sp"
+                android:fontFamily="@font/pingfang_medium"
+                android:includeFontPadding="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cLayout_storage_bg"
+                tools:text="40" />
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:text="%"
+                android:paddingLeft="2dp"
+                android:includeFontPadding="false"
+                android:layout_marginBottom="3dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_progress_value"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_progress_value"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cLayout_storage_bg">
+
+                <TextView
+                    android:id="@+id/tv_used_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="19sp"
+                    tools:text="8"
+                    android:fontFamily="@font/pingfang_medium"
+                    android:includeFontPadding="false"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tv_used"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    tools:text="M"
+                    android:layout_marginBottom="3dp"
+                    android:paddingLeft="2dp"
+                    android:includeFontPadding="false"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_used_value"
+                    app:layout_constraintRight_toLeftOf="@+id/tv_total_value"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_used_value"/>
+
+                <TextView
+                    android:id="@+id/tv_total_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="19sp"
+                    tools:text="32"
+                    android:fontFamily="@font/pingfang_medium"
+                    android:includeFontPadding="false"
+                    app:layout_constraintRight_toLeftOf="@+id/tv_total"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tv_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    tools:text="GB"
+                    android:paddingLeft="2dp"
+                    android:layout_marginBottom="3dp"
+                    android:includeFontPadding="false"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_total_value"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_total_value"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.topdon.module.user.view.ListItemView
+                android:id="@+id/list_storage_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_progress_value"
+                app:list_item_left_icon="@drawable/ic_storage_photo_svg"
+                app:list_item_left_text="@string/album_menu_Photos"
+                app:list_item_line="true" />
+
+            <com.topdon.module.user.view.ListItemView
+                android:id="@+id/list_storage_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:list_item_left_icon="@drawable/ic_storage_video_svg"
+                app:list_item_left_text="@string/app_video"
+                app:list_item_line="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/list_storage_photo"/>
+
+            <com.topdon.module.user.view.ListItemView
+                android:id="@+id/list_storage_system"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                app:list_item_left_icon="@drawable/ic_storage_system_svg"
+                app:list_item_left_text="@string/ts004_store_systom"
+                app:list_item_line="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/list_storage_video"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_format_storage"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_corners10_solid_ffba42_stroke_theme"
+        android:gravity="center"
+        android:text="@string/more_storage_reset"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cLayout_storage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

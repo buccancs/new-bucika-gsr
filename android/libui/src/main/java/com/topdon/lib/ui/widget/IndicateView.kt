@@ -43,7 +43,7 @@ class IndicateView : View {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes:Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         defaultPaint.color = 0xffffffff.toInt()
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.IndicateView)
-        val color = typedArray.getColor(R.styleable.IndicateView_selectColor, 0xffffba42.toInt() )
+        val color = typedArray.getColor(R.styleable.IndicateView_indicateSelectColor, 0xffffba42.toInt() )
         typedArray.recycle()
         selectPaint.color = color
     }
@@ -62,3 +62,4 @@ class IndicateView : View {
             canvas.drawRoundRect(left, top, right, bottom, roundRadius, roundRadius, if (i == currentIndex) selectPaint else defaultPaint)
         }
     }
+}

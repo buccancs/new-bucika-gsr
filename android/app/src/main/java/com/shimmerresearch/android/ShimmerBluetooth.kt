@@ -281,3 +281,4 @@ class ShimmerBluetooth(
         val stateMessage = messageHandler?.obtainMessage(MSG_STATE_CHANGE, newState, -1)
         messageHandler?.sendMessage(stateMessage ?: return)
     }
+}

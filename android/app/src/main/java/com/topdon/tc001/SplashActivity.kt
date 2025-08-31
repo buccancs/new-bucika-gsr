@@ -41,5 +41,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
+        // Handle back press if needed
     }
+}

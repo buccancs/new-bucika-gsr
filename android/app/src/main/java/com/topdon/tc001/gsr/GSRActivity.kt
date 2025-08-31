@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.topdon.lib.core.ktbase.BaseActivity
+import com.topdon.lib.core.view.TitleView
 import com.topdon.tc001.R
 import com.topdon.tc001.databinding.ActivityGsrBinding
 import com.topdon.tc001.gsr.data.GSRDataWriter
@@ -35,7 +36,7 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener, GSRDataWriter.Da
         binding = ActivityGsrBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        binding.titleView.setTitle("GSR Monitoring - Bucika")
+        binding.titleView.setTitleText("GSR Monitoring - Bucika")
         binding.titleView.setLeftClickListener { finish() }
         
         gsrManager = GSRManager.getInstance(this)
@@ -244,3 +245,4 @@ class GSRActivity : BaseActivity(), GSRManager.GSRDataListener, GSRDataWriter.Da
         super.onDestroy()
         gsrManager.cleanup()
     }
+}
