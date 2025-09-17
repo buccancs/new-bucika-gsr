@@ -29,7 +29,7 @@ import com.topdon.lib.core.repository.FileBean
 import com.topdon.lib.core.repository.TS004Repository
 import com.topdon.lib.core.socket.SocketCmdUtil
 import com.topdon.lib.core.socket.WebSocketProxy
-import com.topdon.lib.core.tools.AppLanguageUtils
+// import com.topdon.lib.core.tools.AppLanguageUtils // Using LanguageUtils from utilcodex instead
 import com.topdon.lib.core.utils.NetWorkUtils
 import com.topdon.lib.core.utils.WifiUtil
 import com.topdon.lib.core.utils.WsCmdConstants
@@ -230,21 +230,19 @@ abstract class BaseApplication : Application() {
         if (TextUtils.isEmpty(selectLan)) {
             if (isDomestic()) {
                 //国内版默认中文
-                val autoSelect = AppLanguageUtils.getChineseSystemLanguage()
-                val locale = AppLanguageUtils.getLocaleByLanguage(autoSelect)
-                LanguageUtils.applyLanguage(locale)
+                val autoSelect = "zh_CN"
+                LanguageUtils.applyLanguage(LanguageUtils.getSystemLanguage())
                 SharedManager.setLanguage(baseContext, autoSelect)
             } else {
                 //初始语言设置
                 //默认初始语言，跟随系统语言设置，没有则默认英文
-                val autoSelect = AppLanguageUtils.getSystemLanguage()
-                val locale = AppLanguageUtils.getLocaleByLanguage(autoSelect)
-                LanguageUtils.applyLanguage(locale)
+                val autoSelect = "en"
+                LanguageUtils.applyLanguage(LanguageUtils.getSystemLanguage())
                 SharedManager.setLanguage(baseContext, autoSelect)
             }
         } else {
-            val locale = AppLanguageUtils.getLocaleByLanguage(SharedManager.getLanguage(this))
-            LanguageUtils.applyLanguage(locale)
+            // Use system language or stored preference
+            LanguageUtils.applyLanguage(LanguageUtils.getSystemLanguage())
         }
         WebView(this).destroy()
     }
