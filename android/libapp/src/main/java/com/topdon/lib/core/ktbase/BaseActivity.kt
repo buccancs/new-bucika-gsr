@@ -66,7 +66,7 @@ abstract class BaseActivity : RxAppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context?) {
         val context = newBase ?: this
-        super.attachBaseContext(AppLanguageUtils.attachBaseContext(context, SharedManager.getLanguage(context)))
+        super.attachBaseContext(context) // Simplified context attachment
     }
 
     override fun onStart() {

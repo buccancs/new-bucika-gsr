@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.blankj.utilcode.util.Utils
-import com.topdon.lib.core.db.dao.HouseDetectDao
-import com.topdon.lib.core.db.dao.HouseReportDao
+import com.topdon.lib.core.dao.HouseDetectDao
+import com.topdon.lib.core.dao.HouseReportDao
 import com.topdon.lib.core.db.dao.ThermalDao
-import com.topdon.lib.core.db.entity.*
+import com.topdon.lib.core.entity.*
+import com.topdon.lib.core.db.entity.ThermalEntity
 
 @Database(
     entities = [

@@ -4,7 +4,7 @@ import android.content.Context
 import com.blankj.utilcode.util.Utils
 import com.topdon.lib.core.R
 import com.topdon.lib.core.common.SharedManager
-import com.topdon.lib.core.tools.ConstantLanguages
+import com.topdon.lib.core.constants.ConstantLanguages
 
 object LanguageTool {
 
