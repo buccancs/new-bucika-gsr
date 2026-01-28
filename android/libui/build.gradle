@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    implementation project(':android:libapp')
+    // Removed circular dependency on android:libapp
     
     // SmartRefreshLayout for LoadingFooter
     api "com.scwang.smartrefresh:SmartRefreshLayout:1.1.3"
